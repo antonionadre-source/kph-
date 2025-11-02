@@ -1,0 +1,222 @@
+import React, { createContext, useState, useContext, ReactNode, useCallback } from 'react';
+
+type Language = 'en' | 'de' | 'fr' | 'it' | 'es' | 'pt';
+
+const translations = {
+  en: {
+    'nav.services': 'Services',
+    'nav.about': 'About',
+    'nav.properties': 'Properties',
+    'nav.contact': 'Contact Us',
+    'hero.title1': 'Elevating Spaces.',
+    'hero.title2': 'Simplifying Management.',
+    'hero.subtitle': 'Kraken delivers bespoke property and facilities management solutions, ensuring efficiency, sustainability, and value for every client.',
+    'hero.cta': 'Get a Free Consultation',
+    'services.title': 'Our Core Services',
+    'services.subtitle': 'We provide a full spectrum of services to enhance the value and functionality of your properties.',
+    'services.card1.title': 'Integrated Facilities Management',
+    'services.card1.description': 'Comprehensive management of your buildings and services, ensuring operational excellence and efficiency.',
+    'services.card2.title': 'Property Maintenance',
+    'services.card2.description': 'Proactive and reactive maintenance services to keep your properties in pristine condition and protect your assets.',
+    'services.card3.title': 'Health & Safety Compliance',
+    'services.card3.description': 'Ensuring your properties meet all regulatory standards, creating a safe and secure environment for everyone.',
+    'services.card4.title': 'Sustainability Solutions',
+    'services.card4.description': 'Implementing green initiatives and sustainable practices to reduce environmental impact and operational costs.',
+    'about.title': 'Who We Are',
+    'about.p1': 'Kraken Facilities Management is a property innovation and facilities management company based in Schaffhausen, Switzerland. Founded in 2025, Kraken was created to address two major gaps in the Swiss housing market: the need for flexible, affordable rentals and the neglected upkeep of property exteriors and shared spaces.',
+    'about.p2': 'We start with a smart property management model—renting multi-room apartments and subletting fully furnished rooms to students, professionals, and expatriates. Each unit includes essentials like high-speed internet, utilities, and regular cleaning, offering residents a flexible, ready-to-live experience while maximizing property returns.',
+    'about.cta': 'Learn More →',
+    'clients.title': 'Trusted by Leading Companies in London',
+    'clients.subtitle': 'We are proud to partner with a diverse range of clients, delivering excellence and value at every step.',
+    'footer.title': 'Ready to Transform Your Property?',
+    'footer.subtitle': "Let's connect. Reach out to us today for a personalized consultation and see how Kraken can make a difference.",
+    'footer.email': 'Sales@krakenfm.co',
+    'footer.copyright': '© {year} Kraken Properties and Facilities Management Inc. All Rights Reserved.',
+  },
+  de: {
+    'nav.services': 'Dienstleistungen',
+    'nav.about': 'Über uns',
+    'nav.properties': 'Immobilien',
+    'nav.contact': 'Kontakt',
+    'hero.title1': 'Räume aufwerten.',
+    'hero.title2': 'Verwaltung vereinfachen.',
+    'hero.subtitle': 'Kraken liefert maßgeschneiderte Lösungen für Immobilien- und Gebäudemanagement und sichert so Effizienz, Nachhaltigkeit und Wert für jeden Kunden.',
+    'hero.cta': 'Kostenlose Beratung anfordern',
+    'services.title': 'Unsere Kerndienstleistungen',
+    'services.subtitle': 'Wir bieten ein komplettes Dienstleistungsspektrum, um den Wert und die Funktionalität Ihrer Immobilien zu steigern.',
+    'services.card1.title': 'Integriertes Gebäudemanagement',
+    'services.card1.description': 'Umfassende Verwaltung Ihrer Gebäude und Dienstleistungen, die operative Exzellenz und Effizienz gewährleistet.',
+    'services.card2.title': 'Instandhaltung von Immobilien',
+    'services.card2.description': 'Proaktive und reaktive Instandhaltungsdienste, um Ihre Immobilien in tadellosem Zustand zu halten und Ihr Vermögen zu schützen.',
+    'services.card3.title': 'Gesundheits- & Sicherheitskonformität',
+    'services.card3.description': 'Sicherstellung, dass Ihre Immobilien alle gesetzlichen Standards erfüllen und eine sichere Umgebung für alle schaffen.',
+    'services.card4.title': 'Nachhaltigkeitslösungen',
+    'services.card4.description': 'Umsetzung grüner Initiativen und nachhaltiger Praktiken zur Reduzierung der Umweltbelastung und der Betriebskosten.',
+    'about.title': 'Wer wir sind',
+    'about.p1': 'Kraken Facilities Management ist ein Unternehmen für Immobilieninnovation und Gebäudemanagement mit Sitz in Schaffhausen, Schweiz. Gegründet 2025, wurde Kraken geschaffen, um zwei große Lücken im Schweizer Wohnungsmarkt zu schließen: den Bedarf an flexiblen, erschwinglichen Mietwohnungen und die vernachlässigte Instandhaltung von Gebäudeaußenseiten und Gemeinschaftsräumen.',
+    'about.p2': 'Wir beginnen mit einem intelligenten Immobilienverwaltungsmodell – wir mieten Mehrzimmerwohnungen und vermieten möblierte Einzelzimmer an Studenten, junge Berufstätige und Expatriates. Jede Einheit enthält wesentliche Annehmlichkeiten wie High-Speed-Internet, Nebenkosten und regelmäßige Reinigung und bietet den Bewohnern ein flexibles, bezugsfertiges Wohnerlebnis bei gleichzeitiger Maximierung der Immobilienrendite.',
+    'about.cta': 'Mehr erfahren →',
+    'clients.title': 'Vertraut von führenden Unternehmen in London',
+    'clients.subtitle': 'Wir sind stolz darauf, mit einer Vielzahl von Kunden zusammenzuarbeiten und bei jedem Schritt Exzellenz und Wert zu liefern.',
+    'footer.title': 'Bereit, Ihre Immobilie zu verwandeln?',
+    'footer.subtitle': 'Lassen Sie uns in Kontakt treten. Kontaktieren Sie uns noch heute für eine persönliche Beratung und sehen Sie, wie Kraken einen Unterschied machen kann.',
+    'footer.email': 'Sales@krakenfm.co',
+    'footer.copyright': '© {year} Kraken Properties and Facilities Management Inc. Alle Rechte vorbehalten.',
+  },
+  fr: {
+    'nav.services': 'Services',
+    'nav.about': 'À propos',
+    'nav.properties': 'Propriétés',
+    'nav.contact': 'Contactez-nous',
+    'hero.title1': 'Élever les espaces.',
+    'hero.title2': 'Simplifier la gestion.',
+    'hero.subtitle': 'Kraken fournit des solutions sur mesure de gestion immobilière et de facilities management, garantissant efficacité, durabilité et valeur pour chaque client.',
+    'hero.cta': 'Obtenir une consultation gratuite',
+    'services.title': 'Nos services principaux',
+    'services.subtitle': 'Nous fournissons une gamme complète de services pour améliorer la valeur et la fonctionnalité de vos propriétés.',
+    'services.card1.title': 'Gestion intégrée des installations',
+    'services.card1.description': 'Gestion complète de vos bâtiments et services, assurant l\'excellence opérationnelle et l\'efficacité.',
+    'services.card2.title': 'Maintenance des biens',
+    'services.card2.description': 'Services de maintenance proactifs et réactifs pour maintenir vos propriétés en parfait état et protéger vos actifs.',
+    'services.card3.title': 'Conformité santé et sécurité',
+    'services.card3.description': 'S\'assurer que vos propriétés respectent toutes les normes réglementaires, créant un environnement sûr et sécurisé pour tous.',
+    'services.card4.title': 'Solutions de durabilité',
+    'services.card4.description': 'Mise en œuvre d\'initiatives écologiques et de pratiques durables pour réduire l\'impact environnemental et les coûts opérationnels.',
+    'about.title': 'Qui sommes-nous',
+    'about.p1': 'Kraken Facilities Management est une société d\'innovation immobilière et de gestion d\'installations basée à Schaffhouse, en Suisse. Fondée en 2025, Kraken a été créée pour combler deux lacunes majeures sur le marché du logement suisse : le besoin de locations flexibles et abordables et l\'entretien négligé des extérieurs des propriétés et des espaces communs.',
+    'about.p2': 'Nous commençons avec un modèle de gestion immobilière intelligent : louer des appartements de plusieurs pièces et sous-louer des chambres meublées à des étudiants, des jeunes professionnels et des expatriés. Chaque unité comprend des services essentiels comme Internet haut débit, les charges et le nettoyage régulier, offrant aux résidents une expérience de vie flexible et prête à l\'emploi tout en maximisant les rendements immobiliers.',
+    'about.cta': 'En savoir plus →',
+    'clients.title': 'Approuvé par les plus grandes entreprises de Londres',
+    'clients.subtitle': 'Nous sommes fiers de nous associer à un large éventail de clients, en offrant l\'excellence et la valeur à chaque étape.',
+    'footer.title': 'Prêt à transformer votre propriété ?',
+    'footer.subtitle': 'Connectons-nous. Contactez-nous dès aujourd\'hui pour une consultation personnalisée et découvrez comment Kraken peut faire la différence.',
+    'footer.email': 'Sales@krakenfm.co',
+    'footer.copyright': '© {year} Kraken Properties and Facilities Management Inc. Tous droits réservés.',
+  },
+  it: {
+    'nav.services': 'Servizi',
+    'nav.about': 'Chi siamo',
+    'nav.properties': 'Proprietà',
+    'nav.contact': 'Contattaci',
+    'hero.title1': 'Elevare gli spazi.',
+    'hero.title2': 'Semplificare la gestione.',
+    'hero.subtitle': 'Kraken offre soluzioni su misura per la gestione di proprietà e strutture, garantendo efficienza, sostenibilità e valore per ogni cliente.',
+    'hero.cta': 'Richiedi una consulenza gratuita',
+    'services.title': 'I nostri servizi principali',
+    'services.subtitle': 'Forniamo una gamma completa di servizi per aumentare il valore e la funzionalità delle vostre proprietà.',
+    'services.card1.title': 'Gestione integrata delle strutture',
+    'services.card1.description': 'Gestione completa dei vostri edifici e servizi, garantendo eccellenza operativa ed efficienza.',
+    'services.card2.title': 'Manutenzione della proprietà',
+    'services.card2.description': 'Servizi di manutenzione proattiva e reattiva per mantenere le vostre proprietà in perfette condizioni e proteggere i vostri beni.',
+    'services.card3.title': 'Conformità in materia di salute e sicurezza',
+    'services.card3.description': 'Garantire che le vostre proprietà soddisfino tutti gli standard normativi, creando un ambiente sicuro per tutti.',
+    'services.card4.title': 'Soluzioni di sostenibilità',
+    'services.card4.description': 'Implementazione di iniziative ecologiche e pratiche sostenibili per ridurre l\'impatto ambientale e i costi operativi.',
+    'about.title': 'Chi siamo',
+    'about.p1': 'Kraken Facilities Management è una società di innovazione immobiliare e gestione di strutture con sede a Sciaffusa, Svizzera. Fondata nel 2025, Kraken è stata creata per colmare due grandi lacune nel mercato immobiliare svizzero: la necessità di affitti flessibili e convenienti e la manutenzione trascurata degli esterni delle proprietà e degli spazi comuni.',
+    'about.p2': 'Iniziamo con un modello di gestione immobiliare intelligente: affittare appartamenti multi-locale e subaffittare stanze singole arredate a studenti, giovani professionisti ed espatriati. Ogni unità include servizi essenziali come internet ad alta velocità, utenze e pulizia regolare, offrendo ai residenti un\'esperienza abitativa flessibile e pronta all\'uso, massimizzando al contempo i rendimenti immobiliari.',
+    'about.cta': 'Scopri di più →',
+    'clients.title': 'Scelto dalle principali aziende di Londra',
+    'clients.subtitle': 'Siamo orgogliosi di collaborare con una vasta gamma di clienti, offrendo eccellenza e valore in ogni fase.',
+    'footer.title': 'Pronto a trasformare la tua proprietà?',
+    'footer.subtitle': 'Mettiamoci in contatto. Contattaci oggi per una consulenza personalizzata e scopri come Kraken può fare la differenza.',
+    'footer.email': 'Sales@krakenfm.co',
+    'footer.copyright': '© {year} Kraken Properties and Facilities Management Inc. Tutti i diritti riservati.',
+  },
+  es: {
+    'nav.services': 'Servicios',
+    'nav.about': 'Sobre nosotros',
+    'nav.properties': 'Propiedades',
+    'nav.contact': 'Contáctanos',
+    'hero.title1': 'Elevando espacios.',
+    'hero.title2': 'Simplificando la gestión.',
+    'hero.subtitle': 'Kraken ofrece soluciones a medida de gestión de propiedades e instalaciones, garantizando eficiencia, sostenibilidad y valor para cada cliente.',
+    'hero.cta': 'Obtén una consulta gratuita',
+    'services.title': 'Nuestros servicios principales',
+    'services.subtitle': 'Ofrecemos un espectro completo de servicios para mejorar el valor y la funcionalidad de sus propiedades.',
+    'services.card1.title': 'Gestión integral de instalaciones',
+    'services.card1.description': 'Gestión integral de sus edificios y servicios, garantizando la excelencia operativa y la eficiencia.',
+    'services.card2.title': 'Mantenimiento de propiedades',
+    'services.card2.description': 'Servicios de mantenimiento proactivos y reactivos para mantener sus propiedades en perfectas condiciones y proteger sus activos.',
+    'services.card3.title': 'Cumplimiento de salud y seguridad',
+    'services.card3.description': 'Garantizar que sus propiedades cumplan con todas las normativas, creando un entorno seguro para todos.',
+    'services.card4.title': 'Soluciones de sostenibilidad',
+    'services.card4.description': 'Implementación de iniciativas ecológicas y prácticas sostenibles para reducir el impacto ambiental y los costos operativos.',
+    'about.title': 'Quiénes somos',
+    'about.p1': 'Kraken Facilities Management es una empresa de innovación inmobiliaria y gestión de instalaciones con sede en Schaffhausen, Suiza. Fundada en 2025, Kraken fue creada para abordar dos grandes lagunas en el mercado de la vivienda suizo: la necesidad de alquileres flexibles y asequibles y el mantenimiento descuidado de los exteriores de las propiedades y los espacios compartidos.',
+    'about.p2': 'Comenzamos con un modelo inteligente de gestión de propiedades: alquilamos apartamentos de varias habitaciones y subarrendamos habitaciones individuales amuebladas a estudiantes, jóvenes profesionales y expatriados. Cada unidad incluye servicios esenciales como internet de alta velocidad, servicios públicos y limpieza regular, ofreciendo a los residentes una experiencia de vida flexible y lista para usar, al tiempo que se maximiza el rendimiento de la propiedad.',
+    'about.cta': 'Más información →',
+    'clients.title': 'Con la confianza de las principales empresas de Londres',
+    'clients.subtitle': 'Estamos orgullosos de asociarnos con una amplia gama de clientes, ofreciendo excelencia y valor en cada paso.',
+    'footer.title': '¿Listo para transformar su propiedad?',
+    'footer.subtitle': 'Conectemos. Póngase en contacto con nosotros hoy para una consulta personalizada y vea cómo Kraken puede marcar la diferencia.',
+    'footer.email': 'Sales@krakenfm.co',
+    'footer.copyright': '© {year} Kraken Properties and Facilities Management Inc. Todos los derechos reservados.',
+  },
+  pt: {
+    'nav.services': 'Serviços',
+    'nav.about': 'Sobre nós',
+    'nav.properties': 'Propriedades',
+    'nav.contact': 'Contate-nos',
+    'hero.title1': 'Elevando espaços.',
+    'hero.title2': 'Simplificando a gestão.',
+    'hero.subtitle': 'A Kraken oferece soluções personalizadas de gestão de propriedades e instalações, garantindo eficiência, sustentabilidade e valor para cada cliente.',
+    'hero.cta': 'Obtenha uma consulta gratuita',
+    'services.title': 'Nossos principais serviços',
+    'services.subtitle': 'Oferecemos um espectro completo de serviços para aumentar o valor e a funcionalidade de suas propriedades.',
+    'services.card1.title': 'Gestão integrada de instalações',
+    'services.card1.description': 'Gestão abrangente de seus edifícios e serviços, garantindo excelência operacional e eficiência.',
+    'services.card2.title': 'Manutenção de propriedades',
+    'services.card2.description': 'Serviços de manutenção proativos e reativos para manter suas propriedades em perfeitas condições e proteger seus ativos.',
+    'services.card3.title': 'Conformidade com saúde e segurança',
+    'services.card3.description': 'Garantir que suas propriedades atendam a todos os padrões regulatórios, criando um ambiente seguro para todos.',
+    'services.card4.title': 'Soluções de sustentabilidade',
+    'services.card4.description': 'Implementação de iniciativas verdes e práticas sustentáveis para reduzir o impacto ambiental e os custos operacionais.',
+    'about.title': 'Quem somos',
+    'about.p1': 'A Kraken Facilities Management é uma empresa de inovação imobiliária e gestão de instalações com sede em Schaffhausen, Suíça. Fundada em 2025, a Kraken foi criada para resolver duas grandes lacunas no mercado imobiliário suíço: a necessidade de aluguéis flexíveis e acessíveis e a manutenção negligenciada dos exteriores das propriedades e espaços comuns.',
+    'about.p2': 'Começamos com um modelo inteligente de gestão de propriedades — alugando apartamentos de vários quartos e sublocando quartos individuais mobiliados para estudantes, jovens profissionais e expatriados. Cada unidade inclui itens essenciais como internet de alta velocidade, serviços públicos e limpeza regular, oferecendo aos residentes uma experiência de vida flexível e pronta para morar, enquanto maximiza o retorno da propriedade.',
+    'about.cta': 'Saiba mais →',
+    'clients.title': 'Aprovado pelas principais empresas de Londres',
+    'clients.subtitle': 'Temos orgulho de fazer parceria com uma gama diversificada de clientes, entregando excelência e valor em cada etapa.',
+    'footer.title': 'Pronto para transformar sua propriedade?',
+    'footer.subtitle': 'Vamos nos conectar. Entre em contato conosco hoje para uma consulta personalizada e veja como a Kraken pode fazer a diferença.',
+    'footer.email': 'Sales@krakenfm.co',
+    'footer.copyright': '© {year} Kraken Properties and Facilities Management Inc. Todos os direitos reservados.',
+  },
+};
+
+interface I18nContextType {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: string, options?: { [key: string]: string | number }) => string;
+}
+
+const I18nContext = createContext<I18nContextType | null>(null);
+
+export const I18nProvider = ({ children }: { children: ReactNode }) => {
+  const [language, setLanguage] = useState<Language>('en');
+
+  const t = useCallback((key: string, options?: { [key: string]: string | number }) => {
+    let text = translations[language][key] || translations['en'][key] || key;
+    if (options) {
+      Object.keys(options).forEach(optKey => {
+        text = text.replace(`{${optKey}}`, String(options[optKey]));
+      });
+    }
+    return text;
+  }, [language]);
+
+  return (
+    <I18nContext.Provider value={{ language, setLanguage, t }}>
+      {children}
+    </I18nContext.Provider>
+  );
+};
+
+export const useTranslation = (): I18nContextType => {
+  const context = useContext(I18nContext);
+  if (!context) {
+    throw new Error('useTranslation must be used within an I18nProvider');
+  }
+  return context;
+};
