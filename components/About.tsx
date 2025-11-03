@@ -41,11 +41,11 @@ const About: React.FC = () => {
               isContentVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'
             }`}
           >
-            <img 
-              src={teamPhotoUrl}
-              alt="The Kraken Facilities Management team" 
-              className="rounded-lg shadow-2xl w-full h-auto object-cover"
-            />
+            {/* FIX: Replaced 'class' with 'className' for JSX compatibility. */}
+            <img src={teamPhotoUrl} 
+            alt="Kraken Properties & Facilities Management team at sunset" 
+           className="rounded-lg shadow-2xl w-full h-auto object-cover" />
+
           </div>
           <div
             className="md:w-1/2"

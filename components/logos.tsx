@@ -10,13 +10,26 @@ export const FarfetchLogo: React.FC<LogoProps> = (props) => (
   </svg>
 );
 
-export const MandarinOrientalLogo: React.FC<LogoProps> = (props) => (
-  <svg viewBox="0 0 200 100" fill="currentColor" {...props}>
-    <path d="M100,50 A50,50 0 0,0 100,50 L100,50 Z M50,50 A50,50 0 0,0 50,50 L50,50 Z" />
-    <path d="M100 0 L100 50 M100 0 A 50 50 0 0 0 50 50 M100 0 A 50 50 0 0 1 150 50 M100 0 A 50 50 0 0 0 64.64 17.32 M100 0 A 50 50 0 0 1 135.36 17.32 M100 0 A 50 50 0 0 0 82.68 35.36 M100 0 A 50 50 0 0 1 117.32 35.36 M100 0 A 50 50 0 0 0 92.39 46.19 M100 0 A 50 50 0 0 1 107.61 46.19 M100 0 L100 50" stroke="currentColor" strokeWidth="2" fill="none" />
-    <path d="M50 50 A50,50 0 0,1 150,50" stroke="currentColor" strokeWidth="2" fill="none" />
-  </svg>
-);
+export const MandarinOrientalLogo: React.FC<LogoProps> = (props) => {
+  const fanBlades = 11;
+  const radius = 50;
+  const center = { x: 100, y: 50 };
+
+  const paths = Array.from({ length: fanBlades }).map((_, i) => {
+    const angle = (i / (fanBlades - 1)) * 180; // Spread from 0 to 180 degrees
+    const rad = (angle - 90) * (Math.PI / 180); // Convert to radians and adjust for SVG coordinate system
+    const endX = center.x + radius * Math.cos(rad);
+    const endY = center.y + radius * Math.sin(rad);
+    return `M${center.x},${center.y} L${endX},${endY}`;
+  });
+
+  return (
+    <svg viewBox="0 0 200 100" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
+      <path d={`M${center.x - radius},${center.y} A${radius},${radius} 0 0 1 ${center.x + radius},${center.y}`} />
+      {paths.map((path, index) => <path key={index} d={path} />)}
+    </svg>
+  );
+};
 
 
 export const AldersgateLogo: React.FC<LogoProps> = (props) => (

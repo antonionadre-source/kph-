@@ -1,12 +1,15 @@
-import React, { createContext, useState, useContext, ReactNode, useCallback } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useCallback, FC } from 'react';
 
-type Language = 'en' | 'de' | 'fr' | 'it' | 'es' | 'pt';
+type Language = 'en' | 'de' | 'fr' | 'it' | 'es' | 'pt' | 'de-CH';
 
-const translations = {
+// FIX: Add explicit type to `translations` to ensure it has a string index signature.
+// This prevents TypeScript from inferring a narrow type for each language object,
+// which would cause an error when accessing a translation with a dynamic string key.
+const translations: Record<Language, { [key: string]: string }> = {
   en: {
     'nav.services': 'Services',
     'nav.about': 'About',
-    'nav.properties': 'Properties',
+    'nav.clients': 'Clients',
     'nav.contact': 'Contact Us',
     'hero.title1': 'Elevating Spaces.',
     'hero.title2': 'Simplifying Management.',
@@ -28,6 +31,10 @@ const translations = {
     'about.cta': 'Learn More →',
     'clients.title': 'Trusted by Leading Companies in London',
     'clients.subtitle': 'We are proud to partner with a diverse range of clients, delivering excellence and value at every step.',
+    'contactMap.title': 'Our Operation Area & Contact',
+    'contactMap.address': 'Address',
+    'contactMap.phone': 'Phone',
+    'contactMap.email': 'Email',
     'footer.title': 'Ready to Transform Your Property?',
     'footer.subtitle': "Let's connect. Reach out to us today for a personalized consultation and see how Kraken can make a difference.",
     'footer.email': 'Sales@krakenfm.co',
@@ -36,7 +43,7 @@ const translations = {
   de: {
     'nav.services': 'Dienstleistungen',
     'nav.about': 'Über uns',
-    'nav.properties': 'Immobilien',
+    'nav.clients': 'Kunden',
     'nav.contact': 'Kontakt',
     'hero.title1': 'Räume aufwerten.',
     'hero.title2': 'Verwaltung vereinfachen.',
@@ -58,6 +65,44 @@ const translations = {
     'about.cta': 'Mehr erfahren →',
     'clients.title': 'Vertraut von führenden Unternehmen in London',
     'clients.subtitle': 'Wir sind stolz darauf, mit einer Vielzahl von Kunden zusammenzuarbeiten und bei jedem Schritt Exzellenz und Wert zu liefern.',
+    'contactMap.title': 'Unser Einsatzgebiet & Kontakt',
+    'contactMap.address': 'Adresse',
+    'contactMap.phone': 'Telefon',
+    'contactMap.email': 'Email',
+    'footer.title': 'Bereit, Ihre Immobilie zu verwandeln?',
+    'footer.subtitle': 'Lassen Sie uns in Kontakt treten. Kontaktieren Sie uns noch heute für eine persönliche Beratung und sehen Sie, wie Kraken einen Unterschied machen kann.',
+    'footer.email': 'Sales@krakenfm.co',
+    'footer.copyright': '© {year} Kraken Properties and Facilities Management Inc. Alle Rechte vorbehalten.',
+  },
+  'de-CH': {
+    'nav.services': 'Dienstleistungen',
+    'nav.about': 'Über uns',
+    'nav.clients': 'Kunden',
+    'nav.contact': 'Kontakt',
+    'hero.title1': 'Räume aufwerten.',
+    'hero.title2': 'Verwaltung vereinfachen.',
+    'hero.subtitle': 'Kraken liefert maßgeschneiderte Lösungen für Immobilien- und Gebäudemanagement und sichert so Effizienz, Nachhaltigkeit und Wert für jeden Kunden.',
+    'hero.cta': 'Kostenlose Beratung anfordern',
+    'services.title': 'Unsere Kerndienstleistungen',
+    'services.subtitle': 'Wir bieten ein komplettes Dienstleistungsspektrum, um den Wert und die Funktionalität Ihrer Immobilien zu steigern.',
+    'services.card1.title': 'Integriertes Gebäudemanagement',
+    'services.card1.description': 'Umfassende Verwaltung Ihrer Gebäude und Dienstleistungen, die operative Exzellenz und Effizienz gewährleistet.',
+    'services.card2.title': 'Instandhaltung von Immobilien',
+    'services.card2.description': 'Proaktive und reaktive Instandhaltungsdienste, um Ihre Immobilien in tadellosem Zustand zu halten und Ihr Vermögen zu schützen.',
+    'services.card3.title': 'Gesundheits- & Sicherheitskonformität',
+    'services.card3.description': 'Sicherstellung, dass Ihre Immobilien alle gesetzlichen Standards erfüllen und eine sichere Umgebung für alle schaffen.',
+    'services.card4.title': 'Nachhaltigkeitslösungen',
+    'services.card4.description': 'Umsetzung grüner Initiativen und nachhaltiger Praktiken zur Reduzierung der Umweltbelastung und der Betriebskosten.',
+    'about.title': 'Wer wir sind',
+    'about.p1': 'Kraken Facilities Management ist ein Unternehmen für Immobilieninnovation und Gebäudemanagement mit Sitz in Schaffhausen, Schweiz. Gegründet 2025, wurde Kraken geschaffen, um zwei große Lücken im Schweizer Wohnungsmarkt zu schließen: den Bedarf an flexiblen, erschwinglichen Mietwohnungen und die vernachlässigte Instandhaltung von Gebäudeaußenseiten und Gemeinschaftsräumen.',
+    'about.p2': 'Wir beginnen mit einem intelligenten Immobilienverwaltungsmodell – wir mieten Mehrzimmerwohnungen und vermieten möblierte Einzelzimmer an Studenten, junge Berufstätige und Expatriates. Jede Einheit enthält wesentliche Annehmlichkeiten wie High-Speed-Internet, Nebenkosten und regelmäßige Reinigung und bietet den Bewohnern ein flexibles, bezugsfertiges Wohnerlebnis bei gleichzeitiger Maximierung der Immobilienrendite.',
+    'about.cta': 'Mehr erfahren →',
+    'clients.title': 'Vertraut von führenden Unternehmen in London',
+    'clients.subtitle': 'Wir sind stolz darauf, mit einer Vielzahl von Kunden zusammenzuarbeiten und bei jedem Schritt Exzellenz und Wert zu liefern.',
+    'contactMap.title': 'Unser Einsatzgebiet & Kontakt',
+    'contactMap.address': 'Adresse',
+    'contactMap.phone': 'Telefon',
+    'contactMap.email': 'Email',
     'footer.title': 'Bereit, Ihre Immobilie zu verwandeln?',
     'footer.subtitle': 'Lassen Sie uns in Kontakt treten. Kontaktieren Sie uns noch heute für eine persönliche Beratung und sehen Sie, wie Kraken einen Unterschied machen kann.',
     'footer.email': 'Sales@krakenfm.co',
@@ -66,7 +111,7 @@ const translations = {
   fr: {
     'nav.services': 'Services',
     'nav.about': 'À propos',
-    'nav.properties': 'Propriétés',
+    'nav.clients': 'Clients',
     'nav.contact': 'Contactez-nous',
     'hero.title1': 'Élever les espaces.',
     'hero.title2': 'Simplifier la gestion.',
@@ -81,13 +126,18 @@ const translations = {
     'services.card3.title': 'Conformité santé et sécurité',
     'services.card3.description': 'S\'assurer que vos propriétés respectent toutes les normes réglementaires, créant un environnement sûr et sécurisé pour tous.',
     'services.card4.title': 'Solutions de durabilité',
-    'services.card4.description': 'Mise en œuvre d\'initiatives écologiques et de pratiques durables pour réduire l\'impact environnemental et les coûts opérationnels.',
+    'services.card4.description': 'Mise en œuvre d\'initiatives écologiques et de pratiques durables pour réduire l\'impact environnemental et les coûts opé' +
+      'rationnels.',
     'about.title': 'Qui sommes-nous',
     'about.p1': 'Kraken Facilities Management est une société d\'innovation immobilière et de gestion d\'installations basée à Schaffhouse, en Suisse. Fondée en 2025, Kraken a été créée pour combler deux lacunes majeures sur le marché du logement suisse : le besoin de locations flexibles et abordables et l\'entretien négligé des extérieurs des propriétés et des espaces communs.',
     'about.p2': 'Nous commençons avec un modèle de gestion immobilière intelligent : louer des appartements de plusieurs pièces et sous-louer des chambres meublées à des étudiants, des jeunes professionnels et des expatriés. Chaque unité comprend des services essentiels comme Internet haut débit, les charges et le nettoyage régulier, offrant aux résidents une expérience de vie flexible et prête à l\'emploi tout en maximisant les rendements immobiliers.',
     'about.cta': 'En savoir plus →',
     'clients.title': 'Approuvé par les plus grandes entreprises de Londres',
     'clients.subtitle': 'Nous sommes fiers de nous associer à un large éventail de clients, en offrant l\'excellence et la valeur à chaque étape.',
+    'contactMap.title': 'Notre zone d\'opération et contact',
+    'contactMap.address': 'Adresse',
+    'contactMap.phone': 'Téléphone',
+    'contactMap.email': 'Email',
     'footer.title': 'Prêt à transformer votre propriété ?',
     'footer.subtitle': 'Connectons-nous. Contactez-nous dès aujourd\'hui pour une consultation personnalisée et découvrez comment Kraken peut faire la différence.',
     'footer.email': 'Sales@krakenfm.co',
@@ -96,7 +146,7 @@ const translations = {
   it: {
     'nav.services': 'Servizi',
     'nav.about': 'Chi siamo',
-    'nav.properties': 'Proprietà',
+    'nav.clients': 'Clienti',
     'nav.contact': 'Contattaci',
     'hero.title1': 'Elevare gli spazi.',
     'hero.title2': 'Semplificare la gestione.',
@@ -118,6 +168,10 @@ const translations = {
     'about.cta': 'Scopri di più →',
     'clients.title': 'Scelto dalle principali aziende di Londra',
     'clients.subtitle': 'Siamo orgogliosi di collaborare con una vasta gamma di clienti, offrendo eccellenza e valore in ogni fase.',
+    'contactMap.title': 'La nostra area operativa e contatti',
+    'contactMap.address': 'Indirizzo',
+    'contactMap.phone': 'Telefono',
+    'contactMap.email': 'Email',
     'footer.title': 'Pronto a trasformare la tua proprietà?',
     'footer.subtitle': 'Mettiamoci in contatto. Contattaci oggi per una consulenza personalizzata e scopri come Kraken può fare la differenza.',
     'footer.email': 'Sales@krakenfm.co',
@@ -126,7 +180,7 @@ const translations = {
   es: {
     'nav.services': 'Servicios',
     'nav.about': 'Sobre nosotros',
-    'nav.properties': 'Propiedades',
+    'nav.clients': 'Clientes',
     'nav.contact': 'Contáctanos',
     'hero.title1': 'Elevando espacios.',
     'hero.title2': 'Simplificando la gestión.',
@@ -148,6 +202,10 @@ const translations = {
     'about.cta': 'Más información →',
     'clients.title': 'Con la confianza de las principales empresas de Londres',
     'clients.subtitle': 'Estamos orgullosos de asociarnos con una amplia gama de clientes, ofreciendo excelencia y valor en cada paso.',
+    'contactMap.title': 'Nuestra área de operación y contacto',
+    'contactMap.address': 'Dirección',
+    'contactMap.phone': 'Teléfono',
+    'contactMap.email': 'Correo electrónico',
     'footer.title': '¿Listo para transformar su propiedad?',
     'footer.subtitle': 'Conectemos. Póngase en contacto con nosotros hoy para una consulta personalizada y vea cómo Kraken puede marcar la diferencia.',
     'footer.email': 'Sales@krakenfm.co',
@@ -156,7 +214,7 @@ const translations = {
   pt: {
     'nav.services': 'Serviços',
     'nav.about': 'Sobre nós',
-    'nav.properties': 'Propriedades',
+    'nav.clients': 'Clientes',
     'nav.contact': 'Contate-nos',
     'hero.title1': 'Elevando espaços.',
     'hero.title2': 'Simplificando a gestão.',
@@ -178,6 +236,10 @@ const translations = {
     'about.cta': 'Saiba mais →',
     'clients.title': 'Aprovado pelas principais empresas de Londres',
     'clients.subtitle': 'Temos orgulho de fazer parceria com uma gama diversificada de clientes, entregando excelência e valor em cada etapa.',
+    'contactMap.title': 'Nossa área de operação e contato',
+    'contactMap.address': 'Endereço',
+    'contactMap.phone': 'Telefone',
+    'contactMap.email': 'Email',
     'footer.title': 'Pronto para transformar sua propriedade?',
     'footer.subtitle': 'Vamos nos conectar. Entre em contato conosco hoje para uma consulta personalizada e veja como a Kraken pode fazer a diferença.',
     'footer.email': 'Sales@krakenfm.co',
@@ -193,7 +255,10 @@ interface I18nContextType {
 
 const I18nContext = createContext<I18nContextType | null>(null);
 
-export const I18nProvider = ({ children }: { children: ReactNode }) => {
+// FIX: Explicitly type I18nProvider as a React.FC with required children.
+// This resolves a potential type inference issue in the TypeScript compiler/language service
+// that was causing the "Property 'children' is missing" error in index.tsx.
+export const I18nProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('en');
 
   const t = useCallback((key: string, options?: { [key: string]: string | number }) => {
