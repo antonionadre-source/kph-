@@ -1,13 +1,8 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '../i18n';
-import { teamPhotoUrl } from '../assets';
+import { csrImageUrl } from '../assets';
 
-interface AboutProps {
-  onNavigate: (page: string) => void;
-}
-
-const About: React.FC<AboutProps> = ({ onNavigate }) => {
+const CSR: React.FC = () => {
   const [isContentVisible, setIsContentVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const { t } = useTranslation();
@@ -21,7 +16,7 @@ const About: React.FC<AboutProps> = ({ onNavigate }) => {
         }
       },
       {
-        threshold: 0.2, // Trigger when 20% of the section is visible
+        threshold: 0.2,
       }
     );
 
@@ -38,38 +33,36 @@ const About: React.FC<AboutProps> = ({ onNavigate }) => {
   }, []);
 
   return (
-    <section id="about" ref={sectionRef} className="py-20 bg-white overflow-hidden">
+    <section id="csr" ref={sectionRef} className="py-20 bg-white overflow-hidden">
       <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center gap-12">
+        <div className="flex flex-col md:flex-row-reverse items-center gap-12">
           <div
             className={`md:w-1/2 transition-all duration-1000 ease-out ${
-              isContentVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'
+              isContentVisible ? 'opacity-100 translate-x-0 delay-200' : 'opacity-0 translate-x-10'
             }`}
           >
-            <img src={teamPhotoUrl} 
-            alt={t('about.image_alt')} 
-            loading="lazy"
-           className="rounded-lg shadow-2xl w-full h-auto object-cover" />
-
+            <img 
+              src={csrImageUrl} 
+              alt={t('aboutPage.csrImageAlt')}
+              loading="lazy"
+              className="rounded-lg shadow-2xl w-full h-auto object-cover" 
+            />
           </div>
           <div
             className="md:w-1/2"
           >
-            <h2 className={`text-4xl font-bold text-gray-800 mb-6 transition-all duration-700 ease-out ${isContentVisible ? 'opacity-100 translate-y-0 delay-200' : 'opacity-0 translate-y-5'}`}>
-              {t('about.title')}
+            <h2 className={`text-4xl font-bold text-gray-800 mb-6 transition-all duration-700 ease-out ${isContentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
+              {t('aboutPage.csrTitle')}
             </h2>
             <p className={`mb-4 text-gray-600 text-base leading-relaxed transition-all duration-700 ease-out ${isContentVisible ? 'opacity-100 translate-y-0 delay-300' : 'opacity-0 translate-y-5'}`}>
-              {t('about.p1')}
+              {t('aboutPage.csrP1')}
             </p>
             <p className={`mb-4 text-gray-600 text-base leading-relaxed transition-all duration-700 ease-out ${isContentVisible ? 'opacity-100 translate-y-0 delay-[400ms]' : 'opacity-0 translate-y-5'}`}>
-              {t('about.p2')}
+              {t('aboutPage.csrP2')}
             </p>
-            <a 
-              href="#"
-              onClick={(e) => { e.preventDefault(); onNavigate('about'); }}
-              className={`inline-block mt-4 text-[#002D5B] font-semibold hover:underline transition-all duration-700 ease-out ${isContentVisible ? 'opacity-100 translate-y-0 delay-[500ms]' : 'opacity-0 translate-y-5'}`}>
-              {t('about.cta')}
-            </a>
+            <p className={`text-gray-700 text-base leading-relaxed font-semibold italic transition-all duration-700 ease-out ${isContentVisible ? 'opacity-100 translate-y-0 delay-[500ms]' : 'opacity-0 translate-y-5'}`}>
+              {t('aboutPage.csrP3')}
+            </p>
           </div>
         </div>
       </div>
@@ -77,4 +70,4 @@ const About: React.FC<AboutProps> = ({ onNavigate }) => {
   );
 };
 
-export default About;
+export default CSR;

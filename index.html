@@ -1,14 +1,47 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script src="https://media.payrexx.com/modal/v1/payrexx.modal.min.js"></script>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kraken Properties and Facilities Management</title>
+    
+    <title>Kraken Properties and Facilities Management | Swiss Precision</title>
+    
+    <meta name="title" content="Kraken Properties and Facilities Management | Swiss Precision">
+    <meta name="description" content="Premium property solutions in Zurich, Schaffhausen & Basel. Expert cleaning, maintenance, and facility management with Swiss excellence.">
+    <meta name="keywords" content="Cleaning Schaffhausen, Reinigungsfirma Schaffhausen, End of tenancy cleaning, Umzugsreinigung, Property Management Zurich, Airbnb management Switzerland, Car detailing, Pest control, House cleaning near me, Limpieza de casas, Gestión de propiedades, Manutenzione stabili, Nettoyage fin de bail">
+
+    <link rel="canonical" href="https://krakenpfm.ch/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://krakenpfm.ch/">
+    <meta property="og:title" content="Kraken Properties and Facilities Management">
+    <meta property="og:description" content="Swiss-engineered property solutions delivered with hospitality excellence. We master the chaos to bring order.">
+    <meta property="og:image" content="https://www.dropbox.com/scl/fi/7lb5owfz4ho98u06bvmet/global-sharing.png?raw=1">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Kraken Properties and Facilities Management">
+    <meta name="twitter:description" content="Swiss-engineered property solutions.">
+    <meta name="twitter:image" content="https://www.dropbox.com/scl/fi/7lb5owfz4ho98u06bvmet/global-sharing.png?raw=1">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="https://www.dropbox.com/scl/fi/d6n6v40sngcvl5o7l9ikb/favicon-32x32.png?raw=1">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://www.dropbox.com/scl/fi/2xkmiqhgey11yv3vlg6qn/favicon-16x16.png?raw=1">
+    <link rel="shortcut icon" href="https://www.dropbox.com/scl/fi/84m1y9ddmanp7hdoo2fsu/favicon.ico?raw=1" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://www.dropbox.com/scl/fi/oo0sslelmepryo2on6obz/apple-touch-icon.png?raw=1">
+    <link rel="icon" type="image/png" sizes="192x192" href="https://www.dropbox.com/scl/fi/uocc3v26loz4zau9zmxjh/android-chrome-192x192.png?raw=1">
+    <link rel="icon" type="image/png" sizes="512x512" href="https://www.dropbox.com/scl/fi/za0fpsx5mpj2z6cs91gft/android-chrome-512x512.png?raw=1">
+    <link rel="manifest" href="https://www.dropbox.com/scl/fi/x3js6zatlk5x1dkmtgorp/site.webmanifest?raw=1">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
       html {
         scroll-behavior: smooth;
@@ -19,18 +52,49 @@
         -moz-osx-font-smoothing: grayscale;
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/"
-  }
-}
-</script>
+    <!-- React and Utilities Import Map -->
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://aistudiocdn.com/react@^19.2.0",
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+        "react/": "https://aistudiocdn.com/react@^19.2.0/",
+        "@emailjs/browser": "https://aistudiocdn.com/@emailjs/browser@^4.4.1",
+        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
+        "jszip": "https://aistudiocdn.com/jszip@^3.10.1"
+      }
+    }
+    </script>
+    
+    <!-- Firebase Compat CDN Scripts (Stable Solution) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <link rel="stylesheet" href="/index.css">
 </head>
   <body>
     <div id="root"></div>
+    
+    <!-- Initialize Firebase Globally -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBz5yMBGH5wSfktRcpdPuzmnLUsCGbWKig",
+            authDomain: "krakenfacilitiesdashboard.firebaseapp.com",
+            projectId: "krakenfacilitiesdashboard",
+            storageBucket: "krakenfacilitiesdashboard.firebasestorage.app",
+            messagingSenderId: "374318265292",
+            appId: "1:374318265292:web:4f35c5de00336c4862a369"
+        };
+        
+        // Ensure single initialization
+        if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+            window.db = firebase.firestore();
+            window.auth = firebase.auth();
+            console.log("Firebase initialized successfully via CDN");
+        }
+    </script>
+
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>
