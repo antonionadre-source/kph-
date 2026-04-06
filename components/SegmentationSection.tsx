@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from '../i18n';
 import { CheckCircleIcon } from './icons';
+import { motion } from 'motion/react';
 
 interface SegmentationSectionProps {
   onNavigate: (page: string) => void;
@@ -10,80 +11,108 @@ const SegmentationSection: React.FC<SegmentationSectionProps> = ({ onNavigate })
   const { t } = useTranslation();
 
   return (
-    <section className="py-24 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold text-[#002d5b] mb-6">
-            Tailored Excellence for Every Need
-          </h2>
-          <p className="text-lg text-gray-600">
-            Whether you are a homeowner or a business leader, we provide the precision and reliability you expect from Swiss management.
-          </p>
+    <section id="segmentation-section" className="pt-20 pb-32 -mt-12 bg-white relative overflow-hidden">
+      {/* Background Accents */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/5 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-emerald-600/5 rounded-full blur-[120px]"></div>
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="max-w-4xl mx-auto text-center mb-24">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl md:text-7xl font-black text-[#002d5b] mb-8 tracking-tighter"
+          >
+            {t('segmentation.title')}
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-xl text-slate-600 max-w-2xl mx-auto"
+          >
+            {t('segmentation.subtitle')}
+          </motion.p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto items-stretch">
           {/* Private Route */}
-          <div className="group relative bg-slate-50 rounded-[2.5rem] p-10 border border-slate-100 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-900/5 hover:-translate-y-2">
-            <div className="mb-8">
-              <span className="inline-block px-4 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-widest mb-4">
-                Residential
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -10 }}
+            className="group relative bg-slate-50 rounded-[3rem] p-12 border border-slate-200 transition-all duration-500 hover:bg-slate-100 hover:border-slate-300 flex flex-col h-full"
+          >
+            <div className="mb-10 flex-grow">
+              <span className="inline-block px-4 py-1 rounded-full bg-blue-500/10 text-blue-600 text-[10px] font-black uppercase tracking-[0.3em] mb-6">
+                {t('segmentation.private.badge')}
               </span>
-              <h3 className="text-3xl font-bold text-[#002d5b] mb-4">Private Properties</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Your home is your sanctuary. We ensure it stays pristine with our premium cleaning, maintenance, and relocation services.
+              <h3 className="text-4xl font-black text-[#002d5b] mb-6 tracking-tight">{t('segmentation.private.title')}</h3>
+              <p className="text-slate-600 leading-relaxed text-lg mb-8">
+                {t('segmentation.private.desc')}
               </p>
+
+              <ul className="space-y-5">
+                {[t('segmentation.private.item1'), t('segmentation.private.item2'), t('segmentation.private.item3')].map((item, i) => (
+                  <li key={i} className="flex items-center gap-4 text-slate-700 font-medium group-hover:text-[#002d5b] transition-colors">
+                    <div className="w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center">
+                      <CheckCircleIcon className="w-4 h-4 text-blue-500" />
+                    </div>
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
             
-            <ul className="space-y-4 mb-10">
-              {['End of Tenancy Cleaning', 'Deep & Daily Cleaning', 'Professional Moving'].map((item, i) => (
-                <li key={i} className="flex items-center gap-3 text-gray-700 font-medium">
-                  <CheckCircleIcon className="w-5 h-5 text-blue-500" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-
             <button 
               onClick={() => onNavigate('consultation')}
-              className="w-full bg-[#002d5b] text-white py-5 rounded-2xl font-bold text-lg transition-all hover:bg-[#003d7a] hover:shadow-lg active:scale-95"
+              className="w-full bg-[#002d5b] text-white py-6 rounded-2xl font-black text-xl transition-all hover:scale-[1.02] active:scale-95 shadow-[0_20px_40px_rgba(0,45,91,0.2)] mt-auto"
             >
-              Build your quote / Consultation
+              {t('segmentation.private.cta')}
             </button>
-          </div>
+          </motion.div>
 
           {/* Commercial Route */}
-          <div className="group relative bg-[#002d5b] rounded-[2.5rem] p-10 border border-blue-900 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-900/20 hover:-translate-y-2">
-            <div className="mb-8">
-              <span className="inline-block px-4 py-1 rounded-full bg-blue-900/50 text-blue-200 text-xs font-bold uppercase tracking-widest mb-4">
-                Corporate
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -10 }}
+            className="group relative bg-blue-50 rounded-[3rem] p-12 border border-blue-100 transition-all duration-500 hover:bg-blue-100/50 hover:border-blue-200 flex flex-col h-full"
+          >
+            <div className="mb-10 flex-grow">
+              <span className="inline-block px-4 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-black uppercase tracking-[0.3em] mb-6">
+                {t('segmentation.commercial.badge')}
               </span>
-              <h3 className="text-3xl font-bold text-white mb-4">Commercial & B2B</h3>
-              <p className="text-blue-100/70 leading-relaxed">
-                Maximize your asset value and operational efficiency. We provide comprehensive facility management for businesses in Switzerland.
+              <h3 className="text-4xl font-black text-[#002d5b] mb-6 tracking-tight">{t('segmentation.commercial.title')}</h3>
+              <p className="text-slate-600 leading-relaxed text-lg mb-8">
+                {t('segmentation.commercial.desc')}
               </p>
+
+              <ul className="space-y-5">
+                {[t('segmentation.commercial.item1'), t('segmentation.commercial.item2'), t('segmentation.commercial.item3')].map((item, i) => (
+                  <li key={i} className="flex items-center gap-4 text-slate-700 font-medium group-hover:text-[#002d5b] transition-colors">
+                    <div className="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                      <CheckCircleIcon className="w-4 h-4 text-emerald-500" />
+                    </div>
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            <ul className="space-y-4 mb-10">
-              {['Facility Management', 'Industrial Cleaning', 'Asset & Maintenance'].map((item, i) => (
-                <li key={i} className="flex items-center gap-3 text-blue-100 font-medium">
-                  <CheckCircleIcon className="w-5 h-5 text-blue-400" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-
             <button 
-              onClick={() => {
-                onNavigate('services-page');
-                setTimeout(() => {
-                  document.getElementById('b2b-capabilities')?.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
-              }}
-              className="w-full bg-white text-[#002d5b] py-5 rounded-2xl font-bold text-lg transition-all hover:bg-blue-50 hover:shadow-lg active:scale-95"
+              onClick={() => onNavigate('commercial-services')}
+              className="w-full bg-gradient-to-r from-blue-600 to-emerald-600 text-white py-6 rounded-2xl font-black text-xl transition-all hover:scale-[1.02] active:scale-95 shadow-[0_20px_40px_rgba(37,99,235,0.2)] mt-auto"
             >
-              Explore B2B Services
+              {t('segmentation.commercial.cta')}
             </button>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

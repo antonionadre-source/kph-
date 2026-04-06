@@ -4,10 +4,12 @@ import React from 'react';
 // Using external URLs is more performant than embedding large images directly in the code.
 
 export const companyLogoUrl = 'https://i.ibb.co/Kkm04MX/95cd3fa7-4a0c-4827-93d3-17af34b981ef-jpg.png';
+export const companyLogoWhiteUrl = 'https://www.dropbox.com/scl/fi/clp69ypfnl9sairrf9r4q/Logo2.png?rlkey=7fv2k76x39ck9933b6sxrxbr1&st=64y4xtdg&raw=1';
 export const teamPhotoUrl = 'https://i.ibb.co/n8ZWPN4H/Gemini-Generated-Image-gw0b47gw0b47gw0b.png';
-export const mascotImageUrl = 'https://i.ibb.co/3981PmBL/IMG-3927-PNG.png';
+export const mascotImageUrl = 'https://www.dropbox.com/scl/fi/8aovd5zvzg1ftx83k203i/kai.jpg?rlkey=3127i0d2nwhg1q85v6ws007sh&st=ah3vbdo4&raw=1';
+export const mascotVideoUrl = 'https://www.dropbox.com/scl/fi/kscwiormatd2m4bd2k0vb/kai-vid-2.mp4?rlkey=c6m4qv8t40p9pg1kbs03awyu0&st=s282dwwd&raw=1';
 export const heroVideoUrl = 'https://storage.googleapis.com/aai-web-samples/services-montage.mp4';
-export const heroImageUrl = 'https://i.ibb.co/CKLdybsy/Gemini-Generated-Image-i8a5o7i8a5o7i8a5.png';
+export const heroImageUrl = 'https://www.dropbox.com/scl/fi/vpl0fu6g3osbkdyn0hcxx/1.svg?rlkey=8kpiqe7lu0fd7a6wfyoj8hy3q&st=wjizwcqt&raw=1';
 
 // Kai Comic Legend Photos
 export const kaiComicPhotos = {
@@ -19,7 +21,6 @@ export const kaiComicPhotos = {
 
 // City Images for Strategic Network
 export const cityImages = {
-  basel: 'https://www.dropbox.com/scl/fi/t3zbq46g7qb2pj6690ut5/Gemini_Generated_Image_yiiphfyiiphfyiip.png?rlkey=ziqinrqxn7kzoj9duq3cm2wjw&st=57cwmb6a&raw=1',
   zurich: 'https://www.dropbox.com/scl/fi/vun8pv06gvyrws7mxlf7d/Gemini_Generated_Image_vdvh75vdvh75vdvh.png?rlkey=hp4m4gnw8e6nzqs8i8xjw1pta&st=vw9su4b5&raw=1',
   schaffhausen: 'https://www.dropbox.com/scl/fi/h2px63opjo93oymozh5y1/Gemini_Generated_Image_u2esdhu2esdhu2es.png?rlkey=qq51anfrxzdsjkiav89zrnm3g&st=y67c9h6k&raw=1',
   stgallen: 'https://www.dropbox.com/scl/fi/xherublv74gmae1zqt8d6/Gemini_Generated_Image_r3oxibr3oxibr3ox.png?rlkey=opt0bbo0uj3zrzgmnb79letc1&st=1zypjrb3&raw=1',

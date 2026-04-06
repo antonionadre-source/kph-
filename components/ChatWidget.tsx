@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI, Chat } from "@google/genai";
 import { XMarkIcon, ChatBubbleLeftRightIcon, PaperAirplaneIcon, PaperClipIcon, TrashIcon } from './icons';
-import { mascotImageUrl } from '../assets';
+import { mascotImageUrl, mascotVideoUrl } from '../assets';
 import emailjs from '@emailjs/browser';
 import JSZip from 'jszip';
 
@@ -339,7 +339,7 @@ const ChatWidget: React.FC = () => {
       <div className={`fixed bottom-24 right-6 z-[60] w-[90vw] sm:w-[400px] bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden transition-all duration-500 origin-bottom-right ${isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`} style={{ height: '600px', maxHeight: '70vh' }}>
         {/* Header */}
         <div className="bg-[#002D5B] p-5 flex items-center gap-4">
-            <div className="bg-white/10 p-2 rounded-xl">
+            <div className="bg-white/10 p-2 rounded-xl overflow-hidden">
                 <img src={mascotImageUrl} alt="Kai" className="w-8 h-8 object-contain" />
             </div>
             <div className="flex flex-col">

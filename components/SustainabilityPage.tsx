@@ -1,8 +1,95 @@
 
 import React, { useEffect, useRef, useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from '../i18n';
-import { sustainabilityPartnerLogos, sustainabilityPageImages } from '../assets';
-import { LeafIcon } from './icons';
+import { sustainabilityPartnerLogos, sustainabilityPageImages, sustainabilityImage1Url, sustainabilityImage2Url, cityImages } from '../assets';
+import { LeafIcon, PaperAirplaneIcon, StarIcon } from './icons';
+
+interface SustainabilityPageProps {
+  onNavigate: (page: string) => void;
+}
+
+const BeforeAfterCard: React.FC<{ transformation: any }> = ({ transformation }) => {
+  const [sliderPos, setSliderPos] = useState(50);
+  const [isResizing, setIsResizing] = useState(false);
+
+  const handleMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isResizing) return;
+    const container = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const x = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const position = ((x - container.left) / container.width) * 100;
+    setSliderPos(Math.min(Math.max(position, 0), 100));
+  };
+
+  return (
+    <div className="group relative bg-white overflow-hidden border-r border-gray-100 h-full">
+      <div 
+        className="relative aspect-[4/5] md:aspect-[3/5] cursor-ew-resize select-none overflow-hidden"
+        onMouseMove={handleMove}
+        onTouchMove={handleMove}
+        onMouseDown={() => setIsResizing(true)}
+        onMouseUp={() => setIsResizing(false)}
+        onMouseLeave={() => setIsResizing(false)}
+        onTouchStart={() => setIsResizing(true)}
+        onTouchEnd={() => setIsResizing(false)}
+      >
+        <div className="absolute inset-0 pointer-events-none z-30 opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
+        <div className="absolute bottom-6 left-6 z-30 flex flex-col gap-1 pointer-events-none">
+          <div className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+            <span className="text-[8px] font-black text-white/40 uppercase tracking-[0.3em]">Live Analysis</span>
+          </div>
+          <div className="text-[10px] font-mono text-white/30">
+            REF_ID: KRAKEN_{String(transformation.id).toUpperCase()}
+          </div>
+        </div>
+        <img 
+          src={transformation.after} 
+          alt="Clean Property" 
+          className="absolute inset-0 w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700"
+          referrerPolicy="no-referrer"
+        />
+        <div 
+          className="absolute inset-0 w-full h-full overflow-hidden border-r-2 border-white/50 backdrop-blur-sm"
+          style={{ width: `${sliderPos}%` }}
+        >
+          <img 
+            src={transformation.before} 
+            alt="Dirty Surface" 
+            className="absolute inset-0 w-full h-full object-cover grayscale"
+            style={{ width: `${100 / (sliderPos / 100)}%` }}
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute top-8 left-8 bg-[#002d5b]/80 backdrop-blur-xl text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.3em] border border-white/10">
+            Before
+          </div>
+        </div>
+        <div className="absolute top-8 right-8 bg-emerald-600/80 backdrop-blur-xl text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.3em] border border-white/10">
+          After
+        </div>
+        <div 
+          className="absolute top-0 bottom-0 w-px bg-white/50 cursor-ew-resize z-20"
+          style={{ left: `${sliderPos}%` }}
+        >
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-[0_0_30px_rgba(0,0,0,0.3)] flex items-center justify-center border border-gray-100">
+            <div className="flex gap-1">
+              <div className="w-0.5 h-3 bg-[#002d5b] rounded-full" />
+              <div className="w-0.5 h-3 bg-[#002d5b] rounded-full" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="p-10 bg-white">
+        <div className="flex items-center gap-3 mb-4">
+           <span className="w-8 h-px bg-emerald-600"></span>
+           <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600">Quality Assurance</span>
+        </div>
+        <h4 className="text-3xl font-black text-[#002d5b] mb-4 leading-none tracking-tighter uppercase">{transformation.title}</h4>
+        <p className="text-gray-500 text-base font-bold leading-relaxed">{transformation.description}</p>
+      </div>
+    </div>
+  );
+};
 
 // Custom hook to detect if an element is on screen
 const useOnScreen = (options?: IntersectionObserverInit) => {
@@ -121,9 +208,75 @@ const AnimatedCircularProgress = ({ percentage }: { percentage: number }) => {
     );
 };
 
-const SustainabilityPage: React.FC = () => {
+const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) => {
   const { t } = useTranslation();
   const [activeSection, setActiveSection] = useState(0);
+  const testimonials = useMemo(() => [
+    {
+      id: 1,
+      name: t('sustainability.testimonials.sarah.name'),
+      role: t('sustainability.testimonials.sarah.role'),
+      text: t('sustainability.testimonials.sarah.text'),
+      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=600",
+      rating: 5
+    },
+    {
+      id: 2,
+      name: t('sustainability.testimonials.marc.name'),
+      role: t('sustainability.testimonials.marc.role'),
+      text: t('sustainability.testimonials.marc.text'),
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=600",
+      rating: 5
+    },
+    {
+      id: 3,
+      name: t('sustainability.testimonials.elena.name'),
+      role: t('sustainability.testimonials.elena.role'),
+      text: t('sustainability.testimonials.elena.text'),
+      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=600",
+      rating: 5
+    }
+  ], [t]);
+
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [testimonials.length]);
+
+  const transformations = useMemo(() => [
+    {
+      id: 1,
+      title: t('sustainability.transformations.residential.title'),
+      before: "https://www.dropbox.com/scl/fi/gvgegbqftjfd0ap0ft4fr/Gemini_Generated_Image_w5pv1aw5pv1aw5pv.png?rlkey=n7tb5wyqci9rvrjagquyerdeg&st=f3xvlrh8&raw=1",
+      after: "https://www.dropbox.com/scl/fi/x1ea3z8v6x4nl0lg6uegz/Gemini_Generated_Image_1kgnkr1kgnkr1kgn.png?rlkey=7x72ci65npuf1vlas1lr24b59&st=13cdffuj&raw=1",
+      description: t('sustainability.transformations.residential.desc')
+    },
+    {
+      id: 2,
+      title: t('sustainability.transformations.industrial.title'),
+      before: "https://www.dropbox.com/scl/fi/zhjylll60zkbvr63xtduv/Gemini_Generated_Image_fc6ltffc6ltffc6l.png?rlkey=6b80jb4hlva07arhzmhge3far&st=zogt36sm&raw=1",
+      after: "https://www.dropbox.com/scl/fi/pmi5i9yxf80bo13kqkwsa/Gemini_Generated_Image_3y310w3y310w3y31.png?rlkey=k2752ph6nabk8ampqpqf481u7&st=esjtnlrm&raw=1",
+      description: t('sustainability.transformations.industrial.desc')
+    },
+    {
+      id: 3,
+      title: t('sustainability.transformations.restroom.title'),
+      before: "https://www.dropbox.com/scl/fi/37kovpd7avdbz3ytqwtpv/Gemini_Generated_Image_4pxkzy4pxkzy4pxk.png?rlkey=ocr7pm9wxo17fz7383ko36dm4&st=1hfjrxgf&raw=1",
+      after: "https://www.dropbox.com/scl/fi/4alau781e7n0grnyw77nx/Gemini_Generated_Image_j2vevdj2vevdj2ve.png?rlkey=vjb944mq8k89qxa9w7nzc8otc&st=ncnlphtm&raw=1",
+      description: t('sustainability.transformations.restroom.desc')
+    },
+    {
+      id: 4,
+      title: t('sustainability.transformations.facade.title'),
+      before: "https://www.dropbox.com/scl/fi/iozk403nyj9mj8z0cpwxp/Gemini_Generated_Image_djw9s8djw9s8djw9.png?rlkey=2ijnam33xjfoyy8oib0d20fv6&st=6ha3b4t1&raw=1",
+      after: "https://www.dropbox.com/scl/fi/f0jb75lr5ahzotcbsyqe8/Gemini_Generated_Image_phi5tvphi5tvphi5.png?rlkey=816j3qdbgbdkk1bapiw57rboa&st=994aaw85&raw=1",
+      description: t('sustainability.transformations.facade.desc')
+    }
+  ], [t]);
 
   const partnerLogosProcurement = [
     { name: 'Diversey', url: sustainabilityPartnerLogos.diversey },
@@ -137,6 +290,21 @@ const SustainabilityPage: React.FC = () => {
   ];
 
   const sections = [
+    {
+      id: 'bcorp',
+      image: sustainabilityImage1Url,
+      titleKey: 'sustainability.bcorp.title',
+      textKey: 'sustainability.bcorp.p1',
+      introKey: 'sustainability.section.title',
+      logos: [
+        { name: 'B Corp', url: 'https://i.ibb.co/chcNffCj/diversey-logo.png' },
+      ],
+      extraContent: (
+        <div className="mt-6 p-6 bg-green-50 rounded-2xl border-l-4 border-green-500">
+          <p className="text-sm text-gray-600 font-medium leading-relaxed">{t('sustainability.bcorp.p2')}</p>
+        </div>
+      )
+    },
     {
       id: 'logistics',
       image: sustainabilityPageImages.lowEmissionLogistics,
@@ -341,6 +509,346 @@ const SustainabilityPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* --- Local Partnership Section (Moved from Home) --- */}
+      <section className="py-24 bg-slate-50 relative overflow-hidden border-t border-gray-100">
+        <div className="absolute inset-0 z-0 bg-dots-pattern opacity-40"></div>
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="flex flex-col md:flex-row-reverse items-center gap-12 lg:gap-20">
+            <div className="md:w-1/2 relative group">
+               <div className="absolute -inset-4 bg-gradient-to-l from-blue-100 to-green-50 rounded-xl transform rotate-2 opacity-70 group-hover:-rotate-1 transition-transform duration-500"></div>
+               <img 
+                src={sustainabilityImage2Url} 
+                alt="Hand holding a small plant" 
+                className="relative rounded-lg shadow-xl w-full h-auto object-cover transform transition-transform duration-500 hover:scale-[1.02]"
+                referrerPolicy="no-referrer"
+               />
+            </div>
+            <div className="md:w-1/2">
+              <span className="text-green-600 font-black text-[10px] md:text-xs uppercase tracking-[0.3em] mb-4 block">Swiss Impact</span>
+              <h3 className="text-4xl lg:text-6xl font-black text-[#002D5B] mb-8 leading-[0.9] tracking-tighter uppercase">
+                {t('sustainability.local.title')}
+              </h3>
+              <p className="text-xl text-gray-600 mb-8 font-bold leading-tight">
+                {t('sustainability.local.p1')}
+              </p>
+              <p className="text-lg text-gray-500 leading-relaxed font-medium">
+                {t('sustainability.local.p2')}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- Operational Network Section (Moved from Home) --- */}
+      <section className="py-24 bg-[#001A3D] overflow-hidden border-t border-blue-900/30">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col lg:flex-row items-center gap-16">
+            <div className="lg:w-1/2">
+              <span className="text-blue-400 font-black text-[10px] md:text-xs uppercase tracking-[0.3em] mb-4 block">Strategic Network</span>
+              <h2 className="text-5xl md:text-7xl font-black text-white mb-8 leading-[0.9] tracking-tighter uppercase">
+                Our Triad of <br/>
+                <span className="text-blue-500/80">Operational Excellence.</span>
+              </h2>
+              <p className="text-xl text-blue-100/60 font-bold leading-tight mb-10">
+                Winterthur. Zurich. Schaffhausen. Three key pillars defining our Swiss precision and rapid response across the northern plateau.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                {['Zurich', 'Winterthur', 'Schaffhausen'].map((city) => (
+                  <div key={city} className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10">
+                    <h4 className="text-white font-black text-lg mb-1">{city}</h4>
+                    <p className="text-blue-300/60 text-[10px] font-black uppercase tracking-widest">Active Hub</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="lg:w-1/2 flex justify-center">
+               {/* Reusing the "3" visual logic from OperationsSection but simplified for this page */}
+               <div className="relative w-full max-w-[400px] aspect-square">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-emerald-500/20 rounded-full blur-3xl animate-pulse"></div>
+                  <div className="relative h-full w-full flex items-center justify-center">
+                    <span className="text-[20rem] font-black text-white/10 leading-none select-none">3</span>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                       <div className="grid grid-cols-2 gap-4 p-4">
+                          <img src={cityImages.zurich} alt="Zurich" className="w-32 h-32 object-cover rounded-2xl shadow-2xl border border-white/10" referrerPolicy="no-referrer" />
+                          <img src={cityImages.winterthur} alt="Winterthur" className="w-32 h-32 object-cover rounded-2xl shadow-2xl border border-white/10 mt-8" referrerPolicy="no-referrer" />
+                          <img src={cityImages.schaffhausen} alt="Schaffhausen" className="w-32 h-32 object-cover rounded-2xl shadow-2xl border border-white/10 -mt-8" referrerPolicy="no-referrer" />
+                       </div>
+                    </div>
+                  </div>
+               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="py-32 bg-slate-50 relative overflow-hidden">
+        <div className="container mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-24 items-center">
+            {/* Left Column: Text Content */}
+            <div className="text-left">
+              <div className="flex items-center gap-6 mb-12">
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100"
+                >
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
+                  </span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600">{t('sustainability.success.badge')}</span>
+                </motion.div>
+                <div className="h-px flex-grow bg-gradient-to-r from-blue-100 to-transparent"></div>
+              </div>
+
+              <motion.h2 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="text-7xl md:text-9xl font-black text-[#002d5b] mb-12 leading-[0.82] tracking-tighter uppercase"
+              >
+                {t('sustainability.success.title').split('.')[0]} <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">
+                  {t('sustainability.success.title').split('.')[1]}
+                </span>
+              </motion.h2>
+              
+              <motion.p 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="text-2xl text-gray-500 mb-16 max-w-lg font-bold leading-tight"
+              >
+                {t('sustainability.success.desc')}
+              </motion.p>
+
+              <div className="grid grid-cols-2 gap-8 mb-16">
+                <div>
+                  <p className="text-4xl font-black text-[#002d5b] mb-1 tracking-tighter">98%</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">{t('sustainability.success.retention')}</p>
+                </div>
+                <div>
+                  <p className="text-4xl font-black text-emerald-600 mb-1 tracking-tighter">24/7</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">{t('sustainability.success.support')}</p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center gap-5">
+                <motion.button 
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => onNavigate('consultation')}
+                  className="w-full sm:w-auto flex items-center justify-center gap-3 bg-[#002d5b] text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-xl shadow-blue-900/10 hover:shadow-blue-900/20 transition-all"
+                >
+                  <PaperAirplaneIcon className="w-5 h-5" />
+                  {t('sustainability.success.cta')}
+                </motion.button>
+              </div>
+            </div>
+
+            {/* Right Column: Shuffling Testimonials Stack */}
+            <div className="relative h-[650px] flex items-center justify-center lg:justify-end">
+              <div className="relative w-full max-w-[420px] h-[550px]">
+                <AnimatePresence mode="popLayout">
+                  {testimonials.map((testimonial, i) => {
+                    const isTop = i === index;
+                    const isNext = i === (index + 1) % testimonials.length;
+                    const isThird = i === (index + 2) % testimonials.length;
+                    
+                    if (!isTop && !isNext && !isThird) return null;
+
+                    let zIndex = 0;
+                    let translateY = 0;
+                    let scale = 1;
+                    let opacity = 1;
+                    let rotate = 0;
+
+                    if (isTop) {
+                      zIndex = 30;
+                    } else if (isNext) {
+                      zIndex = 20;
+                      translateY = 20;
+                      scale = 0.95;
+                      opacity = 0.6;
+                      rotate = -2;
+                    } else if (isThird) {
+                      zIndex = 10;
+                      translateY = 40;
+                      scale = 0.9;
+                      opacity = 0.3;
+                      rotate = -4;
+                    }
+
+                    return (
+                      <motion.div
+                        key={testimonial.id}
+                        style={{ zIndex, position: 'absolute', top: 0, left: 0, width: '100%' }}
+                        initial={isTop ? { x: 300, opacity: 0, rotate: 15 } : false}
+                        animate={{ 
+                          x: 0, 
+                          y: translateY, 
+                          scale, 
+                          opacity, 
+                          rotate,
+                          transition: { duration: 0.8, type: "spring", bounce: 0.3 }
+                        }}
+                        exit={{ 
+                          x: -300, 
+                          opacity: 0, 
+                          rotate: -15,
+                          transition: { duration: 0.5 }
+                        }}
+                        className="bg-white p-8 rounded-[3rem] shadow-[0_30px_60px_-15px_rgba(0,45,91,0.12)] border border-gray-100"
+                      >
+                        <div className="absolute -top-4 -left-4 w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg z-20">
+                          <span className="text-white text-3xl font-serif">“</span>
+                        </div>
+
+                        <div className="relative overflow-hidden rounded-[2.5rem] aspect-[4/5] mb-6 group/img">
+                          <img 
+                            src={testimonial.image} 
+                            alt={testimonial.name}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110"
+                            referrerPolicy="no-referrer"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#002d5b]/90 via-transparent to-transparent" />
+                          <div className="absolute top-6 right-6 bg-white/10 backdrop-blur-md border border-white/20 px-3 py-1 rounded-full flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
+                            <span className="text-[8px] font-black text-white uppercase tracking-widest">{t('sustainability.success.verified')}</span>
+                          </div>
+                          <div className="absolute bottom-6 left-6 right-6">
+                            <div className="flex gap-1 mb-3">
+                              {[...Array(testimonial.rating)].map((_, starI) => (
+                                <StarIcon key={starI} className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
+                              ))}
+                            </div>
+                            <p className="text-white font-black text-2xl mb-1 tracking-tighter uppercase">{testimonial.name}</p>
+                            <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.2em]">{testimonial.role}</p>
+                          </div>
+                        </div>
+                        <p className="text-gray-600 text-lg font-bold italic leading-relaxed px-2">
+                          "{testimonial.text}"
+                        </p>
+                        {isTop && (
+                          <div className="mt-6 h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+                            <motion.div 
+                              initial={{ width: "0%" }}
+                              animate={{ width: "100%" }}
+                              key={testimonial.id}
+                              transition={{ duration: 5, ease: "linear" }}
+                              className="h-full bg-blue-600"
+                            />
+                          </div>
+                        )}
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- Before & After Results Section --- */}
+      <section className="py-24 md:py-32 bg-white overflow-hidden border-t border-gray-100">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-12 mb-24">
+            <div className="max-w-4xl">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-8"
+              >
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600">{t('sustainability.standard.badge')}</span>
+              </motion.div>
+              <h2 className="text-6xl md:text-[8rem] xl:text-[9rem] font-black text-[#002d5b] leading-[0.85] tracking-tighter uppercase">
+                {t('sustainability.standard.title').split('.')[0]} <br />
+                <span className="text-emerald-600">{t('sustainability.standard.title').split('.')[1]}</span>
+              </h2>
+            </div>
+            <div className="max-w-md lg:pt-12">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="h-px w-8 bg-gray-200" />
+                <p className="text-gray-400 font-black text-[10px] uppercase tracking-[0.4em]">{t('sustainability.standard.visual')}</p>
+              </div>
+              <p className="text-gray-500 font-bold text-xl md:text-2xl leading-tight">
+                {t('sustainability.standard.desc')}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 border border-gray-100 shadow-[0_50px_100px_-20px_rgba(0,45,91,0.15)] rounded-[4rem] overflow-hidden bg-white">
+            {transformations.map((transformation, i) => (
+              <motion.div
+                key={transformation.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.8 }}
+                className="relative"
+              >
+                <BeforeAfterCard transformation={transformation} />
+              </motion.div>
+            ))}
+          </div>
+          
+          <div className="mt-20 flex flex-wrap justify-center gap-12 opacity-30 grayscale">
+             <img src="https://i.ibb.co/chcNffCj/diversey-logo.png" alt="Partner" className="h-8 w-auto object-contain" />
+             <div className="h-8 w-px bg-gray-300"></div>
+             <span className="text-[10px] font-black uppercase tracking-[0.4em] self-center">{t('sustainability.standard.certified')}</span>
+             <div className="h-8 w-px bg-gray-300"></div>
+             <span className="text-[10px] font-black uppercase tracking-[0.4em] self-center">{t('sustainability.standard.bcorp')}</span>
+          </div>
+        </div>
+      </section>
+
+      {/* --- Dedicated B Corp Section --- */}
+      <section className="py-24 md:py-32 bg-[#002D5B] text-white relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at center, #007AFF 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+            <div className="lg:w-1/2">
+              <div className="relative inline-block mb-12">
+                <div className="absolute -inset-4 bg-white/10 rounded-full blur-2xl animate-pulse"></div>
+                <img 
+                  src="https://i.ibb.co/chcNffCj/diversey-logo.png" 
+                  alt="B Corp Logo" 
+                  className="relative h-32 md:h-48 w-auto object-contain filter brightness-0 invert" 
+                />
+              </div>
+              <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter uppercase leading-[0.9]">
+                {t('sustainability.bcorp.title')}
+              </h2>
+              <p className="text-xl md:text-2xl text-blue-100/80 font-medium leading-relaxed mb-10">
+                {t('sustainability.bcorp.p1')}
+              </p>
+              <div className="p-8 bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10">
+                <p className="text-lg text-blue-50 font-bold italic leading-relaxed">
+                  "{t('sustainability.bcorp.p2')}"
+                </p>
+              </div>
+            </div>
+            <div className="lg:w-1/2 grid grid-cols-2 gap-6">
+               {[
+                 { title: 'Verified Performance', icon: '📊' },
+                 { title: 'Legal Accountability', icon: '⚖️' },
+                 { title: 'Public Transparency', icon: '🔍' },
+                 { title: 'Social Impact', icon: '🤝' }
+               ].map((item, idx) => (
+                 <div key={idx} className="bg-white/5 p-8 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors group">
+                    <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">{item.icon}</div>
+                    <h4 className="font-black text-sm uppercase tracking-widest">{item.title}</h4>
+                 </div>
+               ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* --- Digital Sustainability Section --- */}
       <section className="py-24 md:py-32 bg-[#f8fbff]">

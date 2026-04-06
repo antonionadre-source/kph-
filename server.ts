@@ -1,8 +1,13 @@
 import express from "express";
-import { createServer as createViteServer } from "vite";
 import axios from "axios";
 import dotenv from "dotenv";
 import crypto from "crypto";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 dotenv.config();
 
@@ -53,26 +58,6 @@ async function startServer() {
       const sortedKeys = Object.keys(paramsObj).sort();
       
       // Build the query string using RFC 1738 encoding (spaces as +)
-      // This matches PHP's default http_build_query behavior used by Payrexx.
-      // RFC 1738: spaces are '+', and other special characters are %-encoded.
-      // We must match PHP's urlencode() behavior exactly.
-      const php_urlencode = (str: string) => {
-          return encodeURIComponent(str)
-              .replace(/%20/g, '+')
-              .replace(/!/g, '%21')
-              .replace(/'/g, '%27')
-              .replace(/\(/g, '%28')
-              .replace(/\)/g, '%29')
-              .replace(/\*/g, '%2A')
-              .replace(/~/g, '%7E')
-              .replace(/%7E/g, '~'); // PHP's urlencode actually DOES NOT encode ~ in some versions, but RFC 1738 does. 
-                                     // However, Payrexx usually expects the PHP default.
-                                     // Let's try the most common PHP behavior: spaces as +, ~ as ~, and others encoded.
-      };
-
-      // Re-evaluating: PHP's http_build_query(..., PHP_QUERY_RFC1738) 
-      // encodes spaces as + and ~ as %7E. 
-      // Let's stick to the strict RFC 1738 as requested.
       const strict_rfc1738_encode = (str: string) => {
           return encodeURIComponent(str)
               .replace(/%20/g, '+')
@@ -85,12 +70,9 @@ async function startServer() {
       const queryString = queryParts.join('&');
 
       // Generate ApiSignature (HMAC-SHA256 of the query string, base64 encoded)
-      // The Payrexx PHP SDK uses: base64_encode(hash_hmac('sha256', $queryString, $apiSecret, true))
-      // The 'true' parameter in PHP's hash_hmac returns raw binary data, which is then base64 encoded.
       const signature = crypto.createHmac('sha256', PAYREXX_API_SECRET).update(queryString).digest('base64');
       
       // Create final payload with signature
-      // The signature must be URL-encoded because base64 can contain '+' and '/'
       const finalBody = queryString + `&ApiSignature=${encodeURIComponent(signature)}`;
 
       console.log("Payrexx Instance:", PAYREXX_INSTANCE);
@@ -126,15 +108,21 @@ async function startServer() {
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
     app.use(vite.middlewares);
   } else {
-    app.use(express.static("dist"));
-    app.get("/*", (req, res) => {
-      res.sendFile("dist/index.html", { root: "." });
+    // In production, serve from the dist directory
+    // If running from root, dist is in ./dist
+    // If running from dist, dist is in . (current directory)
+    const distPath = __dirname.endsWith("dist") ? __dirname : path.join(__dirname, "dist");
+    
+    app.use(express.static(distPath));
+    app.get("*all", (req, res) => {
+      res.sendFile(path.join(distPath, "index.html"));
     });
   }
 

@@ -100,7 +100,7 @@ const ComicPage: React.FC<ComicPageProps> = ({ onNavigate }) => {
                         <div className="bg-yellow-400 text-[#002D5B] px-16 py-10 rounded-[3rem] shadow-[0_20px_60px_rgba(250,204,21,0.4)] flex flex-col items-center gap-4 transform transition-all hover:scale-105 border-[6px] border-[#002D5B] relative z-20">
                             <span className="text-[#002D5B] font-black uppercase tracking-[0.4em] text-xs">Full Saga Deploying</span>
                             <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter italic leading-none text-center">Chapters 2-8<br/>COMING SOON!</h2>
-                            <p className="text-[11px] text-[#002D5B]/60 font-black uppercase tracking-[0.3em] text-center mt-2">The missions of Zurich & Basel are being rendered.</p>
+                            <p className="text-[11px] text-[#002D5B]/60 font-black uppercase tracking-[0.3em] text-center mt-2">The missions of Zurich & Winterthur are being rendered.</p>
                         </div>
                     </div>
                     

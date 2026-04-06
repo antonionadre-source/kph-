@@ -2,6 +2,7 @@
 import React from 'react';
 import { clientLogos } from '../assets';
 import { useTranslation } from '../i18n';
+import { motion } from 'motion/react';
 
 interface ClientsPageProps {
   onNavigate?: (page: string) => void;
@@ -22,60 +23,88 @@ const Clients: React.FC<ClientsPageProps> = ({ onNavigate }) => {
   const videoUrl = "https://www.dropbox.com/scl/fi/n34wuaglehdibhrpgmgex/worker.mp4?rlkey=toivyiwzsrfwabxas6x0vpbbv&st=f03nzrjx&raw=1";
 
   return (
-    <div className="bg-white min-h-screen flex flex-col items-center justify-center pt-24 pb-20 px-6 text-center overflow-hidden">
-      <div className="max-w-4xl w-full animate-fade-in-up flex flex-col items-center">
-        
-        {/* Construction Badge */}
-        <div className="flex justify-center mb-8">
-            <span className="bg-amber-50 text-amber-700 px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] border border-amber-100 shadow-sm flex items-center gap-2.5">
-                <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
-                Platform Update
-            </span>
-        </div>
+    <div className="bg-[#020617] min-h-screen flex flex-col items-center justify-center pt-24 pb-20 px-6 text-center overflow-hidden relative">
+      {/* Background Accents */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[160px]" />
+      </div>
 
-        {/* Slightly Larger Frameless Video Visual - Reduced margin bottom */}
-        <div className="w-full max-w-[500px] mx-auto mb-4">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className="max-w-4xl w-full flex flex-col items-center relative z-10"
+      >
+        {/* Construction Badge */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="flex justify-center mb-12"
+        >
+          <span className="bg-white/5 text-blue-400 px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.4em] border border-white/10 backdrop-blur-md shadow-2xl flex items-center gap-3">
+            <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]"></span>
+            Platform Update 2026
+          </span>
+        </motion.div>
+
+        {/* Video Visual */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="w-full max-w-[600px] mx-auto mb-8 relative group"
+        >
+          <div className="absolute -inset-4 bg-blue-600/20 rounded-[3rem] opacity-0 group-hover:opacity-100 blur-3xl transition-opacity duration-700" />
+          <div className="relative rounded-[2.5rem] overflow-hidden border border-white/10 bg-white/5 backdrop-blur-sm">
             <video 
-                className="w-full h-auto block border-none outline-none bg-transparent pointer-events-none"
-                autoPlay 
-                muted 
-                loop 
-                playsInline
+              className="w-full h-auto block border-none outline-none bg-transparent pointer-events-none mix-blend-screen opacity-80"
+              autoPlay 
+              muted 
+              loop 
+              playsInline
             >
-                <source src={videoUrl} type="video/mp4" />
-                Your browser does not support the video tag.
+              <source src={videoUrl} type="video/mp4" />
             </video>
-        </div>
+          </div>
+        </motion.div>
 
         {/* Text Content */}
-        <h1 className="text-5xl md:text-8xl font-black text-[#002D5B] mb-6 uppercase tracking-tighter leading-none">
-            Coming <span className="text-[#007bff]">Soon</span>
-        </h1>
+        <motion.h1 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="text-6xl md:text-9xl font-black text-white mb-8 uppercase tracking-tighter leading-none"
+        >
+          Coming <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Soon</span>
+        </motion.h1>
         
-        <p className="text-gray-500 text-lg md:text-xl font-bold leading-relaxed mb-12 max-w-2xl mx-auto">
-            We are building an exclusive management portal. Soon, our clients will be able to access real-time data about their properties, track maintenance requests, and view detailed facility performance reports right here.
-        </p>
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="text-slate-400 text-xl md:text-2xl font-medium leading-relaxed mb-16 max-w-2xl mx-auto"
+        >
+          We are building an exclusive management portal. Soon, our clients will be able to access real-time data about their properties, track maintenance requests, and view detailed facility performance reports right here.
+        </motion.p>
 
         {/* CTA Button */}
-        <div className="flex justify-center">
-            <button 
-                onClick={handleHomeClick}
-                className="bg-[#002D5B] text-white px-12 py-4 rounded-2xl font-black text-sm shadow-2xl shadow-blue-900/20 hover:bg-[#00254A] transition-all transform hover:-translate-y-1 active:scale-95 uppercase tracking-widest"
-            >
-                Back to Home
-            </button>
-        </div>
-      </div>
-      
-      <style>{`
-        @keyframes fade-in-up {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in-up {
-          animation: fade-in-up 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-      `}</style>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1 }}
+          className="flex justify-center"
+        >
+          <motion.button 
+            whileHover={{ scale: 1.05, y: -5 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={handleHomeClick}
+            className="bg-white text-[#020617] px-16 py-5 rounded-2xl font-black text-lg shadow-[0_0_50px_rgba(255,255,255,0.1)] hover:shadow-[0_0_60px_rgba(255,255,255,0.2)] transition-all uppercase tracking-widest"
+          >
+            Back to Home
+          </motion.button>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
@@ -84,50 +113,54 @@ export const ClientCarousel: React.FC = () => {
   const { t } = useTranslation();
 
   // Duplicate logos for seamless scrolling effect
-  const extendedLogos = [...clientLogos, ...clientLogos];
+  const extendedLogos = [...clientLogos, ...clientLogos, ...clientLogos];
 
   return (
-    <section id="clients-carousel" className="py-20 bg-white border-t border-gray-50">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-black text-gray-800 uppercase tracking-tight">{t('clients.title')}</h2>
-          <p className="text-base text-gray-500 mt-4 max-w-2xl mx-auto font-medium">
-            {t('clients.subtitle')}
-          </p>
-        </div>
-        <div 
-          className="group relative w-full overflow-hidden"
-          style={{
-            maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
-            WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
-          }}
+    <section id="clients-carousel" className="py-12 bg-white border-y border-slate-100 relative overflow-hidden">
+      <div className="container mx-auto px-6 relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-8"
         >
-          <div className="flex animate-scroll">
+          <h2 className="text-2xl md:text-3xl font-black text-[#002d5b] tracking-tighter leading-none mb-2">
+            Trusted by the <span className="text-blue-600">Industry Leaders.</span>
+          </h2>
+        </motion.div>
+
+        <div className="relative w-full overflow-hidden py-2">
+          {/* Gradient Masks */}
+          <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-white to-transparent z-20 pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-white to-transparent z-20 pointer-events-none" />
+
+          <motion.div 
+            animate={{ x: [0, -1500] }}
+            transition={{ 
+              duration: 40, 
+              repeat: Infinity, 
+              ease: "linear" 
+            }}
+            className="flex items-center gap-16 whitespace-nowrap"
+          >
             {extendedLogos.map((logo, index) => (
-              <div key={index} className="flex-shrink-0 mx-8 flex justify-center items-center h-24 w-48" title={logo.name}>
+              <div 
+                key={index} 
+                className="flex-shrink-0 flex justify-center items-center h-12 w-32 group" 
+                title={logo.name}
+              >
                 <img
                   src={logo.url}
                   alt={logo.name}
                   loading="lazy"
-                  className="max-h-16 max-w-full object-contain filter grayscale hover:grayscale-0 hover:scale-110 transition-all duration-300"
+                  className="max-h-8 max-w-full object-contain opacity-60 grayscale hover:opacity-100 hover:grayscale-0 hover:scale-110 transition-all duration-500"
+                  referrerPolicy="no-referrer"
                 />
               </div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
-      <style>{`
-        @keyframes scroll {
-          from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
-        }
-        .animate-scroll {
-          animation: scroll 40s linear infinite;
-        }
-        .group:hover .animate-scroll {
-            animation-play-state: paused;
-        }
-      `}</style>
     </section>
   );
 };

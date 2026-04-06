@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { mascotImageUrl } from '../assets';
+import { mascotImageUrl, mascotVideoUrl } from '../assets';
 import { useTranslation } from '../i18n';
 import { GoogleGenAI } from "@google/genai";
 import { XMarkIcon, PaperAirplaneIcon, WhatsAppIcon, PlusIcon, ShieldCheckIcon } from './icons';
@@ -72,13 +72,15 @@ interface ChatMessage {
     options?: string[];
 }
 
-const FloatingMascot: React.FC<FloatingMascotProps> = ({ currentPage, onNavigate }) => {
+const FloatingMascot: React.FC<FloatingMascotProps> = ({ currentPage, cart, onNavigate }) => {
   const { t } = useTranslation();
   const [showBubble, setShowBubble] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [isIntroFinished, setIsIntroFinished] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isReminder, setIsReminder] = useState(false);
+  const [isScrolledPastHero, setIsScrolledPastHero] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -101,6 +103,20 @@ const FloatingMascot: React.FC<FloatingMascotProps> = ({ currentPage, onNavigate
   useEffect(() => {
     setTimeout(() => setIsIntroFinished(true), 7000); 
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Hero is roughly 80vh-90vh. Let's show mascot after 400px of scroll on home page.
+      if (currentPage === 'home') {
+        setIsScrolledPastHero(window.scrollY > 400);
+      } else {
+        setIsScrolledPastHero(true);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [currentPage]);
 
   useEffect(() => {
     if (isChatOpen) {
@@ -233,6 +249,14 @@ const FloatingMascot: React.FC<FloatingMascotProps> = ({ currentPage, onNavigate
 
   useEffect(() => {
     if (isChatOpen) return;
+    
+    // Check for unfinished quote
+    const hasItems = cart && cart.length > 0;
+    const notOnConsultation = currentPage !== 'consultation';
+    const shouldShowReminder = hasItems && notOnConsultation;
+    
+    setIsReminder(shouldShowReminder);
+
     const showTimer = setTimeout(() => setShowBubble(true), 2000);
     const cycleInterval = setInterval(() => {
       setIsExiting(true);
@@ -243,42 +267,54 @@ const FloatingMascot: React.FC<FloatingMascotProps> = ({ currentPage, onNavigate
       }, 500);
     }, 12000);
     return () => { clearTimeout(showTimer); clearInterval(cycleInterval); };
-  }, [currentPage, isChatOpen]);
+  }, [currentPage, isChatOpen, cart]);
 
   const renderMessageText = (text: string) => {
     const parts = text.split('**');
     return parts.map((part, i) => (
-        i % 2 === 1 ? <strong key={i} className="font-black text-[#002D5B]">{part}</strong> : part
+        i % 2 === 1 ? <strong key={i} className="font-black text-inherit opacity-90">{part}</strong> : part
     ));
   };
 
   return (
     <>
-      <div className={`fixed bottom-6 left-6 w-24 sm:w-28 md:w-32 h-auto z-[55] transition-all duration-700 pointer-events-none ${isChatOpen ? 'opacity-0 scale-50' : 'opacity-100'} ${isIntroFinished ? 'animate-idle-breath' : 'animate-swim-intro'}`}>
+      <div className={`fixed bottom-6 left-6 w-24 sm:w-28 md:w-32 h-auto z-[55] transition-all duration-700 pointer-events-none ${isChatOpen ? 'opacity-0 scale-50' : (isScrolledPastHero ? 'opacity-100 scale-100' : 'opacity-0 scale-0 translate-y-20')} ${isIntroFinished ? (isReminder ? 'animate-reminder-shake' : 'animate-idle-breath') : 'animate-swim-intro'}`}>
         <div className="relative pointer-events-auto cursor-pointer group" onClick={() => setIsChatOpen(true)}>
-            <img src={mascotImageUrl} alt="Kai" className="w-full h-auto object-contain drop-shadow-2xl transition-transform group-hover:scale-110"/>
+            <img 
+              src={mascotImageUrl} 
+              alt="Kai" 
+              className={`w-full h-auto object-contain drop-shadow-2xl transition-transform group-hover:scale-110 ${isReminder ? 'filter drop-shadow-[0_0_15px_rgba(239,68,68,0.5)]' : ''}`}
+            />
             {showBubble && !isChatOpen && (
-               <div className={`absolute -top-32 left-1/2 -translate-x-1/2 w-52 sm:w-64 speech-bubble-container ${isExiting ? 'animate-fade-out' : 'animate-fade-in'}`}>
-                <div className="p-4 rounded-[2rem] shadow-xl text-center speech-bubble border relative backdrop-blur-md bg-white/95 border-blue-100/50 shadow-blue-900/15">
-                  <p className="font-black text-[11px] sm:text-[13px] leading-tight text-gray-800 mb-2">
-                      {t(messageKeys[currentMessageIndex])}
+               <div className={`absolute -top-32 left-0 w-52 sm:w-64 speech-bubble-container ${isExiting ? 'animate-fade-out' : 'animate-fade-in'}`}>
+                <div className={`p-4 rounded-[2rem] text-center speech-bubble relative ${isReminder ? 'bg-red-500 border-2 border-red-400 shadow-[0_10px_30px_rgba(239,68,68,0.3)]' : 'bg-transparent'}`}>
+                  <p className={`font-black text-[11px] sm:text-[13px] leading-tight mb-2 ${isReminder ? 'text-white' : 'text-[#002D5B]'}`}>
+                      {isReminder ? t('mascot.reminder.text') : t(messageKeys[currentMessageIndex])}
                   </p>
-                  <div className="text-[#007AFF] text-[9px] font-black uppercase tracking-[0.1em] inline-flex items-center gap-1.5 animate-pulse">
-                      Live Assessment
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#007AFF] animate-ping"></span>
+                  <div className={`text-[9px] font-black uppercase tracking-[0.1em] inline-flex items-center gap-1.5 animate-pulse ${isReminder ? 'text-red-100' : 'text-[#007AFF]'}`}>
+                      {isReminder ? t('mascot.reminder.title') : 'Live Assessment'}
+                      <span className={`w-1.5 h-1.5 rounded-full animate-ping ${isReminder ? 'bg-white' : 'bg-[#007AFF]'}`}></span>
                   </div>
-                  <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 border-r border-b rotate-45 backdrop-blur-md bg-white/95 border-blue-100/50"></div>
+                  {isReminder && (
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); if(onNavigate) onNavigate('consultation'); }}
+                      className="mt-3 w-full bg-white text-red-600 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-red-50 transition-colors"
+                    >
+                      {t('mascot.reminder.cta')}
+                    </button>
+                  )}
+                  <div className={`absolute -bottom-1.5 left-12 w-3 h-3 rotate-45 ${isReminder ? 'bg-red-500 border-r-2 border-b-2 border-red-400' : 'bg-transparent'}`}></div>
                 </div>
               </div>
             )}
         </div>
       </div>
 
-      <div className={`fixed bottom-6 left-6 z-[100] w-[95vw] sm:w-[450px] bg-white rounded-[3rem] shadow-[0_50px_100px_rgba(0,0,0,0.35)] border border-gray-100 flex flex-col overflow-hidden transition-all duration-500 origin-bottom-left ${isChatOpen ? 'scale-100 opacity-100 translate-y-0' : 'scale-50 opacity-0 translate-y-20 pointer-events-none'}`} style={{ height: '750px', maxHeight: '92vh' }}>
+      <div className={`fixed bottom-6 left-6 z-[100] w-[95vw] sm:w-[450px] bg-white/90 backdrop-blur-2xl rounded-[3rem] shadow-[0_50px_100px_rgba(0,0,0,0.35)] border border-gray-100/50 flex flex-col overflow-hidden transition-all duration-500 origin-bottom-left ${isChatOpen ? 'scale-100 opacity-100 translate-y-0' : 'scale-50 opacity-0 translate-y-20 pointer-events-none'}`} style={{ height: '750px', maxHeight: '92vh' }}>
         
         <div className="bg-[#002D5B] p-6 flex items-center justify-between shadow-lg shrink-0">
             <div className="flex items-center gap-4">
-                <div className="bg-white/10 p-2 rounded-2xl border border-white/20">
+                <div className="bg-white/10 p-2 rounded-2xl border border-white/20 overflow-hidden">
                     <img src={mascotImageUrl} alt="Kai" className="w-10 h-10 object-contain" />
                 </div>
                 <div>
@@ -301,7 +337,7 @@ const FloatingMascot: React.FC<FloatingMascotProps> = ({ currentPage, onNavigate
                     <div className={`max-w-[92%] rounded-[1.8rem] px-5 py-4 text-[13.5px] shadow-sm leading-relaxed transition-all ${
                         msg.role === 'user' 
                         ? 'bg-[#007AFF] text-white font-bold rounded-tr-none' 
-                        : 'bg-white text-gray-800 border border-gray-100 rounded-tl-none font-medium shadow-blue-900/5'
+                        : 'bg-white/80 text-gray-800 border border-gray-100/50 rounded-tl-none font-medium shadow-blue-900/5 backdrop-blur-sm'
                     }`}>
                         <div className="whitespace-pre-wrap">{renderMessageText(msg.text)}</div>
                         
@@ -395,6 +431,13 @@ const FloatingMascot: React.FC<FloatingMascotProps> = ({ currentPage, onNavigate
         .animate-swim-intro { animation: swim-intro 6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
         @keyframes idle-breath { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px) rotate(1deg); } }
         .animate-idle-breath { animation: idle-breath 5s ease-in-out infinite; }
+        @keyframes reminder-shake {
+          0%, 100% { transform: translateY(0) rotate(0); }
+          25% { transform: translateY(-8px) rotate(-2deg); }
+          50% { transform: translateY(0) rotate(2deg); }
+          75% { transform: translateY(-4px) rotate(-1deg); }
+        }
+        .animate-reminder-shake { animation: reminder-shake 2s ease-in-out infinite; }
         @keyframes fade-in { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
         @keyframes fade-in-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }

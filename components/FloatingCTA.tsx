@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../i18n';
-import { CalendarIcon } from './icons';
+import { SparklesIcon, BoltIcon, ChevronRightIcon, BuildingIcon } from './icons';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface FloatingCTAProps {
   onNavigate: (page: string) => void;
@@ -11,14 +12,33 @@ interface FloatingCTAProps {
 const FloatingCTA: React.FC<FloatingCTAProps> = ({ onNavigate, currentPage }) => {
   const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
+  const [isOverlappingSection, setIsOverlappingSection] = useState(false);
 
   // Pages where the floating CTA should appear
   const allowedPages = ['home', 'about', 'clients', 'sustainability-page'];
 
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsOverlappingSection(entry.isIntersecting);
+      },
+      { threshold: 0.1 } // Hide when 10% of the section is visible
+    );
+
+    const section = document.getElementById('segmentation-section');
+    if (section) {
+      observer.observe(section);
+    }
+
+    return () => {
+      if (section) observer.unobserve(section);
+    };
+  }, [currentPage]);
+
+  useEffect(() => {
     const handleScroll = () => {
-      // Show button after scrolling down 400px
-      const shouldShow = window.scrollY > 400 && allowedPages.includes(currentPage);
+      // Show button after scrolling down 400px and if not in forbidden section
+      const shouldShow = window.scrollY > 400 && allowedPages.includes(currentPage) && !isOverlappingSection;
       setIsVisible(shouldShow);
     };
 
@@ -27,31 +47,36 @@ const FloatingCTA: React.FC<FloatingCTAProps> = ({ onNavigate, currentPage }) =>
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [currentPage]);
-
-  if (!isVisible) return null;
+  }, [currentPage, isOverlappingSection]);
 
   return (
-    <>
-      <button
-        onClick={() => onNavigate('consultation')}
-        className="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50 bg-[#002D5B] text-white px-5 py-3 md:px-6 md:py-3 rounded-full shadow-2xl hover:bg-[#00254A] hover:shadow-3xl transition-all duration-300 transform hover:scale-105 flex items-center gap-2 border-2 border-white/20 animate-bounce-in"
-        aria-label={t('hero.main_cta')}
-      >
-        <CalendarIcon className="w-5 h-5" />
-        <span className="font-semibold text-sm md:text-base whitespace-nowrap">{t('hero.main_cta')}</span>
-      </button>
-      <style>{`
-        @keyframes bounce-in {
-          0% { opacity: 0; transform: translateY(20px) scale(0.9); }
-          50% { opacity: 1; transform: translateY(-5px) scale(1.02); }
-          100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-        .animate-bounce-in {
-          animation: bounce-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-      `}</style>
-    </>
+    <AnimatePresence>
+      {isVisible && (
+        <div className="fixed bottom-8 right-8 md:bottom-12 md:right-12 z-[50] flex flex-col sm:flex-row gap-3">
+          <motion.button
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            whileHover={{ scale: 1.05 }}
+            onClick={() => window.location.href = 'mailto:info@krakenpfm.ch'}
+            className="bg-[#002D5B] text-white px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-2xl border border-white/10 flex items-center gap-2"
+          >
+            Get a commercial quote for 🏢
+          </motion.button>
+          
+          <motion.button
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            whileHover={{ scale: 1.05 }}
+            onClick={() => onNavigate('consultation')}
+            className="bg-blue-600 text-white px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-2xl border border-white/10 flex items-center gap-2"
+          >
+            Get an instant quote for 🏠
+          </motion.button>
+        </div>
+      )}
+    </AnimatePresence>
   );
 };
 

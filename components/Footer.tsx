@@ -13,6 +13,7 @@ import {
   PaperAirplaneIcon
 } from './icons';
 import emailjs from '@emailjs/browser';
+import { motion } from 'motion/react';
 
 const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/dkmya8ae31ib7gwy6xi2f4f8icaxbezo';
 const SERVICE_ID = 'service_aiv15bc';
@@ -98,127 +99,173 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   ];
 
   return (
-    <footer id="contact" className="bg-[#002D5B] text-white py-12 md:py-20 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-[100px] -mr-48 -mt-48"></div>
+    <footer id="contact" className="bg-[#002D5B] text-white py-12 md:py-16 relative overflow-hidden border-t border-white/5">
+      {/* Background Accents */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px] -mr-48 -mt-48" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-600/5 rounded-full blur-[120px] -ml-48 -mb-48" />
+      </div>
       
       <div className="container mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-12">
           
-          <div className="lg:col-span-4 space-y-6">
-            <h2 className="text-3xl font-black uppercase tracking-tighter leading-none">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="lg:col-span-4 space-y-8"
+          >
+            <h2 className="text-2xl font-black uppercase tracking-tighter leading-[0.8]">
               Kraken <br/>
-              <span className="text-blue-400">PFM</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">PFM</span>
             </h2>
-            <p className="text-gray-400 text-sm font-medium leading-relaxed max-w-sm">
+            <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-sm">
               The benchmark of excellence in facility management. Merging technology with hospitality to bring architectural order.
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-4">
               {socialLinks.map(({ icon: Icon, href, label }) => (
-                <a key={label} href={href} target="_blank" rel="noopener" aria-label={label} className={`w-10 h-10 bg-white/5 ${label === 'WhatsApp' ? 'hover:bg-[#25D366]' : 'hover:bg-blue-600'} rounded-full flex items-center justify-center transition-all group`}>
-                  <Icon className={`w-4 h-4 ${label === 'WhatsApp' ? 'group-hover:scale-110' : ''}`} />
-                </a>
+                <motion.a 
+                  key={label} 
+                  href={href} 
+                  target="_blank" 
+                  rel="noopener" 
+                  aria-label={label}
+                  whileHover={{ scale: 1.1, y: -5 }}
+                  whileTap={{ scale: 0.9 }}
+                  className={`w-12 h-12 bg-white/5 ${label === 'WhatsApp' ? 'hover:bg-[#25D366]' : 'hover:bg-blue-600'} rounded-2xl flex items-center justify-center transition-all border border-white/10 group shadow-2xl`}
+                >
+                  <Icon className={`w-5 h-5 ${label === 'WhatsApp' ? 'group-hover:scale-110' : ''}`} />
+                </motion.a>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           <div className="lg:col-span-4 grid grid-cols-2 gap-8">
-            <div>
-              <h4 className="font-black text-xs uppercase tracking-widest text-blue-400 mb-6">Explore</h4>
-              <ul className="space-y-3 text-sm font-bold text-gray-300">
-                <li><button onClick={() => onNavigate('services-page')} className="hover:text-white transition-colors">Services</button></li>
-                <li><button onClick={() => onNavigate('about')} className="hover:text-white transition-colors">About Kai</button></li>
-                <li><button onClick={() => onNavigate('sustainability-page')} className="hover:text-white transition-colors">Green Policy</button></li>
-                <li><button onClick={() => onNavigate('clients')} className="hover:text-white transition-colors">Partner Portal</button></li>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+            >
+              <h4 className="font-black text-[10px] uppercase tracking-[0.4em] text-blue-400 mb-8">Explore</h4>
+              <ul className="space-y-3 text-xs font-bold text-slate-300">
+                <li><button onClick={() => onNavigate('services-page')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-1.5 rounded-full bg-blue-500 scale-0 group-hover:scale-100 transition-transform" />Services</button></li>
+                <li><button onClick={() => onNavigate('about')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-1.5 rounded-full bg-blue-500 scale-0 group-hover:scale-100 transition-transform" />About Kai</button></li>
+                <li><button onClick={() => onNavigate('sustainability-page')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-1.5 rounded-full bg-blue-500 scale-0 group-hover:scale-100 transition-transform" />Green Policy</button></li>
+                <li><button onClick={() => onNavigate('clients')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-1.5 rounded-full bg-blue-500 scale-0 group-hover:scale-100 transition-transform" />Partner Portal</button></li>
               </ul>
-            </div>
-            <div>
-              <h4 className="font-black text-xs uppercase tracking-widest text-blue-400 mb-6">Legal</h4>
-              <ul className="space-y-3 text-sm font-bold text-gray-300">
-                <li><button onClick={() => onNavigate('gdpr')} className="hover:text-white transition-colors">Privacy & GDPR</button></li>
-                <li><button onClick={() => onNavigate('terms')} className="hover:text-white transition-colors">Terms of Service</button></li>
-                <li><button onClick={() => onNavigate('hse')} className="hover:text-white transition-colors">HSE Safety</button></li>
-                <li><button onClick={() => onNavigate('careers')} className="hover:text-white transition-colors">Careers</button></li>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              <h4 className="font-black text-[10px] uppercase tracking-[0.4em] text-blue-400 mb-8">Legal</h4>
+              <ul className="space-y-3 text-xs font-bold text-slate-300">
+                <li><button onClick={() => onNavigate('gdpr')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-1.5 rounded-full bg-blue-500 scale-0 group-hover:scale-100 transition-transform" />Privacy & GDPR</button></li>
+                <li><button onClick={() => onNavigate('terms')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-1.5 rounded-full bg-blue-500 scale-0 group-hover:scale-100 transition-transform" />Terms of Service</button></li>
+                <li><button onClick={() => onNavigate('hse')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-1.5 rounded-full bg-blue-500 scale-0 group-hover:scale-100 transition-transform" />HSE Safety</button></li>
+                <li><button onClick={() => onNavigate('careers')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-1.5 rounded-full bg-blue-500 scale-0 group-hover:scale-100 transition-transform" />Careers</button></li>
               </ul>
-            </div>
+            </motion.div>
           </div>
 
-          <div className="lg:col-span-4 space-y-6">
-            <h4 className="font-black text-xs uppercase tracking-widest text-blue-400">Join the Crew</h4>
-            <p className="text-sm text-gray-400 font-medium">Subscribe for exclusive service bundles and property maintenance tips.</p>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="lg:col-span-4 space-y-8"
+          >
+            <h4 className="font-black text-[10px] uppercase tracking-[0.4em] text-blue-400">Join the Crew</h4>
+            <p className="text-sm text-slate-400 font-medium leading-relaxed">Subscribe for exclusive service bundles and property maintenance tips.</p>
             <form onSubmit={handleNewsletterSubmit} className="relative group">
               <input 
                 type="email" 
                 placeholder="Email address..." 
                 required
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-6 pr-14 text-sm font-medium outline-none focus:border-blue-400 transition-colors focus:bg-white/10"
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-6 pr-12 text-sm font-medium outline-none focus:border-blue-400 transition-all focus:bg-white/10 backdrop-blur-md"
                 value={newsletterEmail}
                 onChange={(e) => setNewsletterEmail(e.target.value)}
               />
-              <button 
+              <motion.button 
                 type="submit" 
                 disabled={status === 'loading'}
-                className="absolute right-2 top-2 bottom-2 aspect-square bg-blue-600 rounded-xl flex items-center justify-center hover:bg-blue-500 transition-colors shadow-lg active:scale-90 disabled:opacity-50"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="absolute right-2.5 top-2.5 bottom-2.5 aspect-square bg-blue-600 rounded-xl flex items-center justify-center hover:bg-blue-500 transition-colors shadow-2xl active:scale-90 disabled:opacity-50"
               >
                 {status === 'loading' ? (
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                 ) : (
-                  <PaperAirplaneIcon className="w-4 h-4" />
+                  <PaperAirplaneIcon className="w-5 h-5" />
                 )}
-              </button>
+              </motion.button>
             </form>
             {status === 'success' && <p className="text-xs text-emerald-400 font-black uppercase tracking-tighter animate-fade-in">Welcome aboard! Check your inbox.</p>}
             {status === 'error' && <p className="text-xs text-rose-400 font-black uppercase tracking-tighter animate-fade-in">Something failed. Try again.</p>}
-          </div>
+          </motion.div>
 
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-10 border-y border-white/10 mb-10">
-           <div className="flex gap-4 items-center">
-              <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-2xl shadow-inner">📍</div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 py-8 border-y border-white/5 mb-8">
+           <motion.div 
+             whileHover={{ x: 10 }}
+             className="flex gap-6 items-center"
+           >
+              <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-xl shadow-2xl border border-white/10 backdrop-blur-md">📍</div>
               <div>
-                <p className="text-[10px] font-black uppercase text-blue-400 tracking-widest">Base Operations</p>
-                <p className="text-sm font-bold">Seewaldestrasse 3, 8203 Schaffhausen</p>
+                <p className="text-[10px] font-black uppercase text-blue-400 tracking-[0.4em] mb-1">Base Operations</p>
+                <p className="text-sm font-bold text-white">Seewaldestrasse 3, 8203 Schaffhausen</p>
               </div>
-           </div>
+           </motion.div>
            
-           <div className="flex gap-4 items-center group/wa">
-              <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-2xl shadow-inner group-hover/wa:bg-[#25D366]/20 transition-colors">
+           <motion.div 
+             whileHover={{ x: 10 }}
+             className="flex gap-6 items-center group/wa"
+           >
+              <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-xl shadow-2xl border border-white/10 backdrop-blur-md group-hover/wa:bg-[#25D366]/20 transition-colors">
                 <WhatsAppIcon className="w-6 h-6 text-[#25D366]" />
               </div>
               <div className="flex-1">
-                <p className="text-[10px] font-black uppercase text-[#25D366] tracking-widest flex items-center gap-2">
+                <p className="text-[10px] font-black uppercase text-[#25D366] tracking-[0.4em] flex items-center gap-2 mb-1">
                     Connect Live
-                    <span className="inline-block w-1.5 h-1.5 bg-[#25D366] rounded-full animate-pulse"></span>
+                    <span className="inline-block w-2 h-2 bg-[#25D366] rounded-full animate-pulse shadow-[0_0_10px_rgba(37,211,102,0.5)]"></span>
                 </p>
-                <a href="https://wa.me/41774505705" target="_blank" rel="noopener" className="text-sm font-bold hover:text-[#25D366] transition-colors flex items-center gap-2">
+                <a href="https://wa.me/41774505705" target="_blank" rel="noopener" className="text-sm font-bold hover:text-[#25D366] transition-colors flex items-center gap-3 text-white">
                     +41 77 450 57 05
-                    <span className="text-[8px] bg-white/10 px-2 py-0.5 rounded uppercase tracking-tighter">Fast Response</span>
+                    <span className="text-[8px] bg-white/10 px-2 py-1 rounded-lg uppercase tracking-widest font-black">Fast Response</span>
                 </a>
               </div>
-           </div>
+           </motion.div>
 
-           <div className="flex gap-4 items-center">
-              <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-2xl shadow-inner">✉️</div>
+           <motion.div 
+             whileHover={{ x: 10 }}
+             className="flex gap-6 items-center"
+           >
+              <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-xl shadow-2xl border border-white/10 backdrop-blur-md">✉️</div>
               <div>
-                <p className="text-[10px] font-black uppercase text-blue-400 tracking-widest">Digital Inbox</p>
-                <a href="mailto:kai@krakenpfm.ch" className="text-sm font-bold hover:text-blue-400 transition-colors">kai@krakenpfm.ch</a>
+                <p className="text-[10px] font-black uppercase text-blue-400 tracking-[0.4em] mb-1">Digital Inbox</p>
+                <a href="mailto:kai@krakenpfm.ch" className="text-sm font-bold hover:text-blue-400 transition-colors text-white">kai@krakenpfm.ch</a>
               </div>
-           </div>
+           </motion.div>
         </div>
         
-        <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-6">
-             <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em]">© {new Date().getFullYear()} KRAKEN PFM</p>
-             <a 
-                href="#"
-                onClick={(e) => { e.preventDefault(); onNavigate('sustainability-page'); }}
-                className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/50 border border-emerald-500/30 text-emerald-200 text-[9px] font-black uppercase tracking-wider hover:bg-emerald-900/60 hover:text-white transition-all shadow-sm group"
+        <div className="flex flex-col lg:flex-row justify-between items-center gap-8">
+          <div className="flex items-center gap-8">
+             <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em]">© {new Date().getFullYear()} KRAKEN PFM</p>
+             <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => onNavigate('sustainability-page')}
+                className="flex items-center gap-3 px-4 py-2 rounded-full bg-emerald-500/5 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500/10 hover:text-emerald-300 transition-all shadow-2xl group"
              >
-                <LeafIcon className="w-3 h-3 text-emerald-400 group-hover:scale-110 transition-transform" />
+                <LeafIcon className="w-4 h-4 text-emerald-500 group-hover:scale-110 transition-transform" />
                 <span>{co2Value.toFixed(2)}g CO₂ / Visit</span>
-             </a>
+             </motion.button>
           </div>
-          <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Swiss Precision Engineered // Secure Real-time Communications</p>
+          <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">Swiss Precision Engineered // Secure Real-time Communications</p>
         </div>
       </div>
     </footer>

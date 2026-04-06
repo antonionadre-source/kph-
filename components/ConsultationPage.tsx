@@ -1152,7 +1152,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
             </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-10 items-start">
+        <div className="flex flex-col lg:flex-row gap-10 lg:items-start">
             
             {/* --- Left Column: Services Grid --- */}
             <div className="w-full lg:w-2/3 pb-24 lg:pb-0">
@@ -1283,8 +1283,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                 </div>
             </div>
 
-            <div className={`fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl shadow-[0_-15px_50px_rgba(0,0,0,0.15)] border-t border-gray-100 transition-transform duration-700 lg:static lg:w-1/3 lg:block lg:bg-transparent lg:shadow-none lg:border-none lg:backdrop-filter-none lg:z-auto lg:transform-none ${!showMobileSummaryBar && !isMobileSummaryOpen ? 'translate-y-full' : 'translate-y-0'}`}>
-                <div className="lg:sticky lg:top-40">
+            <div className={`fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl shadow-[0_-15px_50px_rgba(0,0,0,0.15)] border-t border-gray-100 transition-transform duration-700 lg:sticky lg:top-28 lg:bottom-auto lg:left-auto lg:right-auto lg:w-1/3 lg:block lg:bg-transparent lg:shadow-none lg:border-none lg:backdrop-filter-none lg:z-30 lg:transform-none ${!showMobileSummaryBar && !isMobileSummaryOpen ? 'translate-y-full' : 'translate-y-0'}`}>
+                <div className="lg:relative">
                     <div className="bg-white lg:rounded-[2.5rem] lg:shadow-2xl lg:border border-gray-100 overflow-hidden">
                         <div className="lg:hidden p-6 flex items-center justify-between cursor-pointer border-b border-gray-100 hover:bg-gray-50 transition-colors" onClick={(e) => { if((e.target as HTMLElement).tagName !== 'BUTTON') setMobileSummaryOpen(!isMobileSummaryOpen); }}>
                             <div className="flex flex-col">

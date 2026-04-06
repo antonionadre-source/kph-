@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '../i18n';
-import { companyLogoUrl } from '../assets';
+import { companyLogoUrl, companyLogoWhiteUrl } from '../assets';
 import { useAuth } from './Auth';
 import { LeafIcon } from './icons';
 
@@ -53,13 +53,16 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      // On home page, stay transparent until we scroll past most of the hero section
+      const threshold = currentPage === 'home' ? window.innerHeight * 0.7 : 20;
+      setIsScrolled(window.scrollY > threshold);
     };
     window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [currentPage]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -122,11 +125,68 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
   const renderNavLinks = (isMobile: boolean = false) => {
     const navLinkClass = isMobile 
       ? "text-3xl font-black uppercase tracking-tighter py-4 text-[#002d5b]" 
-      : `text-[11px] font-bold uppercase tracking-[0.15em] transition-all ${isScrolled ? 'text-[#002d5b]' : 'text-[#002d5b]'} hover:text-blue-600`;
+      : `text-[11px] font-bold uppercase tracking-[0.15em] transition-all ${isScrolled ? 'text-[#002d5b]' : 'text-white'} hover:text-blue-600`;
 
     return (
       <>
-        <a href="#" onClick={(e) => handleNavClick(e, 'services-page')} className={navLinkClass}>{t('nav.services')}</a>
+        {/* Services Dropdown */}
+        <div className="relative group">
+          <button 
+            className={`${navLinkClass} flex items-center gap-1 cursor-default`}
+            onClick={(e) => {
+              if (isMobile) {
+                // In mobile, we could toggle a sub-menu or just show the options
+                // For now, let's keep it simple as the user requested
+              }
+            }}
+          >
+            {t('nav.services')}
+            {!isMobile && (
+              <svg className="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
+              </svg>
+            )}
+          </button>
+          
+          {!isMobile && (
+            <div className="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-[100]">
+              <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-2 min-w-[200px] overflow-hidden">
+                <button 
+                  onClick={(e) => handleNavClick(e as any, 'services-page')}
+                  className="w-full text-left px-5 py-3 text-[10px] font-black uppercase tracking-widest text-[#002d5b] hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors flex items-center justify-between group/item"
+                >
+                  <span>{t('nav.private')}</span>
+                  <span className="opacity-0 group-hover/item:opacity-100 transition-opacity">→</span>
+                </button>
+                <button 
+                  onClick={(e) => handleNavClick(e as any, 'commercial-services')}
+                  className="w-full text-left px-5 py-3 text-[10px] font-black uppercase tracking-widest text-[#002d5b] hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors flex items-center justify-between group/item"
+                >
+                  <span>{t('nav.commercial')}</span>
+                  <span className="opacity-0 group-hover/item:opacity-100 transition-opacity">→</span>
+                </button>
+              </div>
+            </div>
+          )}
+          
+          {isMobile && (
+            <div className="flex flex-col items-center space-y-4 mt-4 mb-2">
+               <button 
+                onClick={(e) => handleNavClick(e as any, 'services-page')} 
+                className="text-2xl font-black uppercase tracking-tighter text-blue-600 hover:scale-105 transition-transform"
+               >
+                {t('nav.private')}
+               </button>
+               <button 
+                onClick={(e) => handleNavClick(e as any, 'commercial-services')} 
+                className="text-2xl font-black uppercase tracking-tighter text-blue-600 hover:scale-105 transition-transform"
+               >
+                {t('nav.commercial')}
+               </button>
+            </div>
+          )}
+        </div>
+
         <a href="#" onClick={(e) => handleNavClick(e, 'about')} className={navLinkClass}>{t('nav.about')}</a>
         <a href="#" onClick={(e) => handleNavClick(e, 'sustainability-page')} className={navLinkClass}>{t('nav.sustainability')}</a>
          {user && (
@@ -139,14 +199,14 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-3' : 'bg-white py-5'} ${isMobileMenuOpen ? 'bg-white' : ''}`}>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-2' : 'bg-transparent py-4'} ${isMobileMenuOpen ? 'bg-white' : ''}`}>
         <div className="container mx-auto px-4 md:px-6 flex justify-between items-center">
           <a href="#" onClick={(e) => handleNavClick(e, 'home')} aria-label="Kraken Properties Homepage" className="relative z-50 flex items-center group">
-            <img src={companyLogoUrl} alt="Kraken Properties Logo" className={`w-auto transition-all duration-500 ${isScrolled || isMobileMenuOpen ? 'h-10 md:h-12' : 'h-14 md:h-16'}`} />
-            <div className="h-8 w-px bg-slate-200 mx-4 hidden sm:block"></div>
+            <img src={isScrolled || isMobileMenuOpen ? companyLogoUrl : companyLogoWhiteUrl} alt="Kraken Properties Logo" className={`w-auto transition-all duration-500 ${isScrolled || isMobileMenuOpen ? 'h-10 md:h-12' : 'h-14 md:h-18'}`} />
+            <div className="h-10 w-px bg-slate-200 mx-4 hidden sm:block"></div>
             <div className="flex flex-col leading-tight">
-              <span className="text-[#002d5b] text-[8px] md:text-[10px] font-bold uppercase tracking-[0.15em] opacity-80">Properties and</span>
-              <span className="text-[#002d5b] text-[8px] md:text-[10px] font-bold uppercase tracking-[0.15em] opacity-80">Facilities Management</span>
+              <span className={`text-[8px] md:text-[10px] font-bold uppercase tracking-[0.15em] opacity-80 transition-colors duration-500 ${isScrolled || isMobileMenuOpen ? 'text-[#002d5b]' : 'text-white'}`}>Properties and</span>
+              <span className={`text-[8px] md:text-[10px] font-bold uppercase tracking-[0.15em] opacity-80 transition-colors duration-500 ${isScrolled || isMobileMenuOpen ? 'text-[#002d5b]' : 'text-white'}`}>Facilities Management</span>
             </div>
           </a>
           
@@ -157,12 +217,18 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
             <div className="relative" ref={langDropdownRef}>
               <button
                 onClick={() => setLangDropdownOpen(!isLangDropdownOpen)}
-                className={`text-xl transition-all duration-300 hover:scale-110 ${justSelected ? 'animate-pop' : ''}`}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 hover:border-blue-400 transition-all duration-300 hover:scale-105 ${justSelected ? 'animate-pop' : ''} bg-white/50 backdrop-blur-sm`}
                 aria-label="Select language"
               >
-                <span role="img" aria-label="Globe emoji">🌎</span>
+                <span className="text-lg">🌎</span>
+                <span className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-500 ${isScrolled || isMobileMenuOpen ? 'text-[#002d5b]' : 'text-white'}`}>
+                  {language === 'de-CH' ? 'CH' : language.toUpperCase()}
+                </span>
+                <svg className={`w-2.5 h-2.5 transition-transform duration-300 ${isLangDropdownOpen ? 'rotate-180' : ''} ${isScrolled || isMobileMenuOpen ? 'text-[#002d5b]' : 'text-white'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
-              <ul className={`absolute right-0 mt-6 p-4 w-64 bg-white rounded-3xl shadow-2xl z-10 grid grid-cols-3 gap-3 origin-top-right transform transition-all duration-300 ease-out border border-gray-100 ${isLangDropdownOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
+              <ul className={`absolute right-0 mt-4 p-4 w-64 bg-white rounded-3xl shadow-2xl z-[110] grid grid-cols-3 gap-3 origin-top-right transform transition-all duration-300 ease-out border border-gray-100 ${isLangDropdownOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
                   {supportedLanguages.map((lang) => (
                     <li key={lang.code} className="flex justify-center">
                       <button
@@ -188,9 +254,12 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
              <div className="relative" ref={langDropdownRef}>
                 <button
                     onClick={() => setLangDropdownOpen(!isLangDropdownOpen)}
-                    className="text-xl transition-all"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white/50 backdrop-blur-sm"
                 >
-                    <span role="img" aria-label="Globe">🌎</span>
+                    <span className="text-lg">🌎</span>
+                    <span className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-500 ${isScrolled || isMobileMenuOpen ? 'text-[#002d5b]' : 'text-white'}`}>
+                      {language === 'de-CH' ? 'CH' : language.toUpperCase()}
+                    </span>
                 </button>
                 <ul className={`absolute right-0 mt-4 p-3 w-48 bg-white rounded-2xl shadow-xl z-50 grid grid-cols-3 gap-2 origin-top-right transition-all duration-300 ${isLangDropdownOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
                     {supportedLanguages.map((lang) => (
@@ -200,7 +269,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
             </div>
             <button
               onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-              className={`z-50 relative w-10 h-10 flex flex-col items-center justify-center transition-all ${isMobileMenuOpen ? 'text-[#002d5b]' : 'text-[#002d5b]'}`}
+              className={`z-50 relative w-10 h-10 flex flex-col items-center justify-center transition-all ${isScrolled || isMobileMenuOpen ? 'text-[#002d5b]' : 'text-white'}`}
               aria-label="Open menu"
             >
               <span className={`block w-8 h-0.5 bg-current rounded-full transform transition duration-500 ease-in-out ${isMobileMenuOpen ? 'rotate-45 translate-y-0.5' : '-translate-y-1'}`}></span>

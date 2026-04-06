@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import Hero from './Hero';
+import WhyKrakenSection from './WhyKrakenSection';
 import SegmentationSection from './SegmentationSection';
-import B2BCapabilities from './B2BCapabilities';
-import FinalConversion from './FinalConversion';
 import About from './About';
 import Clients, { ClientCarousel } from './Clients';
 import Footer from './Footer';
-import OperationsSection from './ContactMap';
 import FloatingMascot from './FloatingMascot';
 import FloatingCTA from './FloatingCTA';
-import SustainabilitySection from './SustainabilitySection';
 import LoginPage from './LoginPage';
 import RegisterPage from './RegisterPage';
 import Dashboard from './Dashboard';
@@ -20,14 +17,14 @@ import ComicPage from './ComicPage';
 import ConsultationPage from './ConsultationPage';
 import GDPRPage from './GDPRPage';
 import ServicesPage from './ServicesPage';
-import Services from './Services';
-import SustainabilityPage from './Sustainability';
+import CommercialServicesPage from './CommercialServicesPage';
+import SustainabilityPage from './SustainabilityPage';
 import CareersPage from './CareersPage';
 import CookieConsent from './CookieConsent';
 import PrecisionQuoteSection from './PrecisionQuoteSection';
 import HSEPage from './HSEPage';
-import AdditionalServicesSection from './AdditionalServicesSection';
 import TermsPage from './TermsPage';
+import HowItWorks from './HowItWorks';
 
 // --- Firebase Configuration ---
 export const db = (window as any).db;
@@ -73,6 +70,8 @@ const App: React.FC = () => {
         return <ComicPage onNavigate={handleNavigate} />;
       case 'services-page':
         return <ServicesPage onNavigate={handleNavigate} />;
+      case 'commercial-services':
+        return <CommercialServicesPage onNavigate={handleNavigate} />;
       case 'clients':
         return <Clients onNavigate={handleNavigate} />;
       case 'dashboard':
@@ -93,7 +92,7 @@ const App: React.FC = () => {
       case 'terms':
         return <TermsPage onNavigate={handleNavigate} />;
       case 'sustainability-page':
-        return <SustainabilityPage />;
+        return <SustainabilityPage onNavigate={handleNavigate} />;
       case 'careers':
         return <CareersPage onNavigate={handleNavigate} />;
       case 'home':
@@ -103,10 +102,8 @@ const App: React.FC = () => {
             <main>
               <Hero onNavigate={handleNavigate} />
               <SegmentationSection onNavigate={handleNavigate} />
-              <B2BCapabilities />
-              <About onNavigate={handleNavigate} />
-              <OperationsSection />
-              <FinalConversion onNavigate={handleNavigate} />
+              <WhyKrakenSection />
+              <ClientCarousel />
             </main>
           </>
         );
@@ -120,7 +117,6 @@ const App: React.FC = () => {
       
       <Header onNavigate={handleNavigate} currentPage={page as any} />
       {renderPage()}
-      <ClientCarousel />
       <Footer onNavigate={handleNavigate} />
       <CookieConsent onNavigate={handleNavigate} />
       

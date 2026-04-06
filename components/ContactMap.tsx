@@ -1,145 +1,179 @@
 import React from 'react';
 import { useTranslation } from '../i18n';
 import { MapPinIcon, CheckIcon, BuildingIcon, ClockIcon } from './icons';
-import { cityImages } from '../assets';
+import { cityImages, mascotImageUrl } from '../assets';
 
 const OperationsSection: React.FC = () => {
   const { t } = useTranslation();
 
-  const hubs = [
-    { name: 'Basel', code: 'BSL_HUB', status: 'ACTIVE', region: 'Canton Basel-Stadt', time: '90 min', img: cityImages.basel },
-    { name: 'Zurich', code: 'ZRH_HUB', status: 'ACTIVE', region: 'Canton Zurich', time: '60 min', img: cityImages.zurich },
-    { name: 'Schaffhausen', code: 'SHF_HUB', status: 'HQ_BASE', region: 'Canton Schaffhausen', time: 'Immediate', img: cityImages.schaffhausen },
-    { name: 'St. Gallen', code: 'STG_HUB', status: 'ACTIVE', region: 'Canton St. Gallen', time: '90 min', img: cityImages.stgallen },
-    { name: 'Thurgau', code: 'THG_HUB', status: 'ACTIVE', region: 'Canton Thurgau', time: '60 min', img: cityImages.thurgau },
-    { name: 'Winterthur', code: 'WTH_HUB', status: 'ACTIVE', region: 'Canton Zurich', time: '45 min', img: cityImages.winterthur },
-  ];
-
   return (
     <section 
       id="contact" 
-      className="relative py-32 md:py-48 bg-[#F9FAFB] overflow-hidden"
+      className="relative py-8 md:py-12 bg-[#001A3D] overflow-hidden flex flex-col items-center justify-center"
+      style={{
+        background: 'radial-gradient(circle at 50% 50%, #003366 0%, #001A3D 70%, #000B1A 100%)'
+      }}
     >
-      <div className="container mx-auto px-6 relative z-10">
+      {/* Background Grid Pattern */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none" 
+           style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '30px 30px' }}>
+      </div>
+
+      {/* Background Atmospheric Glows */}
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-blue-500 rounded-full blur-[150px] opacity-10 animate-pulse"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-indigo-800 rounded-full blur-[180px] opacity-20"></div>
+
+      <div className="container mx-auto px-6 relative z-10 flex flex-col items-center">
         
-        {/* Header Section */}
-        <div className="flex flex-col items-center text-center mb-24 max-w-3xl mx-auto">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-white text-[#002D5B] text-[10px] font-black uppercase tracking-[0.4em] mb-8 shadow-sm border border-gray-100">
-             Swiss Operational Backbone
-          </span>
-          <h2 className="text-4xl md:text-6xl font-black text-[#002D5B] tracking-tight leading-none mb-8">
-            Strategic <span className="text-[#007AFF]">Network.</span>
+        {/* The Large "3" Container */}
+        <div className="relative w-full max-w-[320px] aspect-[4/5] mb-0">
+          
+          {/* Glass "3" Shape */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <svg viewBox="0 0 400 500" className="w-full h-full drop-shadow-[0_0_120px_rgba(0,122,255,0.4)]">
+              <defs>
+                <linearGradient id="glassGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="rgba(255,255,255,0.45)" />
+                  <stop offset="50%" stopColor="rgba(255,255,255,0.12)" />
+                  <stop offset="100%" stopColor="rgba(255,255,255,0.08)" />
+                </linearGradient>
+                <linearGradient id="edgeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="rgba(255,255,255,0.95)" />
+                  <stop offset="50%" stopColor="rgba(255,255,255,0.35)" />
+                  <stop offset="100%" stopColor="rgba(255,255,255,0.75)" />
+                </linearGradient>
+                <clipPath id="clip3">
+                  <text 
+                    x="200" 
+                    y="380" 
+                    textAnchor="middle" 
+                    fontSize="520" 
+                    fontWeight="900" 
+                    fontFamily="Inter, sans-serif"
+                    style={{ letterSpacing: '-0.05em' }}
+                  >
+                    3
+                  </text>
+                </clipPath>
+              </defs>
+              
+              {/* Main Glass Body using Text */}
+              <text 
+                x="200" 
+                y="380" 
+                textAnchor="middle" 
+                fontSize="520" 
+                fontWeight="900" 
+                fontFamily="Inter, sans-serif"
+                fill="url(#glassGradient)"
+                stroke="url(#edgeGradient)"
+                strokeWidth="4"
+                style={{ letterSpacing: '-0.05em' }}
+                className="backdrop-blur-3xl"
+              >
+                3
+              </text>
+
+              {/* City Images inside the "3" */}
+              <g clipPath="url(#clip3)">
+                {/* Zurich (Top) */}
+                <image 
+                  href={cityImages.zurich} 
+                  x="0" y="0" width="400" height="250" 
+                  preserveAspectRatio="xMidYMid slice"
+                  className="opacity-90"
+                />
+                {/* Winterthur (Middle) */}
+                <image 
+                  href={cityImages.winterthur} 
+                  x="0" y="150" width="400" height="250" 
+                  preserveAspectRatio="xMidYMid slice"
+                  className="opacity-90"
+                />
+                {/* Schaffhausen (Bottom) */}
+                <image 
+                  href={cityImages.schaffhausen} 
+                  x="0" y="300" width="400" height="250" 
+                  preserveAspectRatio="xMidYMid slice"
+                  className="opacity-90"
+                />
+              </g>
+
+              {/* Technical Labels (SVG Overlay for precision) */}
+              <g className="text-white fill-white opacity-50 font-mono text-[7px] font-bold">
+                {/* Zurich Area */}
+                <text x="270" y="120">UNIT_10</text>
+                <text x="270" y="130">2RW_VUE</text>
+                <text x="180" y="160">SLA4-20</text>
+                <text x="180" y="170">aDS1</text>
+                
+                {/* Winterthur Area */}
+                <text x="270" y="250">uarl_10</text>
+                <text x="270" y="260">KHZA_HUB</text>
+                <text x="280" y="310">MO_WINT</text>
+                
+                {/* Schaffhausen Area */}
+                <text x="275" y="375">dert_to</text>
+                <text x="275" y="385">SHF_HUB</text>
+              </g>
+
+              {/* Light Flares */}
+              <g>
+                <circle cx="150" cy="120" r="15" fill="white" opacity="0.1" filter="url(#glassBlur)" />
+                <circle cx="280" cy="220" r="10" fill="white" opacity="0.1" filter="url(#glassBlur)" />
+              </g>
+            </svg>
+          </div>
+
+          {/* Labels and Data Points - Positioned to match image */}
+          
+          {/* Zurich Label */}
+          <div className="absolute top-[22%] left-[45%] text-white z-20 drop-shadow-2xl text-center">
+            <h3 className="text-xl font-black tracking-tighter mb-0">Zurich</h3>
+            <p className="text-[6px] font-bold uppercase tracking-[0.2em] text-white/50">CANTON ZURICH</p>
+          </div>
+
+          {/* Winterthur Label */}
+          <div className="absolute top-[48%] left-[55%] text-white z-20 drop-shadow-2xl text-center">
+            <h3 className="text-xl font-black tracking-tighter mb-0">Winterthur</h3>
+            <p className="text-[6px] font-bold uppercase tracking-[0.2em] text-white/50">CANTON WINTERTHUR</p>
+            <div className="mt-2 flex items-center justify-center gap-1 bg-black/30 backdrop-blur-md rounded-full px-2 py-0.5">
+              <ClockIcon className="w-1.5 h-1.5 text-blue-400" />
+              <span className="text-[7px] font-mono tracking-wider font-bold">SLA: 30 MIN</span>
+            </div>
+          </div>
+
+          {/* Schaffhausen Label */}
+          <div className="absolute bottom-[22%] left-[45%] text-white z-20 drop-shadow-2xl text-center">
+            <h3 className="text-xl font-black tracking-tighter mb-0">Schaffhausen</h3>
+            <p className="text-[6px] font-bold uppercase tracking-[0.2em] text-white/50">CANTON SCHAFFHAUSEN</p>
+            <div className="mt-2 flex items-center justify-center gap-1 bg-black/30 backdrop-blur-md rounded-full px-2 py-0.5">
+              <ClockIcon className="w-1.5 h-1.5 text-emerald-400" />
+              <span className="text-[7px] font-mono tracking-wider font-bold">SLA: IMMEDIATE</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div className="text-center max-w-4xl -mt-8">
+          <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter leading-none mb-4">
+            Our Triad of <br/>
+            <span className="text-blue-500/80">Operational Excellence.</span>
           </h2>
-          <p className="text-gray-500 font-medium text-lg leading-relaxed">
-            We operate through a decentralized service system ensuring rapid deployment and consistent Swiss quality across the Northern plateau.
+          <p className="text-blue-100/60 text-sm md:text-lg font-medium leading-relaxed max-w-xl mx-auto">
+            Winterthur. Zurich. Schaffhausen. Three key pillars defining our Swiss precision and rapid response across the northern plateau.
           </p>
         </div>
 
-        {/* Hubs Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {hubs.map((hub, idx) => (
-            <div 
-                key={idx}
-                className="group relative h-[450px] rounded-[3rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-700 transform hover:-translate-y-2"
-            >
-                {/* Background Image with Zoom Effect */}
-                <div 
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-[2000ms] ease-out group-hover:scale-110"
-                    style={{ backgroundImage: `url(${hub.img})` }}
-                >
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#002D5B]/90 via-[#002D5B]/20 to-transparent"></div>
-                </div>
-
-                {/* Top Badge */}
-                <div className="absolute top-8 left-8 right-8 flex justify-between items-start z-20">
-                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center backdrop-blur-xl border border-white/20 transition-all duration-500 ${
-                        hub.status === 'HQ_BASE' ? 'bg-[#002D5B]/80 text-white' : 'bg-white/10 text-white group-hover:bg-[#007AFF]/80'
-                    }`}>
-                        {hub.status === 'HQ_BASE' ? <BuildingIcon className="w-6 h-6" /> : <MapPinIcon className="w-6 h-6" />}
-                    </div>
-                    <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-xl border border-white/20 ${
-                        hub.status === 'HQ_BASE' ? 'bg-[#002D5B]/80 text-white' : 'bg-white/10 text-white'
-                    }`}>
-                        {hub.status}
-                    </span>
-                </div>
-
-                {/* Bottom Content (Glass Panel) */}
-                <div className="absolute bottom-6 left-6 right-6 z-20">
-                    <div className="backdrop-blur-2xl bg-white/10 border border-white/20 p-8 rounded-[2rem] shadow-2xl transition-all duration-500 group-hover:bg-white/20">
-                        <div className="flex justify-between items-start mb-2">
-                             <div>
-                                <h3 className="text-3xl font-black text-white tracking-tighter leading-none mb-1">{hub.name}</h3>
-                                <p className="text-blue-100/70 text-[10px] font-black uppercase tracking-widest">{hub.region}</p>
-                             </div>
-                             <div className="text-right">
-                                <span className="block text-[8px] font-black text-blue-200 uppercase tracking-widest mb-1">UNIT_ID</span>
-                                <span className="font-mono text-xs text-white/50">{hub.code}</span>
-                             </div>
-                        </div>
-
-                        <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <ClockIcon className="w-4 h-4 text-blue-300" />
-                                <span className="text-[10px] font-black text-blue-50 uppercase tracking-widest">SLA: {hub.time}</span>
-                            </div>
-                            <div className="w-10 h-10 rounded-full bg-[#007AFF] text-white flex items-center justify-center shadow-lg transform scale-0 group-hover:scale-100 transition-transform duration-500">
-                                 <CheckIcon className="w-5 h-5" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Hover Border Glow */}
-                <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#007AFF]/30 rounded-[3rem] transition-colors pointer-events-none"></div>
-            </div>
-          ))}
-        </div>
-
-        {/* Global Coverage Summary */}
-        <div className="mt-32 max-w-5xl mx-auto bg-[#002D5B] rounded-[4rem] p-12 md:p-20 text-white relative overflow-hidden shadow-3xl">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-[#007AFF] rounded-full -mr-32 -mt-32 blur-[120px] opacity-20 animate-pulse"></div>
-            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                <div>
-                    <h3 className="text-4xl md:text-5xl font-black mb-8 tracking-tighter leading-none">Full Swiss Plateau <br/><span className="text-[#007AFF]">Integration.</span></h3>
-                    <p className="text-blue-100/70 text-xl font-medium leading-relaxed">
-                        Our logistical backbone is engineered to support properties with 100% redundancy. We guarantee a 2-hour response window for critical hub failures across all active cantons.
-                    </p>
-                </div>
-                <div className="grid grid-cols-2 gap-6">
-                    {[
-                        { label: 'Asset Units', value: '450+' },
-                        { label: 'Response', value: '2h' },
-                        { label: 'Redundancy', value: '100%' },
-                        { label: 'Active Hubs', value: '6' }
-                    ].map((stat, i) => (
-                        <div key={i} className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/10 text-center hover:bg-white/10 transition-colors">
-                            <p className="text-4xl font-black mb-2 tracking-tighter">{stat.value}</p>
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-300">{stat.label}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
-
-        {/* Contact Footer */}
-        <div className="text-center mt-24">
-            <p className="text-gray-400 font-black uppercase tracking-[0.5em] text-[10px] mb-10">Strategic Deployment Inquiries</p>
-            <a 
-                href="mailto:kai@krakenpfm.ch"
-                className="inline-flex items-center gap-6 text-[#002D5B] font-black text-2xl md:text-3xl hover:text-[#007AFF] transition-all group"
-            >
-                kai@krakenpfm.ch
-                <div className="w-12 h-12 rounded-full border-2 border-gray-200 flex items-center justify-center group-hover:border-[#007AFF] group-hover:bg-[#007AFF] group-hover:text-white transition-all transform group-hover:rotate-45">
-                    →
-                </div>
-            </a>
-        </div>
       </div>
 
       <style>{`
-        .shadow-3xl {
-            box-shadow: 0 50px 100px -20px rgba(0, 45, 91, 0.4);
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-15px) rotate(2deg); }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
         }
       `}</style>
     </section>
