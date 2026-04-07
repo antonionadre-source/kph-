@@ -102,7 +102,6 @@ const App: React.FC = () => {
             <main>
               <Hero onNavigate={handleNavigate} />
               <SegmentationSection onNavigate={handleNavigate} />
-              <WhyKrakenSection />
               <ClientCarousel />
             </main>
           </>

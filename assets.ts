@@ -6,7 +6,7 @@ import React from 'react';
 export const companyLogoUrl = 'https://i.ibb.co/Kkm04MX/95cd3fa7-4a0c-4827-93d3-17af34b981ef-jpg.png';
 export const companyLogoWhiteUrl = 'https://www.dropbox.com/scl/fi/clp69ypfnl9sairrf9r4q/Logo2.png?rlkey=7fv2k76x39ck9933b6sxrxbr1&st=64y4xtdg&raw=1';
 export const teamPhotoUrl = 'https://i.ibb.co/n8ZWPN4H/Gemini-Generated-Image-gw0b47gw0b47gw0b.png';
-export const mascotImageUrl = 'https://www.dropbox.com/scl/fi/8aovd5zvzg1ftx83k203i/kai.jpg?rlkey=3127i0d2nwhg1q85v6ws007sh&st=ah3vbdo4&raw=1';
+export const mascotImageUrl = 'https://www.dropbox.com/scl/fi/lifz7glh55z2v2uej66vb/IMG_3927.PNG.png?rlkey=wtvu8r5pu2eo26o9vfqd1kkpw&st=grzmg1bo&raw=1';
 export const mascotVideoUrl = 'https://www.dropbox.com/scl/fi/kscwiormatd2m4bd2k0vb/kai-vid-2.mp4?rlkey=c6m4qv8t40p9pg1kbs03awyu0&st=s282dwwd&raw=1';
 export const heroVideoUrl = 'https://storage.googleapis.com/aai-web-samples/services-montage.mp4';
 export const heroImageUrl = 'https://www.dropbox.com/scl/fi/vpl0fu6g3osbkdyn0hcxx/1.svg?rlkey=8kpiqe7lu0fd7a6wfyoj8hy3q&st=wjizwcqt&raw=1';

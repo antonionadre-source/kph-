@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from '../i18n';
-import { CheckCircleIcon } from './icons';
+import { Home, Building2, Check, ChevronRight } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface SegmentationSectionProps {
@@ -10,109 +10,186 @@ interface SegmentationSectionProps {
 const SegmentationSection: React.FC<SegmentationSectionProps> = ({ onNavigate }) => {
   const { t } = useTranslation();
 
-  return (
-    <section id="segmentation-section" className="pt-20 pb-32 -mt-12 bg-white relative overflow-hidden">
-      {/* Background Accents */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/5 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-emerald-600/5 rounded-full blur-[120px]"></div>
-      </div>
+  const processSteps = [
+    {
+      number: '01',
+      title: 'Get a quote',
+      desc: 'Share your needs. We\'ll get back to you quickly.'
+    },
+    {
+      number: '02',
+      title: 'Tailored plan',
+      desc: 'We design a solution that fits your space.'
+    },
+    {
+      number: '03',
+      title: 'We get to work',
+      desc: 'Our team delivers with care, precision and control.'
+    },
+    {
+      number: '04',
+      title: 'You stay informed',
+      desc: 'We keep you updated at every step.'
+    },
+    {
+      number: '05',
+      title: 'Peace of mind',
+      desc: 'Everything runs smoothly. So can you.'
+    }
+  ];
 
+  return (
+    <section id="segmentation-section" className="py-20 bg-white relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-4xl mx-auto text-center mb-24">
-          <motion.h2 
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl mx-auto mb-24">
+          {/* Private Card */}
+          <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-4xl md:text-7xl font-black text-[#002d5b] mb-8 tracking-tighter"
+            className="group relative bg-[#020617] rounded-[1.5rem] overflow-hidden flex flex-col md:flex-row h-full min-h-[350px]"
           >
-            {t('segmentation.title')}
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-slate-600 max-w-2xl mx-auto"
-          >
-            {t('segmentation.subtitle')}
-          </motion.p>
-        </div>
+            <div className="flex-1 p-6 md:p-8 flex flex-col justify-between relative z-10">
+              <div>
+                <div className="w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center mb-4 border border-blue-500/30">
+                  <Home className="w-4 h-4 text-blue-400" />
+                </div>
+                <span className="text-blue-400/60 text-[8px] font-black uppercase tracking-[0.3em] mb-2 block">
+                  PRIVATE PROPERTIES
+                </span>
+                <h3 className="text-2xl md:text-3xl font-black text-white mb-3 tracking-tight leading-[1.1]">
+                  Your home, <br />
+                  <span className="text-blue-500">perfectly managed.</span>
+                </h3>
+                <p className="text-slate-400 text-[11px] leading-relaxed mb-6 max-w-xs">
+                  We take care of your private property with precision and discretion. From regular cleaning to unexpected issues, everything is handled for you.
+                </p>
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto items-stretch">
-          {/* Private Route */}
-          <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            whileHover={{ y: -10 }}
-            className="group relative bg-slate-50 rounded-[3rem] p-12 border border-slate-200 transition-all duration-500 hover:bg-slate-100 hover:border-slate-300 flex flex-col h-full"
-          >
-            <div className="mb-10 flex-grow">
-              <span className="inline-block px-4 py-1 rounded-full bg-blue-500/10 text-blue-600 text-[10px] font-black uppercase tracking-[0.3em] mb-6">
-                {t('segmentation.private.badge')}
-              </span>
-              <h3 className="text-4xl font-black text-[#002d5b] mb-6 tracking-tight">{t('segmentation.private.title')}</h3>
-              <p className="text-slate-600 leading-relaxed text-lg mb-8">
-                {t('segmentation.private.desc')}
-              </p>
-
-              <ul className="space-y-5">
-                {[t('segmentation.private.item1'), t('segmentation.private.item2'), t('segmentation.private.item3')].map((item, i) => (
-                  <li key={i} className="flex items-center gap-4 text-slate-700 font-medium group-hover:text-[#002d5b] transition-colors">
-                    <div className="w-6 h-6 rounded-full bg-blue-500/10 flex items-center justify-center">
-                      <CheckCircleIcon className="w-4 h-4 text-blue-500" />
-                    </div>
-                    {item}
-                  </li>
-                ))}
-              </ul>
+                <ul className="space-y-2 mb-8">
+                  {['Home cleaning', 'Property maintenance', 'Key holding & access', 'On-demand services'].map((item, i) => (
+                    <li key={i} className="flex items-center gap-2 text-white/90 text-[11px] font-bold">
+                      <div className="w-3.5 h-3.5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
+                        <Check className="w-2 h-2 text-white" />
+                      </div>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <button 
+                onClick={() => onNavigate('consultation')}
+                className="flex items-center gap-2 text-emerald-400 font-black uppercase text-[9px] tracking-widest hover:gap-4 transition-all group/btn"
+              >
+                GET A QUOTE
+                <ChevronRight className="w-3 h-3 transition-transform group-hover/btn:translate-x-1" />
+              </button>
             </div>
             
-            <button 
-              onClick={() => onNavigate('consultation')}
-              className="w-full bg-[#002d5b] text-white py-6 rounded-2xl font-black text-xl transition-all hover:scale-[1.02] active:scale-95 shadow-[0_20px_40px_rgba(0,45,91,0.2)] mt-auto"
-            >
-              {t('segmentation.private.cta')}
-            </button>
-          </motion.div>
-
-          {/* Commercial Route */}
-          <motion.div 
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            whileHover={{ y: -10 }}
-            className="group relative bg-blue-50 rounded-[3rem] p-12 border border-blue-100 transition-all duration-500 hover:bg-blue-100/50 hover:border-blue-200 flex flex-col h-full"
-          >
-            <div className="mb-10 flex-grow">
-              <span className="inline-block px-4 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-black uppercase tracking-[0.3em] mb-6">
-                {t('segmentation.commercial.badge')}
-              </span>
-              <h3 className="text-4xl font-black text-[#002d5b] mb-6 tracking-tight">{t('segmentation.commercial.title')}</h3>
-              <p className="text-slate-600 leading-relaxed text-lg mb-8">
-                {t('segmentation.commercial.desc')}
-              </p>
-
-              <ul className="space-y-5">
-                {[t('segmentation.commercial.item1'), t('segmentation.commercial.item2'), t('segmentation.commercial.item3')].map((item, i) => (
-                  <li key={i} className="flex items-center gap-4 text-slate-700 font-medium group-hover:text-[#002d5b] transition-colors">
-                    <div className="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                      <CheckCircleIcon className="w-4 h-4 text-emerald-500" />
-                    </div>
-                    {item}
-                  </li>
-                ))}
-              </ul>
+            <div className="md:w-1/2 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-[#020617] via-transparent to-transparent z-10 hidden md:block"></div>
+              <img 
+                src="https://www.dropbox.com/scl/fi/dbm9w68tvp51esed63znq/imagen-cover-2.png?rlkey=9c9xreyipvnlmczek9s1ox9yn&st=k86zyaki&raw=1" 
+                alt="Private Property" 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
             </div>
-
-            <button 
-              onClick={() => onNavigate('commercial-services')}
-              className="w-full bg-gradient-to-r from-blue-600 to-emerald-600 text-white py-6 rounded-2xl font-black text-xl transition-all hover:scale-[1.02] active:scale-95 shadow-[0_20px_40px_rgba(37,99,235,0.2)] mt-auto"
-            >
-              {t('segmentation.commercial.cta')}
-            </button>
           </motion.div>
+
+          {/* Commercial Card */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="group relative bg-slate-50 rounded-[1.5rem] overflow-hidden flex flex-col md:flex-row h-full min-h-[350px] border border-slate-100"
+          >
+            <div className="flex-1 p-6 md:p-8 flex flex-col justify-between relative z-10">
+              <div>
+                <div className="w-8 h-8 bg-blue-600/10 rounded-lg flex items-center justify-center mb-4 border border-blue-500/20">
+                  <Building2 className="w-4 h-4 text-[#002d5b]" />
+                </div>
+                <span className="text-slate-400 text-[8px] font-black uppercase tracking-[0.3em] mb-2 block">
+                  COMMERCIAL B2B
+                </span>
+                <h3 className="text-2xl md:text-3xl font-black text-[#002d5b] mb-3 tracking-tight leading-[1.1]">
+                  Spaces that reflect <br />
+                  <span className="text-blue-600">your business.</span>
+                </h3>
+                <p className="text-slate-500 text-[11px] leading-relaxed mb-6 max-w-xs">
+                  Your workplace should run smoothly without distractions. Professional facility management and cleaning services for offices and commercial spaces.
+                </p>
+
+                <ul className="space-y-2 mb-8">
+                  {['Office cleaning', 'Building maintenance', 'Facility management', '24/7 support'].map((item, i) => (
+                    <li key={i} className="flex items-center gap-2 text-slate-700 text-[11px] font-bold">
+                      <div className="w-3.5 h-3.5 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
+                        <Check className="w-2 h-2 text-white" />
+                      </div>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <button 
+                onClick={() => onNavigate('commercial-services')}
+                className="flex items-center gap-2 text-emerald-600 font-black uppercase text-[9px] tracking-widest hover:gap-4 transition-all group/btn"
+              >
+                REQUEST A VISIT
+                <ChevronRight className="w-3 h-3 transition-transform group-hover/btn:translate-x-1" />
+              </button>
+            </div>
+            
+            <div className="md:w-1/2 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-transparent to-transparent z-10 hidden md:block"></div>
+              <img 
+                src="https://www.dropbox.com/scl/fi/1nu6yizy9z0nrat8z1m8n/IMG_6909.png?rlkey=45glnunb4coqtytraoyhjyngg&st=5zq5op7n&raw=1" 
+                alt="Commercial Property" 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Process Section */}
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-widest mb-6">
+              OUR PROCESS
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-[#002d5b] tracking-tight">
+              Simple. Clear. <span className="text-blue-600">Under control.</span>
+            </h2>
+          </div>
+
+          <div className="relative">
+            {/* Connector Line */}
+            <div className="absolute top-10 left-0 right-0 h-px bg-slate-200 hidden md:block"></div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-12 relative z-10">
+              {processSteps.map((step, index) => (
+                <motion.div 
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                  className="flex flex-col items-center text-center"
+                >
+                  <div className="w-20 h-20 rounded-full bg-white border border-slate-100 shadow-xl shadow-blue-900/5 flex items-center justify-center mb-8 relative z-10 group hover:scale-110 transition-transform">
+                    <span className="text-xl font-black text-[#002d5b]">{step.number}</span>
+                  </div>
+                  <h4 className="text-lg font-black text-[#002d5b] mb-3 tracking-tight">{step.title}</h4>
+                  <p className="text-slate-500 text-xs leading-relaxed max-w-[160px]">
+                    {step.desc}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

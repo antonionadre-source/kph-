@@ -12,6 +12,7 @@ import {
   LeafIcon,
   PaperAirplaneIcon
 } from './icons';
+import { companyLogoWhiteUrl } from '../assets';
 import emailjs from '@emailjs/browser';
 import { motion } from 'motion/react';
 
@@ -115,10 +116,13 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             viewport={{ once: true }}
             className="lg:col-span-4 space-y-8"
           >
-            <h2 className="text-2xl font-black uppercase tracking-tighter leading-[0.8]">
-              Kraken <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">PFM</span>
-            </h2>
+            <div className="flex flex-col gap-4">
+              <img src={companyLogoWhiteUrl} alt="Kraken PFM Logo" className="h-14 w-auto object-contain self-start" />
+              <div className="flex flex-col leading-tight">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">Properties and</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">Facilities Management</span>
+              </div>
+            </div>
             <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-sm">
               The benchmark of excellence in facility management. Merging technology with hospitality to bring architectural order.
             </p>
