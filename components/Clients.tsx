@@ -74,7 +74,7 @@ const Clients: React.FC<ClientsPageProps> = ({ onNavigate }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="text-6xl md:text-9xl font-black text-white mb-8 uppercase tracking-tighter leading-none"
+          className="text-5xl md:text-9xl font-black text-white mb-8 uppercase tracking-tighter leading-none"
         >
           Coming <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Soon</span>
         </motion.h1>
@@ -83,7 +83,7 @@ const Clients: React.FC<ClientsPageProps> = ({ onNavigate }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          className="text-slate-400 text-xl md:text-2xl font-medium leading-relaxed mb-16 max-w-2xl mx-auto"
+          className="text-slate-400 text-lg md:text-2xl font-medium leading-relaxed mb-16 max-w-2xl mx-auto"
         >
           We are building an exclusive management portal. Soon, our clients will be able to access real-time data about their properties, track maintenance requests, and view detailed facility performance reports right here.
         </motion.p>

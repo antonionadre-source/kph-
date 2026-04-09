@@ -101,16 +101,16 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
     <main className="bg-white min-h-screen selection:bg-blue-100 selection:text-blue-900 font-sans text-[#1d1d1f]">
       
       {/* Immersive Hero */}
-      <section className="relative pt-64 pb-48 overflow-hidden bg-[#f5f5f7]">
+      <section className="relative pt-32 md:pt-64 pb-24 md:pb-48 overflow-hidden bg-[#f5f5f7]">
         <div className="container mx-auto px-6 text-center">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-white text-[#002D5B] text-[10px] font-black uppercase tracking-[0.5em] mb-12 shadow-sm border border-gray-100 animate-fade-in">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-white text-[#002D5B] text-[10px] font-black uppercase tracking-[0.5em] mb-8 md:mb-12 shadow-sm border border-gray-100 animate-fade-in">
                 Professional Portfolio 2025
             </span>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-[0.15em] leading-[0.85] mb-12 animate-fade-in-up text-[#002D5B]">
+            <h1 className="text-4xl md:text-7xl lg:text-8xl font-black tracking-[0.15em] leading-[0.85] mb-8 md:mb-12 animate-fade-in-up text-[#002D5B]">
                 PREMIUM FACILITY SERVICES IN <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#002D5B] to-[#007AFF] tracking-[0.2em] block mt-6 px-2">ZURICH, SCHAFFHAUSEN & WINTERTHUR.</span>
             </h1>
-            <p className="text-gray-500 text-lg md:text-xl lg:text-2xl font-medium max-w-2xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
+            <p className="text-gray-500 text-base md:text-xl lg:text-2xl font-medium max-w-2xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
                 Swiss-engineered property solutions delivered with hospitality excellence and obsessive attention to detail across Switzerland.
             </p>
         </div>
@@ -120,14 +120,14 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
       </section>
 
       {/* Main Service Showcases */}
-      <section className="py-32 md:py-64 space-y-64 container mx-auto px-6 max-w-7xl">
+      <section className="py-20 md:py-64 space-y-32 md:space-y-64 container mx-auto px-6 max-w-7xl">
         {mainServices.map((service, index) => (
           <div 
             key={service.id}
-            className={`flex flex-col lg:flex-row items-center gap-16 lg:gap-32 ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
+            className={`flex flex-col lg:flex-row items-center gap-8 md:gap-16 lg:gap-32 ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
           >
             <div className="w-full lg:w-3/5 group">
-                <div className="relative aspect-[4/3] rounded-[3.5rem] overflow-hidden bg-[#f5f5f7] shadow-2xl transition-transform duration-1000 group-hover:scale-[1.01]">
+                <div className="relative aspect-[4/3] rounded-[2rem] md:rounded-[3.5rem] overflow-hidden bg-[#f5f5f7] shadow-2xl transition-transform duration-1000 group-hover:scale-[1.01]">
                     <img 
                         src={service.imageUrl} 
                         alt={t(service.titleKey)} 
@@ -169,11 +169,11 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
       </section>
 
       {/* Specialized Services: Expanded Technical Focus with Added Images */}
-      <section className="py-48 bg-[#f5f5f7] relative overflow-hidden">
+      <section className="py-24 md:py-48 bg-[#f5f5f7] relative overflow-hidden">
         <div className="container mx-auto px-6 max-w-7xl relative z-10">
-          <div className="text-center mb-24 max-w-4xl mx-auto">
-            <h2 className="text-4xl md:text-7xl font-black tracking-[0.15em] mb-8 text-[#002D5B] uppercase leading-tight">SPECIALIZED SOLUTIONS FOR ST. GALLEN, THURGAU & WINTERTHUR</h2>
-            <p className="text-gray-500 text-lg font-medium">Modular service units engineered for specific property variables. We deploy specialized units across Switzerland equipped with industry-leading technology and B Corp certified sustainable materials.</p>
+          <div className="text-center mb-16 md:mb-24 max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-7xl font-black tracking-[0.15em] mb-8 text-[#002D5B] uppercase leading-tight">SPECIALIZED SOLUTIONS FOR ST. GALLEN, THURGAU & WINTERTHUR</h2>
+            <p className="text-gray-500 text-base md:text-lg font-medium">Modular service units engineered for specific property variables. We deploy specialized units across Switzerland equipped with industry-leading technology and B Corp certified sustainable materials.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -292,20 +292,20 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
       </section>
 
       {/* Modern CTA Footer */}
-      <section className="py-64 bg-white border-t border-gray-50">
+      <section className="py-32 md:py-64 bg-white border-t border-gray-50">
           <div className="container mx-auto px-6 max-w-7xl text-center">
-              <div className="max-w-4xl mx-auto space-y-12">
-                  <div className="text-9xl filter drop-shadow-2xl animate-float select-none">💎</div>
-                  <h2 className="text-5xl md:text-9xl font-black tracking-tighter leading-none text-[#002D5B]">
+              <div className="max-w-4xl mx-auto space-y-8 md:space-y-12">
+                  <div className="text-7xl md:text-9xl filter drop-shadow-2xl animate-float select-none">💎</div>
+                  <h2 className="text-4xl md:text-9xl font-black tracking-tighter leading-none text-[#002D5B]">
                     Uncompromising <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#002D5B] to-[#007AFF]">Excellence.</span>
                   </h2>
-                  <p className="text-gray-400 text-xl font-bold uppercase tracking-[0.5em]">Experience the Kraken Standard</p>
+                  <p className="text-gray-400 text-base md:text-xl font-bold uppercase tracking-[0.5em]">Experience the Kraken Standard</p>
                   
-                  <div className="pt-12">
+                  <div className="pt-8 md:pt-12">
                       <button 
                         onClick={() => onNavigate('consultation')}
-                        className="group bg-[#002D5B] text-white px-20 py-8 rounded-full text-2xl font-black shadow-2xl hover:bg-black transition-all hover:scale-105 active:scale-95 uppercase tracking-widest"
+                        className="group bg-[#002D5B] text-white px-8 md:px-20 py-5 md:py-8 rounded-full text-lg md:text-2xl font-black shadow-2xl hover:bg-black transition-all hover:scale-105 active:scale-95 uppercase tracking-widest"
                       >
                         Book Free Quote
                       </button>

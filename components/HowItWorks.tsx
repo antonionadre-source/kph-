@@ -24,7 +24,7 @@ const HowItWorks: React.FC<HowItWorksProps> = ({ onNavigate }) => {
           viewport={{ once: true }}
           className="mb-16"
         >
-          <h2 className="text-5xl md:text-7xl font-black text-[#002d5b] mb-4 tracking-tighter uppercase">
+          <h2 className="text-4xl md:text-7xl font-black text-[#002d5b] mb-4 tracking-tighter uppercase">
             How It Works.
           </h2>
           <p className="text-slate-500 font-bold uppercase tracking-[0.3em] text-xs">

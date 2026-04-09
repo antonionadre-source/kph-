@@ -83,7 +83,7 @@ const WhyUs: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-5xl md:text-8xl font-black leading-[0.9] tracking-tighter mb-8"
+            className="text-4xl md:text-8xl font-black leading-[0.9] tracking-tighter mb-8"
           >
             {t('whyUs.title').split('Kraken Management.')[0]}
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-emerald-400 to-blue-500">

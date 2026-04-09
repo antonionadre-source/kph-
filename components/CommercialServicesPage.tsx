@@ -122,12 +122,12 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
     <main className="bg-white min-h-screen selection:bg-blue-100 selection:text-blue-900 font-sans text-[#1d1d1f]">
       
       {/* Immersive Hero */}
-      <section className="relative pt-64 pb-48 overflow-hidden bg-[#002D5B]">
+      <section className="relative pt-32 md:pt-64 pb-24 md:pb-48 overflow-hidden bg-[#002D5B]">
         <div className="container mx-auto px-6 text-center relative z-10">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 text-white text-[10px] font-black uppercase tracking-[0.5em] mb-12 shadow-sm border border-white/10 animate-fade-in">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 text-white text-[10px] font-black uppercase tracking-[0.5em] mb-8 md:mb-12 shadow-sm border border-white/10 animate-fade-in">
                 Enterprise Solutions 2025
             </span>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-[0.15em] leading-[0.85] mb-12 animate-fade-in-up text-white">
+            <h1 className="text-4xl md:text-7xl lg:text-8xl font-black tracking-[0.15em] leading-[0.85] mb-8 md:mb-12 animate-fade-in-up text-white">
                 {t('commercial.hero.title').split(' ').map((word, i) => (
                   <React.Fragment key={i}>
                     {word} {i === 1 ? <br /> : ''}
@@ -135,7 +135,7 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
                 ))}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 tracking-[0.2em] block mt-6 px-2">STRATEGIC EXCELLENCE.</span>
             </h1>
-            <p className="text-blue-100/60 text-lg md:text-xl lg:text-2xl font-medium max-w-3xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
+            <p className="text-blue-100/60 text-base md:text-xl lg:text-2xl font-medium max-w-3xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
                 {t('commercial.hero.subtitle')}
             </p>
         </div>
@@ -145,14 +145,14 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
       </section>
 
       {/* Commercial Service Showcases */}
-      <section className="py-32 md:py-64 space-y-64 container mx-auto px-6 max-w-7xl">
+      <section className="py-20 md:py-64 space-y-32 md:space-y-64 container mx-auto px-6 max-w-7xl">
         {commercialServices.map((service, index) => (
           <div 
             key={service.id}
-            className={`flex flex-col lg:flex-row items-center gap-16 lg:gap-32 ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
+            className={`flex flex-col lg:flex-row items-center gap-8 md:gap-16 lg:gap-32 ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
           >
             <div className="w-full lg:w-3/5 group">
-                <div className="relative aspect-[16/9] rounded-[3.5rem] overflow-hidden bg-[#f5f5f7] shadow-2xl transition-transform duration-1000 group-hover:scale-[1.01]">
+                <div className="relative aspect-[16/9] rounded-[2rem] md:rounded-[3.5rem] overflow-hidden bg-[#f5f5f7] shadow-2xl transition-transform duration-1000 group-hover:scale-[1.01]">
                     <img 
                         src={service.imageUrl} 
                         alt={service.title} 
@@ -223,19 +223,19 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
       </section>
 
       {/* Integration Protocol */}
-      <section className="py-48 bg-[#f5f5f7] relative overflow-hidden">
+      <section className="py-24 md:py-48 bg-[#f5f5f7] relative overflow-hidden">
         <div className="container mx-auto px-6 max-w-7xl">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-24 items-center">
                 <div>
                     <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.5em] mb-6 block">{t('commercial.protocol.title')}</span>
-                    <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-none mb-10 text-[#002D5B]">
+                    <h2 className="text-3xl md:text-6xl font-black tracking-tighter leading-none mb-10 text-[#002D5B]">
                         {t('commercial.protocol.header')}
                     </h2>
-                    <p className="text-gray-500 text-lg font-medium leading-relaxed mb-12">
+                    <p className="text-gray-500 text-base md:text-lg font-medium leading-relaxed mb-12">
                         {t('commercial.protocol.desc')}
                     </p>
                     
-                    <div className="space-y-12">
+                    <div className="space-y-8 md:space-y-12">
                         {[
                             { icon: <BuildingIcon className="w-6 h-6" />, title: t('commercial.protocol.item1.title'), desc: t('commercial.protocol.item1.desc') },
                             { icon: <ShieldCheckIcon className="w-6 h-6" />, title: t('commercial.protocol.item2.title'), desc: t('commercial.protocol.item2.desc') },

@@ -77,12 +77,12 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
                   <span className="w-8 h-px bg-blue-500"></span>
                   <span className="text-blue-400 font-black text-[10px] uppercase tracking-[0.4em]">Legacy & Vision</span>
                 </div>
-                <h1 className="text-6xl lg:text-7xl font-black mb-8 leading-tight tracking-tighter uppercase italic">
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-black mb-8 leading-tight tracking-tighter uppercase italic">
                 {t('about.title').split(' ').map((word, i) => (
                   <span key={i} className={i === 1 ? "text-blue-500" : ""}>{word} </span>
                 ))}
                 </h1>
-                <p className="mb-6 text-white/60 text-xl font-medium leading-relaxed">
+                <p className="mb-6 text-white/60 text-lg md:text-xl font-medium leading-relaxed">
                 {t('about.p1')}
                 </p>
                 <p className="mb-4 text-white/40 text-lg font-medium leading-relaxed">
@@ -104,15 +104,15 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
             <div className="container mx-auto px-4 md:px-8 relative z-10">
                 
                 {/* Header for Comic */}
-                <div className="text-center mb-24">
+                <div className="text-center mb-16 md:mb-24">
                      <motion.div 
                        initial={{ scale: 0.9, opacity: 0 }}
                        whileInView={{ scale: 1, opacity: 1 }}
                        viewport={{ once: true }}
-                       className="bg-blue-600 border-[6px] border-white/10 rounded-[3rem] shadow-[0_30px_60px_rgba(37,99,235,0.3)] p-8 md:p-12 inline-block relative overflow-hidden transform rotate-1 transition-all hover:rotate-0"
+                       className="bg-blue-600 border-[6px] border-white/10 rounded-[2rem] md:rounded-[3rem] shadow-[0_30px_60px_rgba(37,99,235,0.3)] p-6 md:p-12 inline-block relative overflow-hidden transform rotate-1 transition-all hover:rotate-0"
                      >
                         <div className="absolute inset-0 bg-halftone opacity-[0.2] text-white pointer-events-none"></div>
-                        <h2 className="text-4xl md:text-7xl font-black text-white leading-[0.8] tracking-tighter uppercase italic relative z-10 drop-shadow-[4px_4px_0_rgba(0,0,0,0.5)]">
+                        <h2 className="text-3xl md:text-7xl font-black text-white leading-[0.8] tracking-tighter uppercase italic relative z-10 drop-shadow-[4px_4px_0_rgba(0,0,0,0.5)]">
                             {t('aboutPage.storyTitle').split(':').map((part, i) => (
                                 <span key={i} className={i === 1 ? "block mt-4 text-blue-200" : ""}>
                                     {part}{i === 0 ? ':' : ''}
@@ -230,11 +230,11 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
 
         {/* Section 3: Our Core Values */}
         <section id="core-values" className="py-10 mb-32">
-            <div className="text-center mb-20">
+            <div className="text-center mb-16 md:mb-20">
                 <span className="text-white/20 font-black text-[10px] uppercase tracking-[0.5em] mb-4 block">Fundamental Beliefs</span>
-                <h2 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter italic">Our <span className="text-blue-500">Core</span> Values</h2>
+                <h2 className="text-4xl md:text-7xl font-black text-white uppercase tracking-tighter italic">Our <span className="text-blue-500">Core</span> Values</h2>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
             {values.map((value, index) => (
                 <motion.div 
                   key={index} 
@@ -353,12 +353,12 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
                       initial={{ opacity: 0, scale: 0.95 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
-                      className="lg:col-span-12 bg-white text-[#020617] p-16 rounded-[4rem] flex flex-col md:flex-row items-center gap-16 group transform transition-all duration-700 hover:shadow-[0_50px_100px_rgba(255,255,255,0.1)] shadow-2xl"
+                      className="lg:col-span-12 bg-white text-[#020617] p-8 md:p-16 rounded-[2.5rem] md:rounded-[4rem] flex flex-col md:flex-row items-center gap-8 md:gap-16 group transform transition-all duration-700 hover:shadow-[0_50px_100px_rgba(255,255,255,0.1)] shadow-2xl"
                     >
-                        <div className="flex-shrink-0 w-28 h-28 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-6xl shadow-inner group-hover:scale-110 transition-transform duration-500">🤝</div>
+                        <div className="flex-shrink-0 w-20 h-20 md:w-28 md:h-28 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-4xl md:text-6xl shadow-inner group-hover:scale-110 transition-transform duration-500">🤝</div>
                         <div className="text-center md:text-left flex-1">
-                            <h3 className="text-4xl font-black mb-6 tracking-tighter uppercase italic">{t('aboutPage.employees.retention.title')}</h3>
-                            <p className="text-gray-500 text-2xl font-medium leading-relaxed max-w-4xl">
+                            <h3 className="text-3xl md:text-4xl font-black mb-4 md:mb-6 tracking-tighter uppercase italic">{t('aboutPage.employees.retention.title')}</h3>
+                            <p className="text-gray-500 text-lg md:text-2xl font-medium leading-relaxed max-w-4xl">
                                 {t('aboutPage.employees.retention.desc')}
                             </p>
                         </div>

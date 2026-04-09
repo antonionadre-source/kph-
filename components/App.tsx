@@ -25,6 +25,7 @@ import PrecisionQuoteSection from './PrecisionQuoteSection';
 import HSEPage from './HSEPage';
 import TermsPage from './TermsPage';
 import HowItWorks from './HowItWorks';
+import ValuesSection from './ValuesSection';
 
 // --- Firebase Configuration ---
 export const db = (window as any).db;
@@ -102,6 +103,7 @@ const App: React.FC = () => {
             <main>
               <Hero onNavigate={handleNavigate} />
               <SegmentationSection onNavigate={handleNavigate} />
+              <ValuesSection />
               <ClientCarousel />
             </main>
           </>

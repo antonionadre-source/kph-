@@ -35,7 +35,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="max-w-2xl animate-fade-in-up text-left">
-            <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.1] mb-4 tracking-tight">
+            <h1 className="text-4xl md:text-7xl font-black text-white leading-[1.1] mb-4 tracking-tight">
               Mastering the <br /> 
               <span className={`transition-colors duration-700 ${
                 activeColor === 0 ? 'text-[#007bff]' : 
@@ -45,25 +45,25 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
               management.
             </h1>
             
-            <p className="text-[#4ade80] font-handwriting text-4xl md:text-5xl mb-8 -rotate-2 transform-gpu">
+            <p className="text-[#4ade80] font-handwriting text-3xl md:text-5xl mb-8 -rotate-2 transform-gpu">
               So you don't have to.
             </p>
 
-            <p className="text-lg md:text-xl text-white/90 mb-12 font-medium max-w-xl leading-relaxed">
+            <p className="text-base md:text-xl text-white/90 mb-12 font-medium max-w-xl leading-relaxed">
               Facility management, cleaning and maintenance in Schaffhausen, Zurich and Winterthur — designed to run seamlessly.
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-start gap-6">
+            <div className="flex flex-col sm:flex-row items-center justify-start gap-4 md:gap-6">
               <button 
                 onClick={() => onNavigate('consultation')}
-                className="group w-full sm:w-auto bg-gradient-to-r from-[#4ade80] to-[#2dd4bf] text-[#002d5b] px-20 py-5 rounded-full text-lg font-black shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3 whitespace-nowrap"
+                className="group w-full sm:w-auto bg-gradient-to-r from-[#4ade80] to-[#2dd4bf] text-[#002d5b] px-8 md:px-20 py-4 md:py-5 rounded-full text-base md:text-lg font-black shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3 whitespace-nowrap"
               >
                 Get your quote in minutes ⚡
               </button>
               
               <button
                 onClick={() => onNavigate('services-page')}
-                className="group w-full sm:w-auto bg-transparent border border-white/30 text-white px-20 py-5 rounded-full text-lg font-bold transition-all hover:bg-white/10 flex items-center justify-center gap-3 whitespace-nowrap"
+                className="group w-full sm:w-auto bg-transparent border border-white/30 text-white px-8 md:px-20 py-4 md:py-5 rounded-full text-base md:text-lg font-bold transition-all hover:bg-white/10 flex items-center justify-center gap-3 whitespace-nowrap"
               >
                 EXPLORE SERVICES 
                 <ChevronRightIcon className="w-5 h-5 transition-transform group-hover:translate-x-1" />

@@ -408,7 +408,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
              <LeafIcon className="w-3.5 h-3.5" />
              2025 Sustainability Report
            </span>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-[#002D5B] mb-8 tracking-tighter animate-fade-in-up animation-delay-100 leading-[0.9]">
+          <h1 className="text-4xl md:text-7xl lg:text-8xl font-black text-[#002D5B] mb-8 tracking-tighter animate-fade-in-up animation-delay-100 leading-[0.9]">
             {t('sustainability.page.title')}
           </h1>
         </div>
@@ -440,7 +440,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
                          <span className="text-green-600 font-black text-[10px] md:text-xs uppercase tracking-[0.3em] mb-4 block">{t(section.introKey)}</span>
                     )}
                   
-                  <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#002D5B] mb-8 leading-[1.1] tracking-tight uppercase">
+                  <h2 className="text-3xl md:text-6xl font-black text-[#002D5B] mb-8 leading-[1.1] tracking-tight uppercase">
                     {t(section.titleKey)}
                   </h2>
                   
@@ -526,7 +526,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
             </div>
             <div className="md:w-1/2">
               <span className="text-green-600 font-black text-[10px] md:text-xs uppercase tracking-[0.3em] mb-4 block">Swiss Impact</span>
-              <h3 className="text-4xl lg:text-6xl font-black text-[#002D5B] mb-8 leading-[0.9] tracking-tighter uppercase">
+              <h3 className="text-3xl md:text-6xl font-black text-[#002D5B] mb-8 leading-[0.9] tracking-tighter uppercase">
                 {t('sustainability.local.title')}
               </h3>
               <p className="text-xl text-gray-600 mb-8 font-bold leading-tight">
@@ -546,7 +546,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
           <div className="flex flex-col lg:flex-row items-center gap-16">
             <div className="lg:w-1/2">
               <span className="text-blue-400 font-black text-[10px] md:text-xs uppercase tracking-[0.3em] mb-4 block">Strategic Network</span>
-              <h2 className="text-5xl md:text-7xl font-black text-white mb-8 leading-[0.9] tracking-tighter uppercase">
+              <h2 className="text-4xl md:text-7xl font-black text-white mb-8 leading-[0.9] tracking-tighter uppercase">
                 Our Triad of <br/>
                 <span className="text-blue-500/80">Operational Excellence.</span>
               </h2>
@@ -607,7 +607,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
-                className="text-7xl md:text-9xl font-black text-[#002d5b] mb-12 leading-[0.82] tracking-tighter uppercase"
+                className="text-5xl md:text-9xl font-black text-[#002d5b] mb-12 leading-[0.82] tracking-tighter uppercase"
               >
                 {t('sustainability.success.title').split('.')[0]} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">
@@ -766,7 +766,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
               >
                 <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600">{t('sustainability.standard.badge')}</span>
               </motion.div>
-              <h2 className="text-6xl md:text-[8rem] xl:text-[9rem] font-black text-[#002d5b] leading-[0.85] tracking-tighter uppercase">
+              <h2 className="text-5xl md:text-[8rem] xl:text-[9rem] font-black text-[#002d5b] leading-[0.85] tracking-tighter uppercase">
                 {t('sustainability.standard.title').split('.')[0]} <br />
                 <span className="text-emerald-600">{t('sustainability.standard.title').split('.')[1]}</span>
               </h2>
