@@ -31,42 +31,42 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
         <div className="absolute inset-0 bg-black/20 md:bg-black/10 hidden md:block"></div>
       </div>
 
-      <div className="container mx-auto px-4 md:px-6 relative z-10 pt-12 pb-24 md:pt-32 md:pb-32">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="container mx-auto px-4 md:px-6 relative z-10 pt-8 pb-16 md:pt-32 md:pb-32">
+        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left Content */}
-          <div className="max-w-2xl animate-fade-in-up text-left">
-            <h1 className="text-3xl sm:text-4xl md:text-7xl font-black text-white leading-[1.1] mb-4 tracking-tight">
-              Mastering the <br /> 
+          <div className="max-w-2xl animate-fade-in-up text-center md:text-left">
+            <h1 className="text-2xl sm:text-3xl md:text-7xl font-black text-white leading-[1.1] mb-3 md:mb-4 tracking-tight">
+              Mastering the <br className="hidden md:block" /> 
               <span className={`transition-colors duration-700 ${
                 activeColor === 0 ? 'text-[#007bff]' : 
                 activeColor === 1 ? 'text-yellow-400' : 
                 'text-red-400'
-              }`}>chaos</span> of property <br />
+              }`}>chaos</span> of property <br className="hidden md:block" />
               management.
             </h1>
             
-            <p className="text-[#4ade80] font-handwriting text-2xl sm:text-3xl md:text-5xl mb-6 md:mb-8 -rotate-2 transform-gpu">
+            <p className="text-[#4ade80] font-handwriting text-xl sm:text-2xl md:text-5xl mb-4 md:mb-8 -rotate-2 transform-gpu mx-auto md:mx-0 w-fit">
               So you don't have to.
             </p>
 
-            <p className="text-sm md:text-xl text-white/90 mb-8 md:mb-12 font-medium max-w-xl leading-relaxed">
+            <p className="text-xs md:text-xl text-white/90 mb-6 md:mb-12 font-medium max-w-xl leading-relaxed mx-auto md:mx-0">
               Facility management, cleaning and maintenance in Schaffhausen, Zurich and Winterthur — designed to run seamlessly.
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-start gap-4 md:gap-6">
+            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3 md:gap-6">
               <button 
                 onClick={() => onNavigate('consultation')}
-                className="group w-full sm:w-auto bg-gradient-to-r from-[#4ade80] to-[#2dd4bf] text-[#002d5b] px-8 md:px-20 py-4 md:py-5 rounded-full text-base md:text-lg font-black shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3 whitespace-nowrap"
+                className="group w-full sm:w-auto bg-gradient-to-r from-[#4ade80] to-[#2dd4bf] text-[#002d5b] px-6 md:px-20 py-3 md:py-5 rounded-full text-sm md:text-lg font-black shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 md:gap-3 whitespace-nowrap"
               >
                 Get your quote in minutes ⚡
               </button>
               
               <button
                 onClick={() => onNavigate('services-page')}
-                className="group w-full sm:w-auto bg-transparent border border-white/30 text-white px-8 md:px-20 py-4 md:py-5 rounded-full text-base md:text-lg font-bold transition-all hover:bg-white/10 flex items-center justify-center gap-3 whitespace-nowrap"
+                className="group w-full sm:w-auto bg-transparent border border-white/30 text-white px-6 md:px-20 py-3 md:py-5 rounded-full text-sm md:text-lg font-bold transition-all hover:bg-white/10 flex items-center justify-center gap-2 md:gap-3 whitespace-nowrap"
               >
                 EXPLORE SERVICES 
-                <ChevronRightIcon className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                <ChevronRightIcon className="w-4 h-4 md:w-5 md:h-5 transition-transform group-hover:translate-x-1" />
               </button>
             </div>
           </div>
