@@ -19,23 +19,23 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   }, []);
 
   return (
-    <section className="relative min-h-[80vh] flex items-center overflow-hidden pt-32 pb-32 bg-[#020617]">
-      {/* Background Image with Overlay */}
-      <div className="absolute inset-0 z-0">
+    <section className="relative min-h-screen md:min-h-[80vh] flex flex-col md:flex-row items-center overflow-hidden bg-[#020617]">
+      {/* Background Image / Mobile Top Image */}
+      <div className="relative md:absolute md:inset-0 z-0 w-full h-auto md:h-full">
         <img 
           src="https://www.dropbox.com/scl/fi/0le3yo0nm1ry69ptcolr5/Portada-3-2.png?rlkey=v6mxuz3txjhkef9auidzccsjr&st=4swpy8zk&raw=1" 
           alt="Kraken Properties Hero" 
-          className="w-full h-full object-cover"
+          className="w-full h-auto md:h-full object-contain md:object-cover object-center"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="absolute inset-0 bg-black/20 md:bg-black/10 hidden md:block"></div>
       </div>
 
-      <div className="container mx-auto px-4 md:px-6 relative z-10">
+      <div className="container mx-auto px-4 md:px-6 relative z-10 pt-12 pb-24 md:pt-32 md:pb-32">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="max-w-2xl animate-fade-in-up text-left">
-            <h1 className="text-4xl md:text-7xl font-black text-white leading-[1.1] mb-4 tracking-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-7xl font-black text-white leading-[1.1] mb-4 tracking-tight">
               Mastering the <br /> 
               <span className={`transition-colors duration-700 ${
                 activeColor === 0 ? 'text-[#007bff]' : 
@@ -45,11 +45,11 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
               management.
             </h1>
             
-            <p className="text-[#4ade80] font-handwriting text-3xl md:text-5xl mb-8 -rotate-2 transform-gpu">
+            <p className="text-[#4ade80] font-handwriting text-2xl sm:text-3xl md:text-5xl mb-6 md:mb-8 -rotate-2 transform-gpu">
               So you don't have to.
             </p>
 
-            <p className="text-base md:text-xl text-white/90 mb-12 font-medium max-w-xl leading-relaxed">
+            <p className="text-sm md:text-xl text-white/90 mb-8 md:mb-12 font-medium max-w-xl leading-relaxed">
               Facility management, cleaning and maintenance in Schaffhausen, Zurich and Winterthur — designed to run seamlessly.
             </p>
             

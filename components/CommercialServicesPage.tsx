@@ -127,13 +127,13 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
             <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 text-white text-[10px] font-black uppercase tracking-[0.5em] mb-8 md:mb-12 shadow-sm border border-white/10 animate-fade-in">
                 Enterprise Solutions 2025
             </span>
-            <h1 className="text-4xl md:text-7xl lg:text-8xl font-black tracking-[0.15em] leading-[0.85] mb-8 md:mb-12 animate-fade-in-up text-white">
+            <h1 className="text-3xl sm:text-4xl md:text-7xl lg:text-8xl font-black tracking-[0.1em] md:tracking-[0.15em] leading-[0.85] mb-8 md:mb-12 animate-fade-in-up text-white">
                 {t('commercial.hero.title').split(' ').map((word, i) => (
                   <React.Fragment key={i}>
                     {word} {i === 1 ? <br /> : ''}
                   </React.Fragment>
                 ))}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 tracking-[0.2em] block mt-6 px-2">STRATEGIC EXCELLENCE.</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 tracking-[0.1em] md:tracking-[0.2em] block mt-4 md:mt-6 px-2">STRATEGIC EXCELLENCE.</span>
             </h1>
             <p className="text-blue-100/60 text-base md:text-xl lg:text-2xl font-medium max-w-3xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
                 {t('commercial.hero.subtitle')}
@@ -152,7 +152,7 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
             className={`flex flex-col lg:flex-row items-center gap-8 md:gap-16 lg:gap-32 ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
           >
             <div className="w-full lg:w-3/5 group">
-                <div className="relative aspect-[16/9] rounded-[2rem] md:rounded-[3.5rem] overflow-hidden bg-[#f5f5f7] shadow-2xl transition-transform duration-1000 group-hover:scale-[1.01]">
+                <div className="relative aspect-[4/3] md:aspect-[16/9] rounded-[2rem] md:rounded-[3.5rem] overflow-hidden bg-[#f5f5f7] shadow-2xl transition-transform duration-1000 group-hover:scale-[1.01]">
                     <img 
                         src={service.imageUrl} 
                         alt={service.title} 

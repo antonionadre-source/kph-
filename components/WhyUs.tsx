@@ -83,7 +83,7 @@ const WhyUs: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-8xl font-black leading-[0.9] tracking-tighter mb-8"
+            className="text-3xl sm:text-4xl md:text-8xl font-black leading-[0.9] tracking-tighter mb-8"
           >
             {t('whyUs.title').split('Kraken Management.')[0]}
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-emerald-400 to-blue-500">
@@ -154,10 +154,10 @@ const WhyUs: React.FC = () => {
             { val: "ISO", label: t('whyUs.stat4.label') }
           ].map((stat, i) => (
             <div key={i} className="text-center group">
-              <div className="text-5xl font-black text-white mb-2 group-hover:scale-110 transition-transform duration-300">
+              <div className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-2 group-hover:scale-110 transition-transform duration-300">
                 {stat.val}
               </div>
-              <div className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">
+              <div className="text-[8px] md:text-[10px] font-black text-slate-500 uppercase tracking-[0.3em]">
                 {stat.label}
               </div>
             </div>

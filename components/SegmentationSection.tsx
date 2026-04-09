@@ -47,7 +47,7 @@ const SegmentationSection: React.FC<SegmentationSectionProps> = ({ onNavigate })
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="group relative bg-[#020617] rounded-[1.5rem] overflow-hidden flex flex-col md:flex-row h-full min-h-[350px]"
+            className="group relative bg-[#020617] rounded-[1.5rem] overflow-hidden flex flex-col md:flex-row h-full min-h-[450px] md:min-h-[350px]"
           >
             <div className="flex-1 p-6 md:p-8 flex flex-col justify-between relative z-10">
               <div>
@@ -86,8 +86,8 @@ const SegmentationSection: React.FC<SegmentationSectionProps> = ({ onNavigate })
               </button>
             </div>
             
-            <div className="md:w-1/2 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-[#020617] via-transparent to-transparent z-10 hidden md:block"></div>
+            <div className="h-48 md:h-auto md:w-1/2 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent md:bg-gradient-to-r md:from-[#020617] z-10"></div>
               <img 
                 src="https://www.dropbox.com/scl/fi/dbm9w68tvp51esed63znq/imagen-cover-2.png?rlkey=9c9xreyipvnlmczek9s1ox9yn&st=k86zyaki&raw=1" 
                 alt="Private Property" 
@@ -103,7 +103,7 @@ const SegmentationSection: React.FC<SegmentationSectionProps> = ({ onNavigate })
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="group relative bg-slate-50 rounded-[1.5rem] overflow-hidden flex flex-col md:flex-row h-full min-h-[350px] border border-slate-100"
+            className="group relative bg-slate-50 rounded-[1.5rem] overflow-hidden flex flex-col md:flex-row h-full min-h-[450px] md:min-h-[350px] border border-slate-100"
           >
             <div className="flex-1 p-6 md:p-8 flex flex-col justify-between relative z-10">
               <div>
@@ -142,8 +142,8 @@ const SegmentationSection: React.FC<SegmentationSectionProps> = ({ onNavigate })
               </button>
             </div>
             
-            <div className="md:w-1/2 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-50 via-transparent to-transparent z-10 hidden md:block"></div>
+            <div className="h-48 md:h-auto md:w-1/2 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-50 via-transparent to-transparent md:bg-gradient-to-r md:from-slate-50 z-10"></div>
               <img 
                 src="https://www.dropbox.com/scl/fi/1nu6yizy9z0nrat8z1m8n/IMG_6909.png?rlkey=45glnunb4coqtytraoyhjyngg&st=5zq5op7n&raw=1" 
                 alt="Commercial Property" 

@@ -106,9 +106,9 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
             <span className="inline-block px-4 py-1.5 rounded-full bg-white text-[#002D5B] text-[10px] font-black uppercase tracking-[0.5em] mb-8 md:mb-12 shadow-sm border border-gray-100 animate-fade-in">
                 Professional Portfolio 2025
             </span>
-            <h1 className="text-4xl md:text-7xl lg:text-8xl font-black tracking-[0.15em] leading-[0.85] mb-8 md:mb-12 animate-fade-in-up text-[#002D5B]">
+            <h1 className="text-3xl sm:text-4xl md:text-7xl lg:text-8xl font-black tracking-[0.1em] md:tracking-[0.15em] leading-[0.85] mb-8 md:mb-12 animate-fade-in-up text-[#002D5B]">
                 PREMIUM FACILITY SERVICES IN <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#002D5B] to-[#007AFF] tracking-[0.2em] block mt-6 px-2">ZURICH, SCHAFFHAUSEN & WINTERTHUR.</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#002D5B] to-[#007AFF] tracking-[0.1em] md:tracking-[0.2em] block mt-4 md:mt-6 px-2">ZURICH, SCHAFFHAUSEN & WINTERTHUR.</span>
             </h1>
             <p className="text-gray-500 text-base md:text-xl lg:text-2xl font-medium max-w-2xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
                 Swiss-engineered property solutions delivered with hospitality excellence and obsessive attention to detail across Switzerland.
