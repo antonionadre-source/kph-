@@ -291,21 +291,6 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
 
   const sections = [
     {
-      id: 'bcorp',
-      image: sustainabilityImage1Url,
-      titleKey: 'sustainability.bcorp.title',
-      textKey: 'sustainability.bcorp.p1',
-      introKey: 'sustainability.section.title',
-      logos: [
-        { name: 'B Corp', url: 'https://i.ibb.co/chcNffCj/diversey-logo.png' },
-      ],
-      extraContent: (
-        <div className="mt-6 p-6 bg-green-50 rounded-2xl border-l-4 border-green-500">
-          <p className="text-sm text-gray-600 font-medium leading-relaxed">{t('sustainability.bcorp.p2')}</p>
-        </div>
-      )
-    },
-    {
       id: 'logistics',
       image: sustainabilityPageImages.lowEmissionLogistics,
       titleKey: 'sustainability.page.section1.subsection1.title',
@@ -361,23 +346,24 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
       introKey: null,
       logos: [],
       extraContent: (
-         <div className="mt-6 grid grid-cols-1 gap-4">
+        <div className="mt-6 grid grid-cols-1 gap-4">
+           <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+               <h5 className="font-black text-gray-800 text-sm mb-2 uppercase tracking-tight">{t('sustainability.page.section3.subsection2.title')}</h5>
+               <p className="text-xs text-gray-600 font-medium leading-relaxed">{t('sustainability.page.section3.subsection2.p1')}</p>
+           </div>
             <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                <h5 className="font-black text-gray-800 text-sm mb-2 uppercase tracking-tight">{t('sustainability.page.section3.subsection2.title')}</h5>
-                <p className="text-xs text-gray-600 font-medium leading-relaxed">{t('sustainability.page.section3.subsection2.p1')}</p>
-            </div>
-             <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                <h5 className="font-black text-gray-800 text-sm mb-2 uppercase tracking-tight">{t('sustainability.page.section3.subsection3.title')}</h5>
-                <p className="text-xs text-gray-600 font-medium leading-relaxed">{t('sustainability.page.section3.subsection3.p2')}</p>
-            </div>
-             <div className="flex flex-col sm:flex-row items-center gap-6 mt-6 p-4 bg-white rounded-2xl shadow-sm">
-                 <img src={sustainabilityPartnerLogos.suva} alt="Suva" className="h-10 w-auto opacity-80 grayscale hover:grayscale-0 transition-all" />
-                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{t('sustainability.page.compliance')}</span>
-            </div>
-         </div>
+               <h5 className="font-black text-gray-800 text-sm mb-2 uppercase tracking-tight">{t('sustainability.page.section3.subsection3.title')}</h5>
+               <p className="text-xs text-gray-600 font-medium leading-relaxed">{t('sustainability.page.section3.subsection3.p2')}</p>
+           </div>
+            <div className="flex flex-col sm:flex-row items-center gap-6 mt-6 p-4 bg-white rounded-2xl shadow-sm">
+                <img src={sustainabilityPartnerLogos.suva} alt="Suva" className="h-10 w-auto opacity-80 grayscale hover:grayscale-0 transition-all" />
+                <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{t('sustainability.page.compliance')}</span>
+           </div>
+        </div>
       )
     }
   ];
+;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -400,27 +386,123 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
 
 
   return (
-    <main className="bg-white text-gray-800">
+    <main className="bg-white text-gray-800 selection:bg-green-500/30">
       {/* Hero / Intro Section */}
-      <div className="pt-40 pb-16 md:pt-52 md:pb-24 bg-emerald-50/50">
-        <div className="container mx-auto px-6 max-w-5xl text-center">
-           <span className="inline-flex py-1.5 px-4 rounded-full bg-green-100 text-green-700 text-[10px] md:text-xs font-black tracking-[0.2em] uppercase mb-8 animate-fade-in-up items-center justify-center gap-2 w-fit mx-auto shadow-sm">
-             <LeafIcon className="w-3.5 h-3.5" />
-             2025 Sustainability Report
-           </span>
-          <h1 className="text-4xl md:text-7xl lg:text-8xl font-black text-[#002D5B] mb-8 tracking-tighter animate-fade-in-up animation-delay-100 leading-[0.9]">
-            {t('sustainability.page.title')}
-          </h1>
+      <section className="relative min-h-[70vh] flex items-center pt-32 pb-20 overflow-hidden bg-emerald-50/50">
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_30%,rgba(16,185,129,0.1),transparent_70%)]" />
+          <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_70%,rgba(59,130,246,0.1),transparent_70%)]" />
         </div>
-      </div>
 
-      {/* Sticky Split Layout - Operational Sustainability */}
-      <div className="relative w-full border-b border-gray-100 overflow-hidden">
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.span 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-flex py-2 px-6 rounded-full bg-white border border-green-100 text-green-700 text-[10px] md:text-xs font-black tracking-[0.3em] uppercase mb-10 shadow-sm items-center gap-3"
+            >
+              <LeafIcon className="w-4 h-4" />
+              2025 Sustainability Report
+            </motion.span>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-5xl md:text-8xl lg:text-9xl font-black text-[#002D5B] mb-10 tracking-tighter leading-[0.85] uppercase"
+            >
+              {t('sustainability.page.title')}
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-gray-500 text-xl md:text-2xl font-bold leading-tight max-w-2xl mx-auto mb-12"
+            >
+              Building a cleaner future through Swiss precision, circular logistics, and verified impact.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex justify-center"
+            >
+              <button 
+                onClick={() => document.getElementById('bcorp-commitment')?.scrollIntoView({ behavior: 'smooth' })}
+                className="bg-[#002D5B] text-white px-10 py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-[#003d7a] transition-all shadow-xl shadow-blue-900/10"
+              >
+                Explore Our Commitment ↓
+              </button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- Dedicated B Corp Section (The "Why") --- */}
+      <section id="bcorp-commitment" className="py-24 md:py-32 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="bg-gray-50 rounded-[3rem] p-8 md:p-12 lg:p-20 shadow-sm border border-gray-100">
+            <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+              <div className="lg:w-1/2">
+                <div className="relative inline-block mb-12">
+                  <div className="absolute -inset-6 bg-green-100 rounded-full blur-3xl opacity-50"></div>
+                  <img 
+                    src="https://i.ibb.co/chcNffCj/diversey-logo.png" 
+                    alt="B Corp Logo" 
+                    className="relative h-32 md:h-48 w-auto object-contain" 
+                  />
+                </div>
+                <p className="text-green-600 font-black text-[10px] uppercase tracking-[0.5em] mb-6">{t('sustainability.section.title')}</p>
+                <h2 className="text-5xl md:text-7xl font-black text-[#002D5B] mb-8 tracking-tighter uppercase leading-[0.9]">
+                  {t('sustainability.bcorp.title')}
+                </h2>
+                <p className="text-xl md:text-2xl text-gray-500 font-bold leading-tight mb-10">
+                  {t('sustainability.bcorp.p1')}
+                </p>
+                <div className="p-8 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm">
+                  <p className="text-lg text-gray-600 font-bold italic leading-relaxed">
+                    "{t('sustainability.bcorp.p2')}"
+                  </p>
+                </div>
+              </div>
+              <div className="lg:w-1/2 grid grid-cols-2 gap-6">
+                 {[
+                   { title: 'Verified Performance', icon: '📊', color: 'bg-blue-50 text-blue-600' },
+                   { title: 'Legal Accountability', icon: '⚖️', color: 'bg-emerald-50 text-emerald-600' },
+                   { title: 'Public Transparency', icon: '🔍', color: 'bg-indigo-50 text-indigo-600' },
+                   { title: 'Social Impact', icon: '🤝', color: 'bg-orange-50 text-orange-600' }
+                 ].map((item, idx) => (
+                   <motion.div 
+                    key={idx} 
+                    whileHover={{ y: -5 }}
+                    className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group"
+                   >
+                      <div className={`w-16 h-16 ${item.color} rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform`}>{item.icon}</div>
+                      <h4 className="font-black text-xs uppercase tracking-widest text-[#002D5B]">{item.title}</h4>
+                   </motion.div>
+                 ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Sticky Split Layout - Operational Sustainability (The "How") */}
+      <div className="relative w-full border-t border-gray-100 overflow-hidden bg-white">
         <div className="container mx-auto px-6">
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-0">
             
             {/* Left Column: Content */}
             <div className="lg:w-1/2 lg:pr-16 pb-24 md:pb-32">
+              <div className="pt-24 mb-12">
+                <p className="text-blue-600 font-black text-[10px] uppercase tracking-[0.5em] mb-4">OUR OPERATIONS</p>
+                <h2 className="text-4xl md:text-6xl font-black text-[#002D5B] tracking-tighter uppercase leading-none">
+                  Circular <br/>
+                  <span className="text-emerald-600">Sustainability.</span>
+                </h2>
+              </div>
               {sections.map((section, index) => (
                 <div 
                     key={section.id} 
@@ -753,181 +835,146 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
         </div>
       </section>
 
-      {/* --- Before & After Results Section --- */}
-      <section className="py-24 md:py-32 bg-white overflow-hidden border-t border-gray-100">
+      {/* --- Before & After Results Section (The "Results") --- */}
+      <section className="py-24 md:py-32 bg-gray-50 overflow-hidden border-t border-gray-100">
         <div className="container mx-auto px-6">
-          <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-12 mb-24">
-            <div className="max-w-4xl">
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-8"
-              >
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600">{t('sustainability.standard.badge')}</span>
-              </motion.div>
-              <h2 className="text-5xl md:text-[8rem] xl:text-[9rem] font-black text-[#002d5b] leading-[0.85] tracking-tighter uppercase">
-                {t('sustainability.standard.title').split('.')[0]} <br />
-                <span className="text-emerald-600">{t('sustainability.standard.title').split('.')[1]}</span>
-              </h2>
-            </div>
-            <div className="max-w-md lg:pt-12">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="h-px w-8 bg-gray-200" />
-                <p className="text-gray-400 font-black text-[10px] uppercase tracking-[0.4em]">{t('sustainability.standard.visual')}</p>
+          <div className="bg-white rounded-[3rem] p-8 md:p-12 lg:p-20 shadow-sm border border-gray-100">
+            <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-12 mb-24">
+              <div className="max-w-4xl">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 mb-8"
+                >
+                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-600">{t('sustainability.standard.badge')}</span>
+                </motion.div>
+                <h2 className="text-5xl md:text-8xl xl:text-9xl font-black text-[#002d5b] leading-[0.85] tracking-tighter uppercase">
+                  {t('sustainability.standard.title').split('.')[0]} <br />
+                  <span className="text-emerald-600">{t('sustainability.standard.title').split('.')[1]}</span>
+                </h2>
               </div>
-              <p className="text-gray-500 font-bold text-xl md:text-2xl leading-tight">
-                {t('sustainability.standard.desc')}
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 border border-gray-100 shadow-[0_50px_100px_-20px_rgba(0,45,91,0.15)] rounded-[4rem] overflow-hidden bg-white">
-            {transformations.map((transformation, i) => (
-              <motion.div
-                key={transformation.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.8 }}
-                className="relative"
-              >
-                <BeforeAfterCard transformation={transformation} />
-              </motion.div>
-            ))}
-          </div>
-          
-          <div className="mt-20 flex flex-wrap justify-center gap-12 opacity-30 grayscale">
-             <img src="https://i.ibb.co/chcNffCj/diversey-logo.png" alt="Partner" className="h-8 w-auto object-contain" />
-             <div className="h-8 w-px bg-gray-300"></div>
-             <span className="text-[10px] font-black uppercase tracking-[0.4em] self-center">{t('sustainability.standard.certified')}</span>
-             <div className="h-8 w-px bg-gray-300"></div>
-             <span className="text-[10px] font-black uppercase tracking-[0.4em] self-center">{t('sustainability.standard.bcorp')}</span>
-          </div>
-        </div>
-      </section>
-
-      {/* --- Dedicated B Corp Section --- */}
-      <section className="py-24 md:py-32 bg-[#002D5B] text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at center, #007AFF 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-            <div className="lg:w-1/2">
-              <div className="relative inline-block mb-12">
-                <div className="absolute -inset-4 bg-white/10 rounded-full blur-2xl animate-pulse"></div>
-                <img 
-                  src="https://i.ibb.co/chcNffCj/diversey-logo.png" 
-                  alt="B Corp Logo" 
-                  className="relative h-32 md:h-48 w-auto object-contain filter brightness-0 invert" 
-                />
-              </div>
-              <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter uppercase leading-[0.9]">
-                {t('sustainability.bcorp.title')}
-              </h2>
-              <p className="text-xl md:text-2xl text-blue-100/80 font-medium leading-relaxed mb-10">
-                {t('sustainability.bcorp.p1')}
-              </p>
-              <div className="p-8 bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10">
-                <p className="text-lg text-blue-50 font-bold italic leading-relaxed">
-                  "{t('sustainability.bcorp.p2')}"
+              <div className="max-w-md lg:pt-12">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="h-px w-8 bg-gray-200" />
+                  <p className="text-gray-400 font-black text-[10px] uppercase tracking-[0.4em]">{t('sustainability.standard.visual')}</p>
+                </div>
+                <p className="text-gray-500 font-bold text-xl md:text-2xl leading-tight">
+                  {t('sustainability.standard.desc')}
                 </p>
               </div>
             </div>
-            <div className="lg:w-1/2 grid grid-cols-2 gap-6">
-               {[
-                 { title: 'Verified Performance', icon: '📊' },
-                 { title: 'Legal Accountability', icon: '⚖️' },
-                 { title: 'Public Transparency', icon: '🔍' },
-                 { title: 'Social Impact', icon: '🤝' }
-               ].map((item, idx) => (
-                 <div key={idx} className="bg-white/5 p-8 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors group">
-                    <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">{item.icon}</div>
-                    <h4 className="font-black text-sm uppercase tracking-widest">{item.title}</h4>
-                 </div>
-               ))}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 border border-gray-100 shadow-2xl rounded-[4rem] overflow-hidden bg-white">
+              {transformations.map((transformation, i) => (
+                <motion.div
+                  key={transformation.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.8 }}
+                  className="relative"
+                >
+                  <BeforeAfterCard transformation={transformation} />
+                </motion.div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* --- Digital Sustainability Section --- */}
-      <section className="py-24 md:py-32 bg-[#f8fbff]">
+      {/* --- Digital Sustainability Section (The "Future") --- */}
+      <section className="py-24 md:py-32 bg-white">
         <div className="container mx-auto px-4 md:px-6">
+            <div className="bg-gray-50 rounded-[3rem] p-8 md:p-12 lg:p-20 border border-gray-100">
+                <div className="text-center mb-20 max-w-4xl mx-auto">
+                    <p className="text-blue-600 font-black text-[10px] uppercase tracking-[0.5em] mb-6">DIGITAL FOOTPRINT</p>
+                    <h2 className="text-4xl md:text-7xl font-black text-[#002D5B] mb-8 uppercase tracking-tighter leading-[0.9]">{t('sustainability.digital.title')}</h2>
+                    <p className="text-base md:text-xl text-gray-500 font-bold leading-tight mb-8">
+                        {t('sustainability.digital.subtitle')}
+                    </p>
+                    <div className="text-[10px] font-black text-blue-400 uppercase tracking-widest bg-blue-50 py-2 px-6 rounded-full w-fit mx-auto border border-blue-100">
+                        {t('sustainability.digital.testedOn')}
+                    </div>
+                </div>
+
+                {/* Metrics Cards - Responsive Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16">
+                    {/* Score Card */}
+                    <motion.div 
+                      whileHover={{ y: -5 }}
+                      className="bg-white rounded-[3rem] p-10 md:p-12 shadow-sm flex flex-col items-center justify-center text-center border border-gray-100"
+                    >
+                        <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-10">{t('sustainability.digital.scoreTitle')}</h3>
+                        <AnimatedCircularProgress percentage={91} />
+                        <p className="text-gray-600 text-sm font-bold max-w-xs leading-relaxed">{t('sustainability.digital.scoreDesc')}</p>
+                    </motion.div>
+
+                    <div className="flex flex-col gap-8">
+                        {/* Emissions Card */}
+                        <motion.div 
+                          whileHover={{ y: -5 }}
+                          className="bg-white rounded-[3rem] p-10 shadow-sm flex-1 flex flex-col items-center justify-center text-center border border-gray-100"
+                        >
+                            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6">{t('sustainability.digital.co2Title')}</h3>
+                            <AnimatedCounter end={0.61} decimals={2} suffix=" g" />
+                            <p className="text-gray-600 text-xs font-bold max-w-xs leading-tight">{t('sustainability.digital.co2Desc')}</p>
+                        </motion.div>
+                        {/* Weight Card */}
+                        <motion.div 
+                          whileHover={{ y: -5 }}
+                          className="bg-white rounded-[3rem] p-10 shadow-sm flex-1 flex flex-col items-center justify-center text-center border border-gray-100"
+                        >
+                            <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6">{t('sustainability.digital.weightTitle')}</h3>
+                            <AnimatedCounter end={1.74} decimals={2} suffix=" MB" />
+                            <p className="text-gray-600 text-xs font-bold max-w-xs leading-tight">{t('sustainability.digital.weightDesc')}</p>
+                        </motion.div>
+                    </div>
+                </div>
+
+                {/* Green Badge Banner */}
+                <div className="max-w-5xl mx-auto bg-[#002D5B] text-white rounded-[2.5rem] p-8 md:p-12 text-center shadow-xl relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-green-600 translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out"></div>
+                    <p className="text-xl md:text-3xl font-black uppercase tracking-tighter relative z-10">
+                        {t('sustainability.digital.badgeText')}
+                    </p>
+                </div>
+            </div>
+        </div>
+      </section>
+
+      {/* --- Carbon Benchmarking (The "Context") --- */}
+      <section className="py-24 md:py-32 bg-white">
+        <div className="container mx-auto px-6">
+            <div className="flex items-center gap-6 mb-16">
+                <h3 className="text-3xl md:text-5xl font-black text-[#002D5B] uppercase tracking-tighter shrink-0">
+                    Carbon <span className="text-emerald-600">Benchmarking.</span>
+                </h3>
+                <div className="h-px flex-1 bg-gray-100"></div>
+            </div>
             
-            <div className="text-center mb-20 max-w-4xl mx-auto">
-                <h2 className="text-4xl md:text-6xl font-black text-[#002D5B] mb-8 uppercase tracking-tighter leading-tight">{t('sustainability.digital.title')}</h2>
-                <p className="text-base md:text-xl text-gray-500 font-bold leading-relaxed mb-4">
-                    {t('sustainability.digital.subtitle')}
-                </p>
-                <div className="text-[10px] font-black text-blue-400 uppercase tracking-widest bg-blue-50 py-1.5 px-4 rounded-full w-fit mx-auto">
-                    {t('sustainability.digital.testedOn')}
-                </div>
-            </div>
-
-            {/* Metrics Cards - Responsive Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16">
-                
-                {/* Score Card */}
-                <div className="bg-white rounded-[3rem] p-10 md:p-12 shadow-2xl flex flex-col items-center justify-center text-center transform hover:scale-[1.02] transition-transform duration-500 border border-gray-100">
-                    <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-10">{t('sustainability.digital.scoreTitle')}</h3>
-                    <AnimatedCircularProgress percentage={91} />
-                    <p className="text-gray-600 text-sm font-bold max-w-xs leading-relaxed">{t('sustainability.digital.scoreDesc')}</p>
-                </div>
-
-                <div className="flex flex-col gap-8">
-                    {/* Emissions Card */}
-                    <div className="bg-white rounded-[3rem] p-10 shadow-2xl flex-1 flex flex-col items-center justify-center text-center border border-gray-100">
-                        <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">{t('sustainability.digital.co2Title')}</h3>
-                        <AnimatedCounter end={0.61} decimals={2} suffix=" g" />
-                        <p className="text-gray-600 text-xs font-bold max-w-xs">{t('sustainability.digital.co2Desc')}</p>
-                    </div>
-                    {/* Weight Card */}
-                    <div className="bg-white rounded-[3rem] p-10 shadow-2xl flex-1 flex flex-col items-center justify-center text-center border border-gray-100">
-                        <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">{t('sustainability.digital.weightTitle')}</h3>
-                        <AnimatedCounter end={1.74} decimals={2} suffix=" MB" />
-                        <p className="text-gray-600 text-xs font-bold max-w-xs">{t('sustainability.digital.weightDesc')}</p>
-                    </div>
-                </div>
-            </div>
-
-            {/* Green Badge Banner */}
-            <div className="max-w-5xl mx-auto bg-[#002D5B] text-white rounded-[2.5rem] p-8 md:p-12 text-center shadow-3xl mb-32 relative overflow-hidden group">
-                <div className="absolute inset-0 bg-green-600 translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-in-out"></div>
-                <p className="text-xl md:text-3xl font-black uppercase tracking-tighter relative z-10">
-                    {t('sustainability.digital.badgeText')}
-                </p>
-            </div>
-
-            {/* Real World Impact Section - Responsive Grid */}
-            <div className="max-w-7xl mx-auto">
-                <div className="flex items-center gap-4 mb-16 justify-center">
-                    <div className="h-px flex-1 bg-gray-200 max-w-[100px]"></div>
-                    <h3 className="text-2xl md:text-4xl font-black text-[#002D5B] text-center uppercase tracking-tight">
-                        Carbon Benchmarking
-                    </h3>
-                    <div className="h-px flex-1 bg-gray-200 max-w-[100px]"></div>
-                </div>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {[
-                        { emoji: '🗑️', color: 'bg-slate-50', titleKey: 'sustainability.impact.wasteTitle', descKey: 'sustainability.impact.wasteDesc' },
-                        { emoji: '☕', color: 'bg-[#fdf2e9]', titleKey: 'sustainability.impact.coffeeTitle', descKey: 'sustainability.impact.coffeeDesc' },
-                        { emoji: '💡', color: 'bg-yellow-50', titleKey: 'sustainability.impact.electricityTitle', descKey: 'sustainability.impact.electricityDesc' },
-                        { emoji: '🌳', color: 'bg-green-50', titleKey: 'sustainability.impact.treeTitle', descKey: 'sustainability.impact.treeDesc' },
-                        { emoji: '🚗', color: 'bg-blue-50', titleKey: 'sustainability.impact.evTitle', descKey: 'sustainability.impact.evDesc' },
-                        { emoji: '🔌', color: 'bg-orange-50', titleKey: 'sustainability.impact.ovenTitle', descKey: 'sustainability.impact.ovenDesc' },
-                    ].map((item, idx) => (
-                        <div key={idx} className="bg-white p-10 rounded-[2.5rem] shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col items-center text-center group border border-gray-50 transform hover:-translate-y-2">
-                            <div className={`mb-8 text-6xl ${item.color} w-24 h-24 flex items-center justify-center rounded-[2rem] group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 shadow-inner`}>
-                                {item.emoji}
-                            </div>
-                            <h4 className="font-black text-xl text-gray-800 mb-3 uppercase tracking-tight">{t(item.titleKey)}</h4>
-                            <p className="text-gray-500 text-sm font-bold leading-relaxed">{t(item.descKey)}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[
+                    { emoji: '🗑️', color: 'bg-slate-50', titleKey: 'sustainability.impact.wasteTitle', descKey: 'sustainability.impact.wasteDesc' },
+                    { emoji: '☕', color: 'bg-[#fdf2e9]', titleKey: 'sustainability.impact.coffeeTitle', descKey: 'sustainability.impact.coffeeDesc' },
+                    { emoji: '💡', color: 'bg-yellow-50', titleKey: 'sustainability.impact.electricityTitle', descKey: 'sustainability.impact.electricityDesc' },
+                    { emoji: '🌳', color: 'bg-green-50', titleKey: 'sustainability.impact.treeTitle', descKey: 'sustainability.impact.treeDesc' },
+                    { emoji: '🚗', color: 'bg-blue-50', titleKey: 'sustainability.impact.evTitle', descKey: 'sustainability.impact.evDesc' },
+                    { emoji: '🔌', color: 'bg-orange-50', titleKey: 'sustainability.impact.ovenTitle', descKey: 'sustainability.impact.ovenDesc' },
+                ].map((item, idx) => (
+                    <motion.div 
+                      key={idx} 
+                      whileHover={{ y: -5 }}
+                      className="bg-white p-10 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center group border border-gray-100"
+                    >
+                        <div className={`mb-8 text-6xl ${item.color} w-24 h-24 flex items-center justify-center rounded-[2rem] group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 shadow-inner`}>
+                            {item.emoji}
                         </div>
-                    ))}
-                </div>
+                        <h4 className="font-black text-xl text-gray-800 mb-3 uppercase tracking-tight">{t(item.titleKey)}</h4>
+                        <p className="text-gray-500 text-sm font-bold leading-relaxed">{t(item.descKey)}</p>
+                    </motion.div>
+                ))}
             </div>
-
         </div>
       </section>
 

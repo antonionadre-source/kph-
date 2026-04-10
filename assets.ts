@@ -8,8 +8,17 @@ export const companyLogoWhiteUrl = 'https://www.dropbox.com/scl/fi/clp69ypfnl9sa
 export const teamPhotoUrl = 'https://i.ibb.co/n8ZWPN4H/Gemini-Generated-Image-gw0b47gw0b47gw0b.png';
 export const mascotImageUrl = 'https://www.dropbox.com/scl/fi/lifz7glh55z2v2uej66vb/IMG_3927.PNG.png?rlkey=wtvu8r5pu2eo26o9vfqd1kkpw&st=grzmg1bo&raw=1';
 export const mascotVideoUrl = 'https://www.dropbox.com/scl/fi/kscwiormatd2m4bd2k0vb/kai-vid-2.mp4?rlkey=c6m4qv8t40p9pg1kbs03awyu0&st=s282dwwd&raw=1';
+export const tentacleImageUrl = 'https://www.dropbox.com/scl/fi/3ik1917ppucxcdanfx26s/tentaculo.png?rlkey=bby8mdhtcavmzkrnhhuknx3h4&st=x5yym5xr&raw=1';
 export const heroVideoUrl = 'https://storage.googleapis.com/aai-web-samples/services-montage.mp4';
 export const heroImageUrl = 'https://www.dropbox.com/scl/fi/vpl0fu6g3osbkdyn0hcxx/1.svg?rlkey=8kpiqe7lu0fd7a6wfyoj8hy3q&st=wjizwcqt&raw=1';
+export const aboutHeroImageUrl = 'https://www.dropbox.com/scl/fi/tzejdhe5v34o1sglvoavt/Mastering-the-chaos-of-property-management-3.PNG?rlkey=0cj6lyz8fudaid2p775ejbgdc&st=9y3du0r9&raw=1';
+
+export const aboutOriginImages = {
+  panel1: 'https://www.dropbox.com/scl/fi/9lbf5z2nx9oi8slyr0na1/image-1-schaffhausen-2.png?rlkey=yu1bydh4p3llat6v15l4bf96z&st=x4l67fa3&raw=1',
+  panel2: 'https://www.dropbox.com/scl/fi/lquse80u83cmen9wx2ife/image-2-office-2.png?rlkey=61k8pjrbibrwdpoy83cj7ai60&st=czg01djt&raw=1',
+  panel3: 'https://www.dropbox.com/scl/fi/d4n8kqwdysecbhyifdkj3/tentaculo-imagen-3-2.png?rlkey=16830b4zey0d5dx1bby6blzoi&st=ajlqpae5&raw=1',
+  panel4: 'https://www.dropbox.com/scl/fi/5wtcfjf6lg20ji1mg3ink/image-4-unity-2.png?rlkey=rx1oyoj6usn0pwlkxzr0yzngs&st=8vu43kzy&raw=1'
+};
 
 // Kai Comic Legend Photos
 export const kaiComicPhotos = {

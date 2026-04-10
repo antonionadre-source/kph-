@@ -81,6 +81,7 @@ const FloatingMascot: React.FC<FloatingMascotProps> = ({ currentPage, cart, onNa
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isReminder, setIsReminder] = useState(false);
   const [isScrolledPastHero, setIsScrolledPastHero] = useState(false);
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -117,6 +118,26 @@ const FloatingMascot: React.FC<FloatingMascotProps> = ({ currentPage, cart, onNa
     handleScroll(); // Initial check
     return () => window.removeEventListener('scroll', handleScroll);
   }, [currentPage]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsFooterVisible(entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    const footer = document.getElementById('contact');
+    if (footer) {
+      observer.observe(footer);
+    }
+
+    return () => {
+      if (footer) {
+        observer.unobserve(footer);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (isChatOpen) {
@@ -278,7 +299,7 @@ const FloatingMascot: React.FC<FloatingMascotProps> = ({ currentPage, cart, onNa
 
   return (
     <>
-      <div className={`fixed bottom-6 left-6 w-24 sm:w-28 md:w-32 h-auto z-[55] transition-all duration-700 pointer-events-none ${isChatOpen ? 'opacity-0 scale-50' : (isScrolledPastHero ? 'opacity-100 scale-100' : 'opacity-0 scale-0 translate-y-20')} ${isIntroFinished ? (isReminder ? 'animate-reminder-shake' : 'animate-idle-breath') : 'animate-swim-intro'}`}>
+      <div className={`fixed bottom-6 left-6 w-24 sm:w-28 md:w-32 h-auto z-[55] transition-all duration-700 pointer-events-none ${isChatOpen || isFooterVisible ? 'opacity-0 scale-50' : (isScrolledPastHero ? 'opacity-100 scale-100' : 'opacity-0 scale-0 translate-y-20')} ${isIntroFinished ? (isReminder ? 'animate-reminder-shake' : 'animate-idle-breath') : 'animate-swim-intro'}`}>
         <div className="relative pointer-events-auto cursor-pointer group" onClick={() => setIsChatOpen(true)}>
             <img 
               src={mascotImageUrl} 

@@ -12,7 +12,7 @@ import {
   LeafIcon,
   PaperAirplaneIcon
 } from './icons';
-import { companyLogoWhiteUrl } from '../assets';
+import { companyLogoWhiteUrl, tentacleImageUrl } from '../assets';
 import emailjs from '@emailjs/browser';
 import { motion } from 'motion/react';
 
@@ -105,6 +105,14 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px] -mr-48 -mt-48" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-600/5 rounded-full blur-[120px] -ml-48 -mb-48" />
+        
+        {/* Large Decorative Tentacle */}
+        <img 
+          src={tentacleImageUrl} 
+          alt="" 
+          className="absolute -top-20 -right-40 w-[700px] h-[700px] object-contain opacity-[0.07] rotate-[-15deg] pointer-events-none"
+          referrerPolicy="no-referrer"
+        />
       </div>
       
       <div className="container mx-auto px-6 relative z-10">
@@ -154,7 +162,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <h4 className="font-black text-[10px] uppercase tracking-[0.4em] text-blue-400 mb-8">Explore</h4>
               <ul className="space-y-3 text-xs font-bold text-slate-300">
                 <li><button onClick={() => onNavigate('services-page')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-1.5 rounded-full bg-blue-500 scale-0 group-hover:scale-100 transition-transform" />Services</button></li>
-                <li><button onClick={() => onNavigate('about')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-1.5 rounded-full bg-blue-500 scale-0 group-hover:scale-100 transition-transform" />About Kai</button></li>
+                <li><button onClick={() => onNavigate('about')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-1.5 rounded-full bg-blue-500 scale-0 group-hover:scale-100 transition-transform" />{t('nav.about')}</button></li>
                 <li><button onClick={() => onNavigate('sustainability-page')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-1.5 rounded-full bg-blue-500 scale-0 group-hover:scale-100 transition-transform" />Green Policy</button></li>
                 <li><button onClick={() => onNavigate('clients')} className="hover:text-white transition-colors flex items-center gap-2 group"><span className="w-1.5 h-1.5 rounded-full bg-blue-500 scale-0 group-hover:scale-100 transition-transform" />Partner Portal</button></li>
               </ul>
