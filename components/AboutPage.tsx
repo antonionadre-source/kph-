@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from '../i18n';
 import { teamPhotoUrl, companyLogoWhiteUrl, aboutHeroImageUrl, aboutOriginImages } from '../assets';
 import { motion } from 'motion/react';
-import { ShieldCrossIcon, LeafIcon, HeartIcon, DiamondIcon, ScaleIcon, HeartHandshakeIcon, GlobeIcon, UsersIcon, BuildingIcon, ChevronRightIcon } from './icons';
+import { ChevronRightIcon } from './icons';
 
 interface AboutPageProps {
     onNavigate: (page: string) => void;
@@ -32,28 +32,28 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
 
   const coreValues = [
     {
-      icon: <ShieldCrossIcon />,
+      icon: '🛡️',
       title: t('aboutPage.valueIntegrityTitle'),
       text: t('aboutPage.valueIntegrityText'),
-      color: 'text-blue-400',
+      color: 'bg-blue-500/10 text-blue-400',
     },
     {
-      icon: <LeafIcon />,
+      icon: '🌱',
       title: t('aboutPage.valueSustainabilityTitle'),
       text: t('aboutPage.valueSustainabilityText'),
-      color: 'text-emerald-400',
+      color: 'bg-emerald-500/10 text-emerald-400',
     },
     {
-      icon: <HeartIcon />,
+      icon: '🤝',
       title: t('aboutPage.valueClientCentricTitle'),
       text: t('aboutPage.valueClientCentricText'),
-      color: 'text-red-400',
+      color: 'bg-red-500/10 text-red-400',
     },
     {
-      icon: <DiamondIcon />,
+      icon: '💎',
       title: t('aboutPage.valueExcellenceTitle'),
       text: t('aboutPage.valueExcellenceText'),
-      color: 'text-blue-300',
+      color: 'bg-blue-400/10 text-blue-300',
     },
   ];
 
@@ -61,7 +61,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
     <main className="bg-white selection:bg-blue-500/30 text-[#020617]">
       
       {/* --- HERO SECTION --- */}
-      <section className="relative min-h-[80vh] flex items-center pt-20 overflow-hidden bg-[#001A3D]">
+      <section className="relative min-h-[85vh] flex items-center pt-32 pb-40 overflow-hidden bg-[#001A3D]">
         <div className="absolute inset-0 z-0">
           <img 
             src={aboutHeroImageUrl} 
@@ -85,7 +85,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-5xl md:text-8xl font-black text-white leading-none mb-6 tracking-tighter"
+              className="text-5xl md:text-[90px] font-black text-white leading-tight mb-6 tracking-tighter"
             >
               {t('about.hero.title').split('.').map((part, i) => (
                 <span key={i} className={i === 1 ? "block text-blue-400" : ""}>
@@ -97,7 +97,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-white/70 text-xl md:text-2xl font-medium leading-relaxed mb-10 max-w-xl"
+              className="text-white/70 text-xl md:text-[20px] font-medium leading-relaxed mb-10 max-w-xl"
             >
               {t('about.hero.subtitle')}
             </motion.p>
@@ -114,10 +114,10 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
                 {t('about.hero.ctaStory')} <ChevronRightIcon className="w-4 h-4" />
               </button>
               <button 
-                onClick={() => document.getElementById('values')?.scrollIntoView({ behavior: 'smooth' })}
-                className="bg-white/5 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-colors"
+                onClick={() => onNavigate('comic-page')}
+                className="bg-white/5 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-colors flex items-center gap-2"
               >
-                {t('about.hero.ctaValues')}
+                VIEW COMICS <ChevronRightIcon className="w-4 h-4" />
               </button>
             </motion.div>
           </div>
@@ -125,9 +125,9 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
       </section>
 
       {/* --- OUR ORIGIN SECTION --- */}
-      <section id="origin" className="py-24 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="bg-gray-50 rounded-[3rem] p-8 md:p-12 lg:p-16 shadow-sm border border-gray-100">
+      <section id="origin" className="pt-0 pb-12 bg-white relative z-20">
+        <div className="container mx-auto px-6 -mt-20">
+          <div className="bg-gray-50 rounded-[3rem] pt-4 pb-8 md:pt-6 md:pb-12 lg:pt-8 lg:pb-16 px-8 md:px-12 lg:px-16 shadow-sm border border-gray-100">
             <div className="grid lg:grid-cols-12 gap-12 items-center">
               {/* Left Side: Text Content */}
               <div className="lg:col-span-4">
@@ -142,7 +142,10 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
                 <p className="text-gray-500 text-sm leading-relaxed mb-8 max-w-sm">
                   {t('about.origin.text')}
                 </p>
-                <button className="text-blue-600 font-black text-[10px] uppercase tracking-widest flex items-center gap-2 group">
+                <button 
+                  onClick={() => onNavigate('comic-page')}
+                  className="text-blue-600 font-black text-[10px] uppercase tracking-widest flex items-center gap-2 group"
+                >
                   {t('about.origin.readStory')} <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </button>
               </div>
@@ -157,20 +160,20 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.1 }}
-                      className="group relative h-[420px] rounded-2xl overflow-hidden shadow-md bg-[#001A3D]"
+                      className="group relative h-64 rounded-2xl overflow-hidden shadow-md bg-[#001A3D] flex items-center justify-center"
                     >
                       <img 
                         src={panel.img} 
                         alt="" 
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                         referrerPolicy="no-referrer"
                       />
                       {/* Dark gradient overlay for text readability at the bottom */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#001A3D] via-transparent to-transparent opacity-90" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#001A3D]/80 via-transparent to-transparent opacity-90" />
                       
                       {/* Text content overlayed at the bottom */}
-                      <div className="absolute bottom-0 left-0 right-0 p-5">
-                        <p className="text-white font-bold text-[11px] leading-tight">{panel.text}</p>
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
+                        <p className="text-white font-bold text-[10px] leading-tight">{panel.text}</p>
                       </div>
                     </motion.div>
                   ))}
@@ -182,35 +185,37 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
       </section>
 
       {/* --- CORE VALUES SECTION --- */}
-      <section id="values" className="py-24 bg-[#001A3D] text-white">
+      <section id="values" className="py-16 bg-[#001A3D] text-white -mt-8 relative z-20">
         <div className="container mx-auto px-6">
-          <div className="max-w-3xl mb-20">
-            <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.5em] mb-6">{t('about.values.badge')}</p>
-            <h2 className="text-4xl md:text-6xl font-black leading-none tracking-tighter mb-8">
-              {t('about.values.title')}
-            </h2>
-            <p className="text-white/50 text-xl leading-relaxed">
-              {t('about.values.text')}
-            </p>
-          </div>
+          <div className="grid lg:grid-cols-12 gap-16 items-start">
+            <div className="lg:col-span-4">
+              <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.5em] mb-4">{t('about.values.badge')}</p>
+              <h2 className="text-4xl md:text-5xl font-black leading-none tracking-tighter mb-6">
+                {t('about.values.title')}
+              </h2>
+              <p className="text-white/50 text-lg leading-relaxed">
+                {t('about.values.text')}
+              </p>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {coreValues.map((value, i) => (
-              <motion.div 
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-white/5 backdrop-blur-md border border-white/10 p-8 rounded-[2rem] hover:bg-white/10 transition-all duration-300 flex flex-col items-center text-center group"
-              >
-                <div className={`w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300 ${value.color}`}>
-                  {React.cloneElement(value.icon as React.ReactElement, { className: "w-10 h-10" })}
-                </div>
-                <h3 className="text-sm font-black uppercase tracking-[0.2em] mb-6 text-blue-400">{value.title}</h3>
-                <p className="text-white/60 text-sm font-medium leading-relaxed">{value.text}</p>
-              </motion.div>
-            ))}
+            <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {coreValues.map((value, i) => (
+                <motion.div 
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-[2rem] hover:bg-white/10 transition-all duration-300 flex flex-col group"
+                >
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 ${value.color}`}>
+                    <span className="text-xl">{value.icon}</span>
+                  </div>
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] mb-3 text-blue-400">{value.title}</h3>
+                  <p className="text-white/60 text-[11px] font-medium leading-relaxed">{value.text}</p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -241,8 +246,8 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 flex items-center gap-4 group hover:bg-white hover:shadow-md transition-all duration-300">
-                  <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 shrink-0 group-hover:scale-110 transition-transform">
-                    <ScaleIcon className="w-6 h-6" />
+                  <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <span className="text-2xl">⚖️</span>
                   </div>
                   <div>
                     <h4 className="font-black text-[10px] uppercase tracking-widest mb-1">{t('about.people.pay.title')}</h4>
@@ -250,8 +255,8 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
                   </div>
                 </div>
                 <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 flex items-center gap-4 group hover:bg-white hover:shadow-md transition-all duration-300">
-                  <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 shrink-0 group-hover:scale-110 transition-transform">
-                    <HeartHandshakeIcon className="w-6 h-6" />
+                  <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                    <span className="text-2xl">🛡️</span>
                   </div>
                   <div>
                     <h4 className="font-black text-[10px] uppercase tracking-widest mb-1">{t('about.people.social.title')}</h4>
@@ -281,8 +286,8 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
 
                 <div className="flex flex-col justify-center space-y-8">
                   <div className="flex items-center gap-5 group">
-                    <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 shrink-0 group-hover:scale-110 transition-transform">
-                      <LeafIcon className="w-6 h-6" />
+                    <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                      <span className="text-2xl">🌿</span>
                     </div>
                     <div>
                       <h4 className="font-black text-[10px] uppercase tracking-widest text-emerald-600 mb-1">{t('about.commitment.env.title')}</h4>
@@ -290,8 +295,8 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
                     </div>
                   </div>
                   <div className="flex items-center gap-5 group">
-                    <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 shrink-0 group-hover:scale-110 transition-transform">
-                      <UsersIcon className="w-6 h-6" />
+                    <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                      <span className="text-2xl">👥</span>
                     </div>
                     <div>
                       <h4 className="font-black text-[10px] uppercase tracking-widest text-indigo-600 mb-1">{t('about.commitment.social.title')}</h4>
@@ -299,8 +304,8 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
                     </div>
                   </div>
                   <div className="flex items-center gap-5 group">
-                    <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 shrink-0 group-hover:scale-110 transition-transform">
-                      <ShieldCrossIcon className="w-6 h-6" />
+                    <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                      <span className="text-2xl">🏢</span>
                     </div>
                     <div>
                       <h4 className="font-black text-[10px] uppercase tracking-widest text-blue-600 mb-1">{t('about.commitment.corp.title')}</h4>
@@ -311,42 +316,6 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               </div>
             </motion.div>
 
-          </div>
-        </div>
-      </section>
-
-      {/* --- FINAL CTA SECTION --- */}
-      <section className="py-24 bg-[#001A3D] text-white text-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.2),transparent_70%)]" />
-        </div>
-        
-        <div className="container mx-auto px-6 relative z-10">
-          <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.5em] mb-6">{t('about.cta.ready')}</p>
-          <h2 className="text-4xl md:text-7xl font-black tracking-tighter mb-8 max-w-4xl mx-auto leading-none">
-            {t('about.cta.title').split('partnership').map((part, i) => (
-              <span key={i} className={i === 1 ? "text-blue-400" : ""}>
-                {i === 1 ? 'partnership' : ''}{part}
-              </span>
-            ))}
-          </h2>
-          <p className="text-white/50 text-xl md:text-2xl font-medium mb-12 max-w-2xl mx-auto">
-            {t('about.cta.subtitle')}
-          </p>
-          
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <button 
-              onClick={() => onNavigate('consultation')}
-              className="bg-[#4ade80] text-[#002d5b] px-10 py-5 rounded-xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-transform"
-            >
-              {t('about.cta.consultation')} +
-            </button>
-            <button 
-              onClick={() => window.location.href = 'mailto:info@krakenpfm.ch'}
-              className="bg-white/10 border border-white/20 text-white px-10 py-5 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-white/20 transition-colors"
-            >
-              {t('about.cta.contact')} +
-            </button>
           </div>
         </div>
       </section>
