@@ -12,6 +12,7 @@ export const tentacleImageUrl = 'https://www.dropbox.com/scl/fi/3ik1917ppucxcdan
 export const heroVideoUrl = 'https://storage.googleapis.com/aai-web-samples/services-montage.mp4';
 export const heroImageUrl = 'https://www.dropbox.com/scl/fi/vpl0fu6g3osbkdyn0hcxx/1.svg?rlkey=8kpiqe7lu0fd7a6wfyoj8hy3q&st=wjizwcqt&raw=1';
 export const aboutHeroImageUrl = 'https://www.dropbox.com/scl/fi/tzejdhe5v34o1sglvoavt/Mastering-the-chaos-of-property-management-3.PNG?rlkey=0cj6lyz8fudaid2p775ejbgdc&st=9y3du0r9&raw=1';
+export const comicHeroImageUrl = 'https://www.dropbox.com/scl/fi/bg9ut4de2f0zyl0ekfbpc/portada-for-our-story-2.png?rlkey=6khet879ss9fuo2ybijiw2gfd&st=1et15m1t&raw=1';
 
 export const aboutOriginImages = {
   panel1: 'https://www.dropbox.com/scl/fi/9lbf5z2nx9oi8slyr0na1/image-1-schaffhausen-2.png?rlkey=yu1bydh4p3llat6v15l4bf96z&st=x4l67fa3&raw=1',
@@ -27,6 +28,14 @@ export const kaiComicPhotos = {
   photo3: 'https://www.dropbox.com/scl/fi/1j2q8az5vpo65lpcplko3/WhatsApp-Image-2026-01-26-at-02.59.00.jpeg?rlkey=3nwljho75bd2wdlln6j4vu6fv&raw=1', // Panel 3: Standard (Engineering)
   photo4: 'https://www.dropbox.com/scl/fi/m9k8y6amqlnnkcb4w6wtb/WhatsApp-Image-2026-01-26-at-02.59.01.jpeg?rlkey=qb59rt45medrmc5ad3v35mnzu&raw=1'  // Panel 4: Future
 };
+
+// New Comic Covers
+export const comicCovers = [
+  'https://www.dropbox.com/scl/fi/2jmb7rnqjg3s32uw2fdcf/Kai-vs.-the-cold-invasion.png?rlkey=zchnsz4gm8lmnvd2r184zorh0&st=c5jtvoar&raw=1',
+  'https://www.dropbox.com/scl/fi/a5hnj58ncitgso7fxg291/Kraken-heroes-vs-ice-monsters.png?rlkey=pqzzt1u8cl4ih0ya6u42zidoj&st=uxo9t4ly&raw=1',
+  'https://www.dropbox.com/scl/fi/n95514n89nawdfxbj9pqy/Kraken-vs-Pest-Plague-showdown.png?rlkey=libualim4dweftle3371d36hd&st=tif8pivk&raw=1',
+  'https://www.dropbox.com/scl/fi/uzg9fwjihh429ki7m59wl/Kraken-s-mission_-creating-great-spaces.png?rlkey=pc1wb9izj00syvo10pxeqfp33&st=grxmdj9s&raw=1'
+];
 
 // City Images for Strategic Network
 export const cityImages = {

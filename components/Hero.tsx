@@ -62,10 +62,10 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
               </button>
               
               <button
-                onClick={() => onNavigate('services-page')}
+                onClick={() => onNavigate('comic-page')}
                 className="group w-full sm:w-auto bg-transparent border border-white/30 text-white px-6 md:px-20 py-3 md:py-5 rounded-full text-sm md:text-lg font-bold transition-all hover:bg-white/10 flex items-center justify-center gap-2 md:gap-3 whitespace-nowrap"
               >
-                EXPLORE SERVICES 
+                view comics and kai story
                 <ChevronRightIcon className="w-4 h-4 md:w-5 md:h-5 transition-transform group-hover:translate-x-1" />
               </button>
             </div>
