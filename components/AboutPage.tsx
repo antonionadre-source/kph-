@@ -167,6 +167,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
                         alt="" 
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                         referrerPolicy="no-referrer"
+                        loading="lazy"
                       />
                       {/* Dark gradient overlay for text readability at the bottom */}
                       <div className="absolute inset-0 bg-gradient-to-t from-[#001A3D]/80 via-transparent to-transparent opacity-90" />
@@ -240,7 +241,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
                   <p className="text-gray-500 text-sm leading-relaxed">{t('about.people.text')}</p>
                 </div>
                 <div className="rounded-2xl overflow-hidden h-64">
-                  <img src={teamPhotoUrl} alt="Kraken Team" className="w-full h-full object-cover" />
+                  <img src={teamPhotoUrl} alt="Kraken Team" className="w-full h-full object-cover" loading="lazy" />
                 </div>
               </div>
 

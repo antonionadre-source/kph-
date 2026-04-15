@@ -27,6 +27,8 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           alt="Kraken Properties Hero" 
           className="w-full h-auto md:h-full object-contain md:object-cover object-center"
           referrerPolicy="no-referrer"
+          loading="eager"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-black/20 md:bg-black/10 hidden md:block"></div>
       </div>

@@ -132,6 +132,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
                         src={service.imageUrl} 
                         alt={t(service.titleKey)} 
                         className="absolute inset-0 w-full h-full object-cover transition-all duration-[1.5s] ease-out group-hover:scale-105" 
+                        loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-b from-black/5 to-black/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div className="absolute top-10 right-10 opacity-0 group-hover:opacity-100 transition-all duration-700 translate-y-4 group-hover:translate-y-0">
@@ -188,6 +189,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
                         src={item.imageUrl} 
                         alt={t(item.titleKey)} 
                         className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                        loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent"></div>
                     <div className="absolute top-6 left-6 w-14 h-14 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center text-4xl shadow-xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">

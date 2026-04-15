@@ -222,6 +222,7 @@ const ComicPage: React.FC<ComicPageProps> = ({ onNavigate }) => {
                       alt={card.title} 
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       referrerPolicy="no-referrer"
+                      loading="lazy"
                     />
                     {/* Halftone Overlay Effect */}
                     <div className="absolute inset-0 opacity-10 pointer-events-none bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:4px_4px]" />
@@ -276,6 +277,7 @@ const ComicPage: React.FC<ComicPageProps> = ({ onNavigate }) => {
                           alt="Comic Cover" 
                           className="w-full h-full object-cover"
                           referrerPolicy="no-referrer"
+                          loading="lazy"
                         />
                         {/* Subtle Gloss Effect */}
                         <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-black/5 pointer-events-none" />
@@ -427,7 +429,7 @@ const ComicPage: React.FC<ComicPageProps> = ({ onNavigate }) => {
                         </motion.div>
                       ))}
                     </div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 leading-tight">25% of profits <br /> go to charity.</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 leading-tight">25% of profits <br /> go to charity</p>
                   </motion.div>
 
                   {/* Together - Impact Emoji */}
@@ -552,14 +554,14 @@ const ComicPage: React.FC<ComicPageProps> = ({ onNavigate }) => {
             whileInView={{ opacity: 1, scale: 1 }}
             className="flex gap-6 mb-20 max-w-4xl mx-auto items-start"
           >
-            <div className="bg-blue-600 p-3 rounded-xl shrink-0">
+            <div className="bg-blue-600 p-2 rounded-xl shrink-0 mt-0 mr-0 text-[14px]">
               <QuoteIcon className="text-white" size={24} fill="currentColor" />
             </div>
             <div>
-              <p className="text-2xl md:text-3xl font-medium text-[#001A3D] leading-tight">
+              <p className="italic font-bold text-[26px] font-['Arial'] text-[#001A3D] leading-tight">
                 Because some stories <span className="italic text-gray-500">do more than tell people</span> what a company does.
               </p>
-              <p className="text-2xl md:text-3xl font-black text-blue-600 mt-2">They remind people why it matters.</p>
+              <p className="font-bold italic text-[26px] font-['Arial'] text-blue-600 mt-2 no-underline">They remind people why it matters.</p>
             </div>
           </motion.div>
 
@@ -574,6 +576,7 @@ const ComicPage: React.FC<ComicPageProps> = ({ onNavigate }) => {
                 WebkitMaskImage: 'radial-gradient(ellipse at center, black 0%, black 20%, transparent 75%)'
               }}
               referrerPolicy="no-referrer"
+              loading="lazy"
             />
             {/* Sticky Note */}
             <motion.div 
@@ -628,16 +631,16 @@ const ComicPage: React.FC<ComicPageProps> = ({ onNavigate }) => {
           </div>
 
           {/* Footer Section */}
-          <div className="border-t border-blue-100 pt-8 flex flex-col lg:flex-row justify-between items-center gap-12">
-            <div className="text-center lg:text-left">
+          <div className="border-t border-blue-100 pt-8 flex flex-row justify-between items-center gap-6 md:gap-12">
+            <div className="text-left">
               <p className="text-gray-400 font-black text-[10px] uppercase tracking-[0.5em] mb-4">STORIES WITH REAL WORLD MEANING.</p>
-              <h3 className="text-4xl md:text-5xl font-black text-[#001A3D] tracking-tighter leading-none">
+              <h3 className="text-xl md:text-5xl font-black text-[#001A3D] tracking-tighter leading-none">
                 Not just a service.<br />
                 A story that <span className="text-blue-600">stays with you.</span>
               </h3>
             </div>
             
-            <div className="flex flex-wrap justify-center items-center gap-6 md:gap-12">
+            <div className="flex flex-row justify-center items-center gap-4 md:gap-12 shrink-0">
               {[
                 { label: "You discover the story", icon: BookOpenIcon },
                 { label: "You see the unseen", icon: EyeIcon },
@@ -672,6 +675,7 @@ const ComicPage: React.FC<ComicPageProps> = ({ onNavigate }) => {
               src={mascotImageUrl} 
               alt="" 
               className="absolute -bottom-10 -left-10 w-40 opacity-20 grayscale pointer-events-none" 
+              loading="lazy"
             />
             
             <div className="relative z-10 max-w-2xl mx-auto">

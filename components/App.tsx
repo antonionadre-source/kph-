@@ -1,31 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import Header from './Header';
 import Hero from './Hero';
-import WhyKrakenSection from './WhyKrakenSection';
 import SegmentationSection from './SegmentationSection';
-import About from './About';
 import Clients, { ClientCarousel } from './Clients';
 import Footer from './Footer';
 import FloatingMascot from './FloatingMascot';
 import FloatingCTA from './FloatingCTA';
-import LoginPage from './LoginPage';
-import RegisterPage from './RegisterPage';
-import Dashboard from './Dashboard';
 import { useAuth } from './Auth';
-import AboutPage from './AboutPage';
-import ComicPage from './ComicPage';
-import ConsultationPage from './ConsultationPage';
-import GDPRPage from './GDPRPage';
-import ServicesPage from './ServicesPage';
-import CommercialServicesPage from './CommercialServicesPage';
-import SustainabilityPage from './SustainabilityPage';
-import CareersPage from './CareersPage';
 import CookieConsent from './CookieConsent';
-import PrecisionQuoteSection from './PrecisionQuoteSection';
-import HSEPage from './HSEPage';
-import TermsPage from './TermsPage';
-import HowItWorks from './HowItWorks';
 import ValuesSection from './ValuesSection';
+
+// Lazy load pages for better performance
+const AboutPage = lazy(() => import('./AboutPage'));
+const ComicPage = lazy(() => import('./ComicPage'));
+const ServicesPage = lazy(() => import('./ServicesPage'));
+const CommercialServicesPage = lazy(() => import('./CommercialServicesPage'));
+const LoginPage = lazy(() => import('./LoginPage'));
+const RegisterPage = lazy(() => import('./RegisterPage'));
+const Dashboard = lazy(() => import('./Dashboard'));
+const ConsultationPage = lazy(() => import('./ConsultationPage'));
+const GDPRPage = lazy(() => import('./GDPRPage'));
+const HSEPage = lazy(() => import('./HSEPage'));
+const TermsPage = lazy(() => import('./TermsPage'));
+const SustainabilityPage = lazy(() => import('./SustainabilityPage'));
+const CareersPage = lazy(() => import('./CareersPage'));
+
+// Loading fallback
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-slate-50">
+    <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
 
 // --- Firebase Configuration ---
 export const db = (window as any).db;
@@ -64,51 +69,57 @@ const App: React.FC = () => {
   };
 
   const renderPage = () => {
-    switch (page) {
-      case 'about':
-        return <AboutPage onNavigate={handleNavigate} />;
-      case 'comic-page':
-        return <ComicPage onNavigate={handleNavigate} />;
-      case 'services-page':
-        return <ServicesPage onNavigate={handleNavigate} />;
-      case 'commercial-services':
-        return <CommercialServicesPage onNavigate={handleNavigate} />;
-      case 'clients':
-        return <Clients onNavigate={handleNavigate} />;
-      case 'dashboard':
-        if (!user) {
-          return <Clients onNavigate={handleNavigate} />;
-        }
-        return <Dashboard />;
-      case 'login':
-        return <LoginPage onNavigate={handleNavigate} />;
-      case 'register':
-        return <RegisterPage onNavigate={handleNavigate} />;
-      case 'consultation':
-        return <ConsultationPage onNavigate={handleNavigate} cart={cart} setCart={setCart} />;
-      case 'gdpr':
-        return <GDPRPage />;
-      case 'hse':
-        return <HSEPage />;
-      case 'terms':
-        return <TermsPage onNavigate={handleNavigate} />;
-      case 'sustainability-page':
-        return <SustainabilityPage onNavigate={handleNavigate} />;
-      case 'careers':
-        return <CareersPage onNavigate={handleNavigate} />;
-      case 'home':
-      default:
-        return (
-          <>
-            <main>
-              <Hero onNavigate={handleNavigate} />
-              <SegmentationSection onNavigate={handleNavigate} />
-              <ValuesSection />
-              <ClientCarousel />
-            </main>
-          </>
-        );
-    }
+    return (
+      <Suspense fallback={<PageLoader />}>
+        {(() => {
+          switch (page) {
+            case 'about':
+              return <AboutPage onNavigate={handleNavigate} />;
+            case 'comic-page':
+              return <ComicPage onNavigate={handleNavigate} />;
+            case 'services-page':
+              return <ServicesPage onNavigate={handleNavigate} />;
+            case 'commercial-services':
+              return <CommercialServicesPage onNavigate={handleNavigate} />;
+            case 'clients':
+              return <Clients onNavigate={handleNavigate} />;
+            case 'dashboard':
+              if (!user) {
+                return <Clients onNavigate={handleNavigate} />;
+              }
+              return <Dashboard />;
+            case 'login':
+              return <LoginPage onNavigate={handleNavigate} />;
+            case 'register':
+              return <RegisterPage onNavigate={handleNavigate} />;
+            case 'consultation':
+              return <ConsultationPage onNavigate={handleNavigate} cart={cart} setCart={setCart} />;
+            case 'gdpr':
+              return <GDPRPage />;
+            case 'hse':
+              return <HSEPage />;
+            case 'terms':
+              return <TermsPage onNavigate={handleNavigate} />;
+            case 'sustainability-page':
+              return <SustainabilityPage onNavigate={handleNavigate} />;
+            case 'careers':
+              return <CareersPage onNavigate={handleNavigate} />;
+            case 'home':
+            default:
+              return (
+                <>
+                  <main>
+                    <Hero onNavigate={handleNavigate} />
+                    <SegmentationSection onNavigate={handleNavigate} />
+                    <ValuesSection />
+                    <ClientCarousel />
+                  </main>
+                </>
+              );
+          }
+        })()}
+      </Suspense>
+    );
   };
 
   return (
