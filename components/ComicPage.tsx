@@ -503,7 +503,7 @@ const ComicPage: React.FC<ComicPageProps> = ({ onNavigate }) => {
               },
               {
                 title: "What often goes unseen",
-                text: "They highlight a simple truth: cleaning and facility work do far more than support spaces. They shape everyday life within them.",
+                text: "We highlight a simple truth: cleaning and facility work do far more than support spaces. We shape everyday life within them.",
                 emoji: "👁️",
                 color: "text-indigo-600",
                 bg: "bg-indigo-50"
