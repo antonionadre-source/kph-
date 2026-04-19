@@ -61,7 +61,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
     <main className="bg-white selection:bg-blue-500/30 text-[#020617]">
       
       {/* --- HERO SECTION --- */}
-      <section className="relative min-h-[85vh] flex items-center pt-32 pb-40 overflow-hidden bg-[#001A3D]">
+      <section data-header-theme="dark" className="relative min-h-[85vh] flex items-center pt-32 pb-40 overflow-hidden bg-[#001A3D]">
         <div className="absolute inset-0 z-0">
           <img 
             src={aboutHeroImageUrl} 
@@ -125,7 +125,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
       </section>
 
       {/* --- OUR ORIGIN SECTION --- */}
-      <section id="origin" className="pt-0 pb-12 bg-white relative z-20">
+      <section id="origin" data-header-theme="light" className="pt-0 pb-12 bg-white relative z-20">
         <div className="container mx-auto px-6 -mt-20">
           <div className="bg-gray-50 rounded-[3rem] pt-4 pb-8 md:pt-6 md:pb-12 lg:pt-8 lg:pb-16 px-8 md:px-12 lg:px-16 shadow-sm border border-gray-100">
             <div className="grid lg:grid-cols-12 gap-12 items-center">
@@ -186,7 +186,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
       </section>
 
       {/* --- CORE VALUES SECTION --- */}
-      <section id="values" className="py-16 bg-[#001A3D] text-white -mt-8 relative z-20">
+      <section id="values" data-header-theme="dark" className="py-16 bg-[#001A3D] text-white -mt-8 relative z-20">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-12 gap-16 items-start">
             <div className="lg:col-span-4">

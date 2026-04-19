@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'motion/react';
 import { useTranslation } from '../i18n';
 import { 
   Leaf, 
@@ -16,7 +15,16 @@ import {
   Building2,
   MapPin,
   Recycle,
-  Droplets
+  Droplets,
+  Zap,
+  Cpu,
+  Globe,
+  Target,
+  Sparkles,
+  Handshake,
+  Settings,
+  ShieldCheck,
+  RefreshCw
 } from 'lucide-react';
 
 interface SustainabilityPageProps {
@@ -84,7 +92,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
     <main className="bg-[#F8FAFC] min-h-screen pb-12 selection:bg-blue-500/30">
       
       {/* Hero Section */}
-      <section className="relative h-[550px] md:h-[650px] overflow-hidden bg-white">
+      <section data-header-theme="light" className="relative h-[550px] md:h-[650px] overflow-hidden bg-white">
         <div className="absolute inset-0 z-0">
           <img 
             src="https://www.dropbox.com/scl/fi/manu7v75uqmiga2f3g4pi/ChatGPT-Image-Apr-16-2026-at-02_50_31-AM-2.png?rlkey=jmbqcqgrd0xrzdz1wfc7jn56b&st=nnezsbqd&raw=1" 
@@ -99,38 +107,27 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
 
         <div className="container mx-auto px-6 h-full flex items-start relative z-10 pt-10 md:pt-14">
           <div className="max-w-2xl">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+            <div
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-widest mb-6"
             >
               <Leaf className="w-3.5 h-3.5" />
               2025 Sustainability Report
-            </motion.div>
+            </div>
             
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
+            <h1 
               className="text-5xl md:text-7xl lg:text-[71px] font-black text-[#001A3D] leading-[0.9] tracking-tighter mb-6 uppercase"
             >
               Sustainability, <br />
               <span className="text-blue-600">backed by real impact</span>
-            </motion.h1>
+            </h1>
 
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+            <p 
               className="text-xl text-gray-600 font-medium leading-relaxed mb-8 max-w-lg"
             >
               We measure, verify, and improve the environmental impact of every operation.
-            </motion.p>
+            </p>
 
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+            <div 
               className="flex flex-wrap gap-4"
             >
               <button className="bg-[#001A3D] text-white px-8 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-[#002d5b] transition-all shadow-xl shadow-blue-900/20">
@@ -139,21 +136,16 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
               <button className="bg-white text-[#001A3D] border-2 border-gray-200 px-8 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-gray-50 transition-all flex items-center gap-2">
                 <Download className="w-4 h-4" /> DOWNLOAD 2025 REPORT
               </button>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Metrics Bar */}
-      <section className="container mx-auto px-6 -mt-16 relative z-20">
+      <section className="container mx-auto px-6 -mt-16 relative z-30">
         <div className="relative">
           {/* Floating Card - Positioned behind the last metric */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="hidden lg:flex absolute -top-36 right-0 bg-white p-8 pb-24 rounded-t-[2rem] rounded-bl-[2rem] shadow-lg border-x border-t border-gray-100 max-w-xs items-start gap-4 z-10"
-          >
+          <div className="hidden lg:flex absolute -top-36 right-0 bg-white p-8 pb-24 rounded-t-[2rem] rounded-bl-[2rem] shadow-lg border-x border-t border-gray-100 max-w-xs items-start gap-4 z-10">
             <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0">
               <Leaf className="w-5 h-5 text-emerald-600" />
             </div>
@@ -163,7 +155,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
                 through Swiss precision, circular logistics, and verified impact.
               </p>
             </div>
-          </motion.div>
+          </div>
 
           <div className="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-8 md:p-12 relative z-20">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-0">
@@ -186,7 +178,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
       </section>
 
       {/* Pillars Section */}
-      <section className="py-24 container mx-auto px-6">
+      <section data-header-theme="light" className="py-24 container mx-auto px-6">
         <div className="flex items-center gap-8 mb-20">
           <div className="h-px bg-[#001A3D]/10 flex-1" />
           <p className="text-[#001A3D] font-black text-[11px] uppercase tracking-[0.4em] whitespace-nowrap">HOW WE DO IT</p>
@@ -195,12 +187,8 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
           {pillars.map((pillar, idx) => (
-            <motion.div 
+            <div 
               key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
               className={`flex items-start gap-6 group px-6 ${idx !== pillars.length - 1 ? 'lg:border-r lg:border-gray-100' : ''} ${idx % 2 === 0 && idx !== pillars.length - 1 ? 'md:border-r md:border-gray-100 lg:border-r' : ''}`}
             >
               <div className={`w-20 h-20 ${pillar.color} rounded-full flex items-center justify-center shrink-0 transition-transform duration-500 group-hover:scale-110 shadow-sm`}>
@@ -212,7 +200,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
                   {pillar.desc}
                 </p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </section>
@@ -222,12 +210,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
         <div className="grid lg:grid-cols-2 gap-8">
           
           {/* B Corp Path */}
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="bg-[#F1F4F1] rounded-[2rem] p-8 md:p-12 border border-gray-100 flex flex-col md:flex-row gap-10 items-center"
-          >
+          <div className="bg-[#F1F4F1] rounded-[2rem] p-8 md:p-12 border border-gray-100 flex flex-col md:flex-row gap-10 items-center">
             <div className="w-44 h-44 bg-transparent rounded-full flex flex-col items-center justify-center border border-gray-300 shrink-0 relative">
               <span className="text-[9px] font-black text-gray-900 uppercase tracking-widest mb-1">WORKING</span>
               <span className="text-[9px] font-black text-gray-900 uppercase tracking-widest mb-2">TOWARDS</span>
@@ -259,15 +242,10 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
                 Learn more about our progress <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
-          </motion.div>
+          </div>
 
           {/* Impact in Action */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="bg-[#F1F5F9] rounded-[2rem] overflow-hidden flex flex-col md:flex-row group"
-          >
+          <div className="bg-[#F1F5F9] rounded-[2rem] overflow-hidden flex flex-col md:flex-row group">
             <div className="flex-1 p-8 md:p-12 flex flex-col justify-center">
               <h2 className="text-2xl font-black text-[#001A3D] mb-4 leading-tight tracking-tight">
                 Impact in action
@@ -312,7 +290,334 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Roadmap: Our Plan to Reduce Emissions */}
+      <section data-header-theme="light" className="py-24 bg-white">
+        <div className="container mx-auto px-6 mb-16 text-center">
+          <h2 className="text-4xl md:text-[54px] font-black text-[#001A3D] mb-4 tracking-tighter leading-none">How we will reduce our environmental impact</h2>
+          <p className="text-gray-500 font-medium max-w-2xl mx-auto text-sm md:text-base">
+            Sustainability is being integrated into every decision we plan to make. <br />
+            Discover how we will create value for your property and the planet.
+          </p>
+        </div>
+
+        <div className="container mx-auto px-6 space-y-6">
+          
+          {/* Card 1: Circular Sustainability */}
+          <div className="bg-[#F8FAFC]/50 rounded-[1rem] border border-gray-200 overflow-hidden shadow-sm">
+            <div className="grid lg:grid-cols-12 items-stretch">
+              
+              {/* Left Column: Info */}
+              <div className="lg:col-span-3 p-6 flex flex-col justify-between">
+                <div>
+                  <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-4">CIRCULAR OPERATIONS</p>
+                  <h3 className="text-[32px] font-black text-[#001A3D] mb-4 leading-[0.9] tracking-tighter">Circular <br />Sustainability</h3>
+                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed mb-4">
+                    We will extend the life cycle of products and materials through smart reuse, responsible maintenance and certified solutions.
+                  </p>
+                </div>
+                <button className="text-blue-600 font-black text-[11px] uppercase tracking-widest flex items-center gap-2 group">
+                  Learn more about our circular approach <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+
+              {/* Middle Column: Icons */}
+              <div className="lg:col-span-5 grid grid-cols-4 border-l border-gray-200">
+                {[
+                  { icon: <TrendingDown className="w-8 h-8" />, label: 'Reduce', desc: 'We will minimize waste and unnecessary consumption.' },
+                  { icon: <Recycle className="w-8 h-8" />, label: 'Reuse', desc: 'We will extend product life cycles through maintenance.' },
+                  { icon: <Leaf className="w-8 h-8" />, label: 'Recycle', desc: 'Working with certified partners for material recovery.' },
+                  { icon: <CheckCircle2 className="w-8 h-8" />, label: 'Verify', desc: 'We will track and verify the impact of our actions.' }
+                ].map((item, i) => (
+                  <div key={i} className={`flex flex-col items-center justify-center p-4 text-center ${i < 3 ? 'border-r border-gray-100' : ''}`}>
+                    <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center mb-4 text-emerald-600/60 shrink-0">
+                      {React.cloneElement(item.icon as React.ReactElement, { className: "w-6 h-6" })}
+                    </div>
+                    <h4 className="text-[11px] font-black text-[#001A3D] mb-2 uppercase tracking-tight">{item.label}</h4>
+                    <p className="text-[10px] text-gray-400 font-medium leading-tight px-2">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Right Column: Image with Note */}
+              <div className="lg:col-span-4 relative group">
+                <img 
+                  src="https://www.dropbox.com/scl/fi/b18bqsre3sv2pkqr78wb8/Gemini_Generated_Image_y90xh7y90xh7y90x.png?rlkey=shok0rr32syz83wbueeb8zgcb&st=2jn2kh35&raw=1" 
+                  alt="Sustainable Infrastructure" 
+                  className="w-full h-full object-cover transition-all duration-700"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute bottom-6 left-6 right-6 lg:left-8 lg:right-8">
+                  <div className="bg-white/95 backdrop-blur-md p-4 rounded-xl border border-white shadow-xl flex items-start gap-3">
+                    <div className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center shrink-0">
+                      <Leaf className="w-4 h-4 text-emerald-600" />
+                    </div>
+                    <p className="text-[10px] text-gray-600 font-bold leading-tight">
+                      Building a cleaner future through Swiss precision, circular logistics, and verified impact.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* Card 2: Low Emission Logistics */}
+          <div className="bg-[#F8FAFC]/50 rounded-[1rem] border border-gray-200 overflow-hidden shadow-sm">
+            <div className="grid lg:grid-cols-12 items-stretch">
+              
+              {/* Left Column */}
+              <div className="lg:col-span-3 p-6 flex flex-col justify-between">
+                <div>
+                  <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-4">LOW CARBON PROCUREMENT</p>
+                  <h3 className="text-[32px] font-black text-[#001A3D] mb-4 leading-[0.9] tracking-tighter">Low Emission <br />Logistics</h3>
+                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed mb-4">
+                    Our procurement strategy is being designed to significantly lower carbon emissions by sourcing within the region.
+                  </p>
+                </div>
+                <button className="text-blue-600 font-black text-[11px] uppercase tracking-widest flex items-center gap-2 group self-start">
+                  See our supply chain standards <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+
+              {/* Center Image */}
+              <div className="lg:col-span-3 relative border-l border-gray-200">
+                <img 
+                  src="https://www.dropbox.com/scl/fi/gp2hzd0btzp42mw7ccasa/van.png?rlkey=pj11cjda0lhs8ymzfihvpigcy&st=glbtxs39&raw=1" 
+                  alt="Kraken Logistics" 
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+
+              {/* Right Big Column */}
+              <div className="lg:col-span-6 grid grid-rows-2 border-l border-gray-200">
+                
+                {/* Stats Row */}
+                <div className="grid grid-cols-3 p-6 items-center">
+                  <div className="text-center">
+                    <p className="text-[9px] font-black text-emerald-600 uppercase mb-2">2026 IMPACT TARGET</p>
+                    <h4 className="text-[36px] font-black text-[#001A3D] tracking-tighter">-28%</h4>
+                    <p className="text-[9px] text-gray-400 font-bold uppercase">CO₂ emissions from hub</p>
+                  </div>
+                  <div className="text-center border-x border-gray-100 px-4">
+                    <h4 className="text-[36px] font-black text-[#001A3D] tracking-tighter">-40%</h4>
+                    <p className="text-[9px] text-gray-400 font-bold uppercase">Average supplier distance</p>
+                  </div>
+                  <div className="text-center">
+                    <h4 className="text-[36px] font-black text-[#001A3D] tracking-tighter">85%</h4>
+                    <p className="text-[9px] text-gray-400 font-bold uppercase">Local and regional suppliers</p>
+                  </div>
+                </div>
+
+                {/* Bottom Row: Badge & Button */}
+                <div className="grid grid-cols-12 border-t border-gray-200">
+                  <div className="col-span-7 flex items-center p-8 bg-emerald-50/20">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 shrink-0">
+                        <Leaf className="w-5 h-5" />
+                      </div>
+                      <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider leading-tight">
+                        Prioritizing local partnerships for a future lower carbon footprint.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="col-span-5 p-6 flex items-center justify-center border-l border-gray-200">
+                    <button className="bg-[#001A3D] text-white w-full py-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-black transition-all shadow-xl shadow-blue-900/10">
+                      CALCULATE YOUR CARBON REDUCTION
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+          {/* Card 3: Personnel Selection by Proximity */}
+          <div className="bg-[#F8FAFC]/50 rounded-[1rem] border border-gray-200 overflow-hidden shadow-sm">
+            <div className="grid lg:grid-cols-12 items-stretch">
+              
+              {/* Left Column */}
+              <div className="lg:col-span-3 p-6 flex flex-col justify-between">
+                <div>
+                  <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-4">PEOPLE FIRST</p>
+                  <h3 className="text-[32px] font-black text-[#001A3D] mb-4 leading-[0.9] tracking-tighter">Personnel Selection <br />by Proximity</h3>
+                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed mb-4">
+                    We will select personnel based on their proximity to work sites, reducing commuting time and lowering our carbon footprint.
+                  </p>
+                </div>
+                <button className="text-blue-600 font-black text-[11px] uppercase tracking-widest flex items-center gap-2 group self-start">
+                  Discover our people strategy <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+
+              {/* Right Big Column */}
+              <div className="lg:col-span-9 grid grid-rows-1 border-l border-gray-200">
+                <div className="grid lg:grid-cols-12 h-full">
+                  
+                  {/* Icons Grid */}
+                  <div className="lg:col-span-3 grid grid-cols-2 p-4 gap-y-8 items-center">
+                    {[
+                      { icon: <MapPin className="w-8 h-8" />, label: 'Proximity', desc: 'Focusing on local talent.' },
+                      { icon: <Droplets className="w-8 h-8" />, label: 'Well-being', desc: 'Planning less travel.' },
+                      { icon: <Scale className="w-8 h-8" />, label: 'Efficiency', desc: 'Optimization of response.' },
+                      { icon: <Building2 className="w-8 h-8" />, label: 'Impact', desc: 'Lower emissions targets.' }
+                    ].map((item, i) => (
+                      <div key={i} className="flex flex-col items-center text-center">
+                        <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center mb-1 text-gray-300">
+                          {React.cloneElement(item.icon as React.ReactElement, { className: "w-5 h-5" })}
+                        </div>
+                        <h4 className="text-[10px] font-black text-[#001A3D] mb-0.5 uppercase tracking-tight">{item.label}</h4>
+                        <p className="text-[9px] text-gray-400 font-medium leading-tight px-1">{item.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Image Column */}
+                  <div className="lg:col-span-4 border-l border-gray-100">
+                    <img 
+                      src="https://www.dropbox.com/scl/fi/kp81p17koo25qlybqugm3/ipad.png?rlkey=i01l4qyiwf04xyhtmcnzfgkba&st=6lm2ofzc&raw=1" 
+                      alt="Workforce Planning" 
+                      className="w-full h-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+
+                  {/* Stats Column */}
+                  <div className="lg:col-span-5 flex flex-col justify-between p-6 border-l border-gray-100">
+                    <div className="grid grid-cols-2 gap-6">
+                      <div>
+                        <p className="text-[9px] font-black text-emerald-600 uppercase mb-2">TARGET 2026</p>
+                        <h4 className="text-[36px] font-black text-[#001A3D] tracking-tighter">-25%</h4>
+                        <p className="text-[9px] text-gray-400 font-bold uppercase">Emissions from commuting</p>
+                      </div>
+                      <div className="border-l border-gray-100 pl-6">
+                        <h4 className="text-[36px] font-black text-[#001A3D] tracking-tighter">+18%</h4>
+                        <p className="text-[9px] text-gray-400 font-bold uppercase">Operational efficiency</p>
+                      </div>
+                    </div>
+                    
+                    <button className="bg-[#001A3D] text-white w-full py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-black transition-all shadow-xl shadow-blue-900/10 mt-6">
+                      OPTIMIZE YOUR WORKFORCE FOOTPRINT
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* Card 4: Local Partnership */}
+          <div className="bg-[#F8FAFC]/50 rounded-[1rem] border border-gray-200 overflow-hidden shadow-sm mt-6">
+            <div className="grid lg:grid-cols-12 items-stretch">
+              
+              {/* Left Column: Info with Icon */}
+              <div className="lg:col-span-6 p-6 flex items-start gap-5 border-r border-gray-100">
+                <div className="w-12 h-12 bg-[#F1F5F9] rounded-full flex items-center justify-center shrink-0">
+                  <Handshake className="w-6 h-6 text-[#001A3D]" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1.5">LOCAL PARTNERSHIP</p>
+                  <h3 className="text-[32px] font-black text-[#001A3D] mb-3 leading-[1] tracking-tighter">Local Partnership to <br />Reduce Carbon Footprint</h3>
+                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed">
+                    We work with local B Corp companies and regional partners to strengthen our communities and reduce our environmental impact.
+                  </p>
+                </div>
+              </div>
+
+              {/* Middle Column: Image */}
+              <div className="lg:col-span-3 border-r border-gray-100">
+                <img 
+                  src="https://www.dropbox.com/scl/fi/5qzbv110bwhg5vskx6zt9/partner.png?rlkey=bplwv19q0zayttfyu1nn2qytb&st=qv6sh7oc&raw=1" 
+                  alt="Local Partnership" 
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+
+              {/* Right Column: Stats */}
+              <div className="lg:col-span-3 flex flex-col justify-center gap-6 p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white rounded-full border border-gray-100 flex items-center justify-center shrink-0 shadow-sm">
+                    <ShieldCheck className="w-6 h-6 text-emerald-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-[20px] font-black text-[#001A3D] leading-none mb-1">80%</h4>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">of spend with local or regional partners</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white rounded-full border border-gray-100 flex items-center justify-center shrink-0 shadow-sm">
+                    <Users className="w-6 h-6 text-emerald-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-[20px] font-black text-[#001A3D] leading-none mb-1">120+</h4>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">local partners and suppliers</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* Card 5: Operational Implementation */}
+          <div className="bg-[#F8FAFC]/50 rounded-[1rem] border border-gray-200 overflow-hidden shadow-sm mt-6">
+            <div className="grid lg:grid-cols-12 items-stretch">
+              
+              {/* Left Column: Info with Icon */}
+              <div className="lg:col-span-6 p-6 flex items-start gap-5 border-r border-gray-100">
+                <div className="w-12 h-12 bg-[#F1F5F9] rounded-full flex items-center justify-center shrink-0">
+                  <Settings className="w-6 h-6 text-[#001A3D]" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1.5">OPERATIONAL IMPLEMENTATION</p>
+                  <h3 className="text-[32px] font-black text-[#001A3D] mb-3 leading-[1] tracking-tighter">Operational Implementation <br />for Lasting Impact</h3>
+                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed">
+                    We implement sustainable practices across all operations, with continuous monitoring and improvement.
+                  </p>
+                </div>
+              </div>
+
+              {/* Middle Column: Image */}
+              <div className="lg:col-span-3 border-r border-gray-100">
+                <img 
+                  src="https://www.dropbox.com/scl/fi/lczqkdvrrhfp7xagenq95/office.png?rlkey=vu6oerzdkqrg8dkcsvl4afx7o&st=whp619rg&raw=1" 
+                  alt="Operational Implementation" 
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+
+              {/* Right Column: Stats */}
+              <div className="lg:col-span-3 flex flex-col justify-center gap-6 p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white rounded-full border border-gray-100 flex items-center justify-center shrink-0 shadow-sm">
+                    <ShieldCheck className="w-6 h-6 text-emerald-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-[20px] font-black text-[#001A3D] leading-none mb-1">100%</h4>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">sites with sustainability monitoring</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white rounded-full border border-gray-100 flex items-center justify-center shrink-0 shadow-sm">
+                    <RefreshCw className="w-6 h-6 text-emerald-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-[20px] font-black text-emerald-600 leading-none mb-1">Continuous</h4>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">improvement cycle in place</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
         </div>
       </section>
 

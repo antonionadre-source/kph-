@@ -41,6 +41,7 @@ const useCountUp = (end: number, duration: number = 2000) => {
 
 const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [headerTheme, setHeaderTheme] = useState<'light' | 'dark'>('dark');
   const [isLangDropdownOpen, setLangDropdownOpen] = useState(false);
   const [justSelected, setJustSelected] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -62,6 +63,28 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
+  }, [currentPage]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const theme = entry.target.getAttribute('data-header-theme') as 'light' | 'dark';
+            if (theme) setHeaderTheme(theme);
+          }
+        });
+      },
+      {
+        threshold: [0, 0.1],
+        rootMargin: '-10px 0px -95% 0px' // Focus on the very top of the viewport
+      }
+    );
+
+    const sections = document.querySelectorAll('[data-header-theme]');
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
   }, [currentPage]);
 
   useEffect(() => {
@@ -91,7 +114,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
     };
   }, [isMobileMenuOpen]);
   
-  const useDarkText = isMobileMenuOpen;
+  const useDarkStyle = isScrolled || isMobileMenuOpen || headerTheme === 'light';
 
   const supportedLanguages = [
     { code: 'de-CH', name: 'Swiss German', flag: '🇨🇭' },
@@ -121,11 +144,11 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
     onNavigate('home');
     setMobileMenuOpen(false);
   };
-  
+
   const renderNavLinks = (isMobile: boolean = false) => {
     const navLinkClass = isMobile 
       ? "text-3xl font-black uppercase tracking-tighter py-4 text-[#002d5b]" 
-      : `text-[11px] font-bold uppercase tracking-[0.15em] transition-all ${isScrolled ? 'text-[#002d5b]' : 'text-white'} hover:text-blue-600`;
+      : `text-[11px] font-bold uppercase tracking-[0.15em] transition-all ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'} hover:text-blue-600`;
 
     return (
       <>
@@ -202,17 +225,48 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-2' : 'bg-transparent py-4'} ${isMobileMenuOpen ? 'bg-white' : ''}`}>
         <div className="container mx-auto px-4 md:px-6 flex justify-between items-center">
           <a href="#" onClick={(e) => handleNavClick(e, 'home')} aria-label="Kraken Properties Homepage" className="relative z-50 flex items-center group">
-            <img src={isScrolled || isMobileMenuOpen ? companyLogoUrl : companyLogoWhiteUrl} alt="Kraken Properties Logo" className={`w-auto transition-all duration-500 ${isScrolled || isMobileMenuOpen ? 'h-10 md:h-12' : 'h-14 md:h-18'}`} />
+            <img src={useDarkStyle ? companyLogoUrl : companyLogoWhiteUrl} alt="Kraken Properties Logo" className={`w-auto transition-all duration-500 ${isScrolled || isMobileMenuOpen ? 'h-10 md:h-12' : 'h-14 md:h-18'}`} />
             <div className="h-10 w-px bg-slate-200 mx-4 hidden sm:block"></div>
             <div className="flex flex-col leading-tight">
-              <span className={`text-[8px] md:text-[10px] font-bold uppercase tracking-[0.15em] opacity-80 transition-colors duration-500 ${isScrolled || isMobileMenuOpen ? 'text-[#002d5b]' : 'text-white'}`}>Properties and</span>
-              <span className={`text-[8px] md:text-[10px] font-bold uppercase tracking-[0.15em] opacity-80 transition-colors duration-500 ${isScrolled || isMobileMenuOpen ? 'text-[#002d5b]' : 'text-white'}`}>Facilities Management</span>
+              <span className={`text-[8px] md:text-[10px] font-bold uppercase tracking-[0.15em] opacity-80 transition-colors duration-500 ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'}`}>Properties and</span>
+              <span className={`text-[8px] md:text-[10px] font-bold uppercase tracking-[0.15em] opacity-80 transition-colors duration-500 ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'}`}>Facilities Management</span>
             </div>
           </a>
           
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center space-x-8 lg:space-x-10">
-            {renderNavLinks()}
+            {(() => {
+              const navLinkClass = `text-[11px] font-bold uppercase tracking-[0.15em] transition-all ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'} hover:text-blue-600`;
+              return (
+                <>
+                  {/* Services Dropdown */}
+                  <div className="relative group">
+                    <button className={`${navLinkClass} flex items-center gap-1 cursor-default`}>
+                      {t('nav.services')}
+                      <svg className="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    <div className="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-[100]">
+                      <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-2 min-w-[200px] overflow-hidden">
+                        <button onClick={(e) => handleNavClick(e as any, 'services-page')} className="w-full text-left px-5 py-3 text-[10px] font-black uppercase tracking-widest text-[#002d5b] hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors flex items-center justify-between group/item">
+                          <span>{t('nav.private')}</span>
+                          <span className="opacity-0 group-hover/item:opacity-100 transition-opacity">→</span>
+                        </button>
+                        <button onClick={(e) => handleNavClick(e as any, 'commercial-services')} className="w-full text-left px-5 py-3 text-[10px] font-black uppercase tracking-widest text-[#002d5b] hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors flex items-center justify-between group/item">
+                          <span>{t('nav.commercial')}</span>
+                          <span className="opacity-0 group-hover/item:opacity-100 transition-opacity">→</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <a href="#" onClick={(e) => handleNavClick(e, 'about')} className={navLinkClass}>{t('nav.about')}</a>
+                  <a href="#" onClick={(e) => handleNavClick(e, 'sustainability-page')} className={navLinkClass}>{t('nav.sustainability')}</a>
+                  {user && <a href="#" onClick={(e) => handleNavClick(e, 'dashboard')} className={navLinkClass}>{t('nav.dashboard')}</a>}
+                  <a href="#" onClick={(e) => handleNavClick(e, 'clients')} className={navLinkClass}>{t('nav.clients')}</a>
+                </>
+              );
+            })()}
             
             <div className="relative" ref={langDropdownRef}>
               <button
@@ -221,10 +275,10 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
                 aria-label="Select language"
               >
                 <span className="text-lg">🌎</span>
-                <span className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-500 ${isScrolled || isMobileMenuOpen ? 'text-[#002d5b]' : 'text-white'}`}>
+                <span className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-500 ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'}`}>
                   {language === 'de-CH' ? 'CH' : language.toUpperCase()}
                 </span>
-                <svg className={`w-2.5 h-2.5 transition-transform duration-300 ${isLangDropdownOpen ? 'rotate-180' : ''} ${isScrolled || isMobileMenuOpen ? 'text-[#002d5b]' : 'text-white'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className={`w-2.5 h-2.5 transition-transform duration-300 ${isLangDropdownOpen ? 'rotate-180' : ''} ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
@@ -257,7 +311,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
                     className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white/50 backdrop-blur-sm"
                 >
                     <span className="text-lg">🌎</span>
-                    <span className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-500 ${isScrolled || isMobileMenuOpen ? 'text-[#002d5b]' : 'text-white'}`}>
+                    <span className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-500 ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'}`}>
                       {language === 'de-CH' ? 'CH' : language.toUpperCase()}
                     </span>
                 </button>
@@ -269,7 +323,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
             </div>
             <button
               onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-              className={`z-50 relative w-10 h-10 flex flex-col items-center justify-center transition-all ${isScrolled || isMobileMenuOpen ? 'text-[#002d5b]' : 'text-white'}`}
+              className={`z-50 relative w-10 h-10 flex flex-col items-center justify-center transition-all ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'}`}
               aria-label="Open menu"
             >
               <span className={`block w-8 h-0.5 bg-current rounded-full transform transition duration-500 ease-in-out ${isMobileMenuOpen ? 'rotate-45 translate-y-0.5' : '-translate-y-1'}`}></span>

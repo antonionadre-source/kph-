@@ -101,7 +101,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
     <main className="bg-white min-h-screen selection:bg-blue-100 selection:text-blue-900 font-sans text-[#1d1d1f]">
       
       {/* Immersive Hero */}
-      <section className="relative pt-32 md:pt-64 pb-24 md:pb-48 overflow-hidden bg-[#f5f5f7]">
+      <section data-header-theme="light" className="relative pt-32 md:pt-64 pb-24 md:pb-48 overflow-hidden bg-[#f5f5f7]">
         <div className="container mx-auto px-6 text-center">
             <span className="inline-block px-4 py-1.5 rounded-full bg-white text-[#002D5B] text-[10px] font-black uppercase tracking-[0.5em] mb-8 md:mb-12 shadow-sm border border-gray-100 animate-fade-in">
                 Professional Portfolio 2025
@@ -170,7 +170,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
       </section>
 
       {/* Specialized Services: Expanded Technical Focus with Added Images */}
-      <section className="py-24 md:py-48 bg-[#f5f5f7] relative overflow-hidden">
+      <section data-header-theme="light" className="py-24 md:py-48 bg-[#f5f5f7] relative overflow-hidden">
         <div className="container mx-auto px-6 max-w-7xl relative z-10">
           <div className="text-center mb-16 md:mb-24 max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-7xl font-black tracking-[0.15em] mb-8 text-[#002D5B] uppercase leading-tight">SPECIALIZED SOLUTIONS FOR ST. GALLEN, THURGAU & WINTERTHUR</h2>

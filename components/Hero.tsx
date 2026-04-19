@@ -19,7 +19,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   }, []);
 
   return (
-    <section className="relative min-h-screen md:min-h-[80vh] flex flex-col md:flex-row items-center overflow-hidden bg-[#020617]">
+    <section data-header-theme="dark" className="relative min-h-screen md:min-h-[80vh] flex flex-col md:flex-row items-center overflow-hidden bg-[#020617]">
       {/* Background Image / Mobile Top Image */}
       <div className="relative md:absolute md:inset-0 z-0 w-full h-auto md:h-full">
         <img 
