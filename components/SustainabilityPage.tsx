@@ -92,7 +92,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
     <main className="bg-[#F8FAFC] min-h-screen pb-12 selection:bg-blue-500/30">
       
       {/* Hero Section */}
-      <section data-header-theme="light" className="relative h-[550px] md:h-[650px] overflow-hidden bg-white">
+      <section data-header-theme="light" className="relative min-h-[500px] md:h-[650px] overflow-hidden bg-white">
         <div className="absolute inset-0 z-0">
           <img 
             src="https://www.dropbox.com/scl/fi/manu7v75uqmiga2f3g4pi/ChatGPT-Image-Apr-16-2026-at-02_50_31-AM-2.png?rlkey=jmbqcqgrd0xrzdz1wfc7jn56b&st=nnezsbqd&raw=1" 
@@ -105,7 +105,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
           <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-white to-transparent" />
         </div>
 
-        <div className="container mx-auto px-6 h-full flex items-start relative z-10 pt-10 md:pt-14">
+        <div className="container mx-auto px-6 h-full flex items-center lg:items-start relative z-10 pt-24 md:pt-14 pb-12">
           <div className="max-w-2xl">
             <div
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-widest mb-6"
@@ -130,11 +130,14 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
             <div 
               className="flex flex-wrap gap-4"
             >
-              <button className="bg-[#001A3D] text-white px-8 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-[#002d5b] transition-all shadow-xl shadow-blue-900/20">
-                VIEW REAL IMPACT
+              <button 
+                onClick={() => onNavigate('our-story')}
+                className="bg-[#001A3D] text-white px-8 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-[#002d5b] transition-all shadow-xl shadow-blue-900/20"
+              >
+                VIEW OUR STORY
               </button>
               <button className="bg-white text-[#001A3D] border-2 border-gray-200 px-8 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-gray-50 transition-all flex items-center gap-2">
-                <Download className="w-4 h-4" /> DOWNLOAD 2025 REPORT
+                <Download className="w-4 h-4" /> DOWNLOAD SUSTAINABILITY BROCHURE
               </button>
             </div>
           </div>
@@ -251,7 +254,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
                 Impact in action
               </h2>
               <p className="text-sm text-gray-600 leading-relaxed mb-8 font-medium">
-                In 2024, we helped a corporate complex reduce its energy consumption by 40% through operational optimization and eco-certified products.
+                {t('sustainability.results.desc')}
               </p>
               <button className="text-blue-700 font-black text-[11px] uppercase tracking-widest flex items-center gap-2 group">
                 View full case study <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -295,329 +298,214 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
       </section>
 
       {/* Roadmap: Our Plan to Reduce Emissions */}
-      <section data-header-theme="light" className="py-24 bg-white">
-        <div className="container mx-auto px-6 mb-16 text-center">
-          <h2 className="text-4xl md:text-[54px] font-black text-[#001A3D] mb-4 tracking-tighter leading-none">How we will reduce our environmental impact</h2>
-          <p className="text-gray-500 font-medium max-w-2xl mx-auto text-sm md:text-base">
-            Sustainability is being integrated into every decision we plan to make. <br />
-            Discover how we will create value for your property and the planet.
+      <section data-header-theme="light" className="py-24 bg-[#F8FAFC]">
+        <div className="container mx-auto px-6 mb-16">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-[10px] font-black text-gray-400">Another Star</span>
+            <ArrowRight className="w-3 h-3 text-gray-300" />
+            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">People, Planet, Progress</span>
+          </div>
+          <h2 className="text-4xl md:text-[54px] font-black text-[#001A3D] mb-6 tracking-tight leading-none text-center uppercase">Reducing our environmental impact</h2>
+          <p className="text-gray-500 font-medium max-w-2xl mx-auto text-center text-sm md:text-base leading-relaxed">
+            We implement sustainable practices across all levels of our operation, from personnel selection to logistics optimization.
           </p>
         </div>
 
-        <div className="container mx-auto px-6 space-y-6">
-          
-          {/* Card 1: Circular Sustainability */}
-          <div className="bg-[#F8FAFC]/50 rounded-[1rem] border border-gray-200 overflow-hidden shadow-sm">
-            <div className="grid lg:grid-cols-12 items-stretch">
-              
-              {/* Left Column: Info */}
-              <div className="lg:col-span-3 p-6 flex flex-col justify-between">
-                <div>
-                  <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-4">CIRCULAR OPERATIONS</p>
-                  <h3 className="text-[32px] font-black text-[#001A3D] mb-4 leading-[0.9] tracking-tighter">Circular <br />Sustainability</h3>
-                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed mb-4">
-                    We will extend the life cycle of products and materials through smart reuse, responsible maintenance and certified solutions.
-                  </p>
-                </div>
-                <button className="text-blue-600 font-black text-[11px] uppercase tracking-widest flex items-center gap-2 group">
-                  Learn more about our circular approach <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </button>
-              </div>
-
-              {/* Middle Column: Icons */}
-              <div className="lg:col-span-5 grid grid-cols-4 border-l border-gray-200">
-                {[
-                  { icon: <TrendingDown className="w-8 h-8" />, label: 'Reduce', desc: 'We will minimize waste and unnecessary consumption.' },
-                  { icon: <Recycle className="w-8 h-8" />, label: 'Reuse', desc: 'We will extend product life cycles through maintenance.' },
-                  { icon: <Leaf className="w-8 h-8" />, label: 'Recycle', desc: 'Working with certified partners for material recovery.' },
-                  { icon: <CheckCircle2 className="w-8 h-8" />, label: 'Verify', desc: 'We will track and verify the impact of our actions.' }
-                ].map((item, i) => (
-                  <div key={i} className={`flex flex-col items-center justify-center p-4 text-center ${i < 3 ? 'border-r border-gray-100' : ''}`}>
-                    <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center mb-4 text-emerald-600/60 shrink-0">
-                      {React.cloneElement(item.icon as React.ReactElement, { className: "w-6 h-6" })}
-                    </div>
-                    <h4 className="text-[11px] font-black text-[#001A3D] mb-2 uppercase tracking-tight">{item.label}</h4>
-                    <p className="text-[10px] text-gray-400 font-medium leading-tight px-2">{item.desc}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Right Column: Image with Note */}
-              <div className="lg:col-span-4 relative group">
-                <img 
-                  src="https://www.dropbox.com/scl/fi/b18bqsre3sv2pkqr78wb8/Gemini_Generated_Image_y90xh7y90xh7y90x.png?rlkey=shok0rr32syz83wbueeb8zgcb&st=2jn2kh35&raw=1" 
-                  alt="Sustainable Infrastructure" 
-                  className="w-full h-full object-cover transition-all duration-700"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute bottom-6 left-6 right-6 lg:left-8 lg:right-8">
-                  <div className="bg-white/95 backdrop-blur-md p-4 rounded-xl border border-white shadow-xl flex items-start gap-3">
-                    <div className="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center shrink-0">
-                      <Leaf className="w-4 h-4 text-emerald-600" />
-                    </div>
-                    <p className="text-[10px] text-gray-600 font-bold leading-tight">
-                      Building a cleaner future through Swiss precision, circular logistics, and verified impact.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          {/* Card 2: Low Emission Logistics */}
-          <div className="bg-[#F8FAFC]/50 rounded-[1rem] border border-gray-200 overflow-hidden shadow-sm">
-            <div className="grid lg:grid-cols-12 items-stretch">
-              
-              {/* Left Column */}
-              <div className="lg:col-span-3 p-6 flex flex-col justify-between">
-                <div>
-                  <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-4">LOW CARBON PROCUREMENT</p>
-                  <h3 className="text-[32px] font-black text-[#001A3D] mb-4 leading-[0.9] tracking-tighter">Low Emission <br />Logistics</h3>
-                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed mb-4">
-                    Our procurement strategy is being designed to significantly lower carbon emissions by sourcing within the region.
-                  </p>
-                </div>
-                <button className="text-blue-600 font-black text-[11px] uppercase tracking-widest flex items-center gap-2 group self-start">
-                  See our supply chain standards <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </button>
-              </div>
-
-              {/* Center Image */}
-              <div className="lg:col-span-3 relative border-l border-gray-200">
-                <img 
-                  src="https://www.dropbox.com/scl/fi/gp2hzd0btzp42mw7ccasa/van.png?rlkey=pj11cjda0lhs8ymzfihvpigcy&st=glbtxs39&raw=1" 
-                  alt="Kraken Logistics" 
-                  className="w-full h-full object-cover"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-
-              {/* Right Big Column */}
-              <div className="lg:col-span-6 grid grid-rows-2 border-l border-gray-200">
-                
-                {/* Stats Row */}
-                <div className="grid grid-cols-3 p-6 items-center">
-                  <div className="text-center">
-                    <p className="text-[9px] font-black text-emerald-600 uppercase mb-2">2026 IMPACT TARGET</p>
-                    <h4 className="text-[36px] font-black text-[#001A3D] tracking-tighter">-28%</h4>
-                    <p className="text-[9px] text-gray-400 font-bold uppercase">CO₂ emissions from hub</p>
-                  </div>
-                  <div className="text-center border-x border-gray-100 px-4">
-                    <h4 className="text-[36px] font-black text-[#001A3D] tracking-tighter">-40%</h4>
-                    <p className="text-[9px] text-gray-400 font-bold uppercase">Average supplier distance</p>
-                  </div>
-                  <div className="text-center">
-                    <h4 className="text-[36px] font-black text-[#001A3D] tracking-tighter">85%</h4>
-                    <p className="text-[9px] text-gray-400 font-bold uppercase">Local and regional suppliers</p>
-                  </div>
-                </div>
-
-                {/* Bottom Row: Badge & Button */}
-                <div className="grid grid-cols-12 border-t border-gray-200">
-                  <div className="col-span-7 flex items-center p-8 bg-emerald-50/20">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 shrink-0">
-                        <Leaf className="w-5 h-5" />
-                      </div>
-                      <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider leading-tight">
-                        Prioritizing local partnerships for a future lower carbon footprint.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="col-span-5 p-6 flex items-center justify-center border-l border-gray-200">
-                    <button className="bg-[#001A3D] text-white w-full py-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-black transition-all shadow-xl shadow-blue-900/10">
-                      CALCULATE YOUR CARBON REDUCTION
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-
-            </div>
-          </div>
-
-          {/* Card 3: Personnel Selection by Proximity */}
-          <div className="bg-[#F8FAFC]/50 rounded-[1rem] border border-gray-200 overflow-hidden shadow-sm">
-            <div className="grid lg:grid-cols-12 items-stretch">
-              
-              {/* Left Column */}
-              <div className="lg:col-span-3 p-6 flex flex-col justify-between">
-                <div>
-                  <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-4">PEOPLE FIRST</p>
-                  <h3 className="text-[32px] font-black text-[#001A3D] mb-4 leading-[0.9] tracking-tighter">Personnel Selection <br />by Proximity</h3>
-                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed mb-4">
-                    We will select personnel based on their proximity to work sites, reducing commuting time and lowering our carbon footprint.
-                  </p>
-                </div>
-                <button className="text-blue-600 font-black text-[11px] uppercase tracking-widest flex items-center gap-2 group self-start">
-                  Discover our people strategy <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </button>
-              </div>
-
-              {/* Right Big Column */}
-              <div className="lg:col-span-9 grid grid-rows-1 border-l border-gray-200">
-                <div className="grid lg:grid-cols-12 h-full">
-                  
-                  {/* Icons Grid */}
-                  <div className="lg:col-span-3 grid grid-cols-2 p-4 gap-y-8 items-center">
-                    {[
-                      { icon: <MapPin className="w-8 h-8" />, label: 'Proximity', desc: 'Focusing on local talent.' },
-                      { icon: <Droplets className="w-8 h-8" />, label: 'Well-being', desc: 'Planning less travel.' },
-                      { icon: <Scale className="w-8 h-8" />, label: 'Efficiency', desc: 'Optimization of response.' },
-                      { icon: <Building2 className="w-8 h-8" />, label: 'Impact', desc: 'Lower emissions targets.' }
-                    ].map((item, i) => (
-                      <div key={i} className="flex flex-col items-center text-center">
-                        <div className="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center mb-1 text-gray-300">
-                          {React.cloneElement(item.icon as React.ReactElement, { className: "w-5 h-5" })}
-                        </div>
-                        <h4 className="text-[10px] font-black text-[#001A3D] mb-0.5 uppercase tracking-tight">{item.label}</h4>
-                        <p className="text-[9px] text-gray-400 font-medium leading-tight px-1">{item.desc}</p>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Image Column */}
-                  <div className="lg:col-span-4 border-l border-gray-100">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            {/* LOGISTICS SECTION: Full Width at Top */}
+            <div className="lg:col-span-12">
+               <div className="bg-[#E2E8F0] rounded-[2.5rem] overflow-hidden min-h-[300px] md:h-[380px] relative group">
+                  {/* Background Illustration */}
+                  <div className="absolute inset-0 z-0">
                     <img 
-                      src="https://www.dropbox.com/scl/fi/kp81p17koo25qlybqugm3/ipad.png?rlkey=i01l4qyiwf04xyhtmcnzfgkba&st=6lm2ofzc&raw=1" 
-                      alt="Workforce Planning" 
+                      src="https://www.dropbox.com/scl/fi/l73priig85x3zftgc4egf/logistic.png?rlkey=btdiuv2q77gnf1dzsrvxlcjot&st=gdhbdmzl&raw=1" 
+                      alt="Logistics Illustration" 
                       className="w-full h-full object-cover"
                       referrerPolicy="no-referrer"
                     />
                   </div>
 
-                  {/* Stats Column */}
-                  <div className="lg:col-span-5 flex flex-col justify-between p-6 border-l border-gray-100">
-                    <div className="grid grid-cols-2 gap-6">
-                      <div>
-                        <p className="text-[9px] font-black text-emerald-600 uppercase mb-2">TARGET 2026</p>
-                        <h4 className="text-[36px] font-black text-[#001A3D] tracking-tighter">-25%</h4>
-                        <p className="text-[9px] text-gray-400 font-bold uppercase">Emissions from commuting</p>
-                      </div>
-                      <div className="border-l border-gray-100 pl-6">
-                        <h4 className="text-[36px] font-black text-[#001A3D] tracking-tighter">+18%</h4>
-                        <p className="text-[9px] text-gray-400 font-bold uppercase">Operational efficiency</p>
+                  <div className="relative z-10 h-full flex flex-col lg:flex-row p-8 md:p-10 gap-12 items-center">
+                    {/* Left Side: Text */}
+                    <div className="lg:w-1/2">
+                      <h2 className="text-4xl md:text-5xl font-black text-[#001A3D] mb-6 leading-tight uppercase tracking-tighter">
+                        Low Emission <br /> Logistics
+                      </h2>
+                      <p className="text-gray-600 max-w-sm text-sm md:text-lg font-medium leading-relaxed mb-8">
+                        Our procurement strategy is being designed to significantly lower carbon emissions by sourcing within the region.
+                      </p>
+                    </div>
+
+                    {/* Right Side: Data Dashboard */}
+                    <div className="lg:w-1/2 w-full flex justify-center lg:justify-end">
+                      <div className="bg-white/95 backdrop-blur-md p-5 rounded-[2rem] shadow-2xl border border-white/50 w-full max-w-[220px] aspect-square flex flex-col justify-center">
+                        {/* Stat 1 */}
+                        <div className="mb-4">
+                          <div className="flex justify-between items-start mb-1">
+                             <div>
+                                <p className="text-[8px] font-black text-emerald-600 uppercase tracking-widest mb-1">LOW TRUCK DRIVERT</p>
+                                <div className="text-3xl font-black text-[#001A3D] tracking-tighter">-28%</div>
+                             </div>
+                             <div className="bg-[#001A3D] text-white px-2 py-0.5 rounded-full text-[7px] font-black uppercase tracking-widest">
+                                Impact: -30k
+                             </div>
+                          </div>
+                          <div className="h-12 w-full relative">
+                            <svg viewBox="0 0 100 30" className="w-full h-full overflow-visible">
+                              <path 
+                                d="M0,25 Q15,5 30,20 T60,10 T100,20" 
+                                fill="none" 
+                                stroke="#10B981" 
+                                strokeWidth="3" 
+                                strokeLinecap="round" 
+                              />
+                              <circle cx="85" cy="15" r="3" fill="#10B981" className="animate-pulse" />
+                            </svg>
+                          </div>
+                        </div>
+
+                        {/* Stat 2 */}
+                        <div className="mb-4">
+                          <p className="text-[8px] font-black text-blue-600 uppercase tracking-widest mb-1">AIS TRACKING OPTIMIZATION</p>
+                          <div className="flex justify-between items-end">
+                             <div className="text-3xl font-black text-[#001A3D] tracking-tighter">-40%</div>
+                             <div className="text-[7px] text-gray-400 font-bold uppercase tracking-tight text-right w-16 leading-none pb-1">
+                                AIS TRACKING OPTIMIZATION
+                             </div>
+                          </div>
+                          <div className="h-12 w-full relative mt-1">
+                             <svg viewBox="0 0 100 30" className="w-full h-full overflow-visible">
+                                <path 
+                                  d="M0,15 C20,15 30,5 50,25 C70,45 80,15 100,15" 
+                                  fill="none" 
+                                  stroke="#3B82F6" 
+                                  strokeWidth="3" 
+                                  strokeLinecap="round" 
+                                />
+                             </svg>
+                          </div>
+                        </div>
+
+                        <div className="bg-emerald-50 rounded-xl p-3 flex items-center gap-3 border border-emerald-100/50">
+                          <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white shrink-0">
+                            <TrendingDown size={14} />
+                          </div>
+                          <p className="text-[9px] font-black text-emerald-800 uppercase leading-snug">
+                             PRIORITIZING LOCAL PARTNERSHIPS FOR A FUTURE LOWER CARBON FOOTPRINT.
+                          </p>
+                        </div>
                       </div>
                     </div>
-                    
-                    <button className="bg-[#001A3D] text-white w-full py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-black transition-all shadow-xl shadow-blue-900/10 mt-6">
-                      OPTIMIZE YOUR WORKFORCE FOOTPRINT
-                    </button>
                   </div>
 
+
+               </div>
+            </div>
+
+            {/* LEFT COLUMN */}
+            <div className="lg:col-span-4 flex flex-col gap-6">
+              {/* Card 1: Circular Sustainability */}
+              <div className="bg-black rounded-[2rem] overflow-hidden min-h-[500px] md:h-[630px] relative group">
+                <img 
+                  src="https://www.dropbox.com/scl/fi/ij5i46oagpeppozrlfhtn/certified.png?rlkey=8f5c0pybb3hg4dj5dgzzsjmgj&st=b9ii9ifo&raw=1" 
+                  alt="Certified" 
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10" />
+                <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
+                  <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-2">CIRCULAR OPERATIONS</p>
+                  <h3 className="text-2xl font-black text-white leading-tight mb-4 uppercase text-pretty">Circular <br /> Sustainability</h3>
+                  <p className="text-xs text-gray-200 font-medium leading-relaxed max-w-xs">
+                    We will extend the life cycle of products and materials through reuse and responsible maintenance.
+                  </p>
                 </div>
               </div>
-
             </div>
-          </div>
 
-          {/* Card 4: Local Partnership */}
-          <div className="bg-[#F8FAFC]/50 rounded-[1rem] border border-gray-200 overflow-hidden shadow-sm mt-6">
-            <div className="grid lg:grid-cols-12 items-stretch">
-              
-              {/* Left Column: Info with Icon */}
-              <div className="lg:col-span-6 p-6 flex items-start gap-5 border-r border-gray-100">
-                <div className="w-12 h-12 bg-[#F1F5F9] rounded-full flex items-center justify-center shrink-0">
-                  <Handshake className="w-6 h-6 text-[#001A3D]" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1.5">LOCAL PARTNERSHIP</p>
-                  <h3 className="text-[32px] font-black text-[#001A3D] mb-3 leading-[1] tracking-tighter">Local Partnership to <br />Reduce Carbon Footprint</h3>
-                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed">
-                    We work with local B Corp companies and regional partners to strengthen our communities and reduce our environmental impact.
+            {/* MIDDLE COLUMN */}
+            <div className="lg:col-span-4 flex flex-col gap-6">
+              {/* Card 3: Personnel Selection */}
+              <div className="bg-black rounded-[2rem] overflow-hidden min-h-[300px] md:h-[288px] relative group">
+                <img 
+                  src="/regenerated_image_1777398255200.png" 
+                  alt="People" 
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10" />
+                <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
+                  <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-2">OUR PEOPLE</p>
+                  <h3 className="text-xl font-black text-white leading-tight mb-3 uppercase">Personnel Selection</h3>
+                  <p className="text-[10px] text-gray-200 font-medium leading-relaxed max-w-[200px]">
+                    Selecting personnel based on proximity to reduce commuting time.
                   </p>
                 </div>
               </div>
 
-              {/* Middle Column: Image */}
-              <div className="lg:col-span-3 border-r border-gray-100">
+              {/* Card 4: Inclusion and Diversity */}
+              <div className="bg-black rounded-[2rem] overflow-hidden min-h-[300px] md:h-[288px] relative group">
+                <img 
+                  src="https://www.dropbox.com/scl/fi/p7cbark3l9qhhnafppeht/team.png?rlkey=9vrjkm0547w3ylael3q9b7ljz&st=atjvbkkn&raw=1" 
+                  alt="Team" 
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10" />
+                <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
+                  <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1">OUR PEOPLE</p>
+                  <h3 className="text-xl font-black text-white leading-tight mb-2 uppercase text-pretty">Diversity</h3>
+                  <p className="text-[10px] text-gray-200 font-medium leading-relaxed mb-3">
+                    We foster an inclusive environment where every individual is respected.
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white">
+                      <Users size={12} />
+                    </div>
+                    <p className="text-[8px] text-gray-300 font-black uppercase tracking-widest">Inclusion</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN */}
+            <div className="lg:col-span-4 flex flex-col gap-6">
+              {/* Card 5: Local Partnership */}
+              <div className="bg-black rounded-[2rem] overflow-hidden min-h-[300px] md:h-[288px] relative group">
                 <img 
                   src="https://www.dropbox.com/scl/fi/5qzbv110bwhg5vskx6zt9/partner.png?rlkey=bplwv19q0zayttfyu1nn2qytb&st=qv6sh7oc&raw=1" 
-                  alt="Local Partnership" 
-                  className="w-full h-full object-cover"
+                  alt="Partnership" 
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   referrerPolicy="no-referrer"
                 />
-              </div>
-
-              {/* Right Column: Stats */}
-              <div className="lg:col-span-3 flex flex-col justify-center gap-6 p-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white rounded-full border border-gray-100 flex items-center justify-center shrink-0 shadow-sm">
-                    <ShieldCheck className="w-6 h-6 text-emerald-600" />
-                  </div>
-                  <div>
-                    <h4 className="text-[20px] font-black text-[#001A3D] leading-none mb-1">80%</h4>
-                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">of spend with local or regional partners</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white rounded-full border border-gray-100 flex items-center justify-center shrink-0 shadow-sm">
-                    <Users className="w-6 h-6 text-emerald-600" />
-                  </div>
-                  <div>
-                    <h4 className="text-[20px] font-black text-[#001A3D] leading-none mb-1">120+</h4>
-                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">local partners and suppliers</p>
-                  </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10" />
+                <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
+                  <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1">PARTNERSHIP</p>
+                  <h3 className="text-xl font-black text-white leading-tight mb-1 uppercase">Local Partnership</h3>
+                  <p className="text-[10px] text-gray-300 font-medium leading-relaxed max-w-xs opacity-80">We work with local B Corp companies and regional partners to strengthen our communities and reduce our environmental impact.</p>
                 </div>
               </div>
 
-            </div>
-          </div>
-
-          {/* Card 5: Operational Implementation */}
-          <div className="bg-[#F8FAFC]/50 rounded-[1rem] border border-gray-200 overflow-hidden shadow-sm mt-6">
-            <div className="grid lg:grid-cols-12 items-stretch">
-              
-              {/* Left Column: Info with Icon */}
-              <div className="lg:col-span-6 p-6 flex items-start gap-5 border-r border-gray-100">
-                <div className="w-12 h-12 bg-[#F1F5F9] rounded-full flex items-center justify-center shrink-0">
-                  <Settings className="w-6 h-6 text-[#001A3D]" />
-                </div>
-                <div>
-                  <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1.5">OPERATIONAL IMPLEMENTATION</p>
-                  <h3 className="text-[32px] font-black text-[#001A3D] mb-3 leading-[1] tracking-tighter">Operational Implementation <br />for Lasting Impact</h3>
-                  <p className="text-[13px] text-gray-500 font-medium leading-relaxed">
-                    We implement sustainable practices across all operations, with continuous monitoring and improvement.
-                  </p>
-                </div>
-              </div>
-
-              {/* Middle Column: Image */}
-              <div className="lg:col-span-3 border-r border-gray-100">
+              {/* Card 6: Operational excellence */}
+              <div className="bg-black rounded-[2rem] overflow-hidden min-h-[300px] md:h-[288px] relative group">
                 <img 
                   src="https://www.dropbox.com/scl/fi/lczqkdvrrhfp7xagenq95/office.png?rlkey=vu6oerzdkqrg8dkcsvl4afx7o&st=whp619rg&raw=1" 
-                  alt="Operational Implementation" 
-                  className="w-full h-full object-cover"
+                  alt="Office" 
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   referrerPolicy="no-referrer"
                 />
-              </div>
-
-              {/* Right Column: Stats */}
-              <div className="lg:col-span-3 flex flex-col justify-center gap-6 p-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white rounded-full border border-gray-100 flex items-center justify-center shrink-0 shadow-sm">
-                    <ShieldCheck className="w-6 h-6 text-emerald-600" />
-                  </div>
-                  <div>
-                    <h4 className="text-[20px] font-black text-[#001A3D] leading-none mb-1">100%</h4>
-                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">sites with sustainability monitoring</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white rounded-full border border-gray-100 flex items-center justify-center shrink-0 shadow-sm">
-                    <RefreshCw className="w-6 h-6 text-emerald-600" />
-                  </div>
-                  <div>
-                    <h4 className="text-[20px] font-black text-emerald-600 leading-none mb-1">Continuous</h4>
-                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">improvement cycle in place</p>
-                  </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10" />
+                <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
+                  <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-2">OPERATIONS</p>
+                  <h3 className="text-xl font-black text-white leading-tight mb-2 uppercase">Implementation</h3>
+                  <p className="text-[10px] text-gray-200 font-medium leading-relaxed">We implement sustainable practices across all operations, with continuous monitoring and improvement.</p>
                 </div>
               </div>
-
             </div>
-          </div>
 
+          </div>
         </div>
       </section>
 

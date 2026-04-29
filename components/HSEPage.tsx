@@ -34,7 +34,7 @@ const HSEPage: React.FC = () => {
   );
 
   return (
-    <main className="bg-slate-50 pt-48 pb-20">
+    <main className="bg-slate-50 pt-32 md:pt-48 pb-20">
       <div className="container mx-auto px-6 max-w-5xl">
         {/* Header */}
         <div className="text-center mb-16">

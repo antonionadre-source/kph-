@@ -22,7 +22,8 @@ import {
   LeafIcon,
   BadgeCheckIcon,
   SproutIcon,
-  BarChart3Icon
+  BarChart3Icon,
+  ShoppingCart
 } from 'lucide-react';
 
 interface ComicPageProps {
@@ -108,7 +109,7 @@ const ComicPage: React.FC<ComicPageProps> = ({ onNavigate }) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="text-gray-700 text-lg font-medium leading-relaxed mb-10 max-w-md"
+                className="text-white text-lg font-medium leading-relaxed mb-10 max-w-md"
               >
                 In Schaffhausen, a simple idea took shape. <br />
                 Today, it drives everything we do.
@@ -126,8 +127,11 @@ const ComicPage: React.FC<ComicPageProps> = ({ onNavigate }) => {
                 >
                   <PlayIcon className="w-4 h-4 fill-current" /> EXPLORE THE STORY
                 </button>
-                <button className="bg-white text-[#001A3D] border-2 border-gray-200 px-8 py-4 rounded-full font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:bg-gray-50 transition-all shadow-sm">
-                  <BookOpenIcon className="w-4 h-4" /> VIEW COMICS <ChevronRightIcon className="w-4 h-4" />
+                <button 
+                  onClick={() => onNavigate('comic-shop')}
+                  className="bg-blue-600 text-white px-8 py-4 rounded-full font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 active:scale-95 group"
+                >
+                  <ShoppingCart className="w-4 h-4 transition-transform group-hover:scale-110" /> VIEW COMIC STORE <ChevronRightIcon className="w-4 h-4" />
                 </button>
               </motion.div>
             </div>

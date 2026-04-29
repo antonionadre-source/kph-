@@ -14,6 +14,8 @@ import {
     ClockIcon,
     MapPinIcon,
     CalendarIcon,
+    KeyIcon,
+    PencilIcon,
     WindowIcon,
     SparklesIcon,
     BuildingIcon,
@@ -79,6 +81,10 @@ const PRICES = {
     movingBase: 45, 
     movingPerMover: 50, 
     movingAssemblyRate: 80,
+    movingHydraulicLiftRate: 150,
+    movingTransSameCity: 20,
+    movingTransDiffCity: 35,
+    movingTransDiffCanton: 50,
     windowStandard: 25,
     windowLarge: 45,
     windowExternalSurcharge: 15,
@@ -464,6 +470,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showMobileSummaryBar, setShowMobileSummaryBar] = useState(true);
+  const [showMovingInfo, setShowMovingInfo] = useState(false);
 
   // Form Fields State with LocalStorage Persistence
   const [clientName, setClientName] = useState('');
@@ -474,6 +481,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   const [postcode, setPostcode] = useState('');
   const [city, setCity] = useState('');
   const [notes, setNotes] = useState('');
+  const [accessMethod, setAccessMethod] = useState('I am on-site');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [isTermsAgreed, setIsTermsAgreed] = useState(false);
@@ -503,6 +511,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
             if (data.postcode) setPostcode(data.postcode);
             if (data.city) setCity(data.city);
             if (data.notes) setNotes(data.notes);
+            if (data.accessMethod) setAccessMethod(data.accessMethod);
             if (data.date) setSelectedDate(data.date);
             if (data.time) setSelectedTime(data.time);
             if (data.terms) setIsTermsAgreed(data.terms);
@@ -525,6 +534,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         postcode,
         city,
         notes,
+        accessMethod,
         date: selectedDate,
         time: selectedTime,
         terms: isTermsAgreed,
@@ -551,7 +561,26 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                 fridge: false, fridgeCondition: 'Empty', fridgeOrganize: false, fridgeNotes: '',
                 windowCount: 0 
           },
-          'moving': { moversCount: 2, duration: 3, fromZip: '', toZip: '', isCommercial: false, moveType: 'Home Contents', serviceLevel: 'Standard', description: '', assembly: false, assemblyHours: 1 },
+          'moving': { 
+            moversCount: 2, 
+            duration: 3, 
+            fromZip: '', 
+            fromAddress: '',
+            toZip: '', 
+            toAddress: '',
+            accessFrom: 'Lift',
+            floorFrom: '0',
+            accessTo: 'Lift',
+            floorTo: '0',
+            hydraulicLift: false, 
+            hydraulicLiftHours: 1, 
+            isCommercial: false, 
+            moveType: 'Home Contents', 
+            serviceLevel: 'Standard', 
+            description: '', 
+            assembly: false, 
+            assemblyHours: 1 
+          },
           'pest-control': { pestType: 'Insects', propertyType: 'Residential', description: '' },
           'waste-management': { wasteType: 'Household', volume: 'Small', description: '' },
           'gutter-cleaning': { buildingHeight: '1 Story', lengthCategory: 'Standard', description: '' },
@@ -570,18 +599,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   };
 
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (Math.abs(currentScrollY - lastScrollYRef.current) > 10) {
-          if (currentScrollY > lastScrollYRef.current && currentScrollY > 100) {
-            setShowMobileSummaryBar(false);
-            setMobileSummaryOpen(false);
-          } else setShowMobileSummaryBar(true);
-          lastScrollYRef.current = currentScrollY;
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    // Mobile summary visibility is now always true as per user request
+    setShowMobileSummaryBar(true);
   }, []);
 
   const roundToHalf = (num: number) => Math.ceil(num * 2) / 2;
@@ -689,7 +708,31 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
               }
 
               const assemblyPrice = config.assembly ? config.assemblyHours * PRICES.movingAssemblyRate : 0;
-              return baseMovePrice + assemblyPrice;
+              const hydraulicLiftPrice = config.hydraulicLift ? config.hydraulicLiftHours * PRICES.movingHydraulicLiftRate : 0;
+              
+              // Transportation logic
+              let transportationPrice = 0;
+              const fromZip = config.fromZip || '';
+              const toZip = config.toZip || '';
+
+              if (fromZip && toZip) {
+                  const fromCity = fromZip.startsWith('80') ? 'ZH' : (fromZip.startsWith('84') ? 'WIN' : (fromZip.startsWith('82') ? 'SH' : ''));
+                  const toCity = toZip.startsWith('80') ? 'ZH' : (toZip.startsWith('84') ? 'WIN' : (toZip.startsWith('82') ? 'SH' : ''));
+                  
+                  const fromCanton = (fromZip.startsWith('80') || fromZip.startsWith('84')) ? 'ZH_CANTON' : (fromZip.startsWith('82') ? 'SH_CANTON' : '');
+                  const toCanton = (toZip.startsWith('80') || toZip.startsWith('84')) ? 'ZH_CANTON' : (toZip.startsWith('82') ? 'SH_CANTON' : '');
+
+                  if (fromCity === toCity && fromCity !== '') {
+                      transportationPrice = PRICES.movingTransSameCity;
+                  } else if (fromCity !== '' && toCity !== '') {
+                      transportationPrice = PRICES.movingTransDiffCity;
+                      if (fromCanton !== toCanton) {
+                          transportationPrice += PRICES.movingTransDiffCanton;
+                      }
+                  }
+              }
+
+              return baseMovePrice + assemblyPrice + hydraulicLiftPrice + transportationPrice;
           }
           case 'car-detailing': {
               let subtotal = 0;
@@ -815,10 +858,21 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
               break;
           }
           case 'moving': {
+              const isFromValid = config.fromZip.startsWith('80') || config.fromZip.startsWith('82') || config.fromZip.startsWith('84');
+              const isToValid = config.toZip.startsWith('80') || config.toZip.startsWith('82') || config.toZip.startsWith('84');
+              if (!isFromValid || !isToValid) {
+                  alert('We currently only support Zurich (80xx), Schaffhausen (82xx), and Winterthur (84xx).');
+                  return;
+              }
+
               descParts.push(`${config.moveType} Move`);
               descParts.push(`${config.moversCount} Movers`);
               descParts.push(config.serviceLevel);
               if (config.assembly) descParts.push(`Assembly (${config.assemblyHours}h)`);
+              if (config.accessFrom === 'Stairs' || config.accessTo === 'Stairs') descParts.push('Stairs Handled');
+              if (config.floorFrom !== '0') descParts.push(`From Floor: ${config.floorFrom}`);
+              if (config.floorTo !== '0') descParts.push(`To Floor: ${config.floorTo}`);
+              if (config.hydraulicLift) descParts.push(`Hydraulic Lift (${config.hydraulicLiftHours}h)`);
               if (config.description) {
                   const snippet = config.description.length > 25 ? config.description.substring(0, 22) + '...' : config.description;
                   descParts.push(`Items: ${snippet}`);
@@ -965,7 +1019,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   useEffect(() => {
     // Expose the function globally for debugging or external calls if needed
     (window as any).ejecutarReservaYpago = ejecutarReservaYpago;
-  }, [clientName, email, phone, address, postcode, city, selectedDate, selectedTime, bookingMode, isTermsAgreed, cart, files, isSubmitting]);
+  }, [clientName, email, phone, address, postcode, city, notes, accessMethod, selectedDate, selectedTime, bookingMode, isTermsAgreed, cart, files, isSubmitting]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -1054,6 +1108,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                 phone: fullPhone,
                 address: fullAddress,
                 notes,
+                accessMethod,
                 date: selectedDate,
                 time: timeWindow,
                 totalPrice: grandTotal,
@@ -1099,7 +1154,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   };
 
   return (
-    <div className="min-h-screen bg-white pt-32 md:pt-40 pb-20 font-sans text-gray-800">
+    <div className="min-h-screen bg-white pt-24 md:pt-40 pb-20 font-sans text-gray-800">
       <div className="container mx-auto px-4 md:px-6 max-w-7xl">
         
         {/* --- Header & Mascot Dialogue & Reviews --- */}
@@ -1283,7 +1338,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                 </div>
             </div>
 
-            <div className={`fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl shadow-[0_-15px_50px_rgba(0,0,0,0.15)] border-t border-gray-100 transition-transform duration-700 lg:sticky lg:top-28 lg:bottom-auto lg:left-auto lg:right-auto lg:w-1/3 lg:block lg:bg-transparent lg:shadow-none lg:border-none lg:backdrop-filter-none lg:z-30 lg:transform-none ${!showMobileSummaryBar && !isMobileSummaryOpen ? 'translate-y-full' : 'translate-y-0'}`}>
+            <div className={`fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl shadow-[0_-15px_50px_rgba(0,0,0,0.15)] border-t border-gray-100 transition-transform duration-700 lg:sticky lg:top-28 lg:bottom-auto lg:left-auto lg:right-auto lg:w-1/3 lg:block lg:bg-transparent lg:shadow-none lg:border-none lg:backdrop-filter-none lg:z-30 lg:transform-none translate-y-0`}>
                 <div className="lg:relative">
                     <div className="bg-white lg:rounded-[2.5rem] lg:shadow-2xl lg:border border-gray-100 overflow-hidden">
                         <div className="lg:hidden p-6 flex items-center justify-between cursor-pointer border-b border-gray-100 hover:bg-gray-50 transition-colors" onClick={(e) => { if((e.target as HTMLElement).tagName !== 'BUTTON') setMobileSummaryOpen(!isMobileSummaryOpen); }}>
@@ -1327,7 +1382,16 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                 </div>
                                                 <div className="text-[11px] text-gray-500 mb-3 pl-10 border-l-2 border-blue-100 ml-3 font-medium leading-relaxed">{item.description}</div>
                                                 <div className="flex justify-between items-center pl-10">
-                                                    {item.duration ? <span className="text-[9px] font-black uppercase tracking-wider text-[#007bff] bg-blue-50 px-2 py-0.5 rounded-lg">{formatTotalHours(item.duration)}</span> : <span className="text-[9px] font-black text-gray-300 uppercase tracking-widest flex items-center gap-1 group-hover:text-[#007bff] transition-colors"><PlusIcon className="w-2.5 h-2.5" /> Click to Edit</span>}
+                                                    <div className="flex items-center gap-2">
+                                                        {item.duration ? (
+                                                            <span className="text-[9px] font-black uppercase tracking-wider text-[#007bff] bg-blue-50 px-2 py-0.5 rounded-lg">
+                                                                {formatTotalHours(item.duration)}
+                                                            </span>
+                                                        ) : null}
+                                                        <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1 group-hover:text-[#007bff] transition-colors border-b border-transparent group-hover:border-blue-200">
+                                                            <PencilIcon className="w-2.5 h-2.5" /> Click to Edit
+                                                        </span>
+                                                    </div>
                                                     <span className="font-black text-[#007bff] text-lg">{item.price ? `CHF ${item.price.toFixed(2)}` : 'Quote'}</span>
                                                 </div>
                                                 <div className="absolute inset-0 bg-blue-50/10 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity"></div>
@@ -1736,6 +1800,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         {activeModal === 'moving' && (
             <ModalOverlay title={t('services.movingFurniture.title')} onClose={() => { setActiveModal(null); setEditingItemId(null); }}>
                 <div className="space-y-6">
+                    <button 
+                        onClick={() => setShowMovingInfo(true)}
+                        className="w-full flex items-center justify-center gap-3 p-5 bg-blue-50/40 border border-blue-100 rounded-[2rem] hover:bg-blue-50 transition-all group"
+                    >
+                        <InfoIcon className="w-5 h-5 text-[#007bff]" />
+                        <span className="text-sm font-black text-[#007bff] tracking-tight">How our moving service works?</span>
+                    </button>
+
                     <div>
                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3">What are we moving?</label>
                         <div className="grid grid-cols-2 gap-2">
@@ -1794,10 +1866,145 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         </div>
                     )}
 
-                    <div className="grid grid-cols-2 gap-3">
-                        <div><label className="block text-[10px] font-black text-gray-400 uppercase mb-1">From (ZIP)</label><input type="text" className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#007bff] font-black text-gray-700" placeholder="8000" value={config.fromZip} onChange={(e) => setConfig({...config, fromZip: e.target.value})} /></div>
-                        <div><label className="block text-[10px] font-black text-gray-400 uppercase mb-1">To (ZIP)</label><input type="text" className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#007bff] font-black text-gray-700" placeholder="8200" value={config.toZip} onChange={(e) => setConfig({...config, toZip: e.target.value})} /></div>
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-1 gap-4">
+                            <div className="bg-slate-50 p-4 rounded-2xl border border-gray-100">
+                                <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-3">
+                                    <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <MapPinIcon className="w-3.5 h-3.5 text-blue-600" />
+                                    </div>
+                                    Starting Location (Source)
+                                </label>
+                                <div className="space-y-3">
+                                    <input 
+                                        type="text" 
+                                        className="w-full p-3 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#007bff] font-black text-gray-700" 
+                                        placeholder="Full Address (Street, House No.)" 
+                                        value={config.fromAddress} 
+                                        onChange={(e) => setConfig({...config, fromAddress: e.target.value})} 
+                                    />
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <input 
+                                            type="text" 
+                                            className={`w-full p-3 bg-white border rounded-xl outline-none focus:ring-2 focus:ring-[#007bff] font-black text-gray-700 transition-colors ${config.fromZip && !(config.fromZip.startsWith('80') || config.fromZip.startsWith('82') || config.fromZip.startsWith('84')) ? 'border-red-300 bg-red-50' : 'border-gray-200'}`} 
+                                            placeholder="ZIP Code (e.g. 8000)" 
+                                            value={config.fromZip} 
+                                            onChange={(e) => setConfig({...config, fromZip: e.target.value})} 
+                                        />
+                                        <select 
+                                            className="w-full p-3 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#007bff] font-black text-gray-700"
+                                            value={config.floorFrom}
+                                            onChange={(e) => setConfig({...config, floorFrom: e.target.value})}
+                                        >
+                                            <option value="Basement">Basement</option>
+                                            <option value="0">Ground Floor</option>
+                                            <option value="1">1st Floor</option>
+                                            <option value="2">2nd Floor</option>
+                                            <option value="3">3rd Floor</option>
+                                            <option value="4">4th Floor</option>
+                                            <option value="5">5th Floor</option>
+                                            <option value="6+">6th Floor or Higher</option>
+                                        </select>
+                                    </div>
+                                    <div className="grid grid-cols-1">
+                                        <select 
+                                            className="w-full p-3 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#007bff] font-black text-gray-700"
+                                            value={config.accessFrom}
+                                            onChange={(e) => setConfig({...config, accessFrom: e.target.value})}
+                                        >
+                                            <option value="Lift">Lift Access</option>
+                                            <option value="Stairs">Only Stairs</option>
+                                        </select>
+                                    </div>
+                                    {config.fromZip && !(config.fromZip.startsWith('80') || config.fromZip.startsWith('82') || config.fromZip.startsWith('84')) && (
+                                        <p className="text-[10px] text-red-500 font-bold px-1">We currently only support Zurich (80xx), Winterthur (84xx), and Schaffhausen (82xx).</p>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="bg-slate-50 p-4 rounded-2xl border border-gray-100">
+                                <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-3">
+                                    <div className="w-6 h-6 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <TruckIcon className="w-3.5 h-3.5 text-blue-600" />
+                                    </div>
+                                    Destination Location (Target)
+                                </label>
+                                <div className="space-y-3">
+                                    <input 
+                                        type="text" 
+                                        className="w-full p-3 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#007bff] font-black text-gray-700" 
+                                        placeholder="Full Address (Street, House No.)" 
+                                        value={config.toAddress} 
+                                        onChange={(e) => setConfig({...config, toAddress: e.target.value})} 
+                                    />
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <input 
+                                            type="text" 
+                                            className={`w-full p-3 bg-white border rounded-xl outline-none focus:ring-2 focus:ring-[#007bff] font-black text-gray-700 transition-colors ${config.toZip && !(config.toZip.startsWith('80') || config.toZip.startsWith('82') || config.toZip.startsWith('84')) ? 'border-red-300 bg-red-50' : 'border-gray-200'}`} 
+                                            placeholder="ZIP Code (e.g. 8200)" 
+                                            value={config.toZip} 
+                                            onChange={(e) => setConfig({...config, toZip: e.target.value})} 
+                                        />
+                                        <select 
+                                            className="w-full p-3 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#007bff] font-black text-gray-700"
+                                            value={config.floorTo}
+                                            onChange={(e) => setConfig({...config, floorTo: e.target.value})}
+                                        >
+                                            <option value="Basement">Basement</option>
+                                            <option value="0">Ground Floor</option>
+                                            <option value="1">1st Floor</option>
+                                            <option value="2">2nd Floor</option>
+                                            <option value="3">3rd Floor</option>
+                                            <option value="4">4th Floor</option>
+                                            <option value="5">5th Floor</option>
+                                            <option value="6+">6th Floor or Higher</option>
+                                        </select>
+                                    </div>
+                                    <div className="grid grid-cols-1">
+                                        <select 
+                                            className="w-full p-3 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-[#007bff] font-black text-gray-700"
+                                            value={config.accessTo}
+                                            onChange={(e) => setConfig({...config, accessTo: e.target.value})}
+                                        >
+                                            <option value="Lift">Lift Access</option>
+                                            <option value="Stairs">Only Stairs</option>
+                                        </select>
+                                    </div>
+                                    {config.toZip && !(config.toZip.startsWith('80') || config.toZip.startsWith('82') || config.toZip.startsWith('84')) && (
+                                        <p className="text-[10px] text-red-500 font-bold px-1">We currently only support Zurich (80xx), Winterthur (84xx), and Schaffhausen (82xx).</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+                    <div className="space-y-4">
+                        <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest">Mechanical & Lift Assistance</label>
+                        <div className="grid grid-cols-1 gap-3">
+                            <OptionCard 
+                                icon="🏗️" 
+                                title="Hydraulic Lift" 
+                                description="Required for bulky furniture to upper floors" 
+                                price="150 CHF/h"
+                                selected={config.hydraulicLift} 
+                                onClick={() => setConfig({...config, hydraulicLift: !config.hydraulicLift})} 
+                            />
+                            {config.hydraulicLift && (
+                                <div className="animate-fade-in">
+                                    <CounterCard 
+                                        icon="🏗️" 
+                                        label="Lift Operating Hours" 
+                                        subLabel="Estimated time for hydraulic lift usage" 
+                                        value={config.hydraulicLiftHours} 
+                                        min={1} 
+                                        step={0.5}
+                                        onChange={(v) => setConfig({...config, hydraulicLiftHours: v})} 
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
                     <div className="bg-slate-50 p-5 rounded-2xl border border-gray-100">
                         <div className="flex justify-between mb-2"><label className="text-xs font-black text-gray-700 uppercase tracking-wider flex items-center gap-2"><ClockIcon className="w-4 h-4 text-[#007bff]" />Estimated Total Duration</label><span className="font-black text-[#007bff] text-lg">{formatTotalHours(getActiveTotalHours())}</span></div>
                         <input type="range" min="3" max="24" step="0.5" value={getActiveTotalHours()} onChange={(e) => setConfig({ ...config, duration: parseFloat(e.target.value) })} className="w-full h-2.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#007bff]" />
@@ -1849,6 +2056,66 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     </button>
                 </div>
             </ModalOverlay>
+        )}
+
+        {/* MODAL: Moving Info Pop-up */}
+        {showMovingInfo && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in">
+                <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden border border-gray-100 animate-fade-in-up">
+                    <div className="px-8 pt-8 pb-4 flex justify-between items-center">
+                        <div className="flex items-center gap-3">
+                            <div className="bg-blue-600 p-2.5 rounded-2xl">
+                                <InfoIcon className="w-6 h-6 text-white" />
+                            </div>
+                            <h3 className="text-xl font-black text-[#002D5B] uppercase tracking-tight">Moving Process</h3>
+                        </div>
+                        <button onClick={() => setShowMovingInfo(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors group">
+                            <XMarkIcon className="w-6 h-6 text-gray-400 group-hover:text-red-500 transition-colors" />
+                        </button>
+                    </div>
+                    
+                    <div className="px-8 py-6 space-y-6">
+                        <div className="flex gap-5">
+                            <div className="w-10 h-10 bg-blue-50 rounded-2xl flex-shrink-0 flex items-center justify-center text-blue-600 font-black text-lg">1</div>
+                            <div className="space-y-1">
+                                <h4 className="font-black text-gray-800 text-sm uppercase tracking-wider">Storage & Lift Constraints</h4>
+                                <p className="text-xs text-gray-500 leading-relaxed font-medium">
+                                    If the lift interior is too narrow for specific items, our team will utilize the staircase. For safety, this may require additional movers to manage the weight and dimensions properly.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-5">
+                            <div className="w-10 h-10 bg-emerald-50 rounded-2xl flex-shrink-0 flex items-center justify-center text-emerald-600 font-black text-lg">2</div>
+                            <div className="space-y-1">
+                                <h4 className="font-black text-gray-800 text-sm uppercase tracking-wider">Surface Protection</h4>
+                                <p className="text-xs text-gray-500 leading-relaxed font-medium">
+                                    We guarantee that all delicate surfaces, floors, and furniture corners will be protected using high-quality padding and blankets to prevent any scratches during transit.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-5">
+                            <div className="w-10 h-10 bg-amber-50 rounded-2xl flex-shrink-0 flex items-center justify-center text-amber-600 font-black text-lg">3</div>
+                            <div className="space-y-1">
+                                <h4 className="font-black text-gray-800 text-sm uppercase tracking-wider">Hydraulic Lift Necessity</h4>
+                                <p className="text-xs text-gray-500 leading-relaxed font-medium">
+                                    For oversized pieces that cannot safely travel via stairs or lifts, a hydraulic external lift may be necessary to facilitate delivery through large windows or balconies.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="p-8 pt-4">
+                        <button 
+                            onClick={() => setShowMovingInfo(false)}
+                            className="w-full bg-[#002D5B] text-white py-4 rounded-2xl font-black text-lg shadow-xl hover:bg-[#001D3A] transition-all active:scale-[0.98]"
+                        >
+                            Got it!
+                        </button>
+                    </div>
+                </div>
+            </div>
         )}
 
         {/* MODAL: Gardening */}
@@ -2371,6 +2638,44 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     />
                                     {errors.city && <span className="text-[10px] text-red-500 font-black mt-1 block ml-2">{errors.city}</span>}
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Access & Special Requests */}
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 mb-2">
+                            <div className="p-2 bg-amber-50 rounded-lg text-amber-600"><KeyIcon className="w-5 h-5" /></div>
+                            <h4 className="text-sm font-black text-[#002D5B] uppercase tracking-tight">Access & Special Requests</h4>
+                        </div>
+                        <div className="grid grid-cols-1 gap-4">
+                            <div className="group relative">
+                                <label className="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Property Access Method</label>
+                                <div className="relative">
+                                    <select 
+                                        className="w-full p-4 bg-white border-2 border-gray-100 rounded-[1.25rem] focus:border-[#007bff] focus:bg-blue-50/20 outline-none font-bold text-sm transition-all duration-300 shadow-sm appearance-none cursor-pointer"
+                                        value={accessMethod}
+                                        onChange={(e) => setAccessMethod(e.target.value)}
+                                    >
+                                        <option value="I am on-site">I am on-site</option>
+                                        <option value="Key with neighbor">Key with neighbor</option>
+                                        <option value="Key in mailbox">Key in mailbox</option>
+                                        <option value="Access code">Access code</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                        <ChevronDownIcon className="w-5 h-5" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="group">
+                                <label className="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Special requests or notes</label>
+                                <textarea 
+                                    className="w-full p-4 bg-white border-2 border-gray-100 rounded-[1.25rem] focus:border-[#007bff] focus:bg-blue-50/20 outline-none font-bold text-sm transition-all duration-300 shadow-sm min-h-[100px]"
+                                    placeholder="Anything else we should know?"
+                                    value={notes}
+                                    onChange={(e) => setNotes(e.target.value)}
+                                ></textarea>
                             </div>
                         </div>
                     </div>

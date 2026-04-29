@@ -101,7 +101,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
     <main className="bg-white min-h-screen selection:bg-blue-100 selection:text-blue-900 font-sans text-[#1d1d1f]">
       
       {/* Immersive Hero */}
-      <section data-header-theme="light" className="relative pt-32 md:pt-64 pb-24 md:pb-48 overflow-hidden bg-[#f5f5f7]">
+      <section data-header-theme="light" className="relative pt-32 md:pt-64 pb-16 md:pb-48 overflow-hidden bg-[#f5f5f7]">
         <div className="container mx-auto px-6 text-center">
             <span className="inline-block px-4 py-1.5 rounded-full bg-white text-[#002D5B] text-[10px] font-black uppercase tracking-[0.5em] mb-8 md:mb-12 shadow-sm border border-gray-100 animate-fade-in">
                 Professional Portfolio 2025
@@ -184,7 +184,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
                 className="group rounded-[3.5rem] bg-white border border-gray-100 hover:border-[#002D5B]/20 shadow-sm hover:shadow-2xl transition-all duration-700 flex flex-col relative overflow-hidden min-h-[600px] transform hover:-translate-y-2"
               >
                 {/* Visual Header: Image */}
-                <div className="h-56 relative overflow-hidden">
+                <div className="h-48 sm:h-56 relative overflow-hidden">
                     <img 
                         src={item.imageUrl} 
                         alt={t(item.titleKey)} 

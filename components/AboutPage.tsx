@@ -61,7 +61,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
     <main className="bg-white selection:bg-blue-500/30 text-[#020617]">
       
       {/* --- HERO SECTION --- */}
-      <section data-header-theme="dark" className="relative min-h-[85vh] flex items-center pt-32 pb-40 overflow-hidden bg-[#001A3D]">
+      <section data-header-theme="dark" className="relative md:min-h-[85vh] flex items-center pt-32 pb-40 md:py-40 overflow-hidden bg-[#001A3D]">
         <div className="absolute inset-0 z-0">
           <img 
             src={aboutHeroImageUrl} 
@@ -108,7 +108,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               className="flex flex-wrap gap-4"
             >
               <button 
-                onClick={() => document.getElementById('origin')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => onNavigate('our-story')}
                 className="bg-blue-600 text-white px-8 py-4 rounded-xl font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20"
               >
                 {t('about.hero.ctaStory')} <ChevronRightIcon className="w-4 h-4" />
@@ -126,8 +126,8 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
 
       {/* --- OUR ORIGIN SECTION --- */}
       <section id="origin" data-header-theme="light" className="pt-0 pb-12 bg-white relative z-20">
-        <div className="container mx-auto px-6 -mt-20">
-          <div className="bg-gray-50 rounded-[3rem] pt-4 pb-8 md:pt-6 md:pb-12 lg:pt-8 lg:pb-16 px-8 md:px-12 lg:px-16 shadow-sm border border-gray-100">
+        <div className="container mx-auto px-6 -mt-10 md:-mt-20">
+          <div className="bg-gray-50 rounded-[2rem] md:rounded-[3rem] pt-4 pb-8 md:pt-6 md:pb-12 lg:pt-8 lg:pb-16 px-6 md:px-12 lg:px-16 shadow-sm border border-gray-100">
             <div className="grid lg:grid-cols-12 gap-12 items-center">
               {/* Left Side: Text Content */}
               <div className="lg:col-span-4">
@@ -143,7 +143,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
                   {t('about.origin.text')}
                 </p>
                 <button 
-                  onClick={() => onNavigate('comic-page')}
+                  onClick={() => onNavigate('our-story')}
                   className="text-blue-600 font-black text-[10px] uppercase tracking-widest flex items-center gap-2 group"
                 >
                   {t('about.origin.readStory')} <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -280,7 +280,10 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
                 <div className="flex flex-col justify-center">
                   <h2 className="text-4xl font-black tracking-tighter mb-6 leading-tight">{t('about.commitment.title')}</h2>
                   <p className="text-gray-500 text-sm leading-relaxed mb-8">{t('about.commitment.text')}</p>
-                  <button className="bg-[#001A3D] text-white px-8 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#002d5b] transition-all duration-300 self-start">
+                  <button 
+                    onClick={() => onNavigate('sustainability-page')}
+                    className="bg-[#001A3D] text-white px-8 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#002d5b] transition-all duration-300 self-start"
+                  >
                     {t('about.commitment.cta')} →
                   </button>
                 </div>

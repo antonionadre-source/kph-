@@ -24,6 +24,8 @@ const HSEPage = lazy(() => import('./HSEPage'));
 const TermsPage = lazy(() => import('./TermsPage'));
 const SustainabilityPage = lazy(() => import('./SustainabilityPage'));
 const CareersPage = lazy(() => import('./CareersPage'));
+const OurStoryPage = lazy(() => import('./OurStoryPage'));
+const ComicShopPage = lazy(() => import('./ComicShopPage'));
 
 // Loading fallback
 const PageLoader = () => (
@@ -104,6 +106,10 @@ const App: React.FC = () => {
               return <SustainabilityPage onNavigate={handleNavigate} />;
             case 'careers':
               return <CareersPage onNavigate={handleNavigate} />;
+            case 'our-story':
+              return <OurStoryPage onNavigate={handleNavigate} />;
+            case 'comic-shop':
+              return <ComicShopPage onNavigate={handleNavigate} cart={cart} setCart={setCart} />;
             case 'home':
             default:
               return (
