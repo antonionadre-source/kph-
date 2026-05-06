@@ -49,7 +49,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
     },
     {
       value: '0%',
-      label: 'Waste to landfill (2026 goal)',
+      label: 'Waste to landfill (2035 goal)',
       icon: <TrendingDown className="w-6 h-6 text-indigo-600" />,
       color: 'bg-indigo-50'
     },
@@ -136,9 +136,9 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
               >
                 VIEW OUR STORY
               </button>
-              <button className="bg-white text-[#001A3D] border-2 border-gray-200 px-8 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-gray-50 transition-all flex items-center gap-2">
-                <Download className="w-4 h-4" /> DOWNLOAD SUSTAINABILITY BROCHURE
-              </button>
+              <div className="flex items-center gap-2 text-[#001A3D]/40 font-black text-[10px] uppercase tracking-widest bg-gray-50 px-6 py-4 rounded-xl border-2 border-gray-100 w-fit">
+                Brochure coming soon
+              </div>
             </div>
           </div>
         </div>
@@ -169,7 +169,11 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
                   </div>
                   <div>
                     <div className="text-4xl font-black text-[#001A3D] tracking-tighter">{metric.value}</div>
-                    <div className="text-[11px] font-bold text-gray-500 uppercase tracking-wider leading-tight">
+                    <div className={`text-[11px] uppercase leading-tight ${
+                      idx === 2 
+                        ? 'font-black text-indigo-700 tracking-[0.05em] drop-shadow-sm' 
+                        : 'font-bold text-gray-500 tracking-wider'
+                    }`}>
                       {metric.label}
                     </div>
                   </div>
@@ -241,9 +245,9 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
                   </div>
                 ))}
               </div>
-              <button className="text-emerald-700 font-black text-[11px] uppercase tracking-widest flex items-center gap-2 group">
-                Learn more about our progress <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
+              <div className="flex items-center gap-2 text-emerald-800/40 font-black text-[11px] uppercase tracking-widest bg-emerald-500/5 px-4 py-2 rounded-full border border-emerald-500/10 w-fit">
+                Roadmap coming soon
+              </div>
             </div>
           </div>
 
@@ -256,9 +260,9 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
               <p className="text-sm text-gray-600 leading-relaxed mb-8 font-medium">
                 {t('sustainability.results.desc')}
               </p>
-              <button className="text-blue-700 font-black text-[11px] uppercase tracking-widest flex items-center gap-2 group">
-                View full case study <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
+              <div className="flex items-center gap-2 text-blue-800/40 font-black text-[11px] uppercase tracking-widest bg-blue-500/5 px-4 py-2 rounded-full border border-blue-500/10 w-fit">
+                Case studies coming soon
+              </div>
             </div>
             
             <div className="flex-1 relative min-h-[300px]">
@@ -300,11 +304,6 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
       {/* Roadmap: Our Plan to Reduce Emissions */}
       <section data-header-theme="light" className="py-24 bg-[#F8FAFC]">
         <div className="container mx-auto px-6 mb-16">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="text-[10px] font-black text-gray-400">Another Star</span>
-            <ArrowRight className="w-3 h-3 text-gray-300" />
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">People, Planet, Progress</span>
-          </div>
           <h2 className="text-4xl md:text-[54px] font-black text-[#001A3D] mb-6 tracking-tight leading-none text-center uppercase">Reducing our environmental impact</h2>
           <p className="text-gray-500 font-medium max-w-2xl mx-auto text-center text-sm md:text-base leading-relaxed">
             We implement sustainable practices across all levels of our operation, from personnel selection to logistics optimization.
@@ -499,7 +498,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10" />
                 <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
                   <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-2">OPERATIONS</p>
-                  <h3 className="text-xl font-black text-white leading-tight mb-2 uppercase">Implementation</h3>
+                  <h3 className="text-xl font-black text-white leading-tight mb-2 uppercase">Operational Implementation <br /> for Lasting Impact</h3>
                   <p className="text-[10px] text-gray-200 font-medium leading-relaxed">We implement sustainable practices across all operations, with continuous monitoring and improvement.</p>
                 </div>
               </div>
