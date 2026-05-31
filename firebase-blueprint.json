@@ -1,0 +1,62 @@
+{
+  "entities": {
+    "maintenance_request": {
+      "title": "Maintenance Request",
+      "description": "A booking or technical service request submitted or managed in the Kraken maintenance hub.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the maintenance request."
+        },
+        "client": {
+          "type": "string",
+          "description": "The name of the client organization or individual requesting maintenance."
+        },
+        "service": {
+          "type": "string",
+          "description": "The type of service requested (e.g., Deep Cleaning, HVAC Maintenance)."
+        },
+        "date": {
+          "type": "string",
+          "description": "The targeted or scheduled date for the service."
+        },
+        "status": {
+          "type": "string",
+          "description": "The operational state of the service request.",
+          "enum": ["Pending", "In Progress", "Completed"]
+        },
+        "priority": {
+          "type": "string",
+          "description": "The level of urgency of the request.",
+          "enum": ["Low", "Medium", "High"]
+        },
+        "amount": {
+          "type": "number",
+          "description": "The financial cost associated with the service request."
+        },
+        "userId": {
+          "type": "string",
+          "description": "The UID of the user who owns or created this request."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the request was first registered."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the request was last updated."
+        }
+      },
+      "required": ["id", "client", "service", "date", "status", "priority", "amount", "userId", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "maintenance_requests/{requestId}": {
+      "schema": "maintenance_request",
+      "description": "A collection containing all maintenance and service request logs requested via the hub."
+    }
+  }
+}

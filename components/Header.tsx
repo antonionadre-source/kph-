@@ -215,7 +215,6 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
          {user && (
           <a href="#" onClick={(e) => handleNavClick(e, 'dashboard')} className={navLinkClass}>{t('nav.dashboard')}</a>
         )}
-        <a href="#" onClick={(e) => handleNavClick(e, 'clients')} className={navLinkClass}>{t('nav.clients')}</a>
       </>
     );
   };
@@ -263,7 +262,6 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
                   <a href="#" onClick={(e) => handleNavClick(e, 'about')} className={navLinkClass}>{t('nav.about')}</a>
                   <a href="#" onClick={(e) => handleNavClick(e, 'sustainability-page')} className={navLinkClass}>{t('nav.sustainability')}</a>
                   {user && <a href="#" onClick={(e) => handleNavClick(e, 'dashboard')} className={navLinkClass}>{t('nav.dashboard')}</a>}
-                  <a href="#" onClick={(e) => handleNavClick(e, 'clients')} className={navLinkClass}>{t('nav.clients')}</a>
                 </>
               );
             })()}
@@ -299,7 +297,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
              {user ? (
               <a href="#" onClick={handleLogout} className="font-bold text-[10px] uppercase tracking-widest transition-all px-6 py-2.5 rounded-xl bg-rose-500 text-white hover:bg-rose-600 shadow-lg shadow-rose-200/50">Logout</a>
             ) : (
-              <a href="#" onClick={(e) => handleNavClick(e, 'clients')} className="font-bold text-[10px] uppercase tracking-widest transition-all px-6 py-2.5 rounded-xl bg-[#002D5B] text-white hover:bg-[#003d7a] shadow-lg shadow-blue-900/10">{t('nav.login')}</a>
+              <a href="#" onClick={(e) => handleNavClick(e, 'login')} className="font-bold text-[10px] uppercase tracking-widest transition-all px-6 py-2.5 rounded-xl bg-[#002D5B] text-white hover:bg-[#003d7a] shadow-lg shadow-blue-900/10">{t('nav.login')}</a>
             )}
           </nav>
 
@@ -362,7 +360,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
                     {user ? (
                         <button onClick={handleLogout} className="w-full py-5 rounded-3xl bg-rose-500 text-white font-black uppercase tracking-widest text-lg shadow-xl shadow-rose-200">Logout</button>
                     ) : (
-                        <button onClick={(e) => handleNavClick(e, 'clients')} className="w-full py-5 rounded-3xl bg-[#002D5B] text-white font-black uppercase tracking-widest text-lg shadow-xl shadow-blue-200">Client Portal</button>
+                        <button onClick={(e) => handleNavClick(e, 'login')} className="w-full py-5 rounded-3xl bg-[#002D5B] text-white font-black uppercase tracking-widest text-lg shadow-xl shadow-blue-200">Client Portal</button>
                     )}
                 </div>
             </nav>

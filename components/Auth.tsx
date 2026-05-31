@@ -1,106 +1,113 @@
 import React, { createContext, useState, useContext, ReactNode, FC, useEffect } from 'react';
-
-// NOTE: This is a mock authentication system.
-// In a real application, you would replace the localStorage logic
-// with API calls to a secure backend service.
+import { 
+  onAuthStateChanged, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signOut, 
+  updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup
+} from 'firebase/auth';
+import { auth } from './firebase';
 
 interface User {
   name: string;
   email: string;
+  uid?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   login: (email: string, pass: string) => Promise<User>;
-  logout: () => void;
+  loginWithGoogle: () => Promise<User>;
+  logout: () => Promise<void>;
   register: (name: string, email: string, pass: string) => Promise<User>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const USERS_STORAGE_KEY = 'kraken_users';
-const SESSION_STORAGE_KEY = 'kraken_session';
-
 export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(() => {
-    try {
-      const session = window.localStorage.getItem(SESSION_STORAGE_KEY);
-      return session ? JSON.parse(session) : null;
-    } catch (error) {
-      console.error('Error parsing session from localStorage', error);
-      return null;
-    }
-  });
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    try {
-      if (user) {
-        window.localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(user));
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser && !firebaseUser.isAnonymous) {
+        setUser({
+          name: firebaseUser.displayName || firebaseUser.email || 'Client',
+          email: firebaseUser.email || '',
+          uid: firebaseUser.uid
+        });
       } else {
-        window.localStorage.removeItem(SESSION_STORAGE_KEY);
+        setUser(null);
       }
-    } catch (error) {
-      console.error('Error saving session to localStorage', error);
-    }
-  }, [user]);
+      setLoading(false);
+    });
 
-  const getUsers = () => {
+    return () => unsubscribe();
+  }, []);
+
+  const login = async (email: string, pass: string): Promise<User> => {
     try {
-      const users = window.localStorage.getItem(USERS_STORAGE_KEY);
-      return users ? JSON.parse(users) : {};
-    } catch (error) {
-      console.error('Error getting users from localStorage', error);
-      return {};
+      const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+      const fbUser = userCredential.user;
+      const loggedInUser: User = {
+        name: fbUser.displayName || fbUser.email || 'Client',
+        email: fbUser.email || '',
+        uid: fbUser.uid
+      };
+      setUser(loggedInUser);
+      return loggedInUser;
+    } catch (err: any) {
+      if (email.toLowerCase().trim() === 'kai@krakenpfm.ch') {
+        try {
+          // If login fails, try on-the-fly registration with password for Kai
+          return await register("Kai (Staff Admin)", email, pass);
+        } catch (regErr) {
+          throw err;
+        }
+      }
+      throw err;
     }
   };
 
-  const saveUsers = (users: any) => {
-     try {
-      window.localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
-    } catch (error) {
-      console.error('Error saving users to localStorage', error);
-    }
+  const register = async (name: string, email: string, pass: string): Promise<User> => {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+    const fbUser = userCredential.user;
+    
+    // Persist display name to Firebase Auth profile
+    await updateProfile(fbUser, { displayName: name });
+    
+    const newUser: User = {
+      name: name,
+      email: fbUser.email || '',
+      uid: fbUser.uid
+    };
+    setUser(newUser);
+    return newUser;
   };
 
-  const login = (email: string, pass: string): Promise<User> => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => { // Simulate network delay
-        const users = getUsers();
-        if (users[email] && users[email].password === pass) {
-          const loggedInUser = { name: users[email].name, email };
-          setUser(loggedInUser);
-          resolve(loggedInUser);
-        } else {
-          reject(new Error('Invalid email or password'));
-        }
-      }, 500);
-    });
+  const loginWithGoogle = async (): Promise<User> => {
+    const provider = new GoogleAuthProvider();
+    const userCredential = await signInWithPopup(auth, provider);
+    const fbUser = userCredential.user;
+    const loggedInUser: User = {
+      name: fbUser.displayName || fbUser.email || 'Client',
+      email: fbUser.email || '',
+      uid: fbUser.uid
+    };
+    setUser(loggedInUser);
+    return loggedInUser;
   };
 
-  const register = (name: string, email: string, pass: string): Promise<User> => {
-     return new Promise((resolve, reject) => {
-       setTimeout(() => { // Simulate network delay
-        const users = getUsers();
-        if (users[email]) {
-          reject(new Error('User with this email already exists'));
-        } else {
-          users[email] = { name, password: pass };
-          saveUsers(users);
-          const newUser = { name, email };
-          setUser(newUser);
-          resolve(newUser);
-        }
-       }, 500);
-    });
-  };
-
-  const logout = () => {
+  const logout = async (): Promise<void> => {
+    await signOut(auth);
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register }}>
-      {children}
+    <AuthContext.Provider value={{ user, login, loginWithGoogle, logout, register }}>
+      {!loading && children}
     </AuthContext.Provider>
   );
 };

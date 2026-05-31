@@ -61,8 +61,8 @@ const App: React.FC = () => {
   }, [cart]);
 
   const handleNavigate = (targetPage: string) => {
-    if (targetPage === 'login' || targetPage === 'register' || (targetPage === 'dashboard' && !user)) {
-      setPage('clients');
+    if (targetPage === 'dashboard' && !user) {
+      setPage('login');
       return;
     }
     

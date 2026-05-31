@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-declare var PayrexxModal: any;
 import { useTranslation } from '../i18n';
 import { 
     InfoIcon, 
@@ -32,6 +31,10 @@ import {
 } from './icons';
 import { mascotImageUrl, teamPhotoUrl } from '../assets';
 import emailjs from '@emailjs/browser';
+import { db, auth, storage } from './firebase';
+import { doc, setDoc, updateDoc, serverTimestamp, collection } from 'firebase/firestore';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { useAuth } from './Auth';
 
 const SERVICE_ID = 'service_aiv15bc'; 
 const TEMPLATE_ID = 'template_aktj7t9'; 
@@ -76,69 +79,374 @@ interface CartItem {
 }
 
 const PRICES = {
-    deepHourly: 56.50,
-    regularHourly: 43.50,
-    movingBase: 45, 
-    movingPerMover: 50, 
-    movingAssemblyRate: 80,
-    movingHydraulicLiftRate: 150,
-    movingTransSameCity: 20,
-    movingTransDiffCity: 35,
-    movingTransDiffCanton: 50,
-    windowStandard: 25,
-    windowLarge: 45,
-    windowExternalSurcharge: 15,
-    windowHardReach: 60, 
-    balconyPrice: 40,
-    storagePrice: 30, 
-    carpetPrice: 60, 
-    furniturePrice: 50, 
-    bathroomEOTPrice: 60, // Surcharge per toilet added in EOT
-    baseCallOut: 45, 
-    carCatS: 140,
-    carCatM: 190,
-    carCatL: 240,
-    carCatXL: 290,
-    carDirtMed: 40,
-    carDirtHigh: 80,
-    carDirtExt: 240, 
-    carPets: 60,
-    carCeramic: 1000,
-    gardenSmall: 140,
-    gardenMedium: 260,
-    gardenLarge: 480,
-    gardenMowingPrice: 60,
-    gardenHedgePerMeter: 15,
-    gardenPlantingLabor: 80,
-    gardenCleanup: 120,
-    gardenGreenWaste: 50,
-    exteriorMaterials: {
-        'Stone': 9,
-        'Concrete': 7,
-        'Wood': 12,
-        'Composite': 8,
-        'Glass': 11
-    },
-    facadeSurcharge: 1.2,
-    carTravelBase: 45,
-    gardenTravelBase: 45,
-    exteriorTravelBase: 45,
-    // Gutter Cleaning Prices
-    gutterBase1Story: 180,
-    gutterBase2Story: 290,
-    gutterBase3Story: 450,
-    gutterLengthMed: 100, // 20-50m
-    gutterLengthLarge: 250, // >50m
-    gutterTravelBase: 45,
-    // New Tiered Pricing for End of Tenancy
-    eotGuideline: {
-        1: 520.00,
-        2: 700.00,
-        3: 870.00,
-        4: 1020.00,
-        5: 1230.00
-    }
+  // Hourly rates
+  deepHourly: 56.50,
+  regularHourly: 43.50,
+  movingAssemblyRate: 80.00,
+  movingHydraulicLiftRate: 150.00,
+
+  // Fixed add-ons
+  balconyPrice: 40.00,
+  storagePrice: 30.00,
+  carpetPrice: 60.00,
+  furniturePrice: 50.00,
+  bathroomEOTPrice: 60.00,
+  baseCallOut: 45.00,
+
+  // EOT base prices by room count
+  eotBase: { 1: 520, 2: 700, 3: 950, 4: 1200, 5: 1500 } as Record<number, number>,
+  eotGuideline: { 1: 520, 2: 700, 3: 950, 4: 1200, 5: 1500 } as Record<number, number>,
+
+  // Moving labour hourly
+  movingStandard: 145.00,
+  movingLarge: 195.00,
+  movingCommercial: 195.00,
+  movingExtraHelperSurcharge: 50.00,
+
+  // Car detailing by size
+  carSize: { S: 140, M: 190, L: 240, XL: 290 } as Record<string, number>,
+  carDirtSurcharge: { medium: 0, high: 30, extreme: 60 } as Record<string, number>,
+  carPets: 60.00,
+  carCeramic: 1000.00,
+  carMetroMultiplier: 1.2,
+
+  // Gardening base by size
+  gardenBase: { small: 140, medium: 260, large: 480 } as Record<string, number>,
+  gardenMowingPerSqm: 0.35,
+  gardenHedgePerMeter: 15.00,
+  gardenPlantingPerHour: 45.00,
+  gardenWeedingPerHour: 40.00,
+  gardenWastePerBag: 18.00,
+
+  // Pressure washing per sqm by material
+  washMaterial: { stone: 9, concrete: 7, wood: 12, composite: 8, glass: 11 } as Record<string, number>,
+  washFacadeFactor: 1.2,
+
+  // Gutter cleaning base by floors
+  gutterFloors: { 1: 180, 2: 290, 3: 450 } as Record<number, number>,
+  gutterMediumSurcharge: 40,   // 20–50m
+  gutterXLSurcharge: 90,       // 50m+
+
+  // Travel / callout discounts
+  travelSingle: 45.00,
+  travelOneMainPlusOne: 25.00,
+  travelMulti: 0.00,
 };
+
+export type Zone = "schaffhausen" | "winterthur" | "zurich" | "other";
+
+export interface ZoneInfo {
+  zone: Zone;
+  label: string;
+  multiplier: number;
+  surchargePercent: number;
+  travelBase: number;
+}
+
+const ZONE_MAP: Record<Zone, ZoneInfo> = {
+  schaffhausen: {
+    zone: "schaffhausen",
+    label: "Schaffhausen",
+    multiplier: 1.0,
+    surchargePercent: 0,
+    travelBase: 45,
+  },
+  winterthur: {
+    zone: "winterthur",
+    label: "Winterthur",
+    multiplier: 1.12,
+    surchargePercent: 12,
+    travelBase: 45,
+  },
+  zurich: {
+    zone: "zurich",
+    label: "Zürich",
+    multiplier: 1.22,
+    surchargePercent: 22,
+    travelBase: 45,
+  },
+  other: {
+    zone: "other",
+    label: "Other region",
+    multiplier: 1.08,
+    surchargePercent: 8,
+    travelBase: 45,
+  },
+};
+
+export function detectZone(postalCode: string): ZoneInfo {
+  const pc = postalCode.trim().replace(/\s/g, "");
+  const n = parseInt(pc, 10);
+
+  if (isNaN(n)) return ZONE_MAP.other;
+
+  if (n >= 8200 && n <= 8239) return ZONE_MAP.schaffhausen;
+  if (n >= 8400 && n <= 8416) return ZONE_MAP.winterthur;
+  if (n >= 8000 && n <= 8099) return ZONE_MAP.zurich;
+  if (n >= 8100 && n <= 8199) return ZONE_MAP.zurich;
+  if (n >= 8300 && n <= 8399) return ZONE_MAP.zurich;
+  if (n >= 8600 && n <= 8699) return ZONE_MAP.zurich;
+
+  return ZONE_MAP.other;
+}
+
+export function applyZone(basePrice: number, zone: ZoneInfo): number {
+  return Math.round(basePrice * zone.multiplier * 100) / 100;
+}
+
+export interface EOTOptions {
+  rooms: number;
+  bathrooms: number;
+  balconies?: number;
+  storageUnits?: number;
+  carpets?: number;
+  furniture?: number;
+  customDuration?: number;
+}
+
+export interface CleaningOptions {
+  rooms: number;
+  bathrooms: number;
+  balconies?: number;
+  storageUnits?: number;
+  carpets?: number;
+  furniture?: number;
+}
+
+export interface RegularCleaningOptions {
+  rooms: number;
+  bathrooms: number;
+  ironingHours?: number;
+  laundryHours?: number;
+  ovenLevel?: "low" | "medium" | "high";
+  cabinetCount?: number;
+  cabinetOrganize?: boolean;
+  fridgeClean?: boolean;
+  fridgeOrganize?: boolean;
+  windowCount?: number;
+}
+
+export type MovingLevel = "standard" | "large" | "commercial";
+
+export interface MovingOptions {
+  level: MovingLevel;
+  hours: number;
+  helpers: number;
+  withAssembly?: boolean;
+  assemblyHours?: number;
+  withHydraulicLift?: boolean;
+  liftHours?: number;
+  originPostal: string;
+  destinationPostal: string;
+}
+
+export interface CarDetailingOptions {
+  size: "S" | "M" | "L" | "XL";
+  dirtLevel: "medium" | "high" | "extreme";
+  hasPets?: boolean;
+  ceramicCoating?: boolean;
+  servicePostal: string;
+}
+
+export interface GardeningOptions {
+  gardenSize: "small" | "medium" | "large";
+  mowingArea?: number;       // sqm
+  hedgeMeters?: number;
+  plantingHours?: number;
+  weedingHours?: number;
+  wasteBags?: number;
+}
+
+export interface WashingOptions {
+  material: "stone" | "concrete" | "wood" | "composite" | "glass";
+  areaSqm: number;
+  isFacade?: boolean;
+}
+
+export interface GutterOptions {
+  floors: 1 | 2 | 3;
+  gutterLength: "standard" | "medium" | "xl";
+}
+
+export function getEOTPrice(opts: EOTOptions, zone: ZoneInfo): number {
+  if (opts.rooms === 0 && opts.bathrooms === 0) return PRICES.baseCallOut;
+
+  const duration = calculateEOTDuration_v2(opts);
+  const basePrice = PRICES.eotBase[opts.rooms as keyof typeof PRICES.eotBase] || PRICES.eotBase[5];
+
+  const extraBaths = Math.max(0, opts.bathrooms - 1);
+  let total = basePrice + extraBaths * PRICES.bathroomEOTPrice;
+
+  total += (opts.balconies ?? 0) * PRICES.balconyPrice;
+  total += (opts.storageUnits ?? 0) * PRICES.storagePrice;
+  total += (opts.carpets ?? 0) * PRICES.carpetPrice;
+  total += (opts.furniture ?? 0) * PRICES.furniturePrice;
+
+  if (opts.customDuration && opts.customDuration > duration) {
+    const extraHours = opts.customDuration - duration;
+    total += extraHours * PRICES.deepHourly;
+  }
+
+  return applyZone(total, zone);
+}
+
+export function getDeepCleaningPrice(opts: CleaningOptions, zone: ZoneInfo): number {
+  if (opts.rooms === 0 && opts.bathrooms === 0) return PRICES.baseCallOut;
+
+  const duration = calculateCleaningDuration_v2("deep", opts);
+  let total = duration * PRICES.deepHourly;
+
+  total += (opts.balconies ?? 0) * PRICES.balconyPrice;
+  total += (opts.storageUnits ?? 0) * PRICES.storagePrice;
+  total += (opts.carpets ?? 0) * PRICES.carpetPrice;
+  total += (opts.furniture ?? 0) * PRICES.furniturePrice;
+
+  return applyZone(total, zone);
+}
+
+export function getRegularCleaningPrice(opts: RegularCleaningOptions, zone: ZoneInfo): number {
+  if (opts.rooms === 0 && opts.bathrooms === 0) return PRICES.baseCallOut;
+
+  let hours = opts.rooms * 0.75 + opts.bathrooms * 0.5;
+  hours = Math.ceil(hours * 2) / 2;
+
+  if (opts.ironingHours) hours += opts.ironingHours;
+  if (opts.laundryHours) hours += opts.laundryHours;
+  if (opts.ovenLevel) {
+    if (opts.ovenLevel === "low") hours += 0.5;
+    else if (opts.ovenLevel === "medium") hours += 0.65;
+    else if (opts.ovenLevel === "high") hours += 0.85;
+  }
+  if (opts.cabinetCount) {
+    hours += opts.cabinetCount * 0.5;
+    if (opts.cabinetOrganize) hours += opts.cabinetCount * 0.5;
+  }
+  if (opts.fridgeClean) {
+    hours += 0.5;
+    if (opts.fridgeOrganize) hours += 0.5;
+  }
+  if (opts.windowCount) {
+    hours += opts.windowCount * 0.05;
+  }
+
+  const price = hours * PRICES.regularHourly;
+  return applyZone(price, zone);
+}
+
+export function getMovingPrice(opts: MovingOptions): number {
+  let baseRate = 0;
+  if (opts.level === "standard") baseRate = PRICES.movingStandard;
+  else if (opts.level === "large") baseRate = PRICES.movingLarge;
+  else if (opts.level === "commercial") baseRate = PRICES.movingCommercial;
+
+  if (opts.helpers > 2) {
+    baseRate += (opts.helpers - 2) * PRICES.movingExtraHelperSurcharge;
+  }
+
+  let total = opts.hours * baseRate;
+
+  if (opts.withAssembly) {
+    total += (opts.assemblyHours ?? 0) * PRICES.movingAssemblyRate;
+  }
+  if (opts.withHydraulicLift) {
+    total += (opts.liftHours ?? 0) * PRICES.movingHydraulicLiftRate;
+  }
+
+  let transportSurcharge = 0;
+  const fromZone = detectZone(opts.originPostal);
+  const toZone = detectZone(opts.destinationPostal);
+
+  if (fromZone.zone !== "other" && toZone.zone !== "other") {
+    if (fromZone.zone === toZone.zone) {
+      transportSurcharge = 20.00;
+    } else {
+      transportSurcharge = 35.00;
+      if (fromZone.zone === "schaffhausen" || toZone.zone === "schaffhausen") {
+        transportSurcharge += 50.00;
+      }
+    }
+  }
+
+  return total + transportSurcharge;
+}
+
+export function getCarDetailingPrice(opts: CarDetailingOptions): number {
+  let price = PRICES.carSize[opts.size];
+
+  price += PRICES.carDirtSurcharge[opts.dirtLevel];
+
+  if (opts.hasPets) price += PRICES.carPets;
+  if (opts.ceramicCoating) price += PRICES.carCeramic;
+
+  const zone = detectZone(opts.servicePostal);
+  if (zone.zone === "zurich" && opts.servicePostal.startsWith("80")) {
+    price *= PRICES.carMetroMultiplier;
+  }
+
+  return Math.round(price * 100) / 100;
+}
+
+export function getGardeningPrice(opts: GardeningOptions, zone: ZoneInfo): number {
+  let total = PRICES.gardenBase[opts.gardenSize];
+  total += (opts.mowingArea ?? 0) * PRICES.gardenMowingPerSqm;
+  total += (opts.hedgeMeters ?? 0) * PRICES.gardenHedgePerMeter;
+  total += (opts.plantingHours ?? 0) * PRICES.gardenPlantingPerHour;
+  total += (opts.weedingHours ?? 0) * PRICES.gardenWeedingPerHour;
+  total += (opts.wasteBags ?? 0) * PRICES.gardenWastePerBag;
+  return applyZone(total, zone);
+}
+
+export function getPressureWashingPrice(opts: WashingOptions, zone: ZoneInfo): number {
+  const rate = PRICES.washMaterial[opts.material];
+  let total = opts.areaSqm * rate;
+  if (opts.isFacade) total *= PRICES.washFacadeFactor;
+  return applyZone(total, zone);
+}
+
+export function getGutterPrice(opts: GutterOptions, zone: ZoneInfo): number {
+  let total = PRICES.gutterFloors[opts.floors];
+  if (opts.gutterLength === "medium") total += PRICES.gutterMediumSurcharge;
+  if (opts.gutterLength === "xl") total += PRICES.gutterXLSurcharge;
+  return applyZone(total, zone);
+}
+
+export function calculateCleaningDuration_v2(
+  type: "regular" | "deep",
+  opts: CleaningOptions
+): number {
+  const { rooms, bathrooms, balconies = 0, storageUnits = 0, carpets = 0, furniture = 0 } = opts;
+
+  if (type === "regular") {
+    const raw = rooms * 0.75 + bathrooms * 0.5;
+    return Math.ceil(raw * 2) / 2;
+  }
+
+  let hours = rooms * 1.25 + bathrooms * 0.75;
+  hours += balconies * 0.5;
+  hours += storageUnits * 0.5;
+  hours += carpets * 0.75;
+  hours += furniture * 0.5;
+  return Math.ceil(hours * 2) / 2;
+}
+
+export function calculateEOTDuration_v2(opts: CleaningOptions): number {
+  const { rooms, bathrooms, balconies = 0, storageUnits = 0, carpets = 0, furniture = 0 } = opts;
+
+  const roomMap: Record<number, number> = { 1: 4.5, 2: 7.5, 3: 10.5, 4: 16.5 };
+  let base = rooms >= 4 ? 22.5 : (roomMap[rooms] ?? 22.5);
+
+  if (rooms === 3 && bathrooms >= 2) base = 12.5;
+
+  const extraBaths = Math.max(0, bathrooms - 1);
+  let hours = base + extraBaths * 0.75;
+
+  hours += balconies * 0.5;
+  hours += storageUnits * 0.5;
+  hours += carpets * 0.75;
+  hours += furniture * 0.5;
+
+  return Math.max(4.0, Math.ceil(hours * 2) / 2);
+}
 
 const MOCK_REVIEWS = [
     { name: 'Sarah', rating: 5, comment: 'So fast! I built my cleaning bundle in under 2 minutes. Easiest quote ever.' },
@@ -458,6 +766,7 @@ const TimePicker: React.FC<{ selectedTime: string; onChange: (time: string) => v
 const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, setCart }) => {
   const { t } = useTranslation();
   
+  const { user } = useAuth();
   const [activeModal, setActiveModal] = useState<ServiceType | null>(null);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [showInclusionsModal, setShowInclusionsModal] = useState<ServiceType | null>(null);
@@ -468,6 +777,18 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   const [isContactModalOpen, setContactModalOpen] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
+  const [anonAuthError, setAnonAuthError] = useState<string | null>(null);
+  
+  // Firebase Upload Tracker State
+  const [uploadStates, setUploadStates] = useState<Array<{
+      id: string;
+      name: string;
+      progress: number;
+      status: 'idle' | 'uploading' | 'success' | 'error';
+      url?: string;
+      error?: string;
+  }>>([]);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showMobileSummaryBar, setShowMobileSummaryBar] = useState(true);
   const [showMovingInfo, setShowMovingInfo] = useState(false);
@@ -493,6 +814,91 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
   // Validation State
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Location Need State
+  const [locationNeeded, setLocationNeeded] = useState(false);
+
+  useEffect(() => {
+    if (address.trim() && postcode.trim().length === 4) {
+      setLocationNeeded(false);
+    }
+  }, [address, postcode]);
+
+  const [showAddressModal, setShowAddressModal] = useState(false);
+
+  const [walleeError, setWalleeError] = useState<{ message: string; dataToSave: any } | null>(null);
+
+  const [tempAddress, setTempAddress] = useState(address);
+  const [tempPostcode, setTempPostcode] = useState(postcode);
+  const [tempCity, setTempCity] = useState(city);
+  const [tempErrors, setTempErrors] = useState('');
+
+  useEffect(() => {
+    setTempAddress(address);
+  }, [address]);
+
+  useEffect(() => {
+    setTempPostcode(postcode);
+  }, [postcode]);
+
+  useEffect(() => {
+    setTempCity(city);
+  }, [city]);
+
+  const handleTempPostcodeChange = (val: string) => {
+    const digits = val.replace(/\D/g, '').slice(0, 4);
+    setTempPostcode(digits);
+    
+    if (digits === '8200' || digits === '8201' || digits === '8203' || digits === '8207' || digits === '8208') {
+        setTempCity('Schaffhausen');
+    } else if (digits === '8400' || digits === '8401' || digits === '8404' || digits === '8405' || digits === '8406' || digits === '8408') {
+        setTempCity('Winterthur');
+    } else if (digits.startsWith('80') && digits.length === 4) {
+        setTempCity('Zürich');
+    } else if (digits.startsWith('81') && digits.length === 4) {
+        setTempCity('Zürich');
+    } else if (digits.startsWith('83') && digits.length === 4) {
+        setTempCity('Zürich');
+    } else if (digits.startsWith('86') && digits.length === 4) {
+        setTempCity('Zürich');
+    }
+  };
+
+  const handleSaveAddress = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!tempAddress.trim() || !tempPostcode.trim() || !tempCity.trim()) {
+        setTempErrors('Por favor, completa todos los campos para poder continuar.');
+        return;
+    }
+    if (!/^\d{4}$/.test(tempPostcode.trim())) {
+        setTempErrors('El código postal debe ser un número de 4 dígitos (p.ej. 8200).');
+        return;
+    }
+    setAddress(tempAddress.trim());
+    setPostcode(tempPostcode.trim());
+    setCity(tempCity.trim());
+    setShowAddressModal(false);
+    setTempErrors('');
+  };
+
+  const handlePostcodeChange = (val: string) => {
+    const digits = val.replace(/\D/g, '').slice(0, 4);
+    setPostcode(digits);
+    
+    if (digits === '8200' || digits === '8201' || digits === '8203' || digits === '8207' || digits === '8208') {
+        setCity('Schaffhausen');
+    } else if (digits === '8400' || digits === '8401' || digits === '8404' || digits === '8405' || digits === '8406' || digits === '8408') {
+        setCity('Winterthur');
+    } else if (digits.startsWith('80') && digits.length === 4) {
+        setCity('Zürich');
+    } else if (digits.startsWith('81') && digits.length === 4) {
+        setCity('Zürich');
+    } else if (digits.startsWith('83') && digits.length === 4) {
+        setCity('Zürich');
+    } else if (digits.startsWith('86') && digits.length === 4) {
+        setCity('Zürich');
+    }
+  };
 
   // To preserve name for reviews after clearing form
   const lastSubmittedName = useRef('');
@@ -547,6 +953,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   const lastScrollYRef = useRef(0);
 
   const openServiceModal = (type: ServiceType) => {
+      if (!address.trim() || postcode.trim().length !== 4) {
+          setLocationNeeded(true);
+          const target = document.getElementById('step-1-location');
+          if (target) {
+              target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          return;
+      }
       setShowWindowInfo(false);
       setEditingItemId(null);
       const defaults: any = {
@@ -564,8 +978,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
           'moving': { 
             moversCount: 2, 
             duration: 3, 
-            fromZip: '', 
-            fromAddress: '',
+            fromZip: postcode || '', 
+            fromAddress: address || '',
             toZip: '', 
             toAddress: '',
             accessFrom: 'Lift',
@@ -584,7 +998,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
           'pest-control': { pestType: 'Insects', propertyType: 'Residential', description: '' },
           'waste-management': { wasteType: 'Household', volume: 'Small', description: '' },
           'gutter-cleaning': { buildingHeight: '1 Story', lengthCategory: 'Standard', description: '' },
-          'car-detailing': { zipCode: '', vehicles: [{ id: Date.now().toString(), category: 'M', dirtLevel: 'Minimum', hasPets: false, luxury: { brand: '', interior: '', exterior: '', ceramic: false } }] },
+          'car-detailing': { zipCode: postcode || '', vehicles: [{ id: Date.now().toString(), category: 'M', dirtLevel: 'Minimum', hasPets: false, luxury: { brand: '', interior: '', exterior: '', ceramic: false } }] },
           'gardening': { size: 'Medium', hedgeMeters: 0, mowing: false, planting: false, cleanup: false, greenWaste: false, notes: '' },
           'exterior-cleaning': { surface: 'Driveway / Path', material: 'Stone', approxSize: '0', notes: '' }
       };
@@ -606,182 +1020,131 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   const roundToHalf = (num: number) => Math.ceil(num * 2) / 2;
 
   const calculateCleaningDuration = (type: string, bedrooms: number, bathrooms: number, balconies: number = 0, storage: number = 0, carpet: number = 0, furniture: number = 0) => {
-        let duration = 0;
-        if (type === 'daily-cleaning') {
-             if (bedrooms > 0 || bathrooms > 0) {
-                duration = 2 + (bedrooms * 0.25) + (bathrooms * 0.5);
-             }
-        } else {
-             if (bedrooms > 0 || bathrooms > 0) {
-                duration = 3 + (bedrooms * 0.75) + (bathrooms * 0.75);
-             }
-             duration += (balconies * 0.5) + (storage * 0.5) + (carpet * 1.0) + (furniture * 0.5);
-        }
-        return Math.max(0, roundToHalf(duration));
+      const opts: CleaningOptions = {
+          rooms: bedrooms,
+          bathrooms,
+          balconies,
+          storageUnits: storage,
+          carpets: carpet,
+          furniture
+      };
+      return calculateCleaningDuration_v2(type === 'regular-cleaning' || type === 'daily-cleaning' ? "regular" : "deep", opts);
   };
 
   const calculateEOTDuration = (rooms: number, bathrooms: number, balconies: number = 0, storage: number = 0, carpet: number = 0, furniture: number = 0) => {
       if (rooms === 0 && bathrooms === 0) return 0;
-      
-      let base = 0;
-      if (rooms <= 1) base = 4.5;
-      else if (rooms === 2) base = 7.5;
-      else if (rooms === 3) base = (bathrooms >= 2) ? 12.5 : 10.5;
-      else if (rooms === 4) base = 16.5;
-      else base = 22.5;
-
-      const extraBathrooms = Math.max(0, bathrooms - (rooms > 1 ? 1 : 0));
-      base += extraBathrooms * 0.75;
-      base += (balconies * 0.5) + (storage * 0.5) + (carpet * 1.0) + (furniture * 0.5);
-
-      return Math.max(4, roundToHalf(base));
+      const opts: CleaningOptions = {
+          rooms,
+          bathrooms,
+          balconies,
+          storageUnits: storage,
+          carpets: carpet,
+          furniture
+      };
+      return calculateEOTDuration_v2(opts);
   };
 
   const getEstimatedPrice = () => {
       if (!activeModal) return 0;
+      
+      const activePostal = config.zipCode || config.fromZip || postcode || '8200';
+      const zone = detectZone(activePostal);
+
       switch (activeModal) {
           case 'end-of-tenancy': {
-              const isBaseService = config.roomsCount === 0 && config.bathroomsCount === 0;
-              if (isBaseService) return PRICES.baseCallOut;
-              
-              let basePrice = 0;
-              const rooms = config.roomsCount;
-              if (rooms <= 1) basePrice = PRICES.eotGuideline[1];
-              else if (rooms === 2) basePrice = PRICES.eotGuideline[2];
-              else if (rooms === 3) basePrice = PRICES.eotGuideline[3];
-              else if (rooms === 4) basePrice = PRICES.eotGuideline[4];
-              else basePrice = PRICES.eotGuideline[5];
-
-              let total = basePrice;
-              const extraBaths = Math.max(0, config.bathroomsCount - (config.roomsCount > 1 ? 1 : 0));
-              total += extraBaths * PRICES.bathroomEOTPrice;
-              total += config.balconyCount * PRICES.balconyPrice + (config.storageCount || 0) * PRICES.storagePrice + (config.carpetCount || 0) * PRICES.carpetPrice + (config.furnitureCount || 0) * PRICES.furniturePrice;
-              
-              const standardDuration = calculateEOTDuration(config.roomsCount, config.bathroomsCount, config.balconyCount, config.storageCount, config.carpetCount, config.furnitureCount);
-              if (config.duration > standardDuration) {
-                  const extraHours = config.duration - standardDuration;
-                  total += extraHours * PRICES.deepHourly; 
-              }
-              return total;
+              const opts: EOTOptions = {
+                  rooms: config.roomsCount || 0,
+                  bathrooms: config.bathroomsCount || 0,
+                  balconies: config.balconyCount || 0,
+                  storageUnits: config.storageCount || 0,
+                  carpets: config.carpetCount || 0,
+                  furniture: config.furnitureCount || 0,
+                  customDuration: config.duration
+              };
+              return getEOTPrice(opts, zone);
           }
           case 'deep-cleaning': {
-              const isBaseService = config.bedrooms === 0 && config.bathrooms === 0;
-              let total = isBaseService ? PRICES.baseCallOut : (config.duration * PRICES.deepHourly);
-              total += (config.balconyCount || 0) * PRICES.balconyPrice + (config.storageCount || 0) * PRICES.storagePrice + (config.carpetCount || 0) * PRICES.carpetPrice + (config.furnitureCount || 0) * PRICES.furniturePrice;
-              return total;
+              const opts: CleaningOptions = {
+                  rooms: config.bedrooms || 0,
+                  bathrooms: config.bathrooms || 0,
+                  balconies: config.balconyCount || 0,
+                  storageUnits: config.storageCount || 0,
+                  carpets: config.carpetCount || 0,
+                  furniture: config.furnitureCount || 0
+              };
+              return getDeepCleaningPrice(opts, zone);
           }
           case 'daily-cleaning': {
-              const isBaseService = config.bedrooms === 0 && config.bathrooms === 0;
-              let duration = isBaseService ? 0 : config.duration;
-              
-              if (config.ironing) duration += config.ironingHours;
-              if (config.laundry) duration += config.laundryHours;
-              if (config.oven) {
-                  if (config.ovenGrease === 'Low') duration += 0.5;
-                  else if (config.ovenGrease === 'Medium') duration += 0.65;
-                  else duration += 0.85;
-              }
-              if (config.cabinets) {
-                  duration += 0.5;
-                  if (config.cabinetOrganize) duration += 0.5;
-              }
-              if (config.fridge) {
-                  duration += 0.5;
-                  if (config.fridgeOrganize) duration += 0.5;
-              }
-              if (config.windowCount > 0) duration += (config.windowCount * 0.05);
-              
-              let total = duration * PRICES.regularHourly;
-              if (isBaseService) total += PRICES.baseCallOut;
-              return total;
+              const opts: RegularCleaningOptions = {
+                  rooms: config.bedrooms || 0,
+                  bathrooms: config.bathrooms || 0,
+                  ironingHours: config.ironing ? (config.ironingHours || 0) : 0,
+                  laundryHours: config.laundry ? (config.laundryHours || 0) : 0,
+                  ovenLevel: config.oven ? (config.ovenGrease === 'Low' ? 'low' : config.ovenGrease === 'Medium' ? 'medium' : 'high') as "low"|"medium"|"high" : undefined,
+                  cabinetCount: config.cabinets ? 1 : 0,
+                  cabinetOrganize: config.cabinets ? config.cabinetOrganize : undefined,
+                  fridgeClean: config.fridge,
+                  fridgeOrganize: config.fridge ? config.fridgeOrganize : undefined,
+                  windowCount: config.windowCount || 0
+              };
+              return getRegularCleaningPrice(opts, zone);
           }
           case 'moving': {
-              const rate = config.serviceLevel === 'Standard' ? 145 : (config.serviceLevel === 'Large' ? 195 : 195);
-              let baseMovePrice = 0;
-              if (config.serviceLevel === 'Commercial') {
-                  const baseCommercialRate = 195; 
-                  const additionalMovers = Math.max(0, config.moversCount - 3);
-                  const commercialRate = baseCommercialRate + (additionalMovers * 50); 
-                  baseMovePrice = config.duration * commercialRate;
-              } else {
-                  baseMovePrice = config.duration * rate;
-              }
-
-              const assemblyPrice = config.assembly ? config.assemblyHours * PRICES.movingAssemblyRate : 0;
-              const hydraulicLiftPrice = config.hydraulicLift ? config.hydraulicLiftHours * PRICES.movingHydraulicLiftRate : 0;
-              
-              // Transportation logic
-              let transportationPrice = 0;
-              const fromZip = config.fromZip || '';
-              const toZip = config.toZip || '';
-
-              if (fromZip && toZip) {
-                  const fromCity = fromZip.startsWith('80') ? 'ZH' : (fromZip.startsWith('84') ? 'WIN' : (fromZip.startsWith('82') ? 'SH' : ''));
-                  const toCity = toZip.startsWith('80') ? 'ZH' : (toZip.startsWith('84') ? 'WIN' : (toZip.startsWith('82') ? 'SH' : ''));
-                  
-                  const fromCanton = (fromZip.startsWith('80') || fromZip.startsWith('84')) ? 'ZH_CANTON' : (fromZip.startsWith('82') ? 'SH_CANTON' : '');
-                  const toCanton = (toZip.startsWith('80') || toZip.startsWith('84')) ? 'ZH_CANTON' : (toZip.startsWith('82') ? 'SH_CANTON' : '');
-
-                  if (fromCity === toCity && fromCity !== '') {
-                      transportationPrice = PRICES.movingTransSameCity;
-                  } else if (fromCity !== '' && toCity !== '') {
-                      transportationPrice = PRICES.movingTransDiffCity;
-                      if (fromCanton !== toCanton) {
-                          transportationPrice += PRICES.movingTransDiffCanton;
-                      }
-                  }
-              }
-
-              return baseMovePrice + assemblyPrice + hydraulicLiftPrice + transportationPrice;
+              const opts: MovingOptions = {
+                  level: (config.serviceLevel === 'Standard' ? 'standard' : config.serviceLevel === 'Large' ? 'large' : 'commercial') as MovingLevel,
+                  hours: config.duration || 3,
+                  helpers: config.moversCount || 0,
+                  withAssembly: config.assembly,
+                  assemblyHours: config.assemblyHours || 0,
+                  withHydraulicLift: config.hydraulicLift,
+                  liftHours: config.hydraulicLiftHours || 0,
+                  originPostal: config.fromZip || '',
+                  destinationPostal: config.toZip || ''
+              };
+              return getMovingPrice(opts);
           }
           case 'car-detailing': {
-              let subtotal = 0;
-              const multiplier = (config.zipCode.startsWith('80') || config.zipCode.startsWith('12')) ? 1.2 : 1.0;
-              config.vehicles.forEach((v: VehicleConfig) => {
-                  let vPrice = 0;
-                  if (v.category === 'S') vPrice += PRICES.carCatS;
-                  else if (v.category === 'M') vPrice += PRICES.carCatM;
-                  else if (v.category === 'L') vPrice += PRICES.carCatL;
-                  else if (v.category === 'XL') vPrice += PRICES.carCatXL;
-                  if (v.dirtLevel === 'Medium') vPrice += PRICES.carDirtMed;
-                  else if (v.dirtLevel === 'High') vPrice += PRICES.carDirtHigh;
-                  else if (v.dirtLevel === 'Extreme') vPrice += PRICES.carDirtExt;
-                  if (v.hasPets) vPrice += PRICES.carPets;
-                  if (v.luxury.ceramic) vPrice += PRICES.carCeramic;
-                  subtotal += vPrice * multiplier;
-              });
-              return subtotal;
+              let total = 0;
+              if (config.vehicles && config.vehicles.length > 0) {
+                  config.vehicles.forEach((v: any) => {
+                      const opts: CarDetailingOptions = {
+                          size: v.category,
+                          dirtLevel: (v.dirtLevel === 'High' ? 'high' : v.dirtLevel === 'Extreme' ? 'extreme' : 'medium') as "medium"|"high"|"extreme",
+                          hasPets: v.hasPets,
+                          ceramicCoating: v.luxury?.ceramic,
+                          servicePostal: config.zipCode || postcode || '8200'
+                      };
+                      total += getCarDetailingPrice(opts);
+                  });
+              }
+              return total;
           }
           case 'gardening': {
-              let subtotal = 0;
-              if (config.size === 'Small') subtotal += PRICES.gardenSmall;
-              else if (config.size === 'Medium') subtotal += PRICES.gardenMedium;
-              else if (config.size === 'Large') subtotal += PRICES.gardenLarge;
-              
-              if (config.mowing) subtotal += PRICES.gardenMowingPrice;
-              if (config.hedgeMeters > 0) subtotal += config.hedgeMeters * PRICES.gardenHedgePerMeter;
-              if (config.planting) subtotal += PRICES.gardenPlantingLabor;
-              if (config.cleanup) subtotal += PRICES.gardenCleanup;
-              if (config.greenWaste) subtotal += PRICES.gardenGreenWaste;
-              return subtotal;
+              const opts: GardeningOptions = {
+                  gardenSize: (config.size === 'Small' ? 'small' : config.size === 'Medium' ? 'medium' : 'large') as "small"|"medium"|"large",
+                  mowingArea: config.mowing ? 170 : 0,
+                  hedgeMeters: config.hedgeMeters || 0,
+                  plantingHours: config.planting ? 1.78 : 0,
+                  weedingHours: config.cleanup ? 3 : 0,
+                  wasteBags: config.greenWaste ? 2.78 : 0
+              };
+              return getGardeningPrice(opts, zone);
           }
           case 'exterior-cleaning': {
-                const m2 = parseFloat(config.approxSize) || 0;
-                const materialPrice = (PRICES.exteriorMaterials as any)[config.material] || 0;
-                let subtotal = m2 * materialPrice;
-                if (config.surface === 'Facade / Walls') subtotal *= PRICES.facadeSurcharge;
-                return subtotal;
+              const opts: WashingOptions = {
+                  material: (config.material || 'stone').toLowerCase() as "stone"|"concrete"|"wood"|"composite"|"glass",
+                  areaSqm: parseFloat(config.approxSize) || 0,
+                  isFacade: config.surface === 'Facade / Walls'
+              };
+              return getPressureWashingPrice(opts, zone);
           }
           case 'gutter-cleaning': {
-                let total = 0;
-                if (config.buildingHeight === '1 Story') total = PRICES.gutterBase1Story;
-                else if (config.buildingHeight === '2 Stories') total = PRICES.gutterBase2Story;
-                else total = PRICES.gutterBase3Story;
-
-                if (config.lengthCategory === 'Large (20-50m)') total += PRICES.gutterLengthMed;
-                else if (config.lengthCategory === 'XL (>50m)') total += PRICES.gutterLengthLarge;
-
-                return total;
+              const floorsNum = config.buildingHeight === '1 Story' ? 1 : config.buildingHeight === '2 Stories' ? 2 : 3;
+              const opts: GutterOptions = {
+                  floors: floorsNum as 1|2|3,
+                  gutterLength: (config.lengthCategory === 'XL (>50m)' ? 'xl' : config.lengthCategory === 'Large (20-50m)' ? 'medium' : 'standard') as "standard"|"medium"|"xl"
+              };
+              return getGutterPrice(opts, zone);
           }
           default: return 0;
       }
@@ -902,31 +1265,151 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   const mainServices = ['end-of-tenancy', 'deep-cleaning', 'daily-cleaning', 'moving'];
   const additionalServicesList = ['car-detailing', 'gardening', 'exterior-cleaning', 'pest-control', 'waste-management', 'gutter-cleaning'];
 
-  const mainCount = cart.filter(item => mainServices.includes(item.type)).length;
-  const addCount = cart.filter(item => additionalServicesList.includes(item.type)).length;
+  // Recalculate each cart item price based on the current checkout postal code
+  const currentPostcode = postcode || '8200';
+  const checkoutZone = detectZone(currentPostcode);
+
+  const revaluedCart = cart.map(item => {
+      const itemConfig = item.details || {};
+      let revaluedPrice = item.price || 0;
+
+      switch (item.type) {
+          case 'end-of-tenancy': {
+              const opts: EOTOptions = {
+                  rooms: itemConfig.roomsCount || 0,
+                  bathrooms: itemConfig.bathroomsCount || 0,
+                  balconies: itemConfig.balconyCount || 0,
+                  storageUnits: itemConfig.storageCount || 0,
+                  carpets: itemConfig.carpetCount || 0,
+                  furniture: itemConfig.furnitureCount || 0,
+                  customDuration: itemConfig.duration
+              };
+              revaluedPrice = getEOTPrice(opts, checkoutZone);
+              break;
+          }
+          case 'deep-cleaning': {
+              const opts: CleaningOptions = {
+                  rooms: itemConfig.bedrooms || 0,
+                  bathrooms: itemConfig.bathrooms || 0,
+                  balconies: itemConfig.balconyCount || 0,
+                  storageUnits: itemConfig.storageCount || 0,
+                  carpets: itemConfig.carpetCount || 0,
+                  furniture: itemConfig.furnitureCount || 0
+              };
+              revaluedPrice = getDeepCleaningPrice(opts, checkoutZone);
+              break;
+          }
+          case 'daily-cleaning': {
+              const opts: RegularCleaningOptions = {
+                  rooms: itemConfig.bedrooms || 0,
+                  bathrooms: itemConfig.bathrooms || 0,
+                  ironingHours: itemConfig.ironing ? (itemConfig.ironingHours || 0) : 0,
+                  laundryHours: itemConfig.laundry ? (itemConfig.laundryHours || 0) : 0,
+                  ovenLevel: itemConfig.oven ? (itemConfig.ovenGrease === 'Low' ? 'low' : itemConfig.ovenGrease === 'Medium' ? 'medium' : 'high') as "low"|"medium"|"high" : undefined,
+                  cabinetCount: itemConfig.cabinets ? 1 : 0,
+                  cabinetOrganize: itemConfig.cabinets ? itemConfig.cabinetOrganize : undefined,
+                  fridgeClean: itemConfig.fridge,
+                  fridgeOrganize: itemConfig.fridge ? itemConfig.fridgeOrganize : undefined,
+                  windowCount: itemConfig.windowCount || 0
+              };
+              revaluedPrice = getRegularCleaningPrice(opts, checkoutZone);
+              break;
+          }
+          case 'moving': {
+              const opts: MovingOptions = {
+                  level: (itemConfig.serviceLevel === 'Standard' ? 'standard' : itemConfig.serviceLevel === 'Large' ? 'large' : 'commercial') as MovingLevel,
+                  hours: itemConfig.duration || 3,
+                  helpers: itemConfig.moversCount || 0,
+                  withAssembly: itemConfig.assembly,
+                  assemblyHours: itemConfig.assemblyHours || 0,
+                  withHydraulicLift: itemConfig.hydraulicLift,
+                  liftHours: itemConfig.hydraulicLiftHours || 0,
+                  originPostal: itemConfig.fromZip || currentPostcode,
+                  destinationPostal: itemConfig.toZip || currentPostcode
+              };
+              revaluedPrice = getMovingPrice(opts);
+              break;
+          }
+          case 'car-detailing': {
+              let total = 0;
+              if (itemConfig.vehicles && itemConfig.vehicles.length > 0) {
+                  itemConfig.vehicles.forEach((v: any) => {
+                      const opts: CarDetailingOptions = {
+                          size: v.category,
+                          dirtLevel: (v.dirtLevel === 'High' ? 'high' : v.dirtLevel === 'Extreme' ? 'extreme' : 'medium') as "medium"|"high"|"extreme",
+                          hasPets: v.hasPets,
+                          ceramicCoating: v.luxury?.ceramic,
+                          servicePostal: itemConfig.zipCode || currentPostcode
+                      };
+                      total += getCarDetailingPrice(opts);
+                  });
+              }
+              revaluedPrice = total;
+              break;
+          }
+          case 'gardening': {
+              const optsResource: GardeningOptions = {
+                  gardenSize: (itemConfig.size === 'Small' ? 'small' : itemConfig.size === 'Medium' ? 'medium' : 'large') as "small"|"medium"|"large",
+                  mowingArea: itemConfig.mowing ? 170 : 0,
+                  hedgeMeters: itemConfig.hedgeMeters || 0,
+                  plantingHours: itemConfig.planting ? 1.78 : 0,
+                  weedingHours: itemConfig.cleanup ? 3 : 0,
+                  wasteBags: itemConfig.greenWaste ? 2.78 : 0
+              };
+              revaluedPrice = getGardeningPrice(optsResource, checkoutZone);
+              break;
+          }
+          case 'exterior-cleaning': {
+              const opts: WashingOptions = {
+                  material: (itemConfig.material || 'stone').toLowerCase() as "stone"|"concrete"|"wood"|"composite"|"glass",
+                  areaSqm: parseFloat(itemConfig.approxSize) || 0,
+                  isFacade: itemConfig.surface === 'Facade / Walls'
+              };
+              revaluedPrice = getPressureWashingPrice(opts, checkoutZone);
+              break;
+          }
+          case 'gutter-cleaning': {
+              const floorsNum = itemConfig.buildingHeight === '1 Story' ? 1 : itemConfig.buildingHeight === '2 Stories' ? 2 : 3;
+              const opts: GutterOptions = {
+                  floors: floorsNum as 1|2|3,
+                  gutterLength: (itemConfig.lengthCategory === 'XL (>50m)' ? 'xl' : itemConfig.lengthCategory === 'Large (20-50m)' ? 'medium' : 'standard') as "standard"|"medium"|"xl"
+              };
+              revaluedPrice = getGutterPrice(opts, checkoutZone);
+              break;
+          }
+      }
+
+      return {
+          ...item,
+          price: revaluedPrice || item.price
+      };
+  });
+
+  const mainCount = revaluedCart.filter(item => mainServices.includes(item.type)).length;
+  const addCount = revaluedCart.filter(item => additionalServicesList.includes(item.type)).length;
 
   let travelFee = 0;
   let travelMsg = '';
   let travelMsgColor = 'text-gray-400';
 
-  if (cart.length > 0) {
+  if (revaluedCart.length > 0) {
       if (mainCount >= 2 || (mainCount === 1 && addCount >= 2)) {
-          travelFee = 0;
+          travelFee = PRICES.travelMulti;
           travelMsg = 'FREE Transport! Premium Client';
           travelMsgColor = 'text-green-500';
       } else if ((mainCount === 1 && addCount === 1) || addCount >= 2) {
-          travelFee = 25;
+          travelFee = PRICES.travelOneMainPlusOne;
           travelMsg = 'Offer Applied!';
           travelMsgColor = 'text-blue-500';
       } else {
-          travelFee = 45;
+          travelFee = PRICES.travelSingle;
           travelMsg = '';
       }
   }
 
-  const servicesSubtotal = cart.reduce((acc, item) => acc + (item.price || 0), 0);
+  const servicesSubtotal = revaluedCart.reduce((acc, item) => acc + (item.price || 0), 0);
   const grandTotal = servicesSubtotal + travelFee;
-  const totalDuration = cart.reduce((acc, item) => acc + (item.duration || 0), 0);
+  const totalDuration = revaluedCart.reduce((acc, item) => acc + (item.duration || 0), 0);
 
   // Deposit Logic - Option A is 15% of grand total, Option B is fixed 15.00
   const calculateDeposit = () => {
@@ -944,76 +1427,207 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   };
 
   const handleFileRemoval = (index: number) => {
+      const removedFile = files[index];
       setFiles(prev => prev.filter((_, i) => i !== index));
+      if (removedFile) {
+          setUploadStates(prev => prev.filter(item => item.name !== removedFile.name));
+      }
+  };
+
+  const handleUploadFile = async (selectedFiles: File[]) => {
+      const totalSize = [...files, ...selectedFiles].reduce((acc, f) => acc + f.size, 0);
+      if (totalSize > MAX_FILE_SIZE) {
+          alert("Selected files are too large (250MB limit).");
+          return;
+      }
+
+      // If user is not authenticated, sign them in anonymously so they can upload files securely
+      if (!auth.currentUser) {
+          try {
+              const { signInAnonymously } = await import('firebase/auth');
+              await signInAnonymously(auth);
+              console.log("Guest authenticated anonymously for storage access, uid =", auth.currentUser?.uid);
+              setAnonAuthError(null);
+          } catch (err: any) {
+              console.error("Failed to sign in anonymously. Guest upload might fail if storage rules require auth:", err);
+              if (err.code === 'auth/admin-restricted-operation' || err.message?.includes('admin-restricted-operation')) {
+                  setAnonAuthError('admin-restricted-operation');
+              } else {
+                  setAnonAuthError(err.message || String(err));
+              }
+          }
+      }
+
+      setFiles(prev => [...prev, ...selectedFiles]);
+
+      selectedFiles.forEach((file) => {
+          const uniqueId = `${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+          const cleanName = clientName.trim() ? clientName.replace(/[^a-zA-Z0-9]/g, '_') : 'client_quote';
+          
+          const newStateItem = {
+              id: uniqueId,
+              name: file.name,
+              progress: 0,
+              status: 'uploading' as const
+          };
+
+          setUploadStates(prev => [...prev, newStateItem]);
+
+          const storageRef = ref(storage, `quotes_media/${cleanName}/${uniqueId}_${file.name}`);
+          const uploadTask = uploadBytesResumable(storageRef, file);
+
+          uploadTask.on('state_changed', 
+              (snapshot) => {
+                  const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                  setUploadStates(prev => prev.map(item => 
+                      item.name === file.name ? { ...item, progress, status: 'uploading' } : item
+                  ));
+              }, 
+              (error: any) => {
+                  console.error("Firebase Storage upload error:", error);
+                  let friendlyError = error.message;
+                  if (error.code === 'storage/unauthorized' || error.message?.includes('unauthorized') || error.message?.includes('permission-denied')) {
+                      friendlyError = "The upload was blocked by security rules. Non-registered guests require Anonymous Auth to be enabled in Firebase.";
+                      setAnonAuthError('admin-restricted-operation');
+                  }
+                  setUploadStates(prev => prev.map(item => 
+                      item.name === file.name ? { ...item, status: 'error', error: friendlyError } : item
+                  ));
+              }, 
+              async () => {
+                  try {
+                      const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                      setUploadStates(prev => prev.map(item => 
+                          item.name === file.name ? { ...item, status: 'success', url: downloadURL, progress: 100 } : item
+                      ));
+                  } catch (e: any) {
+                      console.error("Error getting download url:", e);
+                      setUploadStates(prev => prev.map(item => 
+                          item.name === file.name ? { ...item, status: 'error', error: e.message } : item
+                      ));
+                  }
+              }
+          );
+      });
   };
 
   // Handle Payment Return
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const paymentStatus = params.get('payment');
-    
-    if (paymentStatus === 'success') {
-        const savedBooking = localStorage.getItem('pending_booking');
-        if (savedBooking) {
-            try {
-                const booking = JSON.parse(savedBooking);
-                // Prevent duplicate processing if page is refreshed
-                localStorage.removeItem('pending_booking');
-                
-                console.log("Processing successful payment for:", booking.clientName);
-                
-                // 1. Send Webhook
-                const hookData = new FormData();
-                hookData.append('clientName', booking.clientName);
-                hookData.append('email', booking.email);
-                hookData.append('phone', booking.phone);
-                hookData.append('address', booking.address);
-                hookData.append('notes', booking.notes);
-                hookData.append('date', booking.date);
-                hookData.append('time', booking.time);
-                hookData.append('totalPrice', booking.totalPrice.toFixed(2));
-                hookData.append('depositAmount', booking.depositAmount.toFixed(2));
-                hookData.append('bookingMode', booking.bookingMode);
-                hookData.append('services', JSON.stringify(booking.services));
-                hookData.append('transactionId', 'paid_via_gateway');
-                
-                fetch(MAKE_WEBHOOK_URL, { method: 'POST', body: hookData }).catch(e => console.warn("Webhook failed", e));
+    const processReturn = async () => {
+        const params = new URLSearchParams(window.location.search);
+        const paymentStatus = params.get('payment');
+        
+        if (paymentStatus === 'success' || paymentStatus === 'invoice') {
+            const savedBooking = localStorage.getItem('pending_booking');
+            if (savedBooking) {
+                try {
+                    const booking = JSON.parse(savedBooking);
+                    // Prevent duplicate processing if page is refreshed
+                    localStorage.removeItem('pending_booking');
+                    
+                    console.log(`Processing ${paymentStatus} payment for:`, booking.clientName);
+                    const isInvoice = paymentStatus === 'invoice';
 
-                // 2. Send Email Notification
-                const serviceList = booking.services.map((i: any) => i.type.replace(/-/g, ' ').toUpperCase()).join(', ');
-                const concept = booking.bookingMode === 'direct' ? 'Express Booking Deposit (15%)' : 'Precision Media Quote';
+                    // Firestore document update
+                    const docId = booking.id;
+                    if (docId) {
+                        try {
+                            const updatedPayment = {
+                                method: booking.payment?.method || (isInvoice ? 'bank_transfer' : 'card'),
+                                gateway: booking.payment?.gateway || (isInvoice ? 'manual' : 'wallee'),
+                                last4: '',
+                                brand: '',
+                                cardholderName: booking.clientName || '',
+                                expiryMonth: '',
+                                expiryYear: '',
+                                transactionId: isInvoice ? 'invoice_bank_transfer' : 'paid_via_gateway',
+                                amountCharged: booking.depositAmount || 0,
+                                currency: 'CHF',
+                                status: isInvoice ? 'pending' : 'captured',
+                                billingPostal: booking.address?.split(',').pop()?.trim()?.split(' ')?.[0] || ''
+                            };
 
-                emailjs.send(SERVICE_ID, TEMPLATE_ID, {
-                    from_name: booking.clientName,
-                    service_address: booking.address,
-                    amount_to_pay: booking.depositAmount.toFixed(2) + " CHF",
-                    service_type: concept,
-                    from_email: booking.email,
-                    phone_number: booking.phone,
-                    total_price: `CHF ${booking.totalPrice.toFixed(2)}`,
-                    preferred_date: booking.date,
-                    preferred_time: booking.time,
-                    payment_status: 'PAID',
-                    transaction_id: 'GATEWAY_PAYMENT',
-                    services_list: serviceList
-                }, PUBLIC_KEY)
-                .then(() => {
-                    alert("¡Gracias! Hemos recibido tu pago y tu solicitud de servicio.");
-                    // Clean URL
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                })
-                .catch((error) => {
-                    console.error("EmailJS Error after payment:", error);
-                    alert("Pago recibido, pero hubo un error al enviar la confirmación. Por favor contáctenos.");
-                });
-            } catch (e) {
-                console.error("Failed to process pending booking", e);
+                            const updatedTimestamps = {
+                                formSubmittedAt: booking.timestamps?.formSubmittedAt || new Date().toISOString(),
+                                priceCalculatedAt: booking.timestamps?.priceCalculatedAt || new Date().toISOString(),
+                                depositCapturedAt: isInvoice ? null : new Date().toISOString(),
+                                lastUpdatedAt: new Date().toISOString(),
+                                requestedServiceDate: booking.date || '',
+                                requestedServiceTime: booking.time || 'flexible'
+                            };
+
+                            await updateDoc(doc(db, 'maintenance_requests', docId), {
+                                status: isInvoice ? 'Pending' : 'In Progress',
+                                payment: updatedPayment,
+                                timestamps: updatedTimestamps,
+                                updatedAt: serverTimestamp()
+                            });
+                            console.log("Successfully updated Firestore payment status for doc:", docId);
+                        } catch (updateError) {
+                            console.error("Failed to update Firestore request status on return:", updateError);
+                        }
+                    }
+                    
+                    // 1. Send Webhook
+                    const hookData = new FormData();
+                    hookData.append('clientName', booking.clientName);
+                    hookData.append('email', booking.email);
+                    hookData.append('phone', booking.phone);
+                    hookData.append('address', booking.address);
+                    hookData.append('notes', booking.notes);
+                    hookData.append('date', booking.date);
+                    hookData.append('time', booking.time);
+                    hookData.append('totalPrice', booking.totalPrice.toFixed(2));
+                    hookData.append('depositAmount', booking.depositAmount.toFixed(2));
+                    hookData.append('bookingMode', booking.bookingMode);
+                    hookData.append('services', JSON.stringify(booking.services));
+                    hookData.append('transactionId', isInvoice ? 'invoice_bank_transfer' : 'paid_via_gateway');
+                    hookData.append('payment_status', isInvoice ? 'PENDING' : 'PAID');
+                    
+                    fetch(MAKE_WEBHOOK_URL, { method: 'POST', body: hookData }).catch(e => console.warn("Webhook failed", e));
+
+                    // 2. Send Email Notification
+                    const serviceList = booking.services.map((i: any) => i.type.replace(/-/g, ' ').toUpperCase()).join(', ');
+                    const concept = booking.bookingMode === 'direct' ? 'Express Booking Deposit (15%)' : 'Precision Media Quote';
+
+                    emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+                        from_name: booking.clientName,
+                        service_address: booking.address,
+                        amount_to_pay: isInvoice ? "CHF " + booking.totalPrice.toFixed(2) + " (Invoiced / Bank Transfer)" : booking.depositAmount.toFixed(2) + " CHF",
+                        service_type: concept + (isInvoice ? " - Bank Transfer / Factura" : ""),
+                        from_email: booking.email,
+                        phone_number: booking.phone,
+                        total_price: `CHF ${booking.totalPrice.toFixed(2)}`,
+                        preferred_date: booking.date,
+                        preferred_time: booking.time,
+                        payment_status: isInvoice ? 'PENDING_INVOICE' : 'PAID',
+                        transaction_id: isInvoice ? 'INVOICE_BANK_TRANSFER' : 'GATEWAY_PAYMENT',
+                        services_list: serviceList
+                    }, PUBLIC_KEY)
+                    .then(() => {
+                        if (isInvoice) {
+                            alert("¡Gracias! Hemos recibido tu solicitud de reserva mediante Factura / Transferencia Bancaria. Te enviaremos un email con los detalles de confirmación y de pago.");
+                        } else {
+                            alert("¡Gracias! Hemos recibido tu pago y tu solicitud de servicio.");
+                        }
+                        // Clean URL
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    })
+                    .catch((error) => {
+                        console.error("EmailJS Error after payment:", error);
+                        alert("Reserva procesada, pero hubo un error al enviar la confirmación por email. Por favor contáctenos directamente.");
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    });
+                } catch (e) {
+                    console.error("Failed to process pending booking", e);
+                }
             }
+        } else if (paymentStatus === 'failed' || paymentStatus === 'cancel') {
+            alert("El pago fue cancelado o falló. Por favor, inténtalo de nuevo.");
+            window.history.replaceState({}, document.title, window.location.pathname);
         }
-    } else if (paymentStatus === 'failed' || paymentStatus === 'cancel') {
-        alert("El pago fue cancelado o falló. Por favor, inténtalo de nuevo.");
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
+    };
+    processReturn();
   }, []);
 
   useEffect(() => {
@@ -1075,54 +1689,183 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         const fullPhone = `${phonePrefix} ${phone}`;
         const fullAddress = `${address}, ${postcode} ${city}`;
         const timeWindow = `${selectedTime} - ${calculateEndTime(selectedTime, totalDuration)}`;
-        const serviceList = cart.map(i => i.type.replace(/-/g, ' ').toUpperCase()).join(', ');
+        const serviceList = revaluedCart.map(i => i.type.replace(/-/g, ' ').toUpperCase()).join(', ');
         const dynamicDescription = `Kraken Properties - ${clientName} | Services: ${serviceList}`;
 
-        console.log("Creating Payrexx Gateway via Server...");
+        const successfulMedia = uploadStates.filter(s => s.status === 'success' && s.url);
+        const mediaUrls = successfulMedia.map(s => s.url as string);
+        const mediaNames = successfulMedia.map(s => s.name);
+        
+        let appendedNotes = notes;
+        if (mediaUrls.length > 0) {
+            appendedNotes += "\n\n[Uploaded Media Files]:\n" + mediaUrls.map((url, i) => `- ${mediaNames[i]}: ${url}`).join('\n');
+        }
 
-        // Call our server-side API to create a gateway
-        const response = await fetch('/api/payrexx/create-gateway', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                amount,
-                currency: 'CHF',
-                title: concept,
-                description: dynamicDescription,
-                clientName,
-                email: email // Send user email for pre-fill
-            }),
-        });
+        // Ensure guest is authenticated anonymously before writing to Firestore / checkout
+        if (!auth.currentUser) {
+            try {
+                const { signInAnonymously } = await import('firebase/auth');
+                await signInAnonymously(auth);
+                console.log("Guest authenticated anonymously prior to checkout, uid =", auth.currentUser?.uid);
+            } catch (err) {
+                console.warn("Could not sign in anonymously before checkout:", err);
+            }
+        }
+
+        const newDocId = doc(collection(db, 'maintenance_requests')).id;
+
+        const mediaAttachments = uploadStates
+            .filter(s => s.status === 'success' && s.url)
+            .map(s => {
+                const matchingFile = files.find(f => f.name === s.name);
+                return {
+                    filename: s.name,
+                    mimeType: matchingFile?.type || 'application/octet-stream',
+                    sizeBytes: matchingFile?.size || 0,
+                    uploadedAt: new Date().toISOString(),
+                    url: s.url as string
+                };
+            });
+
+        const timestamps = {
+            formSubmittedAt: new Date().toISOString(),
+            priceCalculatedAt: new Date().toISOString(),
+            depositCapturedAt: null as string | null,
+            lastUpdatedAt: new Date().toISOString(),
+            requestedServiceDate: selectedDate || new Date().toISOString().split('T')[0],
+            requestedServiceTime: selectedTime || 'flexible'
+        };
+
+        const scheduling = {
+            requestedDate: selectedDate || new Date().toISOString().split('T')[0],
+            preferredTimeWindow: selectedTime ? ('specific' as const) : ('flexible' as const),
+            specificTime: selectedTime || null,
+            estimatedDurationHours: totalDuration || 0,
+            estimatedEndTime: calculateEndTime(selectedTime, totalDuration) || null
+        };
+
+        const payment = {
+            method: 'card' as const,
+            gateway: 'wallee' as const,
+            last4: '',
+            brand: '',
+            cardholderName: clientName.trim() || 'Client',
+            expiryMonth: '',
+            expiryYear: '',
+            transactionId: '',
+            amountCharged: amount,
+            currency: 'CHF',
+            status: 'pending' as const,
+            billingPostal: postcode || ''
+        };
+
+        const currentUid = auth.currentUser?.uid;
+        if (currentUid) {
+            try {
+                console.log("Saving booking to Firestore with rich fields...");
+                const requestRef = doc(db, 'maintenance_requests', newDocId);
+                
+                const payload = {
+                    id: newDocId,
+                    userId: currentUid,
+                    client: clientName.trim().substring(0, 100) || 'Client',
+                    service: serviceList.trim().substring(0, 100) || 'FACILITY MAINTENANCE',
+                    date: selectedDate || new Date().toISOString().split('T')[0],
+                    status: 'Pending' as const,
+                    priority: 'High' as const,
+                    amount: grandTotal,
+                    email: email,
+                    phone: fullPhone,
+                    address: fullAddress,
+                    notes: appendedNotes,
+                    mediaUrls,
+                    mediaNames,
+                    bookingMode,
+                    accessMethod,
+                    time: timeWindow,
+                    services: revaluedCart,
+                    // Advanced schema fields
+                    payment,
+                    mediaAttachments,
+                    timestamps,
+                    scheduling,
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                };
+
+                await setDoc(requestRef, payload);
+                console.log("Successfully created Firestore request document ID:", newDocId);
+            } catch (fsError) {
+                console.error("Firestore submission failed (non-blocking for checkout):", fsError);
+            }
+        }
+
+        const bookingData = {
+            id: newDocId,
+            clientName,
+            email,
+            phone: fullPhone,
+            address: fullAddress,
+            notes: appendedNotes,
+            accessMethod,
+            date: selectedDate,
+            time: timeWindow,
+            totalPrice: grandTotal,
+            depositAmount: amount,
+            bookingMode: mode,
+            services: revaluedCart,
+            mediaUrls,
+            mediaNames,
+            mediaAttachments,
+            timestamps,
+            scheduling,
+            payment,
+            timestamp: Date.now()
+        };
+
+        console.log("Creating Wallee Transaction via Server...");
+
+        // Call our server-side API to create a transaction
+        let response;
+        try {
+            response = await fetch('/api/wallee/create-transaction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    amount,
+                    currency: 'CHF',
+                    title: concept,
+                    description: dynamicDescription,
+                    clientName,
+                    email: email // Send user email for pre-fill
+                }),
+            });
+        } catch (fetchErr: any) {
+            console.error("Failed to connect to Wallee Transaction endpoint", fetchErr);
+            setWalleeError({
+                message: fetchErr.message || "Failed to contact payment API route",
+                dataToSave: bookingData
+            });
+            setIsSubmitting(false);
+            return;
+        }
 
         const data = await response.json();
 
         if (data.success && data.link) {
-            console.log("Gateway created successfully. Redirecting to:", data.link);
-            
-            // Store booking data in localStorage before redirecting so we can process it on return
-            const bookingData = {
-                clientName,
-                email,
-                phone: fullPhone,
-                address: fullAddress,
-                notes,
-                accessMethod,
-                date: selectedDate,
-                time: timeWindow,
-                totalPrice: grandTotal,
-                depositAmount: amount,
-                bookingMode: mode,
-                services: cart,
-                timestamp: Date.now()
-            };
+            console.log("Wallee Transaction created successfully. Redirecting to:", data.link);
             localStorage.setItem('pending_booking', JSON.stringify(bookingData));
-
-            // Redirect the user to the Payrexx Gateway
+            // Redirect the user to the Wallee Payment Page
             window.location.href = data.link;
         } else {
-            throw new Error(data.error || "Failed to create payment gateway");
+            console.warn("Wallee Transaction creation failed. Prompting fallback:", data.error);
+            setWalleeError({
+                message: data.error || "The Wallee REST API is not active or credentials are not yet configured in this execution package.",
+                dataToSave: bookingData
+            });
+            setIsSubmitting(false);
         }
 
     } catch (error: any) {
@@ -1212,9 +1955,104 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
             {/* --- Left Column: Services Grid --- */}
             <div className="w-full lg:w-2/3 pb-24 lg:pb-0">
                 
+                {/* --- Step 1: Location Verification --- */}
+                <div id="step-1-location" className={`p-8 rounded-[2.5rem] border-2 transition-all duration-300 relative overflow-hidden mb-12 ${
+                    postcode && postcode.length === 4 
+                        ? 'border-emerald-100 bg-emerald-50/20' 
+                        : 'border-blue-100 bg-blue-50/15'
+                }`}>
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl pointer-events-none"></div>
+                    
+                    <div className="flex items-center gap-4 mb-6">
+                        <span className={`w-10 h-10 rounded-2xl flex items-center justify-center text-xl font-black shadow-md transition-colors ${
+                            postcode && postcode.length === 4 ? 'bg-emerald-600 text-white' : 'bg-[#002D5B] text-white'
+                        }`}>1</span>
+                        <div>
+                            <h3 className="text-xl font-black text-[#002D5B] uppercase tracking-tight">Service Location</h3>
+                            <p className="text-xs text-gray-400 font-bold tracking-tight mt-0.5">Check availability, regional rates & schedule for your exact address</p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="md:col-span-1">
+                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Street Name & No.</label>
+                            <input 
+                                type="text"
+                                placeholder="e.g. Seewaldestrasse 3"
+                                className="w-full p-4 bg-white border border-gray-100 rounded-2xl focus:border-[#007bff] focus:ring-2 focus:ring-blue-100 outline-none font-bold text-sm shadow-sm transition-all text-gray-700"
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Postal Code (4 Digits)</label>
+                            <input 
+                                type="text"
+                                maxLength={4}
+                                placeholder="e.g. 8001"
+                                className="w-full p-4 bg-white border border-gray-100 rounded-2xl focus:border-[#007bff] focus:ring-2 focus:ring-blue-100 outline-none font-black text-sm shadow-sm transition-all text-gray-700 font-sans"
+                                value={postcode}
+                                onChange={(e) => handlePostcodeChange(e.target.value)}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">City / Canton</label>
+                            <input 
+                                type="text"
+                                placeholder="e.g. Zürich"
+                                className="w-full p-4 bg-white border border-gray-100 rounded-2xl focus:border-[#007bff] focus:ring-2 focus:ring-blue-100 outline-none font-bold text-sm shadow-sm transition-all text-gray-700"
+                                value={city}
+                                onChange={(e) => setCity(e.target.value)}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Zone Surcharge Indicator */}
+                    <div className="mt-6 pt-5 border-t border-dashed border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#007bff] flex items-center justify-center text-lg shadow-sm font-black">
+                                📍
+                            </div>
+                            <div>
+                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Active Billing Region</span>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                    <span className="font-black text-gray-800 text-sm">
+                                        {postcode && postcode.length === 4 
+                                            ? `Region: ${detectZone(postcode).label}` 
+                                            : 'Waiting for Location...'
+                                        }
+                                    </span>
+                                    {postcode && postcode.length === 4 && (
+                                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg uppercase ${
+                                            detectZone(postcode).surchargePercent > 0 
+                                                ? 'bg-amber-100 text-amber-700' 
+                                                : 'bg-emerald-50 text-emerald-700'
+                                        }`}>
+                                            {detectZone(postcode).surchargePercent > 0 
+                                                ? `+${detectZone(postcode).surchargePercent}% Region Surcharge` 
+                                                : 'Standard Swiss Rate'
+                                            }
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {postcode && postcode.length === 4 ? (
+                            <div className="bg-emerald-50/80 border border-emerald-100 text-emerald-800 px-4 py-3 rounded-2xl text-[11px] font-bold max-w-sm leading-relaxed shrink-0">
+                                ✨ **Pricing Engine Unlocked** — Live regional rates & transport fees are actively applied across all services.
+                            </div>
+                        ) : (
+                            <div className="bg-blue-50/80 border border-blue-100 text-blue-800 px-4 py-3 rounded-2xl text-[11px] font-bold max-w-sm leading-relaxed shrink-0">
+                                ℹ️ Please input your postcode to calculate exact local hourly rates and team availability in real-time.
+                            </div>
+                        )}
+                    </div>
+                </div>
+
                 <div className="space-y-8">
                     <div className="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6">
-                        <span className="bg-[#002D5B] text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl font-black shadow-md">1</span>
+                        <span className="bg-[#002D5B] text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl font-black shadow-md">2</span>
                         <h3 className="text-xl font-black text-gray-800 uppercase tracking-tight">Our Core Services</h3>
                     </div>
 
@@ -1252,7 +2090,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                 <div className="space-y-8 mt-20">
                     <div className="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6">
-                        <span className="bg-[#007bff] text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl font-black shadow-md">2</span>
+                        <span className="bg-[#007bff] text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl font-black shadow-md">3</span>
                         <h3 className="text-xl font-black text-gray-800 uppercase tracking-tight">Additional Specializations</h3>
                     </div>
 
@@ -1292,9 +2130,45 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                 <div className="mt-20">
                     <div className="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6">
-                        <span className="bg-indigo-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl font-black shadow-md">3</span>
+                        <span className="bg-indigo-600 text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl font-black shadow-md">4</span>
                         <h3 className="text-xl font-black text-gray-800 uppercase tracking-tight">Visual Documentation</h3>
                     </div>
+
+                    {anonAuthError === 'admin-restricted-operation' && (
+                        <div id="firebase-setup-alert" className="mb-6 bg-amber-50/90 border border-amber-200 rounded-[2rem] p-6 text-left max-w-lg mx-auto flex flex-col sm:flex-row gap-4 items-start animate-fade-in shadow-sm relative z-30">
+                            <span className="text-3xl shrink-0 p-2 bg-amber-100 rounded-2xl">⚠️</span>
+                            <div className="space-y-3">
+                                <div>
+                                    <h4 className="font-black text-sm text-amber-800 mb-1">Configuración de Firebase Requerida / Setup Required</h4>
+                                    <p className="text-xs text-amber-900 leading-relaxed font-bold">
+                                        Para permitir que usuarios no registrados suban fotos, debes activar la opción de **&quot;Proveedor Anónimo&quot;** en la consola de tu proyecto Firebase.
+                                    </p>
+                                    <p className="text-[11px] text-amber-800 leading-relaxed mt-1">
+                                        To allow unregistered guests to upload photos, you must enable the **&quot;Anonymous&quot;** sign-in provider in your Firebase project console.
+                                    </p>
+                                </div>
+                                <div className="pt-1.5 flex flex-wrap gap-2">
+                                    <a 
+                                        href="https://console.firebase.google.com/project/vivid-kite-477020-h6/authentication/providers" 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1.5 hover:bg-amber-700 text-white font-black text-[11px] px-3.5 py-2.5 rounded-xl transition-all shadow-sm"
+                                        style={{ backgroundColor: '#D97706' }}
+                                    >
+                                        Habilitar en la Consola de Firebase ↗
+                                    </a>
+                                    <button 
+                                        type="button" 
+                                        onClick={() => setAnonAuthError(null)}
+                                        className="text-[11px] text-amber-700 hover:text-[#D97706] font-bold px-3 py-2 rounded-xl hover:bg-amber-100 transition-all cursor-pointer"
+                                    >
+                                        Descartar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="border-3 border-dashed border-gray-100 bg-white rounded-[2rem] p-10 text-center relative hover:border-[#007bff] hover:bg-blue-50/30 transition-all duration-300 group">
                         <input 
                             type="file" 
@@ -1302,14 +2176,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
                             onChange={(e) => { 
                                 if(e.target.files) {
-                                    const newFiles = Array.from(e.target.files!);
-                                    const totalSize = [...files, ...newFiles].reduce((acc, f) => acc + f.size, 0);
-                                    if (totalSize > MAX_FILE_SIZE) {
-                                        alert("Selected files are too large (250MB limit).");
-                                        e.target.value = "";
-                                        return;
-                                    }
-                                    setFiles(prev => [...prev, ...newFiles]);
+                                    handleUploadFile(Array.from(e.target.files));
+                                    e.target.value = "";
                                 }
                             }} 
                         />
@@ -1318,20 +2186,95 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         </div>
                         <p className="font-black text-xl text-[#002D5B] mb-1.5">Upload media for a precise quote.</p>
                         <p className="text-sm text-gray-400 font-bold tracking-tight">Photos/Videos help with precision (up to 250MB).</p>
+                        
                         {files.length > 0 && (
-                            <div className="flex flex-wrap justify-center gap-2 mt-6">
-                                {files.map((f, i) => (
-                                    <span key={`${f.name}-${i}`} className="bg-[#002D5B] text-white px-4 py-2 rounded-xl text-[10px] font-black shadow-md animate-fade-in flex items-center gap-2 group/file">
-                                        <CheckIcon className="w-3.5 h-3.5 text-green-400" /> 
-                                        {f.name}
-                                        <button 
-                                            onClick={(e) => { e.stopPropagation(); handleFileRemoval(i); }}
-                                            className="ml-2 hover:text-red-400 transition-colors"
-                                        >
-                                            <XMarkIcon className="w-3 h-3" />
-                                        </button>
-                                    </span>
-                                ))}
+                            <div className="mt-8 text-left max-w-lg mx-auto space-y-4 relative z-20">
+                                <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest pl-1 mb-2">Upload Queue & Status</h4>
+                                <div className="space-y-3">
+                                    {files.map((file, idx) => {
+                                        const uploadState = uploadStates.find(us => us.name === file.name);
+                                        const isCompleted = uploadState?.status === 'success';
+                                        const isUploading = uploadState?.status === 'uploading';
+                                        const isError = uploadState?.status === 'error';
+                                        const progress = uploadState?.progress || 0;
+
+                                        return (
+                                            <div 
+                                                key={`${file.name}-${idx}`} 
+                                                className="bg-slate-50/80 p-4 rounded-2xl border border-gray-100 flex flex-col gap-2 relative group overflow-hidden transition-all duration-300 hover:border-blue-100 hover:shadow-md"
+                                            >
+                                                {isUploading && (
+                                                    <div 
+                                                        className="absolute inset-y-0 left-0 bg-blue-500/5 transition-all duration-300 pointer-events-none"
+                                                        style={{ width: `${progress}%` }}
+                                                    ></div>
+                                                )}
+
+                                                <div className="flex items-center justify-between gap-4 relative z-10 w-full">
+                                                    <div className="flex items-center gap-3 min-w-0">
+                                                        <div className={`p-2.5 rounded-xl shrink-0 ${
+                                                            isCompleted ? 'bg-emerald-50 text-emerald-500' :
+                                                            isUploading ? 'bg-blue-50 text-blue-500' :
+                                                            isError ? 'bg-red-50 text-red-500' : 'bg-gray-50 text-gray-400'
+                                                        }`}>
+                                                            {isCompleted && <CheckIcon className="w-5 h-5 animate-scale-up" />}
+                                                            {isUploading && (
+                                                                <span className="inline-block animate-spin w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full"></span>
+                                                            )}
+                                                            {isError && <XMarkIcon className="w-5 h-5 text-red-500" />}
+                                                            {!uploadState && <CloudUploadIcon className="w-5 h-5" />}
+                                                        </div>
+                                                        <div className="truncate text-left">
+                                                            <p className="font-black text-xs text-gray-700 truncate">{file.name}</p>
+                                                            <p className="font-mono text-[9px] text-gray-400">
+                                                                {(file.size / (1024 * 1024)).toFixed(2)} MB • {
+                                                                    isCompleted ? 'Ready' :
+                                                                    isUploading ? `Uploading ${progress}%` :
+                                                                    isError ? 'Upload failed' : 'In queue'
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    <button 
+                                                        type="button"
+                                                        onClick={(e) => { e.stopPropagation(); e.preventDefault(); handleFileRemoval(idx); }}
+                                                        className="p-1.5 rounded-lg text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all duration-200 shrink-0 cursor-pointer pointer-events-auto relative z-30"
+                                                    >
+                                                        <TrashIcon className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+
+                                                {isUploading && (
+                                                    <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden mt-1 relative z-10 animate-pulse">
+                                                        <div 
+                                                            className="bg-blue-500 h-full transition-all duration-300"
+                                                            style={{ width: `${progress}%` }}
+                                                        ></div>
+                                                    </div>
+                                                )}
+
+                                                {isError && (
+                                                    <p className="text-[10px] text-red-500 font-bold text-left pl-1">
+                                                        Error: {uploadState?.error || 'Unknown upload error'}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
+
+                        {!user && (
+                            <div className="mt-8 bg-blue-50/50 border border-blue-100/50 rounded-2xl p-4 text-left max-w-lg mx-auto flex gap-3 animate-fade-in relative z-20">
+                                <span className="text-xl shrink-0">💡</span>
+                                <div>
+                                    <p className="font-black text-xs text-[#002D5B] mb-0.5">Customer Dashboard Sync</p>
+                                    <p className="text-[11px] text-gray-500 font-bold leading-normal">
+                                        Sign in or create an account to view and access your quote details, uploaded assets, and status updates directly in your live Client Dashboard!
+                                    </p>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -1358,13 +2301,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             </div>
                             <div className="p-8">
                                 <div className="space-y-4 max-h-[45vh] lg:max-h-[55vh] overflow-y-auto custom-scrollbar pr-3">
-                                    {cart.length === 0 ? (
+                                    {revaluedCart.length === 0 ? (
                                         <div className="text-center py-16 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200">
                                             <div className="text-5xl mb-4 opacity-20 filter grayscale">🛒</div>
                                             <p className="text-gray-400 font-black text-xs uppercase tracking-widest">Quote is empty</p>
                                         </div>
                                     ) : (
-                                        cart.map((item) => (
+                                        revaluedCart.map((item) => (
                                             <div 
                                                 key={item.id} 
                                                 onClick={() => handleEditItem(item)}
@@ -1442,6 +2385,230 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                 </div>
             </div>
         </div>
+
+        {/* --- MODALS --- */}
+        {showAddressModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-fade-in select-none">
+            <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg p-8 relative flex flex-col overflow-hidden border border-slate-100">
+              {/* Top design background */}
+              <div className="absolute top-0 left-0 w-full h-32 bg-blue-50 rounded-b-[50%] -z-0 transform -translate-y-16 scale-x-150"></div>
+              
+              {/* Close Button - Only visible if they already have an address configured */}
+              {address.trim() && postcode.trim() && city.trim() && (
+                <button 
+                  onClick={() => setShowAddressModal(false)}
+                  className="absolute top-6 right-6 p-2 bg-white hover:bg-slate-100 rounded-full border border-gray-100 transition-colors z-20 cursor-pointer"
+                >
+                  <XMarkIcon className="w-5 h-5 text-gray-500" />
+                </button>
+              )}
+
+              <div className="relative z-10 text-center mb-6">
+                <img src={mascotImageUrl} alt="Kai Mascot" className="w-20 h-20 object-contain mx-auto mb-3 drop-shadow-md animate-bounce-in" />
+                <h3 className="text-xl font-black text-[#002D5B] uppercase tracking-tight">📍 Dirección de Servicio / Service Location</h3>
+                <p className="text-xs text-gray-500 font-bold max-w-sm mx-auto mt-2 leading-relaxed">
+                  Por favor, indica tu dirección (calle, número, código postal y ciudad) para calcular las tarifas exactas de tu zona de inmediato.
+                </p>
+                <p className="text-[10px] text-gray-400 italic mt-1 font-semibold leading-normal">
+                  Please enter your street address, postcode, and city to calculate accurate regional rates.
+                </p>
+              </div>
+
+              <form onSubmit={handleSaveAddress} className="space-y-4 relative z-10 text-left">
+                <div className="group">
+                  <label className="block text-[10px] font-black text-[#002D5B] uppercase tracking-wider mb-1.5 ml-1">Calle y Número / Street & House Number</label>
+                  <input 
+                    type="text"
+                    placeholder="e.g. Bahnhofstrasse 12"
+                    className="w-full p-4 bg-white border-2 border-gray-100 rounded-2xl focus:border-[#007bff] outline-none font-bold text-sm shadow-sm transition-all duration-300"
+                    value={tempAddress}
+                    onChange={(e) => setTempAddress(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="group">
+                    <label className="block text-[10px] font-black text-[#002D5B] uppercase tracking-wider mb-1.5 ml-1">Código Postal / Postcode</label>
+                    <input 
+                      type="text"
+                      placeholder="e.g. 8001"
+                      maxLength={4}
+                      className="w-full p-4 bg-white border-2 border-gray-100 rounded-2xl focus:border-[#007bff] outline-none font-bold text-sm shadow-sm transition-all duration-300 animate-fade-in"
+                      value={tempPostcode}
+                      onChange={(e) => handleTempPostcodeChange(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="group">
+                    <label className="block text-[10px] font-black text-[#002D5B] uppercase tracking-wider mb-1.5 ml-1">Ciudad / City</label>
+                    <input 
+                      type="text"
+                      placeholder="e.g. Zürich"
+                      className="w-full p-4 bg-white border-2 border-slate-100 rounded-2xl focus:border-[#007bff] outline-none font-bold text-sm shadow-sm transition-all duration-300"
+                      value={tempCity}
+                      onChange={(e) => setTempCity(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Dynamic Live Zone Badge */}
+                {tempPostcode.trim().length === 4 && (
+                  <div className="p-3.5 bg-blue-50/60 border border-blue-100 rounded-2xl flex items-center gap-3 animate-fade-in">
+                    <span className="text-xl">🗺️</span>
+                    <div>
+                      <span className="block text-[8px] font-black text-gray-400 uppercase tracking-widest leading-none mb-0.5">Zona Detectada / Zone Detected</span>
+                      <span className="font-extrabold text-xs text-[#002D5B] flex items-center gap-1.5">
+                        {detectZone(tempPostcode).label} 
+                        {detectZone(tempPostcode).surchargePercent > 0 ? (
+                          <span className="text-[10px] font-black bg-blue-100 text-[#007bff] px-1.5 py-0.5 rounded-md leading-none">
+                            +{detectZone(tempPostcode).surchargePercent}% local rate
+                          </span>
+                        ) : (
+                          <span className="text-[10px] font-black bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-md leading-none">
+                            Base rate
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {tempErrors && (
+                  <div className="p-3 bg-red-50 border border-red-100 text-red-600 rounded-2xl text-[11px] font-black uppercase tracking-wide text-center">
+                    ⚠️ {tempErrors}
+                  </div>
+                )}
+
+                <button 
+                  type="submit"
+                  className="w-full bg-[#002D5B] hover:bg-[#001D3B] text-white py-4 rounded-2xl font-black text-sm uppercase tracking-wide shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer mt-4"
+                >
+                  Confirmar / Save & Continue
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* --- MODAL: WALLEE CONFIG ERROR & FALLBACK SELECTION --- */}
+        {walleeError && (
+          <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/85 backdrop-blur-md animate-fade-in select-none">
+            <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-xl p-8 relative flex flex-col overflow-hidden border border-slate-100">
+              {/* Highlight ribbon */}
+              <div className="absolute top-0 left-0 w-full h-32 bg-amber-50 rounded-b-[50%] -z-0 transform -translate-y-16 scale-x-150"></div>
+              
+              {/* Close Button */}
+              <button 
+                onClick={() => setWalleeError(null)}
+                className="absolute top-6 right-6 p-2 bg-white hover:bg-slate-100 rounded-full border border-gray-100 transition-colors z-20 cursor-pointer"
+              >
+                <XMarkIcon className="w-5 h-5 text-gray-500" />
+              </button>
+
+              <div className="relative z-10 text-center mb-6">
+                <span className="inline-block text-4xl p-3 bg-amber-100 rounded-2xl mb-3">⚙️</span>
+                <h3 className="text-xl font-black text-amber-800 uppercase tracking-tight">Checkout Service Alert / Alerta de Pasarela</h3>
+                
+                {/* Alert message display */}
+                <div className="mt-4 bg-slate-50 border border-slate-100 p-4 rounded-2xl text-left">
+                  <p className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">Details / Detalles Técnicos</p>
+                  <p className="text-xs text-slate-600 font-bold leading-relaxed">
+                    {walleeError.message}
+                  </p>
+                  <p className="text-[11px] text-amber-700 font-bold mt-2 leading-relaxed">
+                    ⚠️ The Wallee transaction API is not fully configured or active with these credentials. To continue your reservation preview, select one of the valid checkout workflows below:
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-4 relative z-10 text-left">
+                {/* Option 1: Sandbox success */}
+                <button 
+                  type="button"
+                  onClick={() => {
+                    const dataWithSuccess = {
+                      ...walleeError.dataToSave,
+                      payment: {
+                        ...(walleeError.dataToSave.payment || {}),
+                        status: 'captured' as const,
+                        method: 'card' as const,
+                        gateway: 'wallee' as const,
+                        transactionId: 'paid_via_gateway'
+                      },
+                      timestamps: {
+                        ...(walleeError.dataToSave.timestamps || {}),
+                        depositCapturedAt: new Date().toISOString()
+                      }
+                    };
+                    localStorage.setItem('pending_booking', JSON.stringify(dataWithSuccess));
+                    setWalleeError(null);
+                    window.location.search = '?payment=success';
+                  }}
+                  className="w-full p-5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-95 text-white rounded-[2rem] text-left transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-lg shadow-emerald-500/20 group relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full translate-x-8 -translate-y-8 group-hover:scale-125 transition-transform"></div>
+                  <div className="flex items-start gap-4">
+                    <span className="text-2xl pt-0.5">🚀</span>
+                    <div>
+                      <h4 className="font-black text-sm uppercase tracking-wide">Demo Sandbox Bypass (Recommended)</h4>
+                      <p className="text-xs text-emerald-100 mt-1 leading-snug">
+                        Simulate instant payment confirmation. This will fire webhooks (Make.com), generate final receipts, and send email triggers. Perfect for previewing the complete booking lifecycle.
+                      </p>
+                    </div>
+                  </div>
+                </button>
+
+                {/* Option 2: Wire Transfer / Invoice */}
+                <button 
+                  type="button"
+                  onClick={() => {
+                    const dataWithInvoice = {
+                      ...walleeError.dataToSave,
+                      payment: {
+                        ...(walleeError.dataToSave.payment || {}),
+                        status: 'pending' as const,
+                        method: 'bank_transfer' as const,
+                        gateway: 'manual' as const,
+                        transactionId: 'invoice_bank_transfer'
+                      },
+                      timestamps: {
+                        ...(walleeError.dataToSave.timestamps || {}),
+                        depositCapturedAt: null
+                      }
+                    };
+                    localStorage.setItem('pending_booking', JSON.stringify(dataWithInvoice));
+                    setWalleeError(null);
+                    window.location.search = '?payment=invoice';
+                  }}
+                  className="w-full p-5 bg-[#002D5B] hover:bg-[#001D3B] text-white rounded-[2rem] text-left transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-lg shadow-[#002D5B]/20 group relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full translate-x-8 -translate-y-8 group-hover:scale-125 transition-transform"></div>
+                  <div className="flex items-start gap-4">
+                    <span className="text-2xl pt-0.5">📄</span>
+                    <div>
+                      <h4 className="font-black text-sm uppercase tracking-wide">Direct Transfer & Invoice (Factura)</h4>
+                      <p className="text-xs text-blue-100 mt-1 leading-snug">
+                        Submit the maintenance request without upfront online payment. We will prepare and dispatch an invoice to your email with direct bank transfer instructions.
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              </div>
+
+              <div className="relative z-10 mt-6 text-center">
+                <button 
+                  type="button"
+                  onClick={() => setWalleeError(null)}
+                  className="px-6 py-2 border border-slate-200 hover:bg-slate-50 text-slate-500 rounded-xl font-bold text-xs uppercase tracking-widest transition-all cursor-pointer"
+                >
+                  Cancel / Volver
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* --- MODALS --- */}
         {showSuccess && <SuccessModal onClose={handleCloseSuccess} />}
@@ -2600,45 +3767,32 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     <div className="space-y-4">
                         <div className="flex items-center gap-2 mb-2">
                             <div className="p-2 bg-blue-50 rounded-lg text-blue-600"><MapPinIcon className="w-5 h-5" /></div>
-                            <h4 className="text-sm font-black text-[#002D5B] uppercase tracking-tight">Service Location</h4>
+                            <h4 className="text-sm font-black text-[#002D5B] uppercase tracking-tight">Service Location / Dirección de Servicio</h4>
                         </div>
-                        <div className="grid grid-cols-1 gap-4">
-                            <div className="group">
-                                <label className="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Street & House Number</label>
-                                <input 
-                                    id="address"
-                                    name="address" 
-                                    placeholder="e.g. Seewaldestrasse 3"
-                                    className={`w-full p-4 bg-white border-2 rounded-[1.25rem] focus:border-[#007bff] focus:bg-blue-50/20 outline-none font-bold text-sm transition-all duration-300 shadow-sm ${errors.address ? 'border-red-500 bg-red-50 shake' : 'border-gray-100'}`} 
-                                    value={address}
-                                    onChange={(e) => setAddress(e.target.value)}
-                                />
-                                {errors.address && <span className="text-[10px] text-red-500 font-black mt-1 block ml-2">{errors.address}</span>}
+                        <div className="bg-slate-50 border border-slate-100 p-5 rounded-[1.5rem] flex items-center justify-between gap-4 shadow-sm animate-fade-in">
+                            <div className="text-left">
+                                <p className="text-[10px] text-gray-400 font-extrabold uppercase tracking-widest leading-none mb-1">Dirección Confirmada / Verified Location</p>
+                                <p className="font-extrabold text-sm text-[#002D5B]">{address}</p>
+                                <p className="font-bold text-xs text-gray-500 mt-1">{postcode} {city}</p>
+                                <span className="inline-block mt-2 font-black text-[9px] uppercase tracking-wider text-[#007bff] bg-blue-100 px-2 py-0.5 rounded">
+                                    Zona / Zone: {detectZone(postcode || '8200').label}
+                                </span>
                             </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="group">
-                                    <label className="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">Postcode</label>
-                                    <input 
-                                        name="postcode" 
-                                        placeholder="8203"
-                                        className={`w-full p-4 bg-white border-2 rounded-[1.25rem] focus:border-[#007bff] outline-none font-bold text-sm shadow-sm ${errors.postcode ? 'border-red-500 bg-red-50 shake' : 'border-gray-100'}`} 
-                                        value={postcode}
-                                        onChange={(e) => setPostcode(e.target.value)}
-                                    />
-                                    {errors.postcode && <span className="text-[10px] text-red-500 font-black mt-1 block ml-2">{errors.postcode}</span>}
-                                </div>
-                                <div className="group">
-                                    <label className="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1.5 ml-1">City / Canton</label>
-                                    <input 
-                                        name="city" 
-                                        placeholder="Schaffhausen"
-                                        className={`w-full p-4 bg-white border-2 rounded-[1.25rem] focus:border-[#007bff] outline-none font-bold text-sm shadow-sm ${errors.city ? 'border-red-500 bg-red-50 shake' : 'border-gray-100'}`} 
-                                        value={city}
-                                        onChange={(e) => setCity(e.target.value)}
-                                    />
-                                    {errors.city && <span className="text-[10px] text-red-500 font-black mt-1 block ml-2">{errors.city}</span>}
-                                </div>
-                            </div>
+                            <button 
+                                type="button"
+                                onClick={() => {
+                                    setContactModalOpen(false);
+                                    setTimeout(() => {
+                                        const target = document.getElementById('step-1-location');
+                                        if (target) {
+                                            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                        }
+                                    }, 100);
+                                }} 
+                                className="px-4 py-2 bg-white hover:bg-subtle hover:text-[#007bff] border border-gray-200 hover:border-[#007bff] rounded-xl font-black text-[10px] uppercase tracking-wider transition-all shadow-xs active:scale-95 cursor-pointer shrink-0"
+                            >
+                                Cambiar / Change
+                            </button>
                         </div>
                     </div>
 

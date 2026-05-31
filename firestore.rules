@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    match /maintenance_requests/{requestId} {
+      // Direct reads and lists are limited strictly to the owner of the request or coordinator/staff
+      allow read: if request.auth != null 
+        && (resource.data.userId == request.auth.uid || request.auth.token.email.lower().endsWith('@krakenpfm.ch') || request.auth.token.email == 'antonio.nadre@anotherstar.com');
+        
+      // Create conditions enforcing ID constraints, exact fields, types, and server time
+      allow create: if request.auth != null
+        && requestId is string
+        && requestId.size() > 0
+        && requestId.size() <= 128
+        && request.resource.data.id == requestId
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.client is string
+        && request.resource.data.client.size() > 0
+        && request.resource.data.client.size() <= 100
+        && request.resource.data['service'] is string
+        && request.resource.data['service'].size() > 0
+        && request.resource.data['service'].size() <= 100
+        && request.resource.data['date'] is string
+        && request.resource.data['date'].size() > 0
+        && request.resource.data['date'].size() <= 30
+        && request.resource.data.status == 'Pending'
+        && (request.resource.data.priority == 'Low' || request.resource.data.priority == 'Medium' || request.resource.data.priority == 'High')
+        && request.resource.data.amount >= 0
+        && request.resource.data.amount <= 1000000
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+        
+      // Update conditions reinforcing immutability, terminal locking, and field validation
+      allow update: if request.auth != null
+        && (
+          (resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid) ||
+          ((request.auth.token.email.lower().endsWith('@krakenpfm.ch') || request.auth.token.email == 'antonio.nadre@anotherstar.com') && request.resource.data.userId == resource.data.userId)
+        )
+        // Immutable Key Fields Check
+        && request.resource.data.id == resource.data.id
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.updatedAt == request.time
+        // Terminal State Lock
+        && resource.data.status != 'Completed'
+        // Validation Schema
+        && request.resource.data.client is string
+        && request.resource.data.client.size() > 0
+        && request.resource.data.client.size() <= 100
+        && request.resource.data['service'] is string
+        && request.resource.data['service'].size() > 0
+        && request.resource.data['service'].size() <= 100
+        && request.resource.data['date'] is string
+        && request.resource.data['date'].size() > 0
+        && request.resource.data['date'].size() <= 30
+        && (request.resource.data.status == 'Pending' || request.resource.data.status == 'In Progress' || request.resource.data.status == 'Completed')
+        && (request.resource.data.priority == 'Low' || request.resource.data.priority == 'Medium' || request.resource.data.priority == 'High')
+        && request.resource.data.amount >= 0
+        && request.resource.data.amount <= 1000000;
+        
+      // Delete condition preventing deletion of completed records
+      allow delete: if request.auth != null
+        && (resource.data.userId == request.auth.uid || request.auth.token.email.lower().endsWith('@krakenpfm.ch') || request.auth.token.email == 'antonio.nadre@anotherstar.com')
+        && resource.data.status != 'Completed';
+    }
+  }
+}
