@@ -1852,17 +1852,34 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
             return;
         }
 
-        const data = await response.json();
+        let data;
+        try {
+            const contentType = response ? response.headers.get('content-type') : null;
+            if (contentType && contentType.includes('application/json')) {
+                data = await response.json();
+            } else {
+                const text = response ? await response.text() : '';
+                throw new Error(`Server returned non-JSON response (${response ? response.status : 'unknown'}): ${text.substring(0, 80)}...`);
+            }
+        } catch (parseErr: any) {
+            console.error("Failed to parse server response", parseErr);
+            setWalleeError({
+                message: `Server Connection Issue: Wallee handler could not process the response. Details: ${parseErr.message}`,
+                dataToSave: bookingData
+            });
+            setIsSubmitting(false);
+            return;
+        }
 
-        if (data.success && data.link) {
+        if (data && data.success && data.link) {
             console.log("Wallee Transaction created successfully. Redirecting to:", data.link);
             localStorage.setItem('pending_booking', JSON.stringify(bookingData));
             // Redirect the user to the Wallee Payment Page
             window.location.href = data.link;
         } else {
-            console.warn("Wallee Transaction creation failed. Prompting fallback:", data.error);
+            console.warn("Wallee Transaction creation failed. Prompting fallback:", data ? data.error : 'No response data');
             setWalleeError({
-                message: data.error || "The Wallee REST API is not active or credentials are not yet configured in this execution package.",
+                message: (data && data.error) || "The Wallee REST API is not active or credentials are not yet configured in this execution package.",
                 dataToSave: bookingData
             });
             setIsSubmitting(false);

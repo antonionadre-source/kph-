@@ -7,8 +7,12 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { Configuration, HttpBearerAuth, TransactionsService } from "wallee";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+let currentDirname = "";
+try {
+  currentDirname = __dirname;
+} catch (e) {
+  currentDirname = dirname(fileURLToPath(import.meta.url));
+}
 
 dotenv.config();
 
@@ -29,8 +33,7 @@ async function startServer() {
   });
   const transactionsService = new TransactionsService(walleeConfig);
 
-  // API Route to create a Wallee Transaction and retrieve Payment Page URL
-  app.post("/api/wallee/create-transaction", async (req, res) => {
+  const handleCreateTransaction = async (req: express.Request, res: express.Response) => {
     try {
       const { amount, currency, title, description, clientName, email } = req.body;
 
@@ -101,14 +104,13 @@ async function startServer() {
         isLicenseError: isConfigError
       });
     }
-  });
+  };
+
+  // API Route to create a Wallee Transaction and retrieve Payment Page URL
+  app.post("/api/wallee/create-transaction", handleCreateTransaction);
 
   // Keep compatibility alias for Payrexx endpoint so we don't break old cached scripts
-  app.post("/api/payrexx/create-gateway", async (req, res) => {
-    // Forward directly to the Wallee transaction creator
-    req.url = "/api/wallee/create-transaction";
-    (app as any).handle(req, res);
-  });
+  app.post("/api/payrexx/create-gateway", handleCreateTransaction);
 
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
@@ -122,7 +124,7 @@ async function startServer() {
     // In production, serve from the dist directory
     // If running from root, dist is in ./dist
     // If running from dist, dist is in . (current directory)
-    const distPath = __dirname.endsWith("dist") ? __dirname : path.join(__dirname, "dist");
+    const distPath = currentDirname.endsWith("dist") ? currentDirname : path.join(currentDirname, "dist");
     
     app.use(express.static(distPath));
     app.get("*all", (req, res) => {
