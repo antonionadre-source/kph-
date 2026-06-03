@@ -9,9 +9,9 @@ import { Configuration, HttpBearerAuth, TransactionsService } from "wallee";
 
 let currentDirname = "";
 try {
-  currentDirname = __dirname;
+  currentDirname = typeof __dirname !== "undefined" ? __dirname : dirname(fileURLToPath(import.meta.url));
 } catch (e) {
-  currentDirname = dirname(fileURLToPath(import.meta.url));
+  currentDirname = process.cwd();
 }
 
 dotenv.config();
