@@ -45,7 +45,7 @@ const WhyKrakenSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.8 }}
-            src="https://www.dropbox.com/scl/fi/gxi2nh8v7wrtx760y2u4p/iconos-why-us.jpg?rlkey=blznhae1xrcsi5vcqrvvquio8&st=nahvgjck&raw=1" 
+            src="/iconos-why-us.jpg" 
             alt="Why Kraken Icons" 
             className="w-full h-auto rounded-3xl"
             referrerPolicy="no-referrer"

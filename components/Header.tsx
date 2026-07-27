@@ -7,7 +7,7 @@ import { LeafIcon } from './icons';
 
 interface HeaderProps {
   onNavigate: (page: string) => void;
-  currentPage: 'home' | 'clients' | 'login' | 'register' | 'dashboard' | 'about' | 'consultation' | 'gdpr' | 'services-page' | 'sustainability-page' | 'hse' | 'careers';
+  currentPage: 'home' | 'clients' | 'login' | 'register' | 'dashboard' | 'about' | 'consultation' | 'gdpr' | 'services-page' | 'sustainability-page' | 'hse' | 'careers' | 'blog';
 }
 
 const useCountUp = (end: number, duration: number = 2000) => {
@@ -39,13 +39,23 @@ const useCountUp = (end: number, duration: number = 2000) => {
   return count;
 };
 
+const getReviewText = (lang: string) => {
+  if (lang.startsWith('es')) return 'Dejar Opinión';
+  if (lang.startsWith('de')) return 'Google Bewerten';
+  if (lang.startsWith('fr')) return 'Avis Google';
+  if (lang.startsWith('it')) return 'Recensioni';
+  if (lang.startsWith('pt')) return 'Deixar Opinião';
+  return 'Google Reviews';
+};
+
 const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [headerTheme, setHeaderTheme] = useState<'light' | 'dark'>('dark');
   const [isLangDropdownOpen, setLangDropdownOpen] = useState(false);
   const [justSelected, setJustSelected] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const langDropdownRef = useRef<HTMLDivElement>(null);
+  const desktopLangDropdownRef = useRef<HTMLDivElement>(null);
+  const mobileLangDropdownRef = useRef<HTMLDivElement>(null);
   const { t, setLanguage, language } = useTranslation();
   const { user, logout } = useAuth();
   
@@ -89,7 +99,9 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (langDropdownRef.current && !langDropdownRef.current.contains(event.target as Node)) {
+      const insideDesktop = desktopLangDropdownRef.current && desktopLangDropdownRef.current.contains(event.target as Node);
+      const insideMobile = mobileLangDropdownRef.current && mobileLangDropdownRef.current.contains(event.target as Node);
+      if (!insideDesktop && !insideMobile) {
         setLangDropdownOpen(false);
       }
     };
@@ -114,7 +126,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
     };
   }, [isMobileMenuOpen]);
   
-  const useDarkStyle = isScrolled || isMobileMenuOpen || headerTheme === 'light';
+  const useDarkStyle = isScrolled || isMobileMenuOpen || (isScrolled && headerTheme === 'light');
 
   const supportedLanguages = [
     { code: 'de-CH', name: 'Swiss German', flag: '🇨🇭' },
@@ -210,10 +222,17 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
           )}
         </div>
 
-        <a href="#" onClick={(e) => handleNavClick(e, 'about')} className={navLinkClass}>{t('nav.about')}</a>
-        <a href="#" onClick={(e) => handleNavClick(e, 'sustainability-page')} className={navLinkClass}>{t('nav.sustainability')}</a>
+        <a href="/about" onClick={(e) => handleNavClick(e, 'about')} className={navLinkClass}>{t('nav.about')}</a>
+        <a href="/sustainability" onClick={(e) => handleNavClick(e, 'sustainability-page')} className={navLinkClass}>{t('nav.sustainability')}</a>
+        <a href="/einsatzgebiete" onClick={(e) => handleNavClick(e, '/einsatzgebiete')} className={navLinkClass}>{t('nav.coverage')}</a>
+        <a href="/blog" onClick={(e) => handleNavClick(e, 'blog')} className={navLinkClass}>{t('nav.blog')}</a>
+        <a href="/kontakt" onClick={(e) => handleNavClick(e, 'kontakt')} className={navLinkClass}>{t('nav.contact')}</a>
+        <a href="/review-invite" onClick={(e) => handleNavClick(e, 'review-invite')} className={`${navLinkClass} text-amber-500 font-extrabold flex items-center gap-1 hover:text-amber-600`}>
+          <span>⭐️</span>
+          <span>{getReviewText(language)}</span>
+        </a>
          {user && (
-          <a href="#" onClick={(e) => handleNavClick(e, 'dashboard')} className={navLinkClass}>{t('nav.dashboard')}</a>
+          <a href="/dashboard" onClick={(e) => handleNavClick(e, 'dashboard')} className={navLinkClass}>{t('nav.dashboard')}</a>
         )}
       </>
     );
@@ -223,8 +242,21 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
     <>
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-2' : 'bg-transparent py-4'} ${isMobileMenuOpen ? 'bg-white' : ''}`}>
         <div className="container mx-auto px-4 md:px-6 flex justify-between items-center">
-          <a href="#" onClick={(e) => handleNavClick(e, 'home')} aria-label="Kraken Properties Homepage" className="relative z-50 flex items-center group">
-            <img src={useDarkStyle ? companyLogoUrl : companyLogoWhiteUrl} alt="Kraken Properties Logo" className={`w-auto transition-all duration-500 ${isScrolled || isMobileMenuOpen ? 'h-10 md:h-12' : 'h-14 md:h-18'}`} />
+          <a href="/" onClick={(e) => handleNavClick(e, 'home')} aria-label="Kraken Properties Homepage" className="relative z-50 flex items-center group">
+            <div className="relative flex items-center justify-center">
+              <img 
+                id="header-logo-dark"
+                src={companyLogoUrl} 
+                alt="Kraken Properties Logo" 
+                className={`w-auto transition-all duration-500 ${isScrolled || isMobileMenuOpen ? 'h-10 md:h-12' : 'h-14 md:h-18'} ${useDarkStyle ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none absolute'}`} 
+              />
+              <img 
+                id="header-logo-white"
+                src={companyLogoWhiteUrl} 
+                alt="Kraken Properties Logo" 
+                className={`w-auto transition-all duration-500 ${isScrolled || isMobileMenuOpen ? 'h-10 md:h-12' : 'h-14 md:h-18'} ${!useDarkStyle ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none absolute'}`} 
+              />
+            </div>
             <div className="h-10 w-px bg-slate-200 mx-4 hidden sm:block"></div>
             <div className="flex flex-col leading-tight">
               <span className={`text-[8px] md:text-[10px] font-bold uppercase tracking-[0.15em] opacity-80 transition-colors duration-500 ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'}`}>Properties and</span>
@@ -259,24 +291,35 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
                       </div>
                     </div>
                   </div>
-                  <a href="#" onClick={(e) => handleNavClick(e, 'about')} className={navLinkClass}>{t('nav.about')}</a>
-                  <a href="#" onClick={(e) => handleNavClick(e, 'sustainability-page')} className={navLinkClass}>{t('nav.sustainability')}</a>
-                  {user && <a href="#" onClick={(e) => handleNavClick(e, 'dashboard')} className={navLinkClass}>{t('nav.dashboard')}</a>}
+                  <a href="/about" onClick={(e) => handleNavClick(e, 'about')} className={navLinkClass}>{t('nav.about')}</a>
+                  <a href="/sustainability" onClick={(e) => handleNavClick(e, 'sustainability-page')} className={navLinkClass}>{t('nav.sustainability')}</a>
+                  <a href="/einsatzgebiete" onClick={(e) => handleNavClick(e, '/einsatzgebiete')} className={navLinkClass}>{t('nav.coverage')}</a>
+                  <a href="/blog" onClick={(e) => handleNavClick(e, 'blog')} className={navLinkClass}>{t('nav.blog')}</a>
+                  <a href="/review-invite" onClick={(e) => handleNavClick(e, 'review-invite')} className={`${navLinkClass} text-amber-500 font-extrabold flex items-center gap-1 hover:text-amber-600`}>
+                    <span>⭐️</span>
+                    <span>{getReviewText(language)}</span>
+                  </a>
+                  {user && <a href="/dashboard" onClick={(e) => handleNavClick(e, 'dashboard')} className={navLinkClass}>{t('nav.dashboard')}</a>}
                 </>
               );
             })()}
             
-            <div className="relative" ref={langDropdownRef}>
+            <div className="relative" ref={desktopLangDropdownRef}>
               <button
+                id="desktop-language-selector-btn"
                 onClick={() => setLangDropdownOpen(!isLangDropdownOpen)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 hover:border-blue-400 transition-all duration-300 hover:scale-105 ${justSelected ? 'animate-pop' : ''} bg-white/50 backdrop-blur-sm`}
+                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border transition-all duration-300 hover:scale-105 ${justSelected ? 'animate-pop' : ''} ${
+                  useDarkStyle 
+                    ? 'border-slate-200 hover:border-blue-400 bg-slate-50/80 text-[#002d5b] hover:bg-slate-100' 
+                    : 'border-white/20 hover:border-white/50 bg-white/10 text-white hover:bg-white/20'
+                } backdrop-blur-sm`}
                 aria-label="Select language"
               >
                 <span className="text-lg">🌎</span>
-                <span className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-500 ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'}`}>
+                <span className="text-[10px] font-black uppercase tracking-widest leading-none">
                   {language === 'de-CH' ? 'CH' : language.toUpperCase()}
                 </span>
-                <svg className={`w-2.5 h-2.5 transition-transform duration-300 ${isLangDropdownOpen ? 'rotate-180' : ''} ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className={`w-2.5 h-2.5 transition-transform duration-300 ${isLangDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
@@ -284,6 +327,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
                   {supportedLanguages.map((lang) => (
                     <li key={lang.code} className="flex justify-center">
                       <button
+                        id={`desktop-lang-opt-${lang.code}`}
                         onClick={() => handleLanguageChange(lang.code)}
                         className={`w-full text-center p-2 text-3xl hover:bg-slate-50 rounded-2xl transition-all ${language === lang.code ? 'bg-blue-50 ring-2 ring-blue-100' : ''}`}
                         title={lang.name}
@@ -295,16 +339,17 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
               </ul>
             </div>
              {user ? (
-              <a href="#" onClick={handleLogout} className="font-bold text-[10px] uppercase tracking-widest transition-all px-6 py-2.5 rounded-xl bg-rose-500 text-white hover:bg-rose-600 shadow-lg shadow-rose-200/50">Logout</a>
+              <a href="/" id="desktop-logout-btn" onClick={handleLogout} className="font-bold text-[10px] uppercase tracking-widest transition-all px-6 py-2.5 rounded-xl bg-rose-500 text-white hover:bg-rose-600 shadow-lg shadow-rose-200/50">{t('nav.logout')}</a>
             ) : (
-              <a href="#" onClick={(e) => handleNavClick(e, 'login')} className="font-bold text-[10px] uppercase tracking-widest transition-all px-6 py-2.5 rounded-xl bg-[#002D5B] text-white hover:bg-[#003d7a] shadow-lg shadow-blue-900/10">{t('nav.login')}</a>
+              <a href="/login" id="desktop-login-btn" onClick={(e) => handleNavClick(e, 'login')} className="font-bold text-[10px] uppercase tracking-widest transition-all px-6 py-2.5 rounded-xl bg-[#002D5B] text-white hover:bg-[#003d7a] shadow-lg shadow-blue-900/10">{t('nav.login')}</a>
             )}
           </nav>
 
           {/* Mobile Nav Toggle */}
           <div className="md:hidden flex items-center gap-4">
-             <div className="relative" ref={langDropdownRef}>
+             <div className="relative" ref={mobileLangDropdownRef}>
                 <button
+                    id="mobile-language-selector-btn"
                     onClick={() => setLangDropdownOpen(!isLangDropdownOpen)}
                     className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white/50 backdrop-blur-sm"
                 >
@@ -315,11 +360,12 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
                 </button>
                 <ul className={`absolute right-0 mt-4 p-3 w-48 bg-white rounded-2xl shadow-xl z-50 grid grid-cols-3 gap-2 origin-top-right transition-all duration-300 ${isLangDropdownOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
                     {supportedLanguages.map((lang) => (
-                        <button key={lang.code} onClick={() => handleLanguageChange(lang.code)} className="p-2 text-2xl hover:bg-gray-100 rounded-xl">{lang.flag}</button>
+                        <button key={lang.code} id={`mobile-lang-opt-${lang.code}`} onClick={() => handleLanguageChange(lang.code)} className="p-2 text-2xl hover:bg-gray-100 rounded-xl">{lang.flag}</button>
                     ))}
                 </ul>
             </div>
             <button
+              id="mobile-menu-toggle-btn"
               onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
               className={`z-50 relative w-10 h-10 flex flex-col items-center justify-center transition-all ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'}`}
               aria-label="Open menu"
@@ -339,34 +385,10 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
             
             <nav className="flex flex-col items-center space-y-4 w-full relative z-10">
                 {renderNavLinks(true)}
-                
-                <div className="w-full h-px bg-gray-100 my-8"></div>
-                
-                {/* Mobile Low Emission Badge */}
-                <button 
-                    onClick={(e) => handleNavClick(e, 'sustainability-page')}
-                    className="flex items-center gap-4 px-8 py-4 rounded-3xl bg-emerald-50 border border-emerald-100 text-emerald-800 transition-all shadow-sm w-full max-w-sm"
-                >
-                    <div className="p-2 bg-emerald-100 rounded-2xl">
-                        <LeafIcon className="w-6 h-6 text-emerald-600" />
-                    </div>
-                    <div className="flex flex-col items-start leading-none">
-                        <span className="text-[10px] uppercase font-black text-emerald-600 tracking-widest mb-1">Eco-Performance</span>
-                        <span className="text-lg font-black">{co2Value.toFixed(2)}g CO₂ / Visit</span>
-                    </div>
-                </button>
-
-                <div className="pt-4 w-full max-w-sm">
-                    {user ? (
-                        <button onClick={handleLogout} className="w-full py-5 rounded-3xl bg-rose-500 text-white font-black uppercase tracking-widest text-lg shadow-xl shadow-rose-200">Logout</button>
-                    ) : (
-                        <button onClick={(e) => handleNavClick(e, 'login')} className="w-full py-5 rounded-3xl bg-[#002D5B] text-white font-black uppercase tracking-widest text-lg shadow-xl shadow-blue-200">Client Portal</button>
-                    )}
-                </div>
             </nav>
             
             <div className="absolute bottom-10 left-0 right-0 text-center">
-                 <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">Kraken Properties Inc. 2025</p>
+                 <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">Kraken Properties and Facilities Management Gomes Mendes</p>
             </div>
         </div>
       </div>

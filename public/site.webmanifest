@@ -1,0 +1,15 @@
+{
+  "name": "Kraken Properties and Facilities Management",
+  "short_name": "Kraken PFM",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#002D5B",
+  "theme_color": "#002D5B",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

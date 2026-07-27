@@ -20,8 +20,6 @@ const Clients: React.FC<ClientsPageProps> = ({ onNavigate }) => {
     }
   };
 
-  const videoUrl = "https://www.dropbox.com/scl/fi/n34wuaglehdibhrpgmgex/worker.mp4?rlkey=toivyiwzsrfwabxas6x0vpbbv&st=f03nzrjx&raw=1";
-
   return (
     <div className="bg-[#020617] min-h-screen flex flex-col items-center justify-center pt-24 pb-20 px-6 text-center overflow-hidden relative">
       {/* Background Accents */}
@@ -48,24 +46,28 @@ const Clients: React.FC<ClientsPageProps> = ({ onNavigate }) => {
           </span>
         </motion.div>
 
-        {/* Video Visual */}
+        {/* Modern Client Hub Portal Visual */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="w-full max-w-[600px] mx-auto mb-8 relative group"
+          className="w-full max-w-[500px] mx-auto mb-12 relative group"
         >
-          <div className="absolute -inset-4 bg-blue-600/20 rounded-[3rem] opacity-0 group-hover:opacity-100 blur-3xl transition-opacity duration-700" />
-          <div className="relative rounded-[2.5rem] overflow-hidden border border-white/10 bg-white/5 backdrop-blur-sm">
-            <video 
-              className="w-full h-auto block border-none outline-none bg-transparent pointer-events-none mix-blend-screen opacity-80"
-              autoPlay 
-              muted 
-              loop 
-              playsInline
-            >
-              <source src={videoUrl} type="video/mp4" />
-            </video>
+          <div className="absolute -inset-4 bg-gradient-to-r from-blue-600/30 to-emerald-600/30 rounded-[2.5rem] opacity-75 blur-2xl group-hover:opacity-100 transition-opacity duration-700 animate-pulse" />
+          <div className="relative rounded-[2rem] p-10 overflow-hidden border border-white/10 bg-slate-950/40 backdrop-blur-md flex flex-col items-center justify-center min-h-[280px]">
+            {/* Hologram glowing sphere representing the Kraken Client Hub */}
+            <div className="relative w-32 h-32 mb-6">
+              <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-xl animate-pulse" />
+              <div className="absolute inset-2 border-2 border-dashed border-blue-400/40 rounded-full animate-spin [animation-duration:12s]" />
+              <div className="absolute inset-4 border border-emerald-400/30 rounded-full animate-spin [animation-duration:8s] [animation-direction:reverse]" />
+              <div className="absolute inset-8 bg-gradient-to-tr from-blue-500 to-emerald-400 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(59,130,246,0.6)]">
+                <svg className="w-10 h-10 text-white animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+              </div>
+            </div>
+            <h3 className="text-white text-lg font-black uppercase tracking-widest mb-1">Kraken Client Hub</h3>
+            <p className="text-slate-400 text-xs font-semibold tracking-wider uppercase">Under Construction</p>
           </div>
         </motion.div>
 
@@ -125,7 +127,7 @@ export const ClientCarousel: React.FC = () => {
           className="text-center mb-8"
         >
           <h2 className="text-2xl md:text-3xl font-black text-[#002d5b] tracking-tighter leading-none mb-2">
-            Trusted by the <span className="text-blue-600">Industry Leaders.</span>
+            {t('clients.trusted_by')} <span className="text-blue-600">{t('clients.industry_leaders')}</span>
           </h2>
         </motion.div>
 
@@ -153,6 +155,7 @@ export const ClientCarousel: React.FC = () => {
                   src={logo.url}
                   alt={logo.name}
                   loading="lazy"
+                  decoding="async"
                   className="max-h-8 max-w-full object-contain opacity-60 grayscale hover:opacity-100 hover:grayscale-0 hover:scale-110 transition-all duration-500"
                   referrerPolicy="no-referrer"
                 />

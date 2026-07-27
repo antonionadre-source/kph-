@@ -23,7 +23,7 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
       {/* Background Image / Mobile Top Image */}
       <div className="relative md:absolute md:inset-0 z-0 w-full h-auto md:h-full">
         <img 
-          src="https://www.dropbox.com/scl/fi/0le3yo0nm1ry69ptcolr5/Portada-3-2.png?rlkey=v6mxuz3txjhkef9auidzccsjr&st=4swpy8zk&raw=1" 
+          src="/imagen-google-ai-compatible.webp" 
           alt="Kraken Properties Hero" 
           className="w-full h-auto md:h-full object-contain md:object-cover object-center"
           referrerPolicy="no-referrer"
@@ -38,21 +38,21 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
           {/* Left Content */}
           <div className="max-w-2xl animate-fade-in-up text-center md:text-left">
             <h1 className="text-2xl sm:text-3xl md:text-7xl font-black text-white leading-[1.1] mb-3 md:mb-4 tracking-tight">
-              Mastering the <br className="hidden md:block" /> 
+              {t('hero.main_title_part1')} <br className="hidden md:block" /> 
               <span className={`transition-colors duration-700 ${
                 activeColor === 0 ? 'text-[#007bff]' : 
                 activeColor === 1 ? 'text-yellow-400' : 
                 'text-red-400'
-              }`}>chaos</span> of property <br className="hidden md:block" />
-              management.
+              }`}>{t('hero.main_title_chaos')}</span> {t('hero.main_title_part2')} <br className="hidden md:block" />
+              {t('hero.main_title_part3')}
             </h1>
             
             <p className="text-[#4ade80] font-handwriting text-xl sm:text-2xl md:text-5xl mb-4 md:mb-8 -rotate-2 transform-gpu mx-auto md:mx-0 w-fit">
-              So you don't have to.
+              {t('hero.main_subtitle')}
             </p>
-
+ 
             <p className="text-xs md:text-xl text-white/90 mb-6 md:mb-12 font-medium max-w-xl leading-relaxed mx-auto md:mx-0">
-              Facility management, cleaning and maintenance in Schaffhausen, Zurich and Winterthur — designed to run seamlessly.
+              {t('hero.main_desc')}
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3 md:gap-6">
@@ -60,20 +60,20 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
                 onClick={() => onNavigate('consultation')}
                 className="group w-full sm:w-auto bg-gradient-to-r from-[#4ade80] to-[#2dd4bf] text-[#002d5b] px-6 md:px-20 py-3 md:py-5 rounded-full text-sm md:text-lg font-black shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 md:gap-3 whitespace-nowrap"
               >
-                Get your quote in minutes ⚡
+                {t('hero.main_cta')}
               </button>
               
               <button
-                onClick={() => onNavigate('comic-page')}
+                onClick={() => onNavigate('commercial-quote')}
                 className="group w-full sm:w-auto bg-transparent border border-white/30 text-white px-6 md:px-20 py-3 md:py-5 rounded-full text-sm md:text-lg font-bold transition-all hover:bg-white/10 flex items-center justify-center gap-2 md:gap-3 whitespace-nowrap"
               >
-                view comics and kai story
+                {t('hero.b2b_buildings_cta')}
                 <ChevronRightIcon className="w-4 h-4 md:w-5 md:h-5 transition-transform group-hover:translate-x-1" />
               </button>
             </div>
           </div>
 
-      {/* Right Content: Spacer for the background mascot */}
+          {/* Right Content: Spacer for the background mascot */}
           <div className="hidden lg:block h-[500px]"></div>
         </div>
       </div>

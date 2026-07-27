@@ -13,19 +13,19 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
 
   const originPanels = [
     {
-      img: aboutOriginImages.panel1,
+      img: "https://www.dropbox.com/scl/fi/x2o9qcbil57umdw0ox57m/sobre-nosotros-equipo-viaje-con-maletas.webp?rlkey=kxzdzeifvw1gylcf51ju18go2&st=x8ujwcmg&raw=1",
       text: t('about.origin.panel1'),
     },
     {
-      img: aboutOriginImages.panel2,
+      img: "https://www.dropbox.com/scl/fi/v9rl4rzdkpy8y2v2k352n/sobre-nosotros-reunion-consultoria-propiedad.webp?rlkey=qqb33nbu8phd4hyvk0xq24hyz&st=8q61jn1c&raw=1",
       text: t('about.origin.panel2'),
     },
     {
-      img: aboutOriginImages.panel3,
+      img: "https://www.dropbox.com/scl/fi/meeddv0hk1cbddd61app5/sobre-nosotros-bienvenida-familia-equipo.webp?rlkey=6smp7u9cky5lwptst9i6d1a24&st=fxapd4up&raw=1",
       text: t('about.origin.panel3'),
     },
     {
-      img: aboutOriginImages.panel4,
+      img: "https://www.dropbox.com/scl/fi/revw1yk0vsdi8qi3s3er1/sobre-nosotros-retrato-equipo-uniforme.webp?rlkey=c6n5n101s2295bsrxle1wg1hj&st=id6i1un2&raw=1",
       text: t('about.origin.panel4'),
     },
   ];
@@ -64,7 +64,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
       <section data-header-theme="dark" className="relative md:min-h-[85vh] flex items-center pt-32 pb-40 md:py-40 overflow-hidden bg-[#001A3D]">
         <div className="absolute inset-0 z-0">
           <img 
-            src={aboutHeroImageUrl} 
+            src="/sobre-nosotros-equipo-con-cliente-en-zurich.png" 
             alt="Kraken HQ" 
             className="w-full h-full object-cover object-right"
             referrerPolicy="no-referrer"
@@ -79,7 +79,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               animate={{ opacity: 1, y: 0 }}
               className="text-blue-400 font-black text-[10px] uppercase tracking-[0.5em] mb-6"
             >
-              ABOUT KRAKEN
+              {t('about.hero.badge')}
             </motion.p>
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
@@ -117,7 +117,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
                 onClick={() => onNavigate('comic-page')}
                 className="bg-white/5 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-colors flex items-center gap-2"
               >
-                VIEW COMICS <ChevronRightIcon className="w-4 h-4" />
+                {t('aboutPage.viewComics')} <ChevronRightIcon className="w-4 h-4" />
               </button>
             </motion.div>
           </div>
@@ -241,7 +241,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
                   <p className="text-gray-500 text-sm leading-relaxed">{t('about.people.text')}</p>
                 </div>
                 <div className="rounded-2xl overflow-hidden h-64">
-                  <img src={teamPhotoUrl} alt="Kraken Team" className="w-full h-full object-cover" loading="lazy" />
+                  <img src="https://www.dropbox.com/scl/fi/jo3ar4ywy65ky6ay2molj/sobre-nosotros-reunion-equipo-kraken.webp?rlkey=wgi6e93v50jws0g3e7newgkvg&st=evc871gu&raw=1" alt="Kraken Team" className="w-full h-full object-cover" loading="lazy" referrerPolicy="no-referrer" />
                 </div>
               </div>
 

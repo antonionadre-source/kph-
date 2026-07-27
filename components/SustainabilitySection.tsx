@@ -66,7 +66,7 @@ const SustainabilitySection: React.FC<SustainabilitySectionProps> = ({ onNavigat
               </p>
               <div className="mt-8">
                 <a
-                  href="#"
+                  href="/sustainability"
                   onClick={(e) => { e.preventDefault(); onNavigate('sustainability-page'); }}
                   className="inline-flex items-center text-[#002D5B] font-bold hover:text-green-600 transition-colors group"
                 >

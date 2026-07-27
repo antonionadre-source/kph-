@@ -1,46 +1,91 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Gracefully silence benign Vite HMR WebSocket connection errors in dev mode
+      window.addEventListener('unhandledrejection', function(event) {
+        try {
+          var reason = event.reason;
+          if (reason) {
+            var msg = typeof reason === 'string' 
+              ? reason 
+              : (reason.message || (reason.toString && reason.toString()) || '');
+            if (
+              /websocket|ws|vite|hmr/i.test(msg) ||
+              msg.indexOf('WebSocket closed without opened') !== -1 ||
+              msg.indexOf('failed to connect') !== -1
+            ) {
+              console.warn('Prevented unhandled rejection from development WebSocket:', reason);
+              event.preventDefault();
+              event.stopPropagation();
+            }
+          }
+        } catch (e) {
+          // Keep resilient
+        }
+      });
+      window.addEventListener('error', function(event) {
+        try {
+          var msg = event.message || (event.error && event.error.message) || '';
+          if (
+            /websocket|ws|vite|hmr/i.test(msg) ||
+            msg.indexOf('WebSocket closed without opened') !== -1 ||
+            msg.indexOf('failed to connect') !== -1
+          ) {
+            console.warn('Prevented error event from development WebSocket:', msg);
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        } catch (e) {
+          // Keep resilient
+        }
+      }, true);
+    </script>
+    <meta charset="UTF-8" />    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://i.ibb.co">
-    <link rel="preconnect" href="https://www.dropbox.com">
     <link rel="dns-prefetch" href="https://i.ibb.co">
-    <link rel="dns-prefetch" href="https://www.dropbox.com">
-    <link rel="preconnect" href="https://app-wallee.com">
+    <link rel="preconnect" href="https://api.payrexx.com">
     
-    <title>Kraken Properties and Facilities Management | Swiss Precision</title>
-    
-    <meta name="title" content="Kraken Properties and Facilities Management | Swiss Precision">
-    <meta name="description" content="Premium property solutions in Zurich, Schaffhausen & Winterthur. Expert cleaning, maintenance, and facility management with Swiss excellence.">
-    <meta name="keywords" content="Cleaning Schaffhausen, Reinigungsfirma Schaffhausen, End of tenancy cleaning, Umzugsreinigung, Property Management Zurich, Airbnb management Switzerland, Car detailing, Pest control, House cleaning near me, Limpieza de casas, Gestión de propiedades, Manutenzione stabili, Nettoyage fin de bail">
-
-    <link rel="canonical" href="https://krakenpfm.ch/" />
-
-    <!-- Open Graph / Facebook -->
+    <title>Kraken PFM – Facility Management & Reinigung | Schaffhausen, Zürich, Winterthur</title>
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://krakenpfm.ch/">
-    <meta property="og:title" content="Kraken Properties and Facilities Management">
-    <meta property="og:description" content="Swiss-engineered property solutions delivered with hospitality excellence. We master the chaos to bring order.">
-    <meta property="og:image" content="https://www.dropbox.com/scl/fi/7lb5owfz4ho98u06bvmet/global-sharing.png?raw=1">
+    <meta property="og:title" content="Kraken PFM – Facility Management & Reinigung | Schaffhausen, Zürich, Winterthur">
+    <meta property="og:description" content="Professionelles Facility Management, Reinigung und Hausbetreuung in Schaffhausen, Zürich und Winterthur. Umzugsreinigung, Unterhaltsreinigung, Hauswartung – Schweizer Qualität.">
+    <meta property="og:image" content="https://krakenpfm.ch/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-
-    <!-- Twitter -->
+    <meta property="og:locale" content="de_CH">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta property="og:locale:alternate" content="fr_FR">
+    <meta property="og:locale:alternate" content="it_IT">
+    <meta property="og:locale:alternate" content="es_ES">
+    <meta property="og:locale:alternate" content="pt_PT">
+    <meta property="og:site_name" content="Kraken PFM">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Kraken Properties and Facilities Management">
-    <meta name="twitter:description" content="Swiss-engineered property solutions.">
-    <meta name="twitter:image" content="https://www.dropbox.com/scl/fi/7lb5owfz4ho98u06bvmet/global-sharing.png?raw=1">
-
-    <link rel="icon" type="image/png" sizes="32x32" href="https://www.dropbox.com/scl/fi/d6n6v40sngcvl5o7l9ikb/favicon-32x32.png?raw=1">
-    <link rel="icon" type="image/png" sizes="16x16" href="https://www.dropbox.com/scl/fi/2xkmiqhgey11yv3vlg6qn/favicon-16x16.png?raw=1">
-    <link rel="shortcut icon" href="https://www.dropbox.com/scl/fi/84m1y9ddmanp7hdoo2fsu/favicon.ico?raw=1" type="image/x-icon">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://www.dropbox.com/scl/fi/oo0sslelmepryo2on6obz/apple-touch-icon.png?raw=1">
-    <link rel="icon" type="image/png" sizes="192x192" href="https://www.dropbox.com/scl/fi/uocc3v26loz4zau9zmxjh/android-chrome-192x192.png?raw=1">
-    <link rel="icon" type="image/png" sizes="512x512" href="https://www.dropbox.com/scl/fi/za0fpsx5mpj2z6cs91gft/android-chrome-512x512.png?raw=1">
-    <link rel="manifest" href="https://www.dropbox.com/scl/fi/x3js6zatlk5x1dkmtgorp/site.webmanifest?raw=1">
+    <meta name="twitter:title" content="Kraken PFM – Facility Management & Reinigung | Schaffhausen, Zürich, Winterthur">
+    <meta name="twitter:description" content="Professionelles Facility Management, Reinigung und Hausbetreuung in Schaffhausen, Zürich und Winterthur. Umzugsreinigung, Unterhaltsreinigung, Hauswartung – Schweizer Qualität.">
+    <meta name="twitter:image" content="https://krakenpfm.ch/og-image.png">
     
+    <meta name="title" content="Kraken PFM – Facility Management & Reinigung | Schaffhausen, Zürich, Winterthur">
+    <meta name="description" content="Professionelles Facility Management, Reinigung und Hausbetreuung in Schaffhausen, Zürich und Winterthur. Umzugsreinigung, Unterhaltsreinigung, Hauswartung – Schweizer Qualität.">
+    <meta name="keywords" content="Facility Management Schaffhausen, Reinigung Schaffhausen, Reinigungsfirma Schaffhausen, Umzugsreinigung Schaffhausen, Facility Management Zürich, Gebäudereinigung Zürich, Facility Management Winterthur, Reinigung Winterthur, Unterhaltsreinigung Schweiz, Hauswartung Schweiz, End of tenancy cleaning Switzerland, Airbnb cleaning Switzerland, Property management Switzerland">
+    <meta name="geo.region" content="CH-SH">
+    <meta name="geo.placename" content="Schaffhausen">
+    <meta name="geo.position" content="47.6954;8.6357">
+    <meta name="ICBM" content="47.6954, 8.6357">
+    <link rel="canonical" href="https://krakenpfm.ch/" />
+    <meta name="robots" content="index, follow">
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
+    <link rel="manifest" href="/site.webmanifest">
+        
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -74,6 +119,42 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
     <link rel="stylesheet" href="/index.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": ["LocalBusiness", "CleaningService"],
+    "name": "Kraken Properties and Facilities Management",
+    "alternateName": "Kraken PFM",
+    "url": "https://krakenpfm.ch",
+    "logo": "https://krakenpfm.ch/logo-kraken-azul.webp",
+    "image": "https://krakenpfm.ch/logo-kraken-azul.webp",
+    "description": "Professionelles Facility Management, Gebäudereinigung und Hausbetreuung in Schaffhausen, Zürich und Winterthur.",
+    "email": "info@krakenpfm.ch",
+    "telephone": "+41774505705",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Seewadelstrasse 3",
+      "postalCode": "8203",
+      "addressLocality": "Schaffhausen",
+      "addressRegion": "SH",
+      "addressCountry": "CH"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 47.6954,
+      "longitude": 8.6357
+    },
+    "areaServed": [
+      {"@type": "City", "name": "Schaffhausen"},
+      {"@type": "City", "name": "Zürich"},
+      {"@type": "City", "name": "Winterthur"}
+    ],
+    "serviceType": ["Facility Management", "Gebäudereinigung", "Umzugsreinigung", "Hausbetreuung", "Hauswartung"],
+    "priceRange": "$$",
+    "openingHours": "Mo-Fr 08:00-18:00"
+  }
+  </script>
 </head>
   <body>
     <div id="root"></div>

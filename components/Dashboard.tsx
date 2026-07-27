@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../i18n';
 import { motion, AnimatePresence } from 'motion/react';
+import { FilePreviewModal } from './FilePreviewModal';
+import { downloadFileSafely } from './fileUtils';
+import { scheduleCalendarEventForKai } from './calendarUtils';
 import { 
   CurrencyDollarIcon, 
   DocumentTextIcon, 
@@ -32,13 +35,15 @@ import {
   Send,
   Calendar,
   Download,
+  Eye,
   Key,
   Bed,
   Droplets,
   CheckCircle,
   User,
   Check,
-  CheckSquare
+  CheckSquare,
+  Clock
 } from 'lucide-react';
 import { useAuth } from './Auth';
 import { db } from './firebase';
@@ -62,7 +67,7 @@ type MaintenanceRequest = {
     client: string;
     service: string;
     date: string;
-    status: 'Pending' | 'In Progress' | 'Completed';
+    status: 'Pending' | 'In Progress' | 'Completed' | 'Draft';
     priority: 'Low' | 'Medium' | 'High';
     amount: number;
     email?: string;
@@ -77,7 +82,7 @@ type MaintenanceRequest = {
     services?: any[];
     payment?: {
       method: 'card' | 'bank_transfer' | 'twint' | 'cash';
-      gateway: 'stripe' | 'wallee' | 'manual';
+      gateway: 'stripe' | 'payrexx' | 'manual';
       last4: string;
       brand: string;
       cardholderName: string;
@@ -111,6 +116,27 @@ type MaintenanceRequest = {
       estimatedDurationHours: number;
       estimatedEndTime: string | null;
     } | null;
+    createdAt?: any;
+    updatedAt?: any;
+};
+
+// Candidate Job Application Datastructure
+type JobApplication = {
+    id: string;
+    name: string;
+    phone: string;
+    position: string;
+    region: string;
+    permit: string;
+    startDate: string;
+    pensum: string;
+    certificates?: string;
+    languages?: string;
+    message?: string;
+    cvName?: string;
+    cvData?: string;
+    cvType?: string;
+    status: 'Pending' | 'Reviewed' | 'Contacted' | 'Hired' | 'Rejected';
     createdAt?: any;
     updatedAt?: any;
 };
@@ -153,7 +179,7 @@ const INITIAL_SEED_DATA = [
         ],
         payment: {
             method: 'card' as const,
-            gateway: 'wallee' as const,
+            gateway: 'payrexx' as const,
             last4: '4242',
             brand: 'visa',
             cardholderName: 'Facilities Manager',
@@ -284,7 +310,7 @@ const INITIAL_SEED_DATA = [
         ],
         payment: {
             method: 'twint' as const,
-            gateway: 'wallee' as const,
+            gateway: 'payrexx' as const,
             last4: '',
             brand: '',
             cardholderName: 'Hotel Bellevue Management',
@@ -379,7 +405,23 @@ const Dashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [adminNotesText, setAdminNotesText] = useState('');
   const [actionAlert, setActionAlert] = useState<string | null>(null);
-
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
+  const [emailPreviewMode, setEmailPreviewMode] = useState(false);
+  const [selectedEmailRequest, setSelectedEmailRequest] = useState<MaintenanceRequest | null>(null);
+  const [emailTo, setEmailTo] = useState('');
+  const [emailCC, setEmailCC] = useState('');
+  const [emailSubject, setEmailSubject] = useState('');
+  const [emailBody, setEmailBody] = useState('');
+  const [emailSending, setEmailSending] = useState(false);
+  const [emailHistoryFilter, setEmailHistoryFilter] = useState<'all'|'sent'|'pending'|'error'>('all');
+  const [emailHistoryClientFilter, setEmailHistoryClientFilter] = useState('');
+  const [showEmailHistory, setShowEmailHistory] = useState(false);
+  const [emailHistory, setEmailHistory] = useState<Array<{id:string;requestId:string;clientName:string;clientEmail:string;subject:string;sentAt:string;status:'sent'|'pending'|'error';amount:string;}>>(() => {
+    try { return JSON.parse(localStorage.getItem('kraken_email_history') || '[]'); } catch { return []; }
+  });
+  const [confirmationStatuses, setConfirmationStatuses] = useState<Record<string,'confirmed'|'pending'|'none'>>(() => {
+    try { return JSON.parse(localStorage.getItem('kraken_confirm_status') || '{}'); } catch { return {}; }
+  });
   useEffect(() => {
     if (selectedRequest) {
       setAdminNotesText(selectedRequest.notes || '');
@@ -402,7 +444,77 @@ const Dashboard: React.FC = () => {
       mediaUrlString: '' // parsed as array
   });
 
+  // Navigation & Tab States: 'requests' | 'careers'
+  const [activeTab, setActiveTab] = useState<'requests' | 'careers'>('requests');
+  const [jobApplications, setJobApplications] = useState<JobApplication[]>([]);
+  const [loadingCareers, setLoadingCareers] = useState(false);
+  const [selectedJobApp, setSelectedJobApp] = useState<JobApplication | null>(null);
+  const [careerSearchQuery, setCareerSearchQuery] = useState('');
+  const [careerFilterStatus, setCareerFilterStatus] = useState('all');
+  const [previewFile, setPreviewFile] = useState<{ url: string; name: string; title?: string } | null>(null);
+
   const isStaff = user?.email?.toLowerCase().trim().endsWith('@krakenpfm.ch') || user?.email?.toLowerCase().trim() === 'kai@krakenpfm.ch' || user?.email?.toLowerCase().trim() === 'antonio.nadre@anotherstar.com';
+
+  const fetchJobApplications = async () => {
+    if (!user) return;
+    setLoadingCareers(true);
+    try {
+      let q;
+      if (isStaff) {
+        q = collection(db, 'job_applications');
+      } else {
+        q = query(
+          collection(db, 'job_applications'),
+          where('userId', '==', user.uid)
+        );
+      }
+      const querySnapshot = await getDocs(q);
+      const fetched: JobApplication[] = [];
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data() as any;
+        fetched.push({
+          id: docSnap.id,
+          name: data.name || '',
+          phone: data.phone || '',
+          position: data.position || '',
+          region: data.region || '',
+          permit: data.permit || '',
+          startDate: data.startDate || '',
+          pensum: data.pensum || '',
+          certificates: data.certificates || '',
+          languages: data.languages || '',
+          message: data.message || '',
+          cvName: data.cvName || '',
+          cvData: data.cvData || '',
+          cvType: data.cvType || '',
+          status: data.status || 'Pending',
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt
+        });
+      });
+      setJobApplications(fetched);
+    } catch (err) {
+      console.error("Error fetching candidate job applications from Firestore:", err);
+    } finally {
+      setLoadingCareers(false);
+    }
+  };
+
+  const handleJobAppStatusChange = async (appId: string, nextStatus: 'Pending' | 'Reviewed' | 'Contacted' | 'Hired' | 'Rejected') => {
+    try {
+      await updateDoc(doc(db, 'job_applications', appId), {
+        status: nextStatus,
+        updatedAt: serverTimestamp()
+      });
+      setJobApplications(prev => prev.map(app => app.id === appId ? { ...app, status: nextStatus } : app));
+      if (selectedJobApp?.id === appId) {
+        setSelectedJobApp(prev => prev ? { ...prev, status: nextStatus } : null);
+      }
+      setActionAlert(`Estatus de candidato actualizado a: ${nextStatus}`);
+    } catch (err) {
+      console.error("Error updating candidate application status:", err);
+    }
+  };
 
   // Fetch requests
   useEffect(() => {
@@ -526,6 +638,7 @@ const Dashboard: React.FC = () => {
     };
 
     fetchRequests();
+    fetchJobApplications();
   }, [user, isStaff]);
 
   // Actions
@@ -653,17 +766,125 @@ const Dashboard: React.FC = () => {
   };
 
   const handleSendEmail = (req: MaintenanceRequest) => {
-      setActionAlert(`SUCCESS: Dispatch Protocol & Digital Estimate sent safely to ${req.email || 'client'}!`);
-      setTimeout(() => setActionAlert(null), 4000);
+    const subjText = 'Kostenbestaetigung – ' + (req.service || req.client || 'Service') + ' | CHF ' + (req.amount || '0');
+    const bHtml = '<!DOCTYPE html><html><head><meta charset=\'utf-8\'><style>body{font-family:Arial,sans-serif;background:#f0f4f8;margin:0;padding:0}.c{max-width:600px;margin:20px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1)}.h{background:#0f1b2d;padding:28px 32px;text-align:center}.h h1{color:#00d4ff;margin:0;font-size:22px;letter-spacing:2px;text-transform:uppercase}.h p{color:#94a3b8;margin:4px 0 0;font-size:12px}.b{padding:28px 32px}.tbl{width:100%;border-collapse:collapse;margin:16px 0}.tbl th{background:#0f1b2d;color:#00d4ff;padding:10px 14px;text-align:left;font-size:12px;text-transform:uppercase}.tbl td{padding:10px 14px;border-bottom:1px solid #e2e8f0;font-size:13px;color:#334155}.tot td{font-weight:bold;background:#f8fafc}.totamt{color:#0f1b2d;font-size:18px;font-weight:900}.ft{background:#0f1b2d;padding:16px 32px;text-align:center}.ft p{color:#64748b;font-size:11px;margin:3px 0}</style></head><body><div class=\'c\'><div class=\'h\'><h1>Kraken PFM</h1><p>Properties &amp; Facilities Management</p></div><div class=\'b\'><p style=\'font-size:15px;color:#1e293b\'>Sehr geehrte Damen und Herren,<br><br>Hiermit bestaetigen wir die Kosten fuer folgende Dienstleistung:</p><table class=\'tbl\'><tr><th>Detail</th><th>Info</th></tr><tr><td>Kunde</td><td><b>' + (req.client||'N/A') + '</b></td></tr><tr><td>Service</td><td><b>' + (req.service||'Facility Management') + '</b></td></tr><tr><td>Datum</td><td><b>' + (req.date||new Date().toLocaleDateString('de-CH')) + '</b></td></tr><tr><td>Prioritaet</td><td><b>' + (req.priority||'Standard') + '</b></td></tr><tr class=\'tot\'><td><b>TOTAL (CHF)</b></td><td><span class=\'totamt\'>CHF ' + (req.amount||'0.00') + '</span></td></tr></table><p style=\'font-size:12px;color:#64748b\'>Bitte antworten Sie auf diese E-Mail zur Bestaetigung.</p></div><div class=\'ft\'><p style=\'color:#94a3b8;font-size:13px;font-weight:bold\'>Kraken Properties &amp; Facilities Management</p><p>info@krakenpfm.ch | krakenpfm.ch</p></div></div></body></html>';
+    setSelectedEmailRequest(req);
+    setEmailTo(req.email || '');
+    setEmailCC('');
+    setEmailSubject(subjText);
+    setEmailBody(bHtml);
+    setEmailPreviewMode(false);
+    setEmailModalOpen(true);
   };
 
-  const handleScheduleService = (req: MaintenanceRequest) => {
-      setActionAlert(`SUCCESS: Dispatch Calendar reservation confirmed for ${req.date}.`);
-      setTimeout(() => setActionAlert(null), 4000);
+  const handleScheduleService = async (req: MaintenanceRequest) => {
+      try {
+          await updateDoc(doc(db, 'maintenance_requests', req.id), {
+              status: 'In Progress',
+              scheduledAt: serverTimestamp(),
+              updatedAt: serverTimestamp()
+          });
+
+          setRequests(prev => prev.map(r => r.id === req.id ? { ...r, status: 'In Progress' } : r));
+
+          // Trigger Google Calendar event & .ics download for kai@krakenpfm.ch with 1h reminder
+          scheduleCalendarEventForKai(req);
+
+          setActionAlert(`SUCCESS: Evento agendado para kai@krakenpfm.ch con recordatorio de 1 hora. Sincronizado en Firebase.`);
+      } catch (err) {
+          console.error('Error actualizando programación:', err);
+          setActionAlert(`ERROR: No se pudo guardar la programación en Firebase.`);
+      }
+      setTimeout(() => setActionAlert(null), 5000);
   };
 
   const handleGenerateInvoice = (req: MaintenanceRequest) => {
-      setActionAlert(`SUCCESS: Payrexx digital invoice & invoice slip generated for CHF ${req.amount.toLocaleString()}.`);
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+          setActionAlert("WARNING: Por favor permita las ventanas emergentes para ver/guardar la factura PDF.");
+          return;
+      }
+
+      const invoiceNum = `INV-${req.id.substring(0, 8).toUpperCase()}`;
+      const dateStr = new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Factura ${invoiceNum} - Kraken PFM</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; color: #1e293b; max-width: 800px; margin: 0 auto; }
+            .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0284c7; padding-bottom: 20px; margin-bottom: 30px; }
+            .logo { font-size: 24px; font-weight: 900; color: #0f172a; letter-spacing: -0.5px; }
+            .logo span { color: #0284c7; }
+            .inv-title { font-size: 28px; font-weight: 800; color: #0284c7; text-align: right; }
+            .details { display: flex; justify-content: space-between; margin-bottom: 30px; line-height: 1.6; }
+            .box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; width: 45%; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th { background: #0f172a; color: white; text-align: left; padding: 12px; font-size: 12px; text-transform: uppercase; }
+            td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+            .total-row { font-weight: 800; font-size: 16px; background: #f0f9ff; }
+            .footer { margin-top: 50px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+            .btn-print { background: #0284c7; color: white; border: none; padding: 12px 24px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-bottom: 20px; }
+            @media print { .btn-print { display: none; } }
+          </style>
+        </head>
+        <body>
+          <button class="btn-print" onclick="window.print()">📄 Imprimir / Guardar como PDF</button>
+          
+          <div class="header">
+            <div class="logo">KRAKEN <span>PFM</span></div>
+            <div class="inv-title">FACTURA DE SERVICIO<br><span style="font-size:14px; color:#64748b;">${invoiceNum}</span></div>
+          </div>
+
+          <div class="details">
+            <div class="box">
+              <strong>EMISOR:</strong><br>
+              Kraken Properties & Facilities Management<br>
+              Bahnhofstrasse 42, 8001 Zürich<br>
+              Suiza • CHE-109.823.411 TVA<br>
+              info@krakenpfm.ch
+            </div>
+            <div class="box">
+              <strong>CLIENTE:</strong><br>
+              ${req.client}<br>
+              ${req.email || 'Sin email registrado'}<br>
+              ${req.address || 'Dirección en registro'}<br>
+              <strong>Fecha Emisión:</strong> ${dateStr}
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Descripción del Servicio</th>
+                <th>Fecha</th>
+                <th style="text-align:right;">Importe</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>${req.service}</strong><br><span style="font-size:12px; color:#64748b;">Mantenimiento y gestión de propiedad Kraken PFM</span></td>
+                <td>${req.date || dateStr}</td>
+                <td style="text-align:right;">CHF ${(req.amount || 0).toLocaleString('de-CH', { minimumFractionDigits: 2 })}</td>
+              </tr>
+              <tr class="total-row">
+                <td colspan="2" style="text-align:right;">TOTAL CHF (IVA inc.):</td>
+                <td style="text-align:right; color:#0284c7;">CHF ${(req.amount || 0).toLocaleString('de-CH', { minimumFractionDigits: 2 })}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="footer">
+            Kraken Properties & Facilities Management AG • Cuenta IBAN: CH93 0000 0000 0000 0000 0<br>
+            Documento fiscal válido generado por el sistema de gestión Kraken.
+          </div>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+      setActionAlert(`SUCCESS: Factura PDF generada e interactivamente lista para guardar o imprimir.`);
       setTimeout(() => setActionAlert(null), 4000);
   };
 
@@ -788,6 +1009,72 @@ const Dashboard: React.FC = () => {
       return matchStatus && matchSearch;
   });
 
+  const doSendEmail = async () => {
+    if (!selectedEmailRequest || !emailTo) return;
+    setEmailSending(true);
+    const entry = {
+      id: Date.now().toString(),
+      requestId: selectedEmailRequest.id,
+      clientName: selectedEmailRequest.client || 'Unknown',
+      clientEmail: emailTo,
+      subject: emailSubject,
+      sentAt: new Date().toISOString(),
+      status: 'pending' as 'sent' | 'pending' | 'error',
+      amount: selectedEmailRequest.amount || '0',
+    };
+    try {
+      await fetch('https://hook.eu1.make.com/uc1q47ys3jwjkl3bm9cxpvbdgp9i1u37', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'cost_confirmation_email',
+          to: emailTo, cc: emailCC, subject: emailSubject,
+          html: emailBody,
+          requestId: selectedEmailRequest.id,
+          client: selectedEmailRequest.client,
+          amount: selectedEmailRequest.amount,
+          service: selectedEmailRequest.service,
+          sentAt: entry.sentAt,
+        }),
+      });
+      entry.status = 'sent';
+      setActionAlert('SUCCESS: Cost confirmation email sent to ' + emailTo);
+    } catch {
+      entry.status = 'error';
+      setActionAlert('ERROR: Email delivery failed. Check network and try again.');
+    }
+    const newHist = [entry, ...emailHistory];
+    setEmailHistory(newHist);
+    localStorage.setItem('kraken_email_history', JSON.stringify(newHist));
+    setEmailSending(false);
+    setEmailModalOpen(false);
+  };
+
+  const markConfirmed = (requestId: string, status: 'confirmed' | 'pending' | 'none') => {
+    const n = { ...confirmationStatuses, [requestId]: status };
+    setConfirmationStatuses(n);
+    localStorage.setItem('kraken_confirm_status', JSON.stringify(n));
+  };
+
+  const doResendEmail = (entry: { requestId: string }) => {
+    const req = requests.find(r => r.id === entry.requestId);
+    if (req) handleSendEmail(req);
+  };
+
+  const filteredEmailHistory = emailHistory.filter(e => {
+    if (emailHistoryFilter !== 'all' && e.status !== emailHistoryFilter) return false;
+    if (emailHistoryClientFilter && !e.clientName.toLowerCase().includes(emailHistoryClientFilter.toLowerCase()) && !e.clientEmail.toLowerCase().includes(emailHistoryClientFilter.toLowerCase())) return false;
+    return true;
+  });
+
+  const emailStats = {
+    total: emailHistory.length,
+    sent: emailHistory.filter(e => e.status === 'sent').length,
+    pending: emailHistory.filter(e => e.status === 'pending').length,
+    error: emailHistory.filter(e => e.status === 'error').length,
+    confirmed: Object.values(confirmationStatuses).filter(s => s === 'confirmed').length,
+  };
+
   return (
     <main className="bg-slate-55 min-h-screen pt-32 pb-20 font-sans text-slate-800 relative overflow-hidden bg-slate-50">
       {/* Background Radial Ambiance */}
@@ -874,6 +1161,254 @@ const Dashboard: React.FC = () => {
             </div>
         </div>
 
+        {/* Section Navigation Tabs */}
+        <div className="flex items-center gap-3 mb-8 border-b border-slate-200 pb-4 overflow-x-auto">
+          <button
+            onClick={() => setActiveTab('requests')}
+            className={`px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center gap-2 cursor-pointer ${
+              activeTab === 'requests'
+                ? 'bg-[#002D5B] text-white shadow-lg shadow-blue-900/20'
+                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+            }`}
+          >
+            <Clipboard className="w-4 h-4" />
+            <span>Solicitudes & Borradores ({requests.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('careers')}
+            className={`px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center gap-2 cursor-pointer ${
+              activeTab === 'careers'
+                ? 'bg-[#002D5B] text-white shadow-lg shadow-blue-900/20'
+                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            <span>Mi Carrera / CVs ({jobApplications.length})</span>
+          </button>
+        </div>
+
+        {activeTab === 'careers' ? (
+          /* ================= MI CARRERA & CVs VIEW ================= */
+          <div className="space-y-8 animate-fade-in mb-12">
+            {/* Careers Search & Status Filter Bar */}
+            <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm">
+              <div className="relative flex-1 max-w-md">
+                <input
+                  type="text"
+                  value={careerSearchQuery}
+                  onChange={(e) => setCareerSearchQuery(e.target.value)}
+                  placeholder="Buscar candidato por nombre, cargo, teléfono o región..."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-4 pr-10 text-sm font-bold text-slate-800 outline-none focus:border-blue-500 focus:bg-white transition-all shadow-sm"
+                />
+                {careerSearchQuery && (
+                  <button onClick={() => setCareerSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+
+              <div className="flex gap-2 overflow-x-auto pb-1 md:pb-0">
+                {['all', 'Pending', 'Reviewed', 'Contacted', 'Hired', 'Rejected'].map((statusKey) => {
+                  const isActive = careerFilterStatus === statusKey;
+                  const labelMap: Record<string, string> = {
+                    all: 'Todos',
+                    Pending: 'Pendiente',
+                    Reviewed: 'Revisado',
+                    Contacted: 'Contactado',
+                    Hired: 'Contratado',
+                    Rejected: 'Descartado'
+                  };
+                  return (
+                    <button
+                      key={statusKey}
+                      onClick={() => setCareerFilterStatus(statusKey)}
+                      className={`px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all border shrink-0 cursor-pointer ${
+                        isActive
+                          ? 'bg-[#002D5B] text-white border-blue-900 shadow-md'
+                          : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                      }`}
+                    >
+                      {labelMap[statusKey] || statusKey}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Candidates Table */}
+            <div className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-sm">
+              <div className="p-6 bg-slate-50/80 border-b border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="p-2.5 bg-blue-100 text-blue-800 rounded-xl">
+                    <FileText className="w-5 h-5" />
+                  </span>
+                  <div>
+                    <h3 className="font-black text-lg text-slate-900 uppercase tracking-tight">Candidatos & Currículums (CVs)</h3>
+                    <p className="text-xs text-slate-500 font-bold">
+                      {jobApplications.length} solicitudes recibidas en la página de Mi Carrera
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead className="bg-slate-100/70 text-slate-500 uppercase text-[9px] font-black tracking-[0.2em] border-b border-slate-200">
+                    <tr>
+                      <th className="px-6 py-4 pl-8">Candidato / Contacto</th>
+                      <th className="px-6 py-4">Puesto Solicitado</th>
+                      <th className="px-6 py-4">Región & Permiso</th>
+                      <th className="px-6 py-4">Incorporación</th>
+                      <th className="px-6 py-4">Documento CV</th>
+                      <th className="px-6 py-4">Estado</th>
+                      <th className="px-6 py-4 text-right pr-8">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-sm">
+                    {loadingCareers ? (
+                      <tr>
+                        <td colSpan={7} className="px-8 py-16 text-center text-slate-400 font-bold italic">
+                          <span className="inline-block animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full mr-2 align-middle"></span>
+                          Cargando candidatos desde la base de datos...
+                        </td>
+                      </tr>
+                    ) : jobApplications.filter(app => {
+                        const matchStatus = careerFilterStatus === 'all' || app.status.toLowerCase() === careerFilterStatus.toLowerCase();
+                        const queryLower = careerSearchQuery.toLowerCase().trim();
+                        const matchSearch = !queryLower ||
+                          app.name.toLowerCase().includes(queryLower) ||
+                          app.position.toLowerCase().includes(queryLower) ||
+                          app.phone.toLowerCase().includes(queryLower) ||
+                          app.region.toLowerCase().includes(queryLower);
+                        return matchStatus && matchSearch;
+                      }).length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="px-8 py-16 text-center text-slate-400 font-bold">
+                          No hay postulaciones registradas en este momento.
+                        </td>
+                      </tr>
+                    ) : (
+                      jobApplications.filter(app => {
+                        const matchStatus = careerFilterStatus === 'all' || app.status.toLowerCase() === careerFilterStatus.toLowerCase();
+                        const queryLower = careerSearchQuery.toLowerCase().trim();
+                        const matchSearch = !queryLower ||
+                          app.name.toLowerCase().includes(queryLower) ||
+                          app.position.toLowerCase().includes(queryLower) ||
+                          app.phone.toLowerCase().includes(queryLower) ||
+                          app.region.toLowerCase().includes(queryLower);
+                        return matchStatus && matchSearch;
+                      }).map((app) => (
+                        <tr
+                          key={app.id}
+                          onClick={() => setSelectedJobApp(app)}
+                          className="border-b border-slate-100 hover:bg-blue-50/40 transition-colors cursor-pointer group"
+                        >
+                          <td className="px-6 py-4 pl-8">
+                            <div className="font-black text-slate-900 group-hover:text-blue-600 transition-colors text-base">
+                              {app.name}
+                            </div>
+                            <div className="text-xs text-slate-500 font-mono flex items-center gap-2 mt-0.5">
+                              <span>{app.phone}</span>
+                              {app.phone && (
+                                <a
+                                  href={`https://wa.me/${app.phone.replace(/[^0-9]/g, '')}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="text-emerald-600 hover:underline font-bold text-[10px]"
+                                >
+                                  WhatsApp
+                                </a>
+                              )}
+                            </div>
+                          </td>
+
+                          <td className="px-6 py-4 font-bold text-slate-800 text-xs">
+                            {app.position || 'Solicitud General'}
+                          </td>
+
+                          <td className="px-6 py-4 text-xs font-medium text-slate-600">
+                            <div>{app.region || 'Suiza'}</div>
+                            <div className="text-[10px] text-slate-400 font-mono">Permiso: {app.permit || 'No especificado'}</div>
+                          </td>
+
+                          <td className="px-6 py-4 text-xs text-slate-600 font-medium">
+                            <div>{app.startDate || 'Inmediata'}</div>
+                            <div className="text-[10px] text-slate-400">Jornada: {app.pensum || '100%'}</div>
+                          </td>
+
+                          <td className="px-6 py-4">
+                            {app.cvData ? (
+                              <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                                <button
+                                  type="button"
+                                  onClick={() => setPreviewFile({
+                                    url: app.cvData!,
+                                    name: app.cvName || `${app.name.replace(/\s+/g, '_')}_CV.pdf`,
+                                    title: `Currículum • ${app.name}`
+                                  })}
+                                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 rounded-xl text-xs font-black transition-all shadow-sm cursor-pointer"
+                                  title="Visualizar CV en pantalla"
+                                >
+                                  <Eye className="w-3.5 h-3.5 text-blue-600" />
+                                  <span>Ver</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => downloadFileSafely(app.cvData!, app.cvName || `${app.name.replace(/\s+/g, '_')}_CV.pdf`)}
+                                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-black transition-all shadow-sm cursor-pointer"
+                                  title="Descargar CV seguro"
+                                >
+                                  <Download className="w-3.5 h-3.5 text-emerald-600" />
+                                  <span>Descargar</span>
+                                </button>
+                              </div>
+                            ) : (
+                              <span className="text-slate-400 text-xs italic">Sin archivo</span>
+                            )}
+                          </td>
+
+                          <td className="px-6 py-4">
+                            <select
+                              value={app.status}
+                              onClick={(e) => e.stopPropagation()}
+                              onChange={(e) => handleJobAppStatusChange(app.id, e.target.value as any)}
+                              className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border cursor-pointer ${
+                                app.status === 'Hired' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' :
+                                app.status === 'Contacted' ? 'bg-blue-100 text-blue-800 border-blue-300' :
+                                app.status === 'Reviewed' ? 'bg-purple-100 text-purple-800 border-purple-300' :
+                                app.status === 'Rejected' ? 'bg-rose-100 text-rose-800 border-rose-300' :
+                                'bg-amber-100 text-amber-800 border-amber-300'
+                              }`}
+                            >
+                              <option value="Pending">Pendiente</option>
+                              <option value="Reviewed">Revisado</option>
+                              <option value="Contacted">Contactado</option>
+                              <option value="Hired">Contratado</option>
+                              <option value="Rejected">Descartado</option>
+                            </select>
+                          </td>
+
+                          <td className="px-6 py-4 text-right pr-8">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setSelectedJobApp(app); }}
+                              className="px-3.5 py-1.5 bg-slate-100 hover:bg-blue-600 text-slate-700 hover:text-white rounded-xl text-[10px] font-black uppercase transition-all border border-slate-200"
+                            >
+                              Ver Ficha
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        ) : (
+        /* ================= SERVICE REQUESTS & BORRADORES VIEW ================= */
+        <>
         {/* Search, Filter, and Request Trigger bar */}
         <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center mb-10 gap-4">
             
@@ -898,13 +1433,14 @@ const Dashboard: React.FC = () => {
 
             {/* Status Filters */}
             <div className="flex gap-2 self-start md:self-auto overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
-                {['all', 'Pending', 'In Progress', 'Completed'].map((status) => {
+                {['all', 'Pending', 'In Progress', 'Completed', 'Draft'].map((status) => {
                     const isActive = (status === 'all' && filterStatus === 'all') || filterStatus === status;
                     const statusColorMap = {
                         all: 'from-blue-600 to-indigo-600 border-indigo-500/50 text-white shadow-[0_10px_20px_rgba(79,70,229,0.25)]',
                         Pending: 'from-amber-500 to-orange-500 border-orange-500/50 text-slate-950 shadow-[0_10px_20px_rgba(245,158,11,0.25)]',
                         'In Progress': 'from-blue-500 to-sky-600 border-sky-500/50 text-white shadow-[0_10px_20px_rgba(14,165,233,0.25)]',
-                        Completed: 'from-emerald-500 to-teal-600 border-teal-500/50 text-white shadow-[0_10px_20px_rgba(16,185,129,0.25)]'
+                        Completed: 'from-emerald-500 to-teal-600 border-teal-500/50 text-white shadow-[0_10px_20px_rgba(16,185,129,0.25)]',
+                        Draft: 'from-purple-600 to-fuchsia-600 border-purple-500/50 text-white shadow-[0_10px_20px_rgba(168,85,247,0.25)]'
                     };
                     const activeStyle = statusColorMap[status as keyof typeof statusColorMap] || statusColorMap.all;
 
@@ -918,7 +1454,7 @@ const Dashboard: React.FC = () => {
                                     : 'bg-white text-slate-500 border-slate-200 hover:text-slate-800 hover:bg-slate-50 hover:border-slate-300 shadow-sm'
                             }`}
                         >
-                            {status === 'all' ? 'All Requests' : status}
+                            {status === 'all' ? 'All Requests' : status === 'Draft' ? 'Borradores / Drafts' : status}
                         </button>
                     );
                 })}
@@ -1232,13 +1768,15 @@ const Dashboard: React.FC = () => {
                                                         className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest cursor-pointer select-none transition-all border whitespace-nowrap ${
                                                             req.status === 'Completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-sm' :
                                                             req.status === 'In Progress' ? 'bg-blue-50 text-blue-700 border-blue-200 shadow-sm' :
+                                                            req.status === 'Draft' ? 'bg-purple-50 text-purple-800 border-purple-200 shadow-sm' :
                                                             'bg-amber-50 text-amber-700 border-amber-200 shadow-sm'
                                                         }`}
                                                     >
                                                         {req.status === 'In Progress' && <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping"></span>}
                                                         {req.status === 'Pending' && <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span>}
                                                         {req.status === 'Completed' && <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>}
-                                                        {req.status}
+                                                        {req.status === 'Draft' && <span className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-bounce"></span>}
+                                                        {req.status === 'Draft' ? 'Borrador / Draft' : req.status}
                                                     </span>
                                                 </td>
                                                 
@@ -1254,6 +1792,27 @@ const Dashboard: React.FC = () => {
                                                          >
                                                              Info
                                                          </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.08 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={(e) => { e.stopPropagation(); handleSendEmail(req); }}
+                    className="px-3.5 py-1.5 bg-blue-50 hover:bg-[#0f1b2d] rounded-xl text-blue-500 hover:text-[#00d4ff] text-[9px] font-black uppercase tracking-wider transition-all duration-150 flex items-center gap-1"
+                    title="Send Cost Confirmation Email"
+                  >
+                    <Mail size={11} /> Email
+                  </motion.button>
+                  {confirmationStatuses[req.id] === 'confirmed' && (
+                    <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-[8px] font-black">OK</span>
+                  )}
+                  <motion.button
+                    whileHover={{ scale: 1.08 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={(e) => { e.stopPropagation(); markConfirmed(req.id, confirmationStatuses[req.id] === 'confirmed' ? 'none' : 'confirmed'); }}
+                    className={`px-3.5 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all flex items-center gap-1 ${confirmationStatuses[req.id] === 'confirmed' ? 'bg-green-100 text-green-700' : 'bg-slate-100 hover:bg-green-50 text-slate-400 hover:text-green-600'}`}
+                    title="Toggle Client Approval"
+                  >
+                    <Check size={11} /> {confirmationStatuses[req.id] === 'confirmed' ? 'Approved' : 'Approve'}
+                  </motion.button>
                                                          {(isStaff || req.status === 'Pending') && (
                                                              <motion.button 
                                                                  whileHover={{ scale: 1.15, color: "#f43f5e" }}
@@ -1277,7 +1836,10 @@ const Dashboard: React.FC = () => {
                 </div>
             </div>
         </div>
-             {/* Dynamic Detail-Inspector Overlay Modal */}
+        </>
+        )}
+
+        {/* Dynamic Detail-Inspector Overlay Modal for Service Requests */}
         <AnimatePresence>
             {selectedRequest && (
                 <DetailInspectorModal 
@@ -1292,8 +1854,286 @@ const Dashboard: React.FC = () => {
             )}
         </AnimatePresence>
 
+        {/* Dynamic Candidate Inspector Modal for Mi Carrera / Job Applications */}
+        <AnimatePresence>
+            {selectedJobApp && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white w-full max-w-2xl rounded-[2.5rem] border border-slate-200 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+                        <div className="p-6 bg-[#002D5B] text-white flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="p-3 bg-white/10 rounded-2xl">
+                                    <User className="w-6 h-6 text-blue-300" />
+                                </div>
+                                <div>
+                                    <h3 className="font-black text-xl">{selectedJobApp.name}</h3>
+                                    <p className="text-xs text-blue-200 font-bold">{selectedJobApp.position || 'Candidato a Empleo'}</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setSelectedJobApp(null)}
+                                className="p-2 hover:bg-white/10 rounded-full transition-colors text-white cursor-pointer"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+
+                        <div className="p-8 overflow-y-auto space-y-6 text-slate-800 text-sm">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                                <div>
+                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Teléfono / Contacto</span>
+                                    <span className="font-black text-slate-900 text-base">{selectedJobApp.phone}</span>
+                                </div>
+                                <div>
+                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Permiso de Trabajo</span>
+                                    <span className="font-bold text-slate-800">{selectedJobApp.permit || 'No especificado'}</span>
+                                </div>
+                                <div>
+                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Región / Cantón</span>
+                                    <span className="font-bold text-slate-800">{selectedJobApp.region || 'Suiza'}</span>
+                                </div>
+                                <div>
+                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Incorporación</span>
+                                    <span className="font-bold text-slate-800">{selectedJobApp.startDate || 'Inmediata'}</span>
+                                </div>
+                                <div>
+                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Jornada Deseada (Pensum)</span>
+                                    <span className="font-bold text-slate-800">{selectedJobApp.pensum || '100%'}</span>
+                                </div>
+                                <div>
+                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Certificados / Conducir</span>
+                                    <span className="font-bold text-slate-800">{selectedJobApp.certificates || 'Ninguno'}</span>
+                                </div>
+                            </div>
+
+                            {selectedJobApp.languages && (
+                                <div>
+                                    <span className="text-xs font-black uppercase text-slate-400 block tracking-wider mb-1">Idiomas</span>
+                                    <p className="p-3 bg-slate-50 rounded-xl text-slate-700 font-medium border border-slate-200">{selectedJobApp.languages}</p>
+                                </div>
+                            )}
+
+                            {selectedJobApp.message && (
+                                <div>
+                                    <span className="text-xs font-black uppercase text-slate-400 block tracking-wider mb-1">Mensaje / Presentación</span>
+                                    <p className="p-4 bg-slate-50 rounded-xl text-slate-700 italic border border-slate-200 whitespace-pre-wrap">{selectedJobApp.message}</p>
+                                </div>
+                            )}
+
+                            <div className="p-5 bg-blue-50/60 rounded-2xl border border-blue-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div>
+                                    <span className="text-xs font-black text-blue-900 uppercase block">Documento de Currículum (CV)</span>
+                                    <span className="text-xs text-blue-700 font-mono font-bold">{selectedJobApp.cvName || 'Currículum Subido'}</span>
+                                </div>
+                                {selectedJobApp.cvData ? (
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => setPreviewFile({
+                                                url: selectedJobApp.cvData!,
+                                                name: selectedJobApp.cvName || `${selectedJobApp.name.replace(/\s+/g, '_')}_CV.pdf`,
+                                                title: `Currículum • ${selectedJobApp.name}`
+                                            })}
+                                            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-md transition-all cursor-pointer"
+                                        >
+                                            <Eye className="w-4 h-4" />
+                                            <span>Previsualizar</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => downloadFileSafely(selectedJobApp.cvData!, selectedJobApp.cvName || `${selectedJobApp.name.replace(/\s+/g, '_')}_CV.pdf`)}
+                                            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-emerald-600/20 transition-all cursor-pointer"
+                                        >
+                                            <Download className="w-4 h-4" />
+                                            <span>Descargar CV</span>
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <span className="text-xs text-slate-400 font-bold italic">No se adjuntó archivo de CV</span>
+                                )}
+                            </div>
+
+                            <div>
+                                <span className="text-xs font-black uppercase text-slate-400 block tracking-wider mb-2">Cambiar Estado de Selección</span>
+                                <div className="flex flex-wrap gap-2">
+                                    {[
+                                        { key: 'Pending', label: 'Pendiente' },
+                                        { key: 'Reviewed', label: 'Revisado' },
+                                        { key: 'Contacted', label: 'Contactado' },
+                                        { key: 'Hired', label: 'Contratado' },
+                                        { key: 'Rejected', label: 'Descartado' }
+                                    ].map(st => (
+                                        <button
+                                            key={st.key}
+                                            onClick={() => handleJobAppStatusChange(selectedJobApp.id, st.key as any)}
+                                            className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border cursor-pointer transition-all ${
+                                                selectedJobApp.status === st.key
+                                                    ? 'bg-[#002D5B] text-white border-blue-900 shadow-md'
+                                                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                                            }`}
+                                        >
+                                            {st.label}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </AnimatePresence>
+
       </div>
-    </main>
+        {/* ===== EMAIL CONFIRMATION CENTER ===== */}
+        <div className="mt-6 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mx-4 mb-4">
+          <div className="bg-[#0f1b2d] px-6 py-4 flex items-center justify-between cursor-pointer select-none" onClick={() => setShowEmailHistory(v => !v)}>
+            <div className="flex items-center gap-3">
+              <Mail size={18} className="text-[#00d4ff]" />
+              <h3 className="text-white font-black text-sm uppercase tracking-widest">Email Confirmation Center</h3>
+              <span className="bg-[#00d4ff] text-[#0f1b2d] text-[10px] font-black px-2 py-0.5 rounded-full">{emailHistory.length}</span>
+            </div>
+            <ArrowLeft size={16} className={`text-slate-400 transition-transform duration-300 ${showEmailHistory ? 'rotate-90' : '-rotate-90'}`} />
+          </div>
+          <div className="grid grid-cols-5 divide-x divide-slate-100 border-b border-slate-100">
+            {([
+              { label: 'Total', value: emailStats.total, color: 'text-slate-700', bg: 'bg-white', icon: '📨' },
+              { label: 'Delivered', value: emailStats.sent, color: 'text-green-600', bg: 'bg-green-50', icon: '✅' },
+              { label: 'Pending', value: emailStats.pending, color: 'text-yellow-500', bg: 'bg-yellow-50', icon: '⏳' },
+              { label: 'Failed', value: emailStats.error, color: 'text-red-500', bg: 'bg-red-50', icon: '❌' },
+              { label: 'Confirmed', value: emailStats.confirmed, color: 'text-[#00d4ff]', bg: 'bg-slate-50', icon: '🎯' },
+            ] as const).map((stat, i) => (
+              <div key={i} className={`${stat.bg} px-3 py-3 text-center`}>
+                <div className="text-base">{stat.icon}</div>
+                <div className={`text-xl font-black ${stat.color}`}>{stat.value}</div>
+                <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+          {showEmailHistory && (
+            <div className="p-5">
+              <div className="flex flex-wrap gap-2 mb-4">
+                {(['all','sent','pending','error'] as const).map(f => (
+                  <button key={f} onClick={() => setEmailHistoryFilter(f)} className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all ${emailHistoryFilter === f ? 'bg-[#0f1b2d] text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
+                    {f === 'all' ? 'All' : f === 'sent' ? 'Sent' : f === 'pending' ? 'Pending' : 'Failed'}
+                  </button>
+                ))}
+                <input type="text" value={emailHistoryClientFilter} onChange={e => setEmailHistoryClientFilter(e.target.value)} placeholder="Filter by client..." className="border border-slate-200 rounded-full px-3 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#00d4ff] flex-1 min-w-0 max-w-xs" />
+              </div>
+              {filteredEmailHistory.length === 0 ? (
+                <div className="text-center py-8 text-slate-400">
+                  <Mail size={28} className="mx-auto mb-2 opacity-30" />
+                  <p className="text-sm font-medium">No emails sent yet</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto rounded-xl border border-slate-100">
+                  <table className="w-full text-xs">
+                    <thead><tr className="bg-[#0f1b2d] text-[#00d4ff]">
+                      <th className="px-3 py-2.5 text-left font-black uppercase tracking-wider">Date</th>
+                      <th className="px-3 py-2.5 text-left font-black uppercase tracking-wider">Client</th>
+                      <th className="px-3 py-2.5 text-left font-black uppercase tracking-wider">To</th>
+                      <th className="px-3 py-2.5 text-right font-black uppercase tracking-wider">CHF</th>
+                      <th className="px-3 py-2.5 text-center font-black uppercase tracking-wider">Status</th>
+                      <th className="px-3 py-2.5 text-center font-black uppercase tracking-wider">Confirmed</th>
+                      <th className="px-3 py-2.5 text-center font-black uppercase tracking-wider">Action</th>
+                    </tr></thead>
+                    <tbody>
+                      {filteredEmailHistory.map((entry, idx) => (
+                        <tr key={entry.id} className={`border-t border-slate-100 ${idx%2===0?'bg-white':'bg-slate-50'} hover:bg-blue-50 transition-colors`}>
+                          <td className="px-3 py-2.5 text-slate-400 whitespace-nowrap">{new Date(entry.sentAt).toLocaleDateString('de-CH')} {new Date(entry.sentAt).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'})}</td>
+                          <td className="px-3 py-2.5 font-bold text-slate-800">{entry.clientName}</td>
+                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-[120px]">{entry.clientEmail}</td>
+                          <td className="px-3 py-2.5 text-right font-black text-[#0f1b2d]">{entry.amount}</td>
+                          <td className="px-3 py-2.5 text-center">
+                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold ${entry.status==='sent'?'bg-green-100 text-green-700':entry.status==='pending'?'bg-yellow-100 text-yellow-600':'bg-red-100 text-red-600'}`}>
+                              {entry.status==='sent'?'Sent':entry.status==='pending'?'Pending':'Failed'}
+                            </span>
+                          </td>
+                          <td className="px-3 py-2.5 text-center">
+                            <select value={confirmationStatuses[entry.requestId]||'none'} onChange={e => markConfirmed(entry.requestId, e.target.value as 'confirmed'|'pending'|'none')} className="text-[10px] border border-slate-200 rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-[#00d4ff] bg-white">
+                              <option value="none">— None —</option>
+                              <option value="pending">Awaiting</option>
+                              <option value="confirmed">Confirmed</option>
+                            </select>
+                          </td>
+                          <td className="px-3 py-2.5 text-center">
+                            <button onClick={() => doResendEmail(entry)} className="px-2 py-1 rounded-md bg-[#0f1b2d] text-white text-[9px] font-bold hover:bg-slate-700 transition-colors">Resend</button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+    
+        {/* ===== EMAIL COMPOSITION MODAL ===== */}
+        {emailModalOpen && selectedEmailRequest && (
+          <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={e => { if (e.target === e.currentTarget) setEmailModalOpen(false); }}>
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
+              <div className="bg-[#0f1b2d] px-6 py-4 flex items-center justify-between flex-shrink-0">
+                <div>
+                  <h2 className="text-[#00d4ff] font-black text-base uppercase tracking-widest flex items-center gap-2"><Mail size={16}/> Send Cost Confirmation</h2>
+                  <p className="text-slate-400 text-xs mt-0.5">Client: {selectedEmailRequest.client} · CHF {selectedEmailRequest.amount}</p>
+                </div>
+                <button onClick={() => setEmailModalOpen(false)} className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"><X size={18}/></button>
+              </div>
+              <div className="bg-slate-100 px-6 pt-3 flex gap-2 flex-shrink-0 border-b border-slate-200">
+                <button onClick={() => setEmailPreviewMode(false)} className={`px-4 py-2 rounded-t-lg text-xs font-bold uppercase tracking-wider transition-all ${!emailPreviewMode ? 'bg-white text-[#0f1b2d] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Compose</button>
+                <button onClick={() => setEmailPreviewMode(true)} className={`px-4 py-2 rounded-t-lg text-xs font-bold uppercase tracking-wider transition-all ${emailPreviewMode ? 'bg-white text-[#0f1b2d] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Preview</button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-6">
+                {!emailPreviewMode ? (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">To *</label>
+                        <input type="email" value={emailTo} onChange={e => setEmailTo(e.target.value)} className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d4ff] focus:border-transparent" placeholder="client@example.com"/>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">CC (optional)</label>
+                        <input type="email" value={emailCC} onChange={e => setEmailCC(e.target.value)} className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d4ff] focus:border-transparent" placeholder="cc@example.com"/>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Subject</label>
+                      <input type="text" value={emailSubject} onChange={e => setEmailSubject(e.target.value)} className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d4ff] focus:border-transparent"/>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Email Body (HTML)</label>
+                      <textarea value={emailBody} onChange={e => setEmailBody(e.target.value)} rows={14} className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-[#00d4ff] focus:border-transparent resize-none"/>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="border border-slate-200 rounded-xl overflow-hidden">
+                    <div className="bg-slate-100 px-4 py-2 text-xs text-slate-500 font-medium border-b border-slate-200">Email Preview</div>
+                    <iframe srcDoc={emailBody} className="w-full" style={{height:'420px',border:'none'}} title="Email Preview" sandbox="allow-same-origin"/>
+                  </div>
+                )}
+              </div>
+              <div className="border-t border-slate-100 px-6 py-4 flex items-center justify-between bg-slate-50 flex-shrink-0">
+                <div className="flex items-center gap-2 text-xs text-slate-400">
+                  <CheckCircle size={12} className="text-green-400"/> Via Kraken PFM Dispatch
+                </div>
+                <div className="flex gap-3">
+                  <button onClick={() => setEmailModalOpen(false)} className="px-4 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors">Cancel</button>
+                  <button onClick={doSendEmail} disabled={emailSending || !emailTo} className="px-5 py-2 rounded-lg bg-[#0f1b2d] text-white text-sm font-bold uppercase tracking-wider hover:bg-slate-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                    {emailSending ? <><Clock size={13} className="animate-spin"/> Sending...</> : <><Send size={13}/> Send Email</>}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <FilePreviewModal
+          isOpen={!!previewFile}
+          onClose={() => setPreviewFile(null)}
+          fileUrl={previewFile?.url || ''}
+          fileName={previewFile?.name || ''}
+          title={previewFile?.title}
+        />
+</main>
   );
 };
 

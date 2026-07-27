@@ -58,10 +58,10 @@ const FloatingCTA: React.FC<FloatingCTAProps> = ({ onNavigate, currentPage }) =>
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             whileHover={{ scale: 1.05 }}
-            onClick={() => window.location.href = 'mailto:info@krakenpfm.ch'}
-            className="bg-[#002D5B] text-white px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-2xl border border-white/10 flex items-center gap-2"
+            onClick={() => onNavigate('commercial-quote')}
+            className="bg-[#002D5B] text-white hover:bg-[#003d7a] px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-2xl border border-white/10 flex items-center gap-2 transition-all duration-300"
           >
-            Get a commercial quote for 🏢
+            {t('hero.b2b_buildings_cta')}
           </motion.button>
           
           <motion.button
@@ -70,9 +70,9 @@ const FloatingCTA: React.FC<FloatingCTAProps> = ({ onNavigate, currentPage }) =>
             exit={{ opacity: 0, x: 20 }}
             whileHover={{ scale: 1.05 }}
             onClick={() => onNavigate('consultation')}
-            className="bg-blue-600 text-white px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-2xl border border-white/10 flex items-center gap-2"
+            className="bg-gradient-to-r from-[#4ade80] to-[#2dd4bf] text-[#002d5b] hover:from-[#3feb73] hover:to-[#1ecdb6] px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-2xl border border-white/10 flex items-center gap-2 transition-all duration-300"
           >
-            Get an instant quote for 🏠
+            {t('hero.main_cta')}
           </motion.button>
         </div>
       )}

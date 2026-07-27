@@ -1,5 +1,6 @@
 {
   "name": "Another Star - Kraken Properties",
   "description": "Modern facility management for Zurich and Schaffhausen, featuring the Legend of Kai and Our Story.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

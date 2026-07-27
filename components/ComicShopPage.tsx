@@ -11,48 +11,18 @@ interface ComicShopPageProps {
 }
 
 const ComicShopPage: React.FC<ComicShopPageProps> = ({ onNavigate, cart, setCart }) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
 
   const comics = [
     {
-      id: 'comic-01',
-      title: 'Kai vs. The Cold Invasion',
-      price: 15.00,
-      image: comicCovers[0],
-      description: 'Join Kai as he protects Schaffhausen from a mysterious icy storm that threatens the city\'s precision systems.',
-      category: 'Adventure',
-      rating: 5,
-      charity: '25% to Local Youth Programs'
-    },
-    {
       id: 'comic-02',
-      title: 'Kraken Heroes vs. Ice Monsters',
+      title: 'The Legend of Kai',
       price: 15.00,
       image: comicCovers[1],
       description: 'A deeper look into the Kraken protocol as Kai teams up with the local engineering squad to solve a massive infrastructure puzzle.',
       category: 'Edu-Action',
-      rating: 4.8,
-      charity: '25% to Sustainable Engineering'
-    },
-    {
-      id: 'comic-03',
-      title: 'Kraken vs. Pest Plague Showdown',
-      price: 15.00,
-      image: comicCovers[2],
-      description: 'Order vs Chaos. Kai must find the most efficient and eco-friendly way to balance the ecosystem without using harsh chemicals.',
-      category: 'Strategy',
-      rating: 4.9,
-      charity: '25% to Biodiversity Research'
-    },
-    {
-      id: 'comic-04',
-      title: 'Kraken\'s Mission: Great Spaces',
-      price: 15.00,
-      image: comicCovers[3],
-      description: 'The definitive guide to the Standard. Learn how structure and care can transform any environment into a place of success.',
-      category: 'Inspiration',
       rating: 5,
-      charity: '25% to Urban Renewal'
+      charity: '25% to Sustainable Engineering'
     }
   ];
 
@@ -100,38 +70,67 @@ const ComicShopPage: React.FC<ComicShopPageProps> = ({ onNavigate, cart, setCart
         </div>
 
         {/* Comics Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {comics.map((comic, i) => (
-            <motion.div 
-              key={comic.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="bg-white rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 flex flex-col group"
-            >
+        <div className="flex justify-center">
+          <div className="w-full max-w-md">
+            {comics.map((comic, i) => (
+              <motion.div 
+                key={comic.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="bg-white rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 flex flex-col group"
+              >
               {/* Image Container */}
-              <div className="relative aspect-[3/4] overflow-hidden bg-slate-200">
+              <div className="relative aspect-[3/4] overflow-hidden bg-slate-200 group cursor-pointer">
                 <img 
                   src={comic.image} 
                   alt={comic.title} 
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute top-4 left-4">
+                <div className="absolute top-4 left-4 z-10 transition-opacity duration-300 group-hover:opacity-0 pointer-events-none">
                   <span className="bg-black/50 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full">
                     {comic.category}
                   </span>
                 </div>
-                <div className="absolute top-4 right-4">
+                <div className="absolute top-4 right-4 z-10 transition-opacity duration-300 group-hover:opacity-0 pointer-events-none">
                   <div className="bg-white/90 backdrop-blur-md w-8 h-8 rounded-full flex items-center justify-center text-red-500 shadow-sm">
                     <Heart className="w-4 h-4 fill-current" />
                   </div>
                 </div>
-                {/* Overlay on Hover */}
-                <div className="absolute inset-0 bg-[#001A3D]/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-8 text-center">
-                  <p className="text-white text-xs font-medium leading-relaxed italic">
-                    "{comic.description}"
-                  </p>
+
+                {/* BACK OF THE BOOK OVERLAY ON HOVER (Aparece al pasar el cursor sin necesidad de pulsar) */}
+                <div className="absolute inset-0 bg-[#001A3D]/95 text-white p-5 sm:p-6 flex flex-col justify-between opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 overflow-y-auto backdrop-blur-md">
+                  <div className="space-y-3 text-left">
+                    <div className="flex items-center justify-between border-b border-blue-400/30 pb-2">
+                      <span className="text-[10px] font-black tracking-widest text-blue-400 uppercase flex items-center gap-1.5">
+                        <BookOpen className="w-3.5 h-3.5" />
+                        {t('comic.backCover.label')}
+                      </span>
+                      <span className="text-[9px] font-bold text-amber-300 bg-amber-400/20 px-2 py-0.5 rounded-full uppercase">
+                        SCHAFFHAUSEN
+                      </span>
+                    </div>
+
+                    <p className="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed">
+                      {t('comic.backCover.p1')}
+                    </p>
+                    <p className="text-xs sm:text-sm font-normal text-slate-300 leading-relaxed">
+                      {t('comic.backCover.p2')}
+                    </p>
+                    <p className="text-xs sm:text-sm font-normal text-slate-300 leading-relaxed">
+                      {t('comic.backCover.p3')}
+                    </p>
+                    <p className="text-xs sm:text-sm font-bold text-blue-200 leading-relaxed italic border-l-2 border-blue-400 pl-2">
+                      {t('comic.backCover.p4')}
+                    </p>
+                  </div>
+
+                  <div className="pt-3 mt-3 border-t border-blue-400/30 text-center">
+                    <p className="text-sm sm:text-base font-black tracking-tight text-amber-300 uppercase">
+                      {t('comic.backCover.title')}
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -139,7 +138,12 @@ const ComicShopPage: React.FC<ComicShopPageProps> = ({ onNavigate, cart, setCart
               <div className="p-6 flex-1 flex flex-col">
                 <div className="flex justify-between items-start mb-2">
                   <h3 className="text-lg font-black text-[#001A3D] leading-tight flex-1 pr-4">{comic.title}</h3>
-                  <div className="text-xl font-black text-blue-600">CHF {comic.price.toFixed(2)}</div>
+                  <div className="text-xl font-black text-blue-600 text-right shrink-0">
+                    CHF {comic.price.toFixed(2)}
+                    <span className="text-[10px] block font-bold text-emerald-600 mt-1 uppercase tracking-tight">
+                      {language === 'es' ? 'Gratis con el 1er servicio' : 'Free with first service'}
+                    </span>
+                  </div>
                 </div>
                 
                 <div className="flex items-center gap-1 mb-4">
@@ -170,6 +174,7 @@ const ComicShopPage: React.FC<ComicShopPageProps> = ({ onNavigate, cart, setCart
               </div>
             </motion.div>
           ))}
+          </div>
         </div>
 
         {/* Info Section */}
@@ -219,7 +224,7 @@ const ComicShopPage: React.FC<ComicShopPageProps> = ({ onNavigate, cart, setCart
                 </div>
                 {/* Decorative Kai */}
                 <div className="absolute -bottom-12 -right-12 w-48 h-48 opacity-20 pointer-events-none grayscale invert rotate-12">
-                   <img src="https://www.dropbox.com/scl/fi/lifz7glh55z2v2uej66vb/IMG_3927.PNG.png?rlkey=wtvu8r5pu2eo26o9vfqd1kkpw&st=grzmg1bo&raw=1" alt="" />
+                   <img src="/IMG_3927.PNG.png" alt="" />
                 </div>
               </div>
             </div>

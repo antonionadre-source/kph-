@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { FilePreviewModal } from './FilePreviewModal';
+import { downloadFileSafely } from './fileUtils';
+import { scheduleCalendarEventForKai } from './calendarUtils';
 import { 
   Mail, 
   Phone, 
@@ -18,6 +21,7 @@ import {
   Send,
   Calendar,
   Download,
+  Eye,
   Key,
   Bed,
   Droplets,
@@ -37,7 +41,7 @@ export type MaintenanceRequest = {
     client: string;
     service: string;
     date: string;
-    status: 'Pending' | 'In Progress' | 'Completed';
+    status: 'Pending' | 'In Progress' | 'Completed' | 'Draft';
     priority: 'Low' | 'Medium' | 'High';
     amount: number;
     email?: string;
@@ -52,7 +56,7 @@ export type MaintenanceRequest = {
     services?: any[];
     payment?: {
       method: 'card' | 'bank_transfer' | 'twint' | 'cash';
-      gateway: 'stripe' | 'wallee' | 'manual';
+      gateway: 'stripe' | 'payrexx' | 'manual';
       last4: string;
       brand: string;
       cardholderName: string;
@@ -94,7 +98,7 @@ interface DetailInspectorModalProps {
   selectedRequest: MaintenanceRequest;
   setSelectedRequest: (req: MaintenanceRequest | null) => void;
   isStaff: boolean;
-  updateStatusDirect: (id: string, st: 'Pending' | 'In Progress' | 'Completed') => Promise<void>;
+  updateStatusDirect: (id: string, st: 'Pending' | 'In Progress' | 'Completed' | 'Draft') => Promise<void>;
   handleDelete: (id: string) => Promise<void>;
   requests: MaintenanceRequest[];
   setRequests: (reqs: MaintenanceRequest[]) => void;
@@ -111,6 +115,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
 }) => {
   const [adminNotesText, setAdminNotesText] = useState(selectedRequest.notes || '');
   const [actionAlert, setActionAlert] = useState<string | null>(null);
+  const [previewFile, setPreviewFile] = useState<{ url: string; name: string; title?: string } | null>(null);
 
   useEffect(() => {
     setAdminNotesText(selectedRequest.notes || '');
@@ -148,17 +153,145 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
   };
 
   const handleSendEmail = (req: MaintenanceRequest) => {
-      setActionAlert(`SUCCESS: Dispatch Protocol & Digital Estimate sent safely to ${req.email || 'client'}!`);
+      const subject = encodeURIComponent(`Confirmación de Servicio - Kraken PFM (${req.service})`);
+      const body = encodeURIComponent(
+          `Estimado/a ${req.client},\n\n` +
+          `Le confirmamos la recepción y programación de su solicitud de servicio con Kraken PFM:\n\n` +
+          `• Servicio: ${req.service}\n` +
+          `• Fecha: ${req.date || 'A convenir'}\n` +
+          `• Dirección: ${req.address || 'En registro'}\n` +
+          `• Importe total estimado: CHF ${(req.amount || 0).toLocaleString()}\n\n` +
+          `Quedamos a su disposición para cualquier duda o consulta adicional.\n\n` +
+          `Atentamente,\n` +
+          `Kraken Properties & Facilities Management`
+      );
+      if (req.email) {
+          window.open(`mailto:${req.email}?subject=${subject}&body=${body}`, '_blank');
+          setActionAlert(`SUCCESS: Cliente de correo abierto para enviar confirmación a ${req.email}`);
+      } else {
+          setActionAlert(`WARNING: La solicitud no tiene un email de cliente registrado.`);
+      }
       setTimeout(() => setActionAlert(null), 4000);
   };
 
-  const handleScheduleService = (req: MaintenanceRequest) => {
-      setActionAlert(`SUCCESS: Dispatch Calendar reservation confirmed for ${req.date}.`);
-      setTimeout(() => setActionAlert(null), 4000);
+  const handleScheduleService = async (req: MaintenanceRequest) => {
+      try {
+          await updateDoc(doc(db, 'maintenance_requests', req.id), {
+              status: 'In Progress',
+              scheduledAt: serverTimestamp(),
+              updatedAt: serverTimestamp()
+          });
+
+          const updatedList = requests.map(r => {
+              if (r.id === req.id) {
+                  const updated = { ...r, status: 'In Progress' };
+                  if (selectedRequest?.id === req.id) {
+                      setSelectedRequest(updated);
+                  }
+                  return updated;
+              }
+              return r;
+          });
+          setRequests(updatedList);
+
+          // Trigger Google Calendar event & .ics download for kai@krakenpfm.ch with 1h reminder
+          scheduleCalendarEventForKai(req);
+
+          setActionAlert(`SUCCESS: Evento agendado para kai@krakenpfm.ch con recordatorio de 1 hora. Sincronizado en Firebase.`);
+      } catch (err) {
+          console.error('Error actualizando programación:', err);
+          setActionAlert(`ERROR: No se pudo guardar la programación en Firebase.`);
+      }
+      setTimeout(() => setActionAlert(null), 5000);
   };
 
   const handleGenerateInvoice = (req: MaintenanceRequest) => {
-      setActionAlert(`SUCCESS: Payrexx digital invoice & invoice slip generated for CHF ${req.amount.toLocaleString()}.`);
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+          setActionAlert("WARNING: Por favor permita las ventanas emergentes para ver/guardar la factura PDF.");
+          return;
+      }
+
+      const invoiceNum = `INV-${req.id.substring(0, 8).toUpperCase()}`;
+      const dateStr = new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Factura ${invoiceNum} - Kraken PFM</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; color: #1e293b; max-width: 800px; margin: 0 auto; }
+            .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0284c7; padding-bottom: 20px; margin-bottom: 30px; }
+            .logo { font-size: 24px; font-weight: 900; color: #0f172a; letter-spacing: -0.5px; }
+            .logo span { color: #0284c7; }
+            .inv-title { font-size: 28px; font-weight: 800; color: #0284c7; text-align: right; }
+            .details { display: flex; justify-content: space-between; margin-bottom: 30px; line-height: 1.6; }
+            .box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; width: 45%; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th { background: #0f172a; color: white; text-align: left; padding: 12px; font-size: 12px; text-transform: uppercase; }
+            td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+            .total-row { font-weight: 800; font-size: 16px; background: #f0f9ff; }
+            .footer { margin-top: 50px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+            .btn-print { background: #0284c7; color: white; border: none; padding: 12px 24px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-bottom: 20px; }
+            @media print { .btn-print { display: none; } }
+          </style>
+        </head>
+        <body>
+          <button class="btn-print" onclick="window.print()">📄 Imprimir / Guardar como PDF</button>
+          
+          <div class="header">
+            <div class="logo">KRAKEN <span>PFM</span></div>
+            <div class="inv-title">FACTURA DE SERVICIO<br><span style="font-size:14px; color:#64748b;">${invoiceNum}</span></div>
+          </div>
+
+          <div class="details">
+            <div class="box">
+              <strong>EMISOR:</strong><br>
+              Kraken Properties & Facilities Management<br>
+              Bahnhofstrasse 42, 8001 Zürich<br>
+              Suiza • CHE-109.823.411 TVA<br>
+              info@krakenpfm.ch
+            </div>
+            <div class="box">
+              <strong>CLIENTE:</strong><br>
+              ${req.client}<br>
+              ${req.email || 'Sin email registrado'}<br>
+              ${req.address || 'Dirección en registro'}<br>
+              <strong>Fecha Emisión:</strong> ${dateStr}
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Descripción del Servicio</th>
+                <th>Fecha</th>
+                <th style="text-align:right;">Importe</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>${req.service}</strong><br><span style="font-size:12px; color:#64748b;">Mantenimiento y gestión de propiedad Kraken PFM</span></td>
+                <td>${req.date || dateStr}</td>
+                <td style="text-align:right;">CHF ${(req.amount || 0).toLocaleString('de-CH', { minimumFractionDigits: 2 })}</td>
+              </tr>
+              <tr class="total-row">
+                <td colspan="2" style="text-align:right;">TOTAL CHF (IVA inc.):</td>
+                <td style="text-align:right; color:#0284c7;">CHF ${(req.amount || 0).toLocaleString('de-CH', { minimumFractionDigits: 2 })}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="footer">
+            Kraken Properties & Facilities Management AG • Cuenta IBAN: CH93 0000 0000 0000 0000 0<br>
+            Documento fiscal válido generado por el sistema de gestión Kraken.
+          </div>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+      setActionAlert(`SUCCESS: Factura PDF generada e interactivamente lista para guardar o imprimir.`);
       setTimeout(() => setActionAlert(null), 4000);
   };
 
@@ -519,13 +652,13 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                 <div>
                                     <span className="text-[9px] text-slate-400 uppercase tracking-wider block">Transaction reference UUID</span>
                                     <span className="font-mono text-blue-600 word-break text-[10px] break-all block mt-0.5">
-                                        {selectedRequest.payment?.transactionId || `tx_wallee_7w9q8f${selectedRequest.id.substring(0, 6)}`}
+                                        {selectedRequest.payment?.transactionId || `tx_payrexx_7w9q8f${selectedRequest.id.substring(0, 6)}`}
                                     </span>
                                 </div>
                                 <div>
                                     <span className="text-[9px] text-slate-400 uppercase tracking-wider block">Gateway Provider</span>
                                     <span className="text-slate-600 block mt-0.5 uppercase font-bold">
-                                        {selectedRequest.payment?.gateway || 'Wallee AG'}
+                                        {selectedRequest.payment?.gateway || 'Payrexx AG'}
                                     </span>
                                 </div>
                             </div>
@@ -688,15 +821,30 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                             )}
                                             <div className="p-3 bg-slate-50/85 border-t border-slate-100 flex items-center justify-between gap-2">
                                                 <span className="text-[10px] font-bold text-slate-500 truncate" title={name}>{name}</span>
-                                                <a 
-                                                    href={url} 
-                                                    target="_blank" 
-                                                    rel="noopener noreferrer" 
-                                                    className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1 shrink-0"
-                                                >
-                                                    Open
-                                                    <ExternalLink className="w-3 h-3" />
-                                                </a>
+                                                <div className="flex items-center gap-1 shrink-0">
+                                                    <button 
+                                                        type="button"
+                                                        onClick={() => setPreviewFile({
+                                                            url,
+                                                            name,
+                                                            title: `Adjunto • ${selectedRequest.client}`
+                                                        })}
+                                                        className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1 cursor-pointer"
+                                                        title="Visualizar archivo"
+                                                    >
+                                                        Ver
+                                                        <Eye className="w-3 h-3" />
+                                                    </button>
+                                                    <button 
+                                                        type="button"
+                                                        onClick={() => downloadFileSafely(url, name)}
+                                                        className="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1 cursor-pointer"
+                                                        title="Descargar archivo seguro"
+                                                    >
+                                                        Descargar
+                                                        <Download className="w-3 h-3" />
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     );
@@ -835,6 +983,14 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
             </div>
 
         </motion.div>
+
+        <FilePreviewModal
+          isOpen={!!previewFile}
+          onClose={() => setPreviewFile(null)}
+          fileUrl={previewFile?.url || ''}
+          fileName={previewFile?.name || ''}
+          title={previewFile?.title}
+        />
     </div>
   );
 };

@@ -18,6 +18,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
+  loading: boolean;
   login: (email: string, pass: string) => Promise<User>;
   loginWithGoogle: () => Promise<User>;
   logout: () => Promise<void>;
@@ -31,7 +32,20 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    let resolved = false;
+
+    // Safety timeout to prevent a blank screen if Firebase Auth takes too long or fails to respond
+    const safetyTimeout = setTimeout(() => {
+      if (!resolved) {
+        console.warn('Firebase auth state loading timed out. Rendering app in guest/offline mode.');
+        setLoading(false);
+      }
+    }, 2500);
+
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      resolved = true;
+      clearTimeout(safetyTimeout);
+      
       if (firebaseUser && !firebaseUser.isAnonymous) {
         setUser({
           name: firebaseUser.displayName || firebaseUser.email || 'Client',
@@ -44,7 +58,10 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      clearTimeout(safetyTimeout);
+      unsubscribe();
+    };
   }, []);
 
   const login = async (email: string, pass: string): Promise<User> => {
@@ -106,8 +123,8 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, loginWithGoogle, logout, register }}>
-      {!loading && children}
+    <AuthContext.Provider value={{ user, loading, login, loginWithGoogle, logout, register }}>
+      {children}
     </AuthContext.Provider>
   );
 };

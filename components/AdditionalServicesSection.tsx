@@ -105,9 +105,9 @@ const AdditionalServicesSection: React.FC<AdditionalServicesSectionProps> = ({ o
                             <div className="text-6xl md:text-7xl transform transition-all duration-500 group-hover:scale-125 group-hover:rotate-6 drop-shadow-2xl">
                                 {item.icon}
                             </div>
-                            <div className={`p-3 rounded-2xl ${item.accent} text-white shadow-lg opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500`}>
-                                <PlusIcon className="w-5 h-5" />
-                            </div>
+                            <span className="bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-[#002D5B] text-[9px] md:text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg border border-amber-200 select-none flex items-center gap-1 shrink-0">
+                                ⏳ {t('services.comingSoon')}
+                            </span>
                         </div>
 
                         <div className="mt-auto">
@@ -136,7 +136,7 @@ const AdditionalServicesSection: React.FC<AdditionalServicesSectionProps> = ({ o
                 <div className="w-2 h-2 bg-[#007bff] rounded-full group-hover:animate-ping"></div>
             </button>
             <p className="mt-6 text-blue-200/40 text-xs font-bold uppercase tracking-[0.3em]">
-                Explore Swiss Precision In Specialized Care
+                {t('services.additional.footerText') || 'Explore Swiss Precision In Specialized Care'}
             </p>
         </div>
       </div>

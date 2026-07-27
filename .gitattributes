@@ -1,0 +1,10 @@
+# Treat all binary image formats, documents, and archives as binary to prevent encoding or line-ending translation corruption
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary

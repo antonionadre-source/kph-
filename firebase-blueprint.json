@@ -1,17 +1,17 @@
 {
   "entities": {
     "maintenance_request": {
-      "title": "Maintenance Request",
-      "description": "A booking or technical service request submitted or managed in the Kraken maintenance hub.",
+      "title": "Maintenance Request & Consultation Draft",
+      "description": "A booking, consultation draft attempt, or technical service request submitted or managed in the Kraken maintenance hub.",
       "type": "object",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier of the maintenance request."
+          "description": "Unique identifier of the maintenance request or draft."
         },
         "client": {
           "type": "string",
-          "description": "The name of the client organization or individual requesting maintenance."
+          "description": "The name of the client organization or individual requesting maintenance or entering consultation."
         },
         "service": {
           "type": "string",
@@ -23,8 +23,8 @@
         },
         "status": {
           "type": "string",
-          "description": "The operational state of the service request.",
-          "enum": ["Pending", "In Progress", "Completed"]
+          "description": "The operational state of the service request or consultation draft.",
+          "enum": ["Draft", "Pending", "In Progress", "Completed"]
         },
         "priority": {
           "type": "string",
@@ -37,7 +37,7 @@
         },
         "userId": {
           "type": "string",
-          "description": "The UID of the user who owns or created this request."
+          "description": "The UID of the user who owns or created this request or draft."
         },
         "createdAt": {
           "type": "string",
@@ -51,12 +51,99 @@
         }
       },
       "required": ["id", "client", "service", "date", "status", "priority", "amount", "userId", "createdAt", "updatedAt"]
+    },
+    "job_application": {
+      "title": "Job Application & CV Submission",
+      "description": "Candidate application submitted on the Careers (Mi Carrera) page with candidate profile details and CV file.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the job application."
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name of the candidate applicant."
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number or WhatsApp contact of the applicant."
+        },
+        "position": {
+          "type": "string",
+          "description": "Position applied for."
+        },
+        "region": {
+          "type": "string",
+          "description": "Target work region in Switzerland."
+        },
+        "permit": {
+          "type": "string",
+          "description": "Swiss work permit status."
+        },
+        "startDate": {
+          "type": "string",
+          "description": "Earliest available start date."
+        },
+        "pensum": {
+          "type": "string",
+          "description": "Desired workload percentage."
+        },
+        "certificates": {
+          "type": "string",
+          "description": "Driving license or professional certificates."
+        },
+        "languages": {
+          "type": "string",
+          "description": "Spoken languages."
+        },
+        "message": {
+          "type": "string",
+          "description": "Personal message or introduction notes."
+        },
+        "cvName": {
+          "type": "string",
+          "description": "Original file name of uploaded CV."
+        },
+        "cvData": {
+          "type": "string",
+          "description": "Base64 encoded data string or download link for the CV document."
+        },
+        "cvType": {
+          "type": "string",
+          "description": "MIME type of uploaded CV file."
+        },
+        "status": {
+          "type": "string",
+          "description": "Application review status.",
+          "enum": ["Pending", "Reviewed", "Contacted", "Hired", "Rejected"]
+        },
+        "userId": {
+          "type": "string",
+          "description": "UID of candidate user or anonymous session."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when application was submitted."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when application was last updated."
+        }
+      },
+      "required": ["id", "name", "phone", "position", "region", "permit", "startDate", "status", "userId", "createdAt", "updatedAt"]
     }
   },
   "firestore": {
     "maintenance_requests/{requestId}": {
       "schema": "maintenance_request",
-      "description": "A collection containing all maintenance and service request logs requested via the hub."
+      "description": "A collection containing all maintenance and service request logs and consultation drafts."
+    },
+    "job_applications/{applicationId}": {
+      "schema": "job_application",
+      "description": "A collection containing job candidate applications and CV submissions from the Careers page."
     }
   }
 }

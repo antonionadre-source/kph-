@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { GoogleGenAI, Chat } from "@google/genai";
 import { XMarkIcon, ChatBubbleLeftRightIcon, PaperAirplaneIcon, PaperClipIcon, TrashIcon } from './icons';
+import { useTranslation } from '../i18n';
 import { mascotImageUrl, mascotVideoUrl } from '../assets';
 import emailjs from '@emailjs/browser';
 import JSZip from 'jszip';
@@ -12,46 +12,49 @@ const TEMPLATE_ID = 'template_aktj7t9';
 const PUBLIC_KEY = 'sH5K84ChHyssJrarm';
 const STORAGE_KEY = 'kraken_chat_history_v2';
 
-const SYSTEM_INSTRUCTION = `You are Kai, the professional and friendly AI agent for Kraken Properties.
+const SYSTEM_INSTRUCTION = `You are Kai, the professional and multilingual AI assistant for Kraken Properties & Facility Management, based in Schaffhausen, Switzerland (serving Schaffhausen, Zürich, and Winterthur).
+
+**LANGUAGE ADAPTATION:**
+*   ALWAYS respond in the SAME language the user writes in.
+*   Support: German (Deutsch / Schweizerdeutsch), English, French (Français), Spanish (Español), Italian (Italiano), Portuguese (Português).
+*   If user writes in Swiss German dialect, respond in standard German (Hochdeutsch) for clarity.
 
 **YOUR PERSONALITY:**
-*   Professional yet approachable.
-*   Helpful, efficient, and proactive.
-*   You speak like a high-end concierge for property services.
+*   Professional yet warm and approachable — like a Swiss concierge.
+*   Efficient, proactive, and helpful. Never robotic.
+*   Use the user's name once you know it.
 
-**YOUR GOAL:** Provide accurate estimates, suggest relevant additional services, and facilitate bookings.
+**YOUR GOAL:** Provide accurate price estimates, suggest complementary services, and facilitate bookings via email.
 
 **FORMATTING RULES:**
-*   **Be Concise:** Keep responses short and scannable.
-*   **Clean Layout:** Use only **Bold** for emphasis and bullet points (-) for lists.
-*   **No Clutter:** Do NOT use markdown headers (###), excessive emojis, or strange symbols.
+*   **Be Concise:** Short, scannable responses. Max 3-4 paragraphs.
+*   Use **Bold** for prices and key terms. Use bullet points (-) for lists.
+*   Do NOT use markdown headers (###) or excessive emojis.
+*   Always end with a clear next-step question.
 
-**PRICING KNOWLEDGE:**
-*   **End of Tenancy Cleaning (100% Guarantee):**
-    *   Rate: **56.50 CHF/hour**.
-    *   Est. Duration: MAX(4, (Rooms * 1.5) + (Bathrooms * 1)).
-    *   Extras: Balcony (+40 CHF), Storage (+30 CHF), Carpet (+60 CHF/room).
-    *   Windows: Standard (+25 CHF), Large (+45 CHF).
-*   **Deep Cleaning:** **56.50 CHF/hour**.
-*   **Regular Maintenance:** **43.50 CHF/hour** (Min 2.5h).
-*   **Moving Service:**
-    *   2 Movers + Truck: **145 CHF/hour**.
-    *   3 Movers + Truck: **195 CHF/hour**.
-    *   Min 3 hours.
+**PRICING (CHF):**
+*   **Auszugsreinigung / End of Tenancy (100% Garantie):** 56.50 CHF/h. Dauer: MAX(4, (Zimmer × 1.5) + (Bäder × 1)). Extras: Balkon +40, Keller +30, Teppich +60/Zimmer. Fenster: standard +25, gross +45.
+*   **Tiefenreinigung / Deep Cleaning:** 56.50 CHF/h.
+*   **Unterhaltsreinigung / Regular Maintenance:** 43.50 CHF/h (mind. 2.5h).
+*   **Umzug / Moving Service:** 2 Träger + LKW: 145 CHF/h | 3 Träger + LKW: 195 CHF/h (mind. 3h).
+*   **Büroreinigung / Office Cleaning:** Preis nach Anfrage. Tages- oder Nachtreinigung.
+*   **Gartenarbeit / Gardening:** Preis nach Anfrage.
+*   **Schädlingsbekämpfung / Pest Control:** Preis nach Anfrage.
 
-**CROSS-SELLING STRATEGY:**
-*   If user wants **End of Tenancy**, suggest **Moving** or **Waste Disposal**.
-*   If user wants **Moving**, suggest **Deep Cleaning** for the new home.
-*   If user wants **Regular Cleaning**, suggest **Window Cleaning** or **Carpet Cleaning**.
+**CROSS-SELLING:**
+*   End of Tenancy → suggest Moving Service or Waste Disposal.
+*   Moving → suggest Deep Cleaning for new home.
+*   Regular Cleaning → suggest Window Cleaning or Carpet Cleaning.
+*   Commercial client → suggest Facility Management contract.
 
 **CONVERSATION FLOW:**
-1.  **Inquire:** Ask for details (Service type? Number of rooms? Extras?) to build a quote.
-2.  **Estimate & Upsell:** Give the price. Then ask: "Would you also like [Cross-Sell Service]?"
-3.  **Book:** If they agree, ask for: Name, Email, Phone, Address, Date.
-4.  **Confirm:** Once you have the data, output the JSON block below to trigger the email.
+1. **Greet & Inquire:** Ask: What service? How many rooms/bathrooms? Any extras?
+2. **Estimate & Upsell:** Give price range. Suggest one add-on.
+3. **Book:** Collect: Name, Email, Phone, Address, Preferred Date.
+4. **Confirm:** Output the booking JSON below.
 
 **BOOKING TRIGGER (JSON):**
-When the user confirms booking details, output EXACTLY this JSON block at the end of your message:
+When user confirms all details, output EXACTLY this block:
 \`\`\`json
 {
   "action": "BOOK_RESERVATION",
@@ -60,23 +63,29 @@ When the user confirms booking details, output EXACTLY this JSON block at the en
     "priceEstimate": "CHF XXX",
     "name": "Client Name",
     "email": "client@email.com",
-    "phone": "123456",
-    "address": "Street Address",
+    "phone": "+41XXXXXXXXX",
+    "address": "Street, City",
     "date": "YYYY-MM-DD",
     "notes": "Any extra notes"
   }
 }
 \`\`\`
 
+**CONTACT INFO (share when relevant):**
+*   Phone: +41 77 450 57 05
+*   Email: info@krakenpfm.ch
+*   Website: krakenpfm.ch
+
 **FILE HANDLING:**
-If the user uploads images/videos, acknowledge them professionally: "I have received your files and will attach them to your request for our team to review."
+If user uploads photos/videos, say: "I've received your files and will include them with your quote request for our team."
 `;
 
 const QUICK_REPLIES = [
-    "Estimate for End of Tenancy",
-    "Moving Service Quote",
-    "Regular Maintenance Pricing",
-    "Deep Cleaning Info"
+    "chatbot.quick.eot",
+    "chatbot.quick.move",
+    "chatbot.quick.office",
+    "chatbot.quick.regular",
+    "chatbot.quick.deep"
 ];
 
 interface ChatMessage {
@@ -91,6 +100,7 @@ interface ChatMessage {
  * Re-implemented missing logic due to truncation.
  */
 const ChatWidget: React.FC = () => {
+  const { t, language } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     try {
@@ -108,7 +118,6 @@ const ChatWidget: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   
   const allSessionFiles = useRef<File[]>([]);
-  const chatSession = useRef<Chat | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -131,31 +140,15 @@ const ChatWidget: React.FC = () => {
     }
   }, [messages]);
 
-  // Initialize Chat Session with @google/genai guidelines
+  // Keep first message synchronized with current language
   useEffect(() => {
-    try {
-        if (process.env.API_KEY) {
-            // Correct initialization: always use named parameters for apiKey
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-            
-            const history = messages.slice(1).map(m => ({
-                role: m.role,
-                parts: [{ text: m.text }]
-            }));
-
-            // Using gemini-3-flash-preview for text-based chat tasks
-            chatSession.current = ai.chats.create({
-                model: 'gemini-3-flash-preview',
-                config: {
-                    systemInstruction: SYSTEM_INSTRUCTION,
-                },
-                history: history
-            });
-        }
-    } catch (e) {
-        console.error("Failed to init AI", e);
+    if (messages.length === 1 && messages[0].role === 'model') {
+      const localizedWelcome = t('chatbot.welcome');
+      if (messages[0].text !== localizedWelcome) {
+        setMessages([{ role: 'model', text: localizedWelcome }]);
+      }
     }
-  }, []); 
+  }, [language, messages, t]);
 
   useEffect(() => {
     if(isOpen) messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -180,7 +173,7 @@ const ChatWidget: React.FC = () => {
           const validFiles = newFiles.filter(f => f.size < 5 * 1024 * 1024);
           
           if (validFiles.length < newFiles.length) {
-              alert("Some files were skipped. Max size per file is 5MB.");
+              alert(t('chatbot.file.tooLarge'));
           }
           
           setFiles(prev => [...prev, ...validFiles]);
@@ -237,11 +230,11 @@ const ChatWidget: React.FC = () => {
 
               await emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form, PUBLIC_KEY);
               
-              setMessages(prev => [...prev, {role: 'model', text: "✅ **Success!** Request sent successfully! We will contact you shortly."}]);
+              setMessages(prev => [...prev, {role: 'model', text: t('chatbot.success')}]);
           }
       } catch (error: any) {
           console.error("Booking error details:", error);
-          setMessages(prev => [...prev, {role: 'model', text: `I have your details, but there was an error sending the request. Please try the main booking form.`}]);
+          setMessages(prev => [...prev, {role: 'model', text: t('chatbot.error.booking')}]);
       }
   };
 
@@ -270,56 +263,67 @@ const ChatWidget: React.FC = () => {
     setMessages(prev => [...prev, userMessage]);
 
     try {
-        if (!chatSession.current && process.env.API_KEY) {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-            chatSession.current = ai.chats.create({
-                model: 'gemini-3-flash-preview',
-                config: { systemInstruction: SYSTEM_INSTRUCTION }
-            });
+        const prompt = userMessage.attachments 
+            ? `${messageText} (User attached ${userMessage.attachments.length} files)` 
+            : messageText;
+
+        const currentMessages = [
+            ...messages,
+            { role: 'user', text: prompt }
+        ];
+
+        const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                messages: currentMessages,
+                systemInstruction: SYSTEM_INSTRUCTION,
+                language: language
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error ${response.status}`);
         }
 
-        if (chatSession.current) {
-            const prompt = userMessage.attachments 
-                ? `${messageText} (User attached ${userMessage.attachments.length} files)` 
-                : messageText;
-
-            // Correct SDK call: sendMessage returns result with .text property
-            const response = await chatSession.current.sendMessage({ message: prompt });
-            const responseText = response.text;
-            
-            if (responseText) {
-                // Check for JSON trigger block
-                const jsonMatch = responseText.match(/```json\n([\s\S]*?)\n```/);
-                if (jsonMatch) {
-                    try {
-                        const bookingData = JSON.parse(jsonMatch[1]);
-                        if (bookingData.action === "BOOK_RESERVATION") {
-                            await handleBooking(bookingData.data);
-                        }
-                    } catch (e) {
-                        console.error("JSON parse error", e);
+        const data = await response.json();
+        
+        if (data.success && data.text) {
+            const responseText = data.text;
+            // Check for JSON trigger block
+            const jsonMatch = responseText.match(/```json\n([\s\S]*?)\n```/);
+            if (jsonMatch) {
+                try {
+                    const bookingData = JSON.parse(jsonMatch[1]);
+                    if (bookingData.action === "BOOK_RESERVATION") {
+                        await handleBooking(bookingData.data);
                     }
-                }
-                
-                const cleanText = responseText.replace(/```json\n[\s\S]*?\n```/, "").trim();
-                if (cleanText) {
-                    setMessages(prev => [...prev, { role: 'model', text: cleanText }]);
+                } catch (e) {
+                    console.error("JSON parse error", e);
                 }
             }
+            
+            const cleanText = responseText.replace(/```json\n[\s\S]*?\n```/, "").trim();
+            if (cleanText) {
+                setMessages(prev => [...prev, { role: 'model', text: cleanText }]);
+            }
+        } else {
+            throw new Error(data.error || "Failed to generate AI response.");
         }
     } catch (error) {
         console.error(error);
-        setMessages(prev => [...prev, { role: 'model', text: "Sorry, I encountered an error. Please try again." }]);
+        setMessages(prev => [...prev, { role: 'model', text: t('chatbot.error.general') }]);
     } finally {
         setIsLoading(false);
     }
   };
 
   const clearChat = () => {
-    if (window.confirm("Are you sure you want to clear the chat history?")) {
-        setMessages([{role: 'model', text: "Hi! I'm Kai. I can give you a quick price estimate. What service are you looking for?"}]);
+    if (window.confirm(t('chatbot.clear.confirm'))) {
+        setMessages([{role: 'model', text: t('chatbot.welcome')}]);
         localStorage.removeItem(STORAGE_KEY);
-        chatSession.current = null;
     }
   };
 
@@ -340,16 +344,16 @@ const ChatWidget: React.FC = () => {
         {/* Header */}
         <div className="bg-[#002D5B] p-5 flex items-center gap-4">
             <div className="bg-white/10 p-2 rounded-xl overflow-hidden">
-                <img src={mascotImageUrl} alt="Kai" className="w-8 h-8 object-contain" />
+                <img src="/SA.png" alt="Kai" className="w-8 h-8 object-contain" referrerPolicy="no-referrer" />
             </div>
             <div className="flex flex-col">
-                <h3 className="text-white font-bold">Kai Assistant</h3>
-                <p className="text-blue-200 text-[10px] uppercase tracking-widest">Kraken Properties AI</p>
+                <p className="text-white font-bold">{t('chatbot.header.title')}</p>
+                <p className="text-blue-200 text-[10px] uppercase tracking-widest">{t('chatbot.header.subtitle')}</p>
             </div>
             <button 
                 onClick={clearChat}
                 className="ml-auto p-2 text-white/50 hover:text-white transition-colors"
-                title="Clear Chat History"
+                title={t('chatbot.header.clearTooltip')}
             >
                 <TrashIcon className="w-4 h-4" />
             </button>
@@ -364,7 +368,11 @@ const ChatWidget: React.FC = () => {
                         ? 'bg-[#007bff] text-white rounded-tr-none' 
                         : 'bg-white text-gray-800 shadow-sm border border-gray-100 rounded-tl-none font-medium'
                     }`}>
-                        <div className="whitespace-pre-wrap">{msg.text}</div>
+                        <div className="whitespace-pre-wrap">
+                            {idx === 0 && msg.role === 'model' && msg.text.startsWith("Hi! I'm Kai.")
+                                ? t('chatbot.welcome')
+                                : msg.text}
+                        </div>
                     </div>
                 </div>
             ))}
@@ -376,7 +384,7 @@ const ChatWidget: React.FC = () => {
                             <div className="w-1.5 h-1.5 bg-[#007bff] rounded-full animate-bounce [animation-delay:-0.15s]"></div>
                             <div className="w-1.5 h-1.5 bg-[#007bff] rounded-full animate-bounce"></div>
                         </div>
-                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Kai is thinking</span>
+                        <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{t('chatbot.thinking')}</span>
                     </div>
                 </div>
             )}
@@ -386,13 +394,13 @@ const ChatWidget: React.FC = () => {
         {/* Quick Replies */}
         {!isLoading && messages.length < 4 && (
             <div className="px-4 py-2 bg-white border-t border-gray-100 overflow-x-auto whitespace-nowrap no-scrollbar flex gap-2">
-                {QUICK_REPLIES.map((reply, i) => (
+                {QUICK_REPLIES.map((key, i) => (
                     <button 
                         key={i}
-                        onClick={() => handleSend(reply)}
+                        onClick={() => handleSend(t(key))}
                         className="inline-block px-3 py-1.5 rounded-full border border-gray-200 text-xs text-gray-600 hover:border-[#007bff] hover:text-[#007bff] transition-all whitespace-nowrap"
                     >
-                        {reply}
+                        {t(key)}
                     </button>
                 ))}
             </div>
@@ -415,7 +423,7 @@ const ChatWidget: React.FC = () => {
                     type="button" 
                     onClick={() => fileInputRef.current?.click()} 
                     className="p-2 text-gray-400 hover:text-[#007bff] transition-colors"
-                    title="Attach files"
+                    title={t('chatbot.attachFiles')}
                 >
                     <PaperClipIcon className="w-5 h-5" />
                 </button>
@@ -424,7 +432,7 @@ const ChatWidget: React.FC = () => {
                     type="text" 
                     value={inputValue} 
                     onChange={(e) => setInputValue(e.target.value)} 
-                    placeholder="Ask Kai..." 
+                    placeholder={t('chatbot.placeholder')} 
                     className="flex-1 bg-gray-50 border-none rounded-xl p-3 text-sm focus:ring-2 focus:ring-[#007bff] outline-none font-medium"
                 />
                 <button 
