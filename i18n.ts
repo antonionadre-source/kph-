@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, useContext, type ReactNode } from 'react';
 
 // Consultation specific keys
 const consultationKeys = {
@@ -2530,13 +2530,34 @@ const enTranslations = {
     'terms.description': 'These terms govern the relationship between Kraken PFM and our valued clients. Please read them carefully before booking any professional service.',
 
     // New Landing Page Translations
+    'quick_contact.title': 'Contact Us – Same-Day Response',
+    'quick_contact.subtitle': 'Non-binding · Response guaranteed today',
+    'quick_contact.name': 'Full Name',
+    'quick_contact.phone': 'Phone Number',
+    'quick_contact.email': 'Email Address',
+    'quick_contact.service': 'Service Type',
+    'quick_contact.service_placeholder': 'Select a service',
+    'quick_contact.service_umzug': 'Move-out Cleaning',
+    'quick_contact.service_unterhalt': 'Maintenance Cleaning',
+    'quick_contact.service_buero': 'Office Cleaning',
+    'quick_contact.service_hauswartung': 'Caretaking & Facility Management',
+    'quick_contact.service_sonstiges': 'Other Services',
+    'quick_contact.message': 'Message (optional)',
+    'quick_contact.submit': 'Request a Free Quote',
+    'quick_contact.success': 'Thank you! Your request has been sent successfully. We will get back to you today.',
+    'quick_contact.trust': 'Non-binding · Same-day response · Swiss quality guarantee',
+    'hero.guarantee_badge': '100% Handover Guarantee – or we re-clean free of charge',
     'hero.main_title_part1': 'Mastering the',
     'hero.main_title_chaos': 'chaos',
     'hero.main_title_part2': 'of property',
     'hero.main_title_part3': 'management.',
     'hero.main_subtitle': "So you don't have to.",
-    'hero.main_desc': 'Facility management, cleaning and maintenance in Schaffhausen, Zurich and Winterthur — designed to run seamlessly.',
-    'hero.main_cta': 'Stop stressing. Get my quote ⚡',
+    'hero.main_desc': 'Professional cleaning & facility management in Schaffhausen, Winterthur, and Zurich – with handover guarantee.',
+    'hero.main_cta': 'Request a Free Quote',
+    'hero.secondary_cta': 'Calculate price online',
+    'hero.trust_signal_1': 'Same-day response',
+    'hero.trust_signal_2': 'Regional & insured',
+    'hero.trust_signal_3': 'Transparent fixed prices',
     'hero.view_comics': 'view comics and kai story',
     'comic.backCover.label': 'BACK OF THE BOOK',
     'comic.backCover.p1': 'For centuries, the world feared the kraken.',
@@ -3362,13 +3383,18 @@ const esTranslations = {
     'mascot.consultation.3': 'No lo olvides: ¡combinar varios servicios y extras puede darte tarifas de desplazamiento GRATIS!',
 
     // New Landing Page Translations (Spanish)
+    'hero.guarantee_badge': 'Garantía de entrega 100% – o limpiamos de nuevo gratis',
     'hero.main_title_part1': 'Dominando el',
     'hero.main_title_chaos': 'caos',
     'hero.main_title_part2': 'de la gestión',
     'hero.main_title_part3': 'de propiedades.',
     'hero.main_subtitle': 'Para que usted no tenga que hacerlo.',
-    'hero.main_desc': 'Gestión de instalaciones, limpieza y mantenimiento en Schaffhausen, Zúrich y Winterthur, diseñado para funcionar a la perfección.',
-    'hero.main_cta': 'Deja de estresarte. Consigue mi presupuesto ⚡',
+    'hero.main_desc': 'Limpieza profesional y facility management en Schaffhausen, Winterthur y Zúrich – con garantía de entrega.',
+    'hero.main_cta': 'Solicitar presupuesto gratis',
+    'hero.secondary_cta': 'Calcular precio online',
+    'hero.trust_signal_1': 'Respuesta el mismo día',
+    'hero.trust_signal_2': 'Regional y asegurado',
+    'hero.trust_signal_3': 'Precios fijos transparentes',
     'hero.view_comics': 'ver cómics y la historia de kai',
     'comic.backCover.label': 'PARTE POSTERIOR DEL LIBRO',
     'comic.backCover.p1': 'Durante siglos, el mundo temió al kraken.',
@@ -4289,13 +4315,34 @@ const deTranslations = {
     'about.title': 'Wer wir sind: Ihr Facility-Partner in Zürich & Schaffhausen',
 
     // New Landing Page Translations (German)
+    'quick_contact.title': 'Kontaktieren Sie uns – Antwort am selben Tag',
+    'quick_contact.subtitle': 'Unverbindlich · Rückmeldung am selben Tag',
+    'quick_contact.name': 'Name',
+    'quick_contact.phone': 'Telefon',
+    'quick_contact.email': 'E-Mail',
+    'quick_contact.service': 'Art der Dienstleistung',
+    'quick_contact.service_placeholder': 'Bitte wählen Sie eine Dienstleistung',
+    'quick_contact.service_umzug': 'Umzugsreinigung',
+    'quick_contact.service_unterhalt': 'Unterhaltsreinigung',
+    'quick_contact.service_buero': 'Büroreinigung',
+    'quick_contact.service_hauswartung': 'Hauswartung & Facility Management',
+    'quick_contact.service_sonstiges': 'Sonstiges',
+    'quick_contact.message': 'Nachricht (optional)',
+    'quick_contact.submit': 'Kostenlose Offerte anfordern',
+    'quick_contact.success': 'Vielen Dank! Ihre Anfrage wurde erfolgreich übermittelt. Wir melden uns noch heute bei Ihnen.',
+    'quick_contact.trust': 'Unverbindlich · Rückmeldung am selben Tag · Schweizer Qualitätsgarantie',
+    'hero.guarantee_badge': '100% Abgabegarantie – oder wir reinigen kostenlos nach',
     'hero.main_title_part1': 'Bändigen Sie das',
     'hero.main_title_chaos': 'Chaos',
     'hero.main_title_part2': 'im Immobilien-',
     'hero.main_title_part3': 'Management.',
     'hero.main_subtitle': 'Damit Sie es nicht tun müssen.',
-    'hero.main_desc': 'Facility Management, Reinigung und Instandhaltung in Schaffhausen, Zürich und Winterthur — konzipiert für einen reibungslosen Ablauf.',
-    'hero.main_cta': 'Kein Stress mehr. Offerte anfordern ⚡',
+    'hero.main_desc': 'Professionelle Reinigung & Facility Management in Schaffhausen, Winterthur und Zürich – mit Abgabegarantie.',
+    'hero.main_cta': 'Kostenlose Offerte anfordern',
+    'hero.secondary_cta': 'Preis online berechnen',
+    'hero.trust_signal_1': 'Rückmeldung am selben Tag',
+    'hero.trust_signal_2': 'Regional & versichert',
+    'hero.trust_signal_3': 'Transparente Festpreise',
     'hero.view_comics': 'Comics & Kais Geschichte ansehen',
     'comic.backCover.label': 'BUCHRÜCKSEITE',
     'comic.backCover.p1': 'Seit Jahrhunderten fürchtete die Welt den Kraken.',
@@ -5201,13 +5248,18 @@ const frTranslations = {
     'consultation.success.button': 'Retour Accueil',
 
     // New Landing Page Translations (French)
+    'hero.guarantee_badge': 'Garantie de remise 100% – ou nous nettoyons gratuitement',
     'hero.main_title_part1': 'Maîtriser le',
     'hero.main_title_chaos': 'chaos',
     'hero.main_title_part2': 'de la gestion',
     'hero.main_title_part3': 'immobilière.',
     'hero.main_subtitle': "Pour que vous n'ayez pas à le faire.",
-    'hero.main_desc': 'Facility management, nettoyage et maintenance à Schaffhouse, Zurich et Winterthour — conçu pour fonctionner sans friction.',
-    'hero.main_cta': 'Fini le stress. Obtenez mon devis ⚡',
+    'hero.main_desc': 'Nettoyage professionnel & facility management à Schaffhouse, Winterthour et Zurich – avec garantie de remise.',
+    'hero.main_cta': 'Demander un devis gratuit',
+    'hero.secondary_cta': 'Calculer le prix en ligne',
+    'hero.trust_signal_1': 'Réponse le jour même',
+    'hero.trust_signal_2': 'Régional & assuré',
+    'hero.trust_signal_3': 'Prix fixes transparents',
     'hero.view_comics': "voir les bandes dessinées et l'histoire de Kai",
     'comic.backCover.label': 'QUATRIÈME DE COUVERTURE',
     'comic.backCover.p1': 'Pendant des siècles, le monde a craint le kraken.',
@@ -6020,13 +6072,18 @@ const itTranslations = {
     'aboutPage.viewComics': 'Vedi i fumetti!',
 
     // New Landing Page Translations (Italian)
+    'hero.guarantee_badge': 'Garanzia di consegna 100% – o puliamo di nuovo gratis',
     'hero.main_title_part1': 'Dominare il',
     'hero.main_title_chaos': 'caos',
     'hero.main_title_part2': 'della gestione',
     'hero.main_title_part3': 'immobiliare.',
     'hero.main_subtitle': 'Così non devi farlo tu.',
-    'hero.main_desc': 'Facility management, pulizie e manutenzione a Sciaffusa, Zurigo e Winterthur — progettati per funzionare senza problemi.',
-    'hero.main_cta': 'Basta stressarsi. Ottieni il mio preventivo ⚡',
+    'hero.main_desc': 'Pulizie professionali e facility management a Sciaffusa, Winterthur e Zurigo – con garanzia di consegna.',
+    'hero.main_cta': 'Richiedi preventivo gratuito',
+    'hero.secondary_cta': 'Calcola il prezzo online',
+    'hero.trust_signal_1': 'Risposta in giornata',
+    'hero.trust_signal_2': 'Regionale e assicurato',
+    'hero.trust_signal_3': 'Prezzi fissi trasparenti',
     'hero.view_comics': 'guarda i fumetti e la storia di Kai',
     'comic.backCover.label': 'RETRO DEL LIBRO',
     'comic.backCover.p1': 'Per secoli il mondo ha temuto il kraken.',
@@ -6839,13 +6896,18 @@ const ptTranslations = {
     'aboutPage.viewComics': 'Ver Histórias em Quadrinhos!',
 
     // New Landing Page Translations (Portuguese)
+    'hero.guarantee_badge': 'Garantia de entrega 100% – ou limpamos novamente grátis',
     'hero.main_title_part1': 'Dominando o',
     'hero.main_title_chaos': 'caos',
     'hero.main_title_part2': 'da gestão de',
     'hero.main_title_part3': 'propriedades.',
     'hero.main_subtitle': 'Para que você não precise se preocupar.',
-    'hero.main_desc': 'Gestão de facilities profissional, limpeza e administração imobiliária em Schaffhausen, Zurique e Winterthur — concebida para funcionar perfeitamente.',
-    'hero.main_cta': 'Deixe o estresse para lá. Obtenha meu orçamento ⚡',
+    'hero.main_desc': 'Limpeza profissional e gestão de facilities em Schaffhausen, Winterthur e Zurique – com garantia de entrega.',
+    'hero.main_cta': 'Solicitar orçamento gratuito',
+    'hero.secondary_cta': 'Calcular preço online',
+    'hero.trust_signal_1': 'Resposta no mesmo dia',
+    'hero.trust_signal_2': 'Regional e segurado',
+    'hero.trust_signal_3': 'Preços fixos transparentes',
     'hero.view_comics': 'ver quadrinhos e a história do Kai',
     'comic.backCover.label': 'PARTE TRASEIRA DO LIVRO',
     'comic.backCover.p1': 'Durante séculos, o mundo temeu o kraken.',
@@ -7580,57 +7642,52 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return text;
   };
 
-  return (
-    <I18nContext.Provider value={{ language, setLanguage, t }}>
-      {children}
-      {activeToast && activeToast.show && (
-        <div
-          key={`${activeToast.langCode}-${activeToast.msg}`}
-          id="language-toast-notification"
-          className="fixed top-24 right-5 sm:right-6 md:right-8 z-[200] max-w-sm w-[calc(100vw-2.5rem)] bg-white/95 backdrop-blur-md border border-gray-100 rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.12)] p-4 flex items-center gap-3.5 pointer-events-auto transition-all duration-300 animate-toast-slide"
-        >
-          {/* Circular globe icon */}
-          <div className="w-10 h-10 rounded-full bg-[#002D5B]/5 flex items-center justify-center shrink-0 text-base">
-            🌐
-          </div>
-          
-          {/* Content */}
-          <div className="flex-1 text-left min-w-0">
-            <h4 className="text-xs font-black text-[#002D5B] uppercase tracking-widest leading-none mb-1">
-              {langTitles[language]}
-            </h4>
-            <p className="text-xs text-gray-500 font-medium leading-tight truncate">
-              {activeToast.msg}
-            </p>
-          </div>
-
-          {/* Close button */}
-          <button
-            onClick={() => setActiveToast(prev => prev ? { ...prev, show: false } : null)}
-            className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-50 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      )}
-      <style>{`
-        @keyframes toast-slide {
-          0% {
-            opacity: 0;
-            transform: translateY(-1rem) scale(0.95);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
+  return React.createElement(
+    I18nContext.Provider,
+    { value: { language, setLanguage, t } },
+    children,
+    activeToast && activeToast.show ? React.createElement(
+      "div",
+      {
+        key: `${activeToast.langCode}-${activeToast.msg}`,
+        id: "language-toast-notification",
+        className: "fixed top-24 right-5 sm:right-6 md:right-8 z-[200] max-w-sm w-[calc(100vw-2.5rem)] bg-white/95 backdrop-blur-md border border-gray-100 rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.12)] p-4 flex items-center gap-3.5 pointer-events-auto transition-all duration-300 animate-toast-slide",
+      },
+      React.createElement("div", { className: "w-10 h-10 rounded-full bg-[#002D5B]/5 flex items-center justify-center shrink-0 text-base" }, "🌐"),
+      React.createElement(
+        "div",
+        { className: "flex-1 text-left min-w-0" },
+        React.createElement("h4", { className: "text-xs font-black text-[#002D5B] uppercase tracking-widest leading-none mb-1" }, langTitles[language]),
+        React.createElement("p", { className: "text-xs text-gray-500 font-medium leading-tight truncate" }, activeToast.msg)
+      ),
+      React.createElement(
+        "button",
+        {
+          onClick: () => setActiveToast(prev => prev ? { ...prev, show: false } : null),
+          className: "text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-50 transition-colors",
+        },
+        React.createElement(
+          "svg",
+          { className: "w-4 h-4", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" },
+          React.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2.5, d: "M6 18L18 6M6 6l12 12" })
+        )
+      )
+    ) : null,
+    React.createElement("style", null, `
+      @keyframes toast-slide {
+        0% {
+          opacity: 0;
+          transform: translateY(-1rem) scale(0.95);
         }
-        .animate-toast-slide {
-          animation: toast-slide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        100% {
+          opacity: 1;
+          transform: translateY(0) scale(1);
         }
-      `}</style>
-    </I18nContext.Provider>
+      }
+      .animate-toast-slide {
+        animation: toast-slide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+    `)
   );
 };
 

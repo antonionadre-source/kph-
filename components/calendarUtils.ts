@@ -1,5 +1,5 @@
 /**
- * Utility functions for generating Google Calendar links and .ics calendar files
+ * Utility functions for generating Outlook Calendar links and .ics calendar files
  * specifically configured with a 1-hour reminder for kai@krakenpfm.ch
  */
 
@@ -75,33 +75,38 @@ export function scheduleCalendarEventForKai(req: {
   const cleanService = req.service || 'Maintenance Service';
   const title = `Kraken PFM: ${cleanService} - ${cleanClient}`;
   const location = req.address || 'Client Location';
-  const description = 
-    `Kraken PFM Service assigned to Kai\\n` +
-    `• Client: ${cleanClient}\\n` +
-    `• Email: ${req.email || 'Not specified'}\\n` +
-    `• Phone: ${req.phone || 'Not specified'}\\n` +
-    `• Address: ${location}\\n` +
-    `• Total Amount: CHF ${(req.amount || 0).toLocaleString()}\\n\\n` +
+  const descriptionText = 
+    `Kraken PFM Service assigned to Kai\n` +
+    `• Client: ${cleanClient}\n` +
+    `• Email: ${req.email || 'Not specified'}\n` +
+    `• Phone: ${req.phone || 'Not specified'}\n` +
+    `• Address: ${location}\n` +
+    `• Total Amount: CHF ${(req.amount || 0).toLocaleString()}\n\n` +
     `Automatic 1-hour prior reminder configured.`;
 
-  // 1. Build Google Calendar Event URL with prefilled guest kai@krakenpfm.ch
-  const gcalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE` +
-    `&text=${encodeURIComponent(title)}` +
-    `&dates=${startIso}/${endIso}` +
-    `&details=${encodeURIComponent(description.replace(/\\n/g, '\n'))}` +
-    `&location=${encodeURIComponent(location)}` +
-    `&add=${encodeURIComponent(staffEmail)}${req.email ? ',' + encodeURIComponent(req.email) : ''}`;
+  const descriptionICS = descriptionText.replace(/\n/g, '\\n');
 
-  // 2. Build iCalendar .ics file string with ORGANIZER kai@krakenpfm.ch and 1-hour VALARM reminder in English
+  const toRecipients = `${staffEmail}${req.email ? ',' + req.email : ''}`;
+
+  // 1. Build Outlook Web Calendar Deeplink URL (Outlook Office 365 / Web Calendar)
+  const outlookUrl = `https://outlook.office.com/calendar/deeplink/compose?path=/calendar/action/compose&rru=addevent` +
+    `&subject=${encodeURIComponent(title)}` +
+    `&startdt=${encodeURIComponent(startDateObj.toISOString())}` +
+    `&enddt=${encodeURIComponent(endDateObj.toISOString())}` +
+    `&body=${encodeURIComponent(descriptionText)}` +
+    `&location=${encodeURIComponent(location)}` +
+    `&to=${encodeURIComponent(toRecipients)}`;
+
+  // 2. Build iCalendar .ics file string for Outlook with ORGANIZER kai@krakenpfm.ch and 1-hour VALARM reminder in English
   const icsData = 
 `BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//Kraken Properties & Facilities Management//Calendar System//EN
+PRODID:-//Kraken Properties & Facilities Management//Outlook Calendar System//EN
 METHOD:REQUEST
 BEGIN:VEVENT
 ORGANIZER;CN=Kai (Kraken PFM):mailto:${staffEmail}
 SUMMARY:${title}
-DESCRIPTION:${description}
+DESCRIPTION:${descriptionICS}
 LOCATION:${location}
 ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=Kai (Kraken PFM):mailto:${staffEmail}
 ${req.email ? `ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;CN=${cleanClient}:mailto:${req.email}\n` : ''}DTSTART:${startIso}
@@ -114,12 +119,12 @@ END:VALARM
 END:VEVENT
 END:VCALENDAR`;
 
-  // Download .ics file
+  // Download .ics file (opens directly in Outlook Desktop/App)
   try {
     const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `kai_kraken_service_${cleanClient.replace(/\s+/g, '_')}.ics`;
+    link.download = `outlook_kai_kraken_${cleanClient.replace(/\s+/g, '_')}.ics`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -127,8 +132,9 @@ END:VCALENDAR`;
     console.warn('Error downloading .ics file:', err);
   }
 
-  // Open Google Calendar
-  window.open(gcalUrl, '_blank');
+  // Open Outlook Web in new tab
+  window.open(outlookUrl, '_blank');
 
-  return { gcalUrl, startIso, endIso };
+  return { outlookUrl, startIso, endIso };
 }
+

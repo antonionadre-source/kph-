@@ -19,11 +19,9 @@ service cloud.firestore {
     }
 
     match /maintenance_requests/{requestId} {
-      // Direct reads and lists are limited strictly to the owner of the request or coordinator/staff
       allow read: if request.auth != null 
         && (resource.data.userId == request.auth.uid || isStaffOrAdmin());
         
-      // Create conditions enforcing ID constraints, exact fields, types, and server time
       allow create: if request.auth != null
         && requestId is string
         && requestId.size() > 0
@@ -46,19 +44,15 @@ service cloud.firestore {
         && request.resource.data.createdAt == request.time
         && request.resource.data.updatedAt == request.time;
         
-      // Update conditions reinforcing immutability, terminal locking, and field validation
       allow update: if request.auth != null
         && (
           (resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid) ||
           (isStaffOrAdmin() && request.resource.data.userId == resource.data.userId)
         )
-        // Immutable Key Fields Check
         && request.resource.data.id == resource.data.id
         && request.resource.data.createdAt == resource.data.createdAt
         && request.resource.data.updatedAt == request.time
-        // Terminal State Lock (Staff can bypass)
         && (resource.data.status != 'Completed' || isStaffOrAdmin())
-        // Validation Schema
         && request.resource.data.client is string
         && request.resource.data.client.size() >= 0
         && request.resource.data.client.size() <= 100
@@ -73,14 +67,12 @@ service cloud.firestore {
         && request.resource.data.amount >= 0
         && request.resource.data.amount <= 1000000;
         
-      // Delete condition preventing deletion of completed records unless staff
       allow delete: if request.auth != null
         && (resource.data.userId == request.auth.uid || isStaffOrAdmin())
         && (resource.data.status != 'Completed' || isStaffOrAdmin());
     }
 
     match /job_applications/{applicationId} {
-      // Direct reads and lists are limited to staff or applicant
       allow read: if request.auth != null 
         && (resource.data.userId == request.auth.uid || isStaffOrAdmin());
 
@@ -114,6 +106,16 @@ service cloud.firestore {
 
       allow delete: if request.auth != null
         && (resource.data.userId == request.auth.uid || isStaffOrAdmin());
+    }
+
+    match /b2b_quotes/{quoteId} {
+      allow create: if true;
+      allow read, update, delete: if isStaffOrAdmin();
+    }
+
+    match /contact_messages/{messageId} {
+      allow create: if true;
+      allow read, update, delete: if isStaffOrAdmin();
     }
   }
 }

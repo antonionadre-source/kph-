@@ -21,9 +21,11 @@ import {
   DropIcon,
   CloudUploadIcon
 } from './icons';
-import { db } from './firebase';
+import { db, sanitizeFirestoreData } from './firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { Star } from 'lucide-react';
+import { sendLead } from './leadWebhook';
+import { uploadFilesToStorage } from './fileUploadHelper';
 
 type BuildingType = 'office' | 'residential' | 'retail' | 'industrial' | 'medical';
 type FrequencyType = 'daily' | 'multiple' | 'weekly' | 'biweekly' | 'monthly' | 'ondemand';
@@ -741,6 +743,14 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
     setSubmitting(true);
 
     try {
+      const filesToUpload = (formData.floorPlans || [])
+        .map((plan: any) => plan.rawFile)
+        .filter((f: any): f is File => f instanceof File);
+
+      const fileResult = await uploadFilesToStorage(filesToUpload);
+
+      const cleanedFloorPlans = (formData.floorPlans || []).map(({ rawFile, ...rest }: any) => rest);
+
       // Save data structure to Firestore
       const quoteDetails = {
         type: 'commercial_b2b',
@@ -758,7 +768,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
         contactName: formData.contactName,
         contactEmail: formData.contactEmail,
         contactPhone: formData.contactPhone,
-        floorPlans: formData.floorPlans,
+        floorPlans: cleanedFloorPlans,
         estimatedMonthlyBudget: monthly,
         estimatedAnnualBudget: annual,
         createdAt: serverTimestamp(),
@@ -766,22 +776,20 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
         status: 'pending'
       };
 
-      await addDoc(collection(db, 'b2b_quotes'), quoteDetails);
+      await addDoc(collection(db, 'b2b_quotes'), sanitizeFirestoreData(quoteDetails));
 
       // Trigger standard Webhook to MAKE (same as private leads webhook!)
-      try {
-        await fetch('https://hook.eu1.make.com/ucxeqjygku2w6zyf9ynut5oantantx58', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ...quoteDetails,
-            event_source: 'kraken_b2b_calculator',
-            title: `Nueva Propuesta B2B - ${formData.companyName}`
-          })
-        });
-      } catch (err) {
-        console.warn('Webhook transmission offline, firestore saved', err);
-      }
+      sendLead({
+        ...quoteDetails,
+        email: formData.contactEmail,
+        event_source: 'kraken_b2b_calculator',
+        source: 'Commercial B2B Calculator',
+        title: `Nueva Propuesta B2B - ${formData.companyName}`,
+        fileUrl: fileResult.fileUrl,
+        fileUrls: fileResult.fileUrls,
+        fileName: fileResult.fileName,
+        fileCount: fileResult.fileCount
+      });
 
       setComplete(true);
       setStep(5);
@@ -1176,7 +1184,8 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                                           {
                                             name: file.name,
                                             size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
-                                            content: event.target?.result as string || ''
+                                            content: event.target?.result as string || '',
+                                            rawFile: file
                                           }
                                         ]
                                       }));

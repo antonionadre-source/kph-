@@ -1,0 +1,104 @@
+{
+  "kit": "Kraken PFM Open Graph",
+  "source": "ChatGPT Image Aug 12, 2026, 04_54_45 AM.png",
+  "color_space": "sRGB",
+  "default_asset": "kraken-og-1200x630.jpg",
+  "assets": [
+    {
+      "file": "kraken-og-1200x630.jpg",
+      "role": "Open Graph principal, máxima compatibilidad",
+      "recommended": true,
+      "format": "JPEG",
+      "width": 1200,
+      "height": 630,
+      "mode": "RGB",
+      "bytes": 222964,
+      "sha256": "59c222f2c43a2c9fe584a9d30a74a328a05c6f07faac01b07721ebac75918271",
+      "has_icc_profile": true
+    },
+    {
+      "file": "kraken-og-1200x630.png",
+      "role": "Open Graph sin pérdida / archivo maestro web",
+      "recommended": false,
+      "format": "PNG",
+      "width": 1200,
+      "height": 630,
+      "mode": "RGB",
+      "bytes": 1047129,
+      "sha256": "c14ef624541200c1b1451e08b33074ac3737637f9329582bf496afaa72ab40a1",
+      "has_icc_profile": true
+    },
+    {
+      "file": "kraken-og-1200x630.webp",
+      "role": "Alternativa web optimizada",
+      "recommended": false,
+      "format": "WEBP",
+      "width": 1200,
+      "height": 630,
+      "mode": "RGB",
+      "bytes": 114690,
+      "sha256": "4dafefc1f6e9111f35dff0ad57a6f916d27e44567ef1a60beef341512ad121e7",
+      "has_icc_profile": true
+    },
+    {
+      "file": "kraken-og-1200x630.avif",
+      "role": "Alternativa web de alta compresión",
+      "recommended": false,
+      "format": "AVIF",
+      "width": 1200,
+      "height": 630,
+      "mode": "RGB",
+      "bytes": 82618,
+      "sha256": "1618e5544685b7c1d6db03ac9bc9d6aa8f762b9249489ebce837e0c635fa2baf",
+      "has_icc_profile": true
+    },
+    {
+      "file": "kraken-x-card-1200x600.jpg",
+      "role": "Tarjeta grande específica para X",
+      "recommended": false,
+      "format": "JPEG",
+      "width": 1200,
+      "height": 600,
+      "mode": "RGB",
+      "bytes": 215144,
+      "sha256": "2c35c6280957a579f14b8a011553cc9e00dbed621970cb92184177c3f3562cb2",
+      "has_icc_profile": true
+    },
+    {
+      "file": "kraken-og-fallback-600x315.jpg",
+      "role": "Fallback Open Graph de menor tamaño",
+      "recommended": false,
+      "format": "JPEG",
+      "width": 600,
+      "height": 315,
+      "mode": "RGB",
+      "bytes": 68608,
+      "sha256": "28a477902b3685ea07238ae85f00303f3a08d94a4df6276af757e1f1d583ab54",
+      "has_icc_profile": true
+    },
+    {
+      "file": "kraken-social-square-1200x1200.jpg",
+      "role": "Variante social cuadrada sin recorte de contenido",
+      "recommended": false,
+      "format": "JPEG",
+      "width": 1200,
+      "height": 1200,
+      "mode": "RGB",
+      "bytes": 239833,
+      "sha256": "deb4059249d7049cf4a4d41c077e8cde08a67130398e2228cd6417a3faa35309",
+      "has_icc_profile": true
+    },
+    {
+      "file": "kraken-original-1731x909.png",
+      "role": "Original archivado sin cambios",
+      "recommended": false,
+      "format": "PNG",
+      "width": 1731,
+      "height": 909,
+      "mode": "RGB",
+      "bytes": 2083822,
+      "sha256": "2c309f0a84db0be35de4dbed58fe7e3c794b3fa67f2fd9285b5ddde8f87211de",
+      "has_icc_profile": false
+    }
+  ]
+}

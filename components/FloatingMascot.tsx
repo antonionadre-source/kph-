@@ -12,8 +12,9 @@ interface FloatingMascotProps {
   seoCityId?: string;
 }
 
+import { sendLead, MAKE_WEBHOOK_URL } from './leadWebhook';
+
 const STORAGE_KEY = 'kraken_kai_ultimate_agent_v2';
-const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/ucxeqjygku2w6zyf9ynut5oantantx58';
 const EMAIL_SERVICE_ID = 'service_aiv15bc';
 const EMAIL_TEMPLATE_ID = 'template_aktj7t9';
 const EMAIL_PUBLIC_KEY = 'sH5K84ChHyssJrarm';
@@ -477,7 +478,7 @@ const getMascotImage = (page: string, seoCityId?: string): string => {
     case 'comic-shop':
       return '/kai comics.webp';
     default:
-      return '/mascota-kraken-homepage.webp';
+      return '/mascota-kraken-homepage-500.webp';
   }
 };
 
@@ -755,7 +756,6 @@ const FloatingMascot: React.FC<FloatingMascotProps> = ({ currentPage, cart, onNa
     
     setIsReminder(shouldShowReminder);
 
-    const showTimer = setTimeout(() => setShowBubble(true), 2000);
     const cycleInterval = setInterval(() => {
       setIsExiting(true);
       setTimeout(() => {
@@ -764,7 +764,7 @@ const FloatingMascot: React.FC<FloatingMascotProps> = ({ currentPage, cart, onNa
         setIsExiting(false);
       }, 500);
     }, 12000);
-    return () => { clearTimeout(showTimer); clearInterval(cycleInterval); };
+    return () => { clearInterval(cycleInterval); };
   }, [currentPage, isChatOpen, cart]);
 
   const renderMessageText = (text: string) => {
@@ -779,13 +779,21 @@ const FloatingMascot: React.FC<FloatingMascotProps> = ({ currentPage, cart, onNa
 
   return (
     <>
-      <div className={`fixed bottom-4 left-4 z-[55] transition-all duration-700 pointer-events-none ${isChatOpen || isFooterVisible ? 'opacity-0 scale-50' : (isScrolledPastHero ? 'opacity-100 scale-100' : 'opacity-0 scale-0 translate-y-20')} ${isIntroFinished ? (isReminder ? 'animate-reminder-shake' : 'animate-idle-breath') : 'animate-swim-intro'}`}>
-        <div className="relative pointer-events-auto cursor-pointer group" onClick={() => setIsChatOpen(true)}>
-            <div className={`w-20 h-20 sm:w-24 sm:h-24 transition-all duration-300 group-hover:scale-110 flex items-center justify-center relative ${isReminder ? 'ring-4 ring-red-500/50 rounded-full' : ''}`}>
+      <div className={`fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-[55] transition-all duration-700 pointer-events-none ${isChatOpen || isFooterVisible ? 'opacity-0 scale-50' : (isScrolledPastHero ? 'opacity-100 scale-100' : 'opacity-0 scale-0 translate-y-20')} ${isIntroFinished ? (isReminder ? 'animate-reminder-shake' : 'animate-idle-breath') : 'animate-swim-intro'}`}>
+        <div 
+          className="relative pointer-events-auto cursor-pointer group" 
+          onClick={() => setIsChatOpen(true)}
+          onMouseEnter={() => setShowBubble(true)}
+          onMouseLeave={() => setShowBubble(false)}
+        >
+            <div className={`w-14 h-14 sm:w-16 sm:h-16 transition-all duration-300 group-hover:scale-110 flex items-center justify-center relative ${isReminder ? 'ring-4 ring-red-500/50 rounded-full' : ''}`}>
               <img 
                 src={getMascotImage(currentPage, seoCityId)} 
                 alt="Kai" 
-                className="w-full h-full object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.2)] select-none animate-fade-in"
+                className="w-full h-full object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.18)] select-none animate-fade-in"
+                width="64"
+                height="64"
+                loading="lazy"
                 referrerPolicy="no-referrer"
               />
             </div>

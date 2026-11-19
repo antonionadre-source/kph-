@@ -64,10 +64,17 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
       <section data-header-theme="dark" className="relative md:min-h-[85vh] flex items-center pt-32 pb-40 md:py-40 overflow-hidden bg-[#001A3D]">
         <div className="absolute inset-0 z-0">
           <img 
-            src="/sobre-nosotros-equipo-con-cliente-en-zurich.png" 
-            alt="Kraken HQ" 
+            src="/sobre-nosotros-equipo-con-cliente-en-zurich.webp" 
+            alt="Kraken About Us" 
             className="w-full h-full object-cover object-right"
             referrerPolicy="no-referrer"
+            onError={(e) => {
+              const target = e.currentTarget;
+              if (!target.dataset.fallback) {
+                target.dataset.fallback = 'true';
+                target.src = '/kai about us.webp';
+              }
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#001A3D] via-[#001A3D]/40 to-transparent" />
         </div>

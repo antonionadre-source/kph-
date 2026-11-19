@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../i18n';
 import { heroImageUrl } from '../assets';
-import { ChevronRightIcon, BoltIcon, CheckCircleIcon, BuildingIcon, ShieldCheckIcon, CleaningBrushIcon, CameraIcon } from './icons';
+import { ChevronRightIcon, BoltIcon, CheckCircleIcon, ShieldCheckIcon, CleaningBrushIcon, CameraIcon } from './icons';
 
 interface HeroProps {
   onNavigate: (page: string) => void;
@@ -19,62 +19,95 @@ const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
   }, []);
 
   return (
-    <section data-header-theme="dark" className="relative min-h-screen md:min-h-[80vh] flex flex-col md:flex-row items-center overflow-hidden bg-[#020617]">
-      {/* Background Image / Mobile Top Image */}
+    <section data-header-theme="dark" className="relative min-h-screen md:min-h-[85vh] flex flex-col md:flex-row items-center overflow-hidden bg-[#020617]">
+      {/* Background Image with Dark Gradient Overlay for optimal text legibility */}
       <div className="relative md:absolute md:inset-0 z-0 w-full h-auto md:h-full">
         <img 
-          src="/imagen-google-ai-compatible.webp" 
+          src="/imagen-google-ai-compatible-desktop.webp"
+          srcSet="/imagen-google-ai-compatible-mobile.webp 640w, /imagen-google-ai-compatible-desktop.webp 1200w"
+          sizes="(max-width: 767px) 100vw, 50vw"
           alt="Kraken Properties Hero" 
           className="w-full h-auto md:h-full object-contain md:object-cover object-center"
           referrerPolicy="no-referrer"
           loading="eager"
           fetchPriority="high"
+          width="1200"
+          height="800"
         />
-        <div className="absolute inset-0 bg-black/20 md:bg-black/10 hidden md:block"></div>
+        {/* Soft dark navy gradient overlay: dark behind text on left, fading smoothly so mascot face on right is clear */}
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/40 via-45% to-transparent z-1 pointer-events-none"></div>
       </div>
 
-      <div className="container mx-auto px-4 md:px-6 relative z-10 pt-8 pb-16 md:pt-32 md:pb-32">
+      <div className="container mx-auto px-4 md:px-6 relative z-10 pt-8 pb-16 md:pt-28 md:pb-24">
         <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left Content */}
-          <div className="max-w-2xl animate-fade-in-up text-center md:text-left">
-            <h1 className="text-2xl sm:text-3xl md:text-7xl font-black text-white leading-[1.1] mb-3 md:mb-4 tracking-tight">
-              {t('hero.main_title_part1')} <br className="hidden md:block" /> 
+          <div className="max-w-2xl animate-fade-in-up text-center md:text-left relative z-10">
+            {/* Handover Guarantee Eyebrow Badge */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[#4ade80] text-xs sm:text-sm font-extrabold uppercase tracking-[0.18em] backdrop-blur-md shadow-lg mb-3 md:mb-5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+              <ShieldCheckIcon className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400 shrink-0" />
+              <span>{t('hero.guarantee_badge')}</span>
+            </div>
+
+            {/* Main Title with deep text shadows */}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-[1.08] mb-3 md:mb-4 tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.95)]">
+              {t('hero.main_title_part1')}{' '}
               <span className={`transition-colors duration-700 ${
                 activeColor === 0 ? 'text-[#007bff]' : 
                 activeColor === 1 ? 'text-yellow-400' : 
                 'text-red-400'
-              }`}>{t('hero.main_title_chaos')}</span> {t('hero.main_title_part2')} <br className="hidden md:block" />
+              }`}>{t('hero.main_title_chaos')}</span>{' '}
+              {t('hero.main_title_part2')} <br className="hidden md:block" />
               {t('hero.main_title_part3')}
             </h1>
             
-            <p className="text-[#4ade80] font-handwriting text-xl sm:text-2xl md:text-5xl mb-4 md:mb-8 -rotate-2 transform-gpu mx-auto md:mx-0 w-fit">
+            <p className="text-[#4ade80] font-handwriting font-bold text-base sm:text-lg md:text-2xl mb-2 md:mb-3 -rotate-1 transform-gpu mx-auto md:mx-0 w-fit drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
               {t('hero.main_subtitle')}
             </p>
- 
-            <p className="text-xs md:text-xl text-white/90 mb-6 md:mb-12 font-medium max-w-xl leading-relaxed mx-auto md:mx-0">
+
+            <p className="text-sm sm:text-base md:text-xl text-slate-100 mb-6 md:mb-8 font-medium max-w-xl leading-relaxed mx-auto md:mx-0 drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
               {t('hero.main_desc')}
             </p>
             
-            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3 md:gap-6">
+            {/* CTA Buttons Row */}
+            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3 md:gap-4 mb-6 md:mb-8">
               <button 
                 onClick={() => onNavigate('consultation')}
-                className="group w-full sm:w-auto bg-gradient-to-r from-[#4ade80] to-[#2dd4bf] text-[#002d5b] px-6 md:px-20 py-3 md:py-5 rounded-full text-sm md:text-lg font-black shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 md:gap-3 whitespace-nowrap"
+                className="group w-full sm:w-auto bg-gradient-to-r from-[#2dd4bf] to-[#4ade80] text-slate-950 hover:from-[#22c55e] hover:to-[#14b8a6] px-8 py-4 md:px-9 md:py-4.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider shadow-2xl shadow-emerald-950/60 transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2.5 whitespace-nowrap cursor-pointer"
               >
-                {t('hero.main_cta')}
+                <span>{t('hero.main_cta')}</span>
+                <span className="text-base font-bold group-hover:translate-x-1 transition-transform">→</span>
               </button>
               
               <button
-                onClick={() => onNavigate('commercial-quote')}
-                className="group w-full sm:w-auto bg-transparent border border-white/30 text-white px-6 md:px-20 py-3 md:py-5 rounded-full text-sm md:text-lg font-bold transition-all hover:bg-white/10 flex items-center justify-center gap-2 md:gap-3 whitespace-nowrap"
+                onClick={() => onNavigate('consultation')}
+                className="group w-full sm:w-auto bg-slate-950/60 border-2 border-white/75 backdrop-blur-md text-white hover:bg-white/15 hover:border-white px-7 py-4 md:px-8 md:py-4 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2.5 whitespace-nowrap cursor-pointer"
               >
-                {t('hero.b2b_buildings_cta')}
-                <ChevronRightIcon className="w-4 h-4 md:w-5 md:h-5 transition-transform group-hover:translate-x-1" />
+                <span>{t('hero.secondary_cta')}</span>
+                <span className="text-base font-bold group-hover:translate-x-1 transition-transform">→</span>
               </button>
             </div>
+
+            {/* Trust Signals Row */}
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2.5 sm:gap-4 mt-5 md:mt-7 text-xs sm:text-sm text-slate-100 font-bold uppercase tracking-wider drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+              <div className="flex items-center gap-2 bg-slate-950/40 border border-white/15 px-3.5 py-2 rounded-xl backdrop-blur-sm">
+                <CheckCircleIcon className="w-4 h-4 text-[#2dd4bf] shrink-0" />
+                <span>{t('hero.trust_signal_1')}</span>
+              </div>
+              <div className="flex items-center gap-2 bg-slate-950/40 border border-white/15 px-3.5 py-2 rounded-xl backdrop-blur-sm">
+                <CheckCircleIcon className="w-4 h-4 text-[#2dd4bf] shrink-0" />
+                <span>{t('hero.trust_signal_2')}</span>
+              </div>
+              <div className="flex items-center gap-2 bg-slate-950/40 border border-white/15 px-3.5 py-2 rounded-xl backdrop-blur-sm">
+                <CheckCircleIcon className="w-4 h-4 text-[#2dd4bf] shrink-0" />
+                <span>{t('hero.trust_signal_3')}</span>
+              </div>
+            </div>
+
+
           </div>
 
           {/* Right Content: Spacer for the background mascot */}
-          <div className="hidden lg:block h-[500px]"></div>
+          <div className="hidden lg:block h-[450px]"></div>
         </div>
       </div>
 

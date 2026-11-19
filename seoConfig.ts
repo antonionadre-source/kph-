@@ -1,10 +1,14 @@
-import { translations } from "./i18n";
-import { MUNICIPALITIES } from "./src/data/locations";
+import { translations } from "./i18n.ts";
+import { MUNICIPALITIES } from "./src/data/locations.ts";
 
 export type Language = "de" | "en" | "fr" | "it" | "es" | "pt";
 
 export const BRAND = "Kraken Properties and Facilities Management";
 export const BASE_URL = "https://krakenpfm.ch";
+export const DEFAULT_OG_IMAGE = `${BASE_URL}/kraken-og-1200x630.jpg`;
+export const OG_IMAGE_WIDTH = "1200";
+export const OG_IMAGE_HEIGHT = "630";
+export const OG_IMAGE_TYPE = "image/jpeg";
 
 export const PATH_TO_PAGE_MAP: Record<string, string> = {
   "/": "home",
@@ -62,7 +66,7 @@ export const PAGE_TO_PATH_MAP: Record<string, string> = {
   "coverage-hub": "/einsatzgebiete",
 };
 
-export const VALID_CITIES = ["schaffhausen", "zurich", "winterthur", "neuhausen", "thayngen", "stein-am-rhein", "feuerthalen", "kloten", "buelach", "dietikon", "uster"];
+export const VALID_CITIES = ["schaffhausen", "zurich", "winterthur", "neuhausen", "stein-am-rhein"];
 export const VALID_SERVICES = [
   "end-of-tenancy",
   "deep-cleaning",
@@ -126,14 +130,20 @@ export const getServiceLinkForMunicipality = (municipalitySlug: string, serviceS
   
   const mSlug = mun.slug;
   const urlCitySlug = mSlug === "neuhausen-am-rheinfall" ? "neuhausen" : mSlug;
-  const isDedicatedMunicipality = VALID_CITIES.includes(urlCitySlug);
   
-  if (isDedicatedMunicipality) {
+  // Tier 1 municipalities have standalone service subpages
+  if (mun.tier === 1 && VALID_CITIES.includes(urlCitySlug)) {
     return `/services/${urlCitySlug}/${serviceSlug.toLowerCase()}`;
   }
   
-  const targetRegion = mun.region === "zuerich" ? "zurich" : mun.region;
-  return `/services/${targetRegion}/${serviceSlug.toLowerCase()}`;
+  // Tier 2 municipalities use anchor sections on their location page
+  if (mun.tier === 2) {
+    return `/reinigung/${mSlug}#${serviceSlug.toLowerCase()}`;
+  }
+  
+  // Tier 3 municipalities link to parent region hub
+  const targetRegion = mun.region === "zuerich" ? "region-zuerich" : mun.region === "winterthur" ? "region-winterthur" : "kanton-schaffhausen";
+  return `/reinigung/${targetRegion}#${serviceSlug.toLowerCase()}`;
 };
 
 export const isRouteValid = (path: string): boolean => {
@@ -764,6 +774,10 @@ export function getMetadataForPath(
   h1: string;
   h2: string;
   bodyText: string;
+  ogImage: string;
+  ogImageWidth: string;
+  ogImageHeight: string;
+  ogImageType: string;
 } {
   const cleanPath = pathname.split("?")[0];
   if (cleanPath === "/blog/wohnungsabgabe-zurich-perfekte-uebergabe") {
@@ -775,7 +789,11 @@ export function getMetadataForPath(
       pageType: "blog-detail",
       h1: "Wohnungsabgabe in Zürich: So gelingt die perfekte Übergabe",
       h2: BRAND,
-      bodyText: `Erfahren Sie, wie Sie die Wohnungsabgabe in Zürich erfolgreich meistern. Tipps zu Reinigungsstandards & gesetzlichen Pflichten für Ihre Mietkaution.`
+      bodyText: `Erfahren Sie, wie Sie die Wohnungsabgabe in Zürich erfolgreich meistern. Tipps zu Reinigungsstandards & gesetzlichen Pflichten für Ihre Mietkaution.`,
+      ogImage: DEFAULT_OG_IMAGE,
+      ogImageWidth: OG_IMAGE_WIDTH,
+      ogImageHeight: OG_IMAGE_HEIGHT,
+      ogImageType: OG_IMAGE_TYPE,
     };
   }
   if (cleanPath === "/blog/iot-smart-facility-management-schweizer-bueros") {
@@ -787,7 +805,11 @@ export function getMetadataForPath(
       pageType: "blog-detail",
       h1: "IoT & Smart Facility Management: Schweizer Büros der Zukunft",
       h2: BRAND,
-      bodyText: `Wie IoT-Sensoren und digitale Dashboards die Reinigung & Energieeffizienz in Schweizer Büros revolutionieren. Erfahren Sie alles über smarten Unterhalt.`
+      bodyText: `Wie IoT-Sensoren und digitale Dashboards die Reinigung & Energieeffizienz in Schweizer Büros revolutionieren. Erfahren Sie alles über smarten Unterhalt.`,
+      ogImage: DEFAULT_OG_IMAGE,
+      ogImageWidth: OG_IMAGE_WIDTH,
+      ogImageHeight: OG_IMAGE_HEIGHT,
+      ogImageType: OG_IMAGE_TYPE,
     };
   }
 
@@ -917,6 +939,10 @@ export function getMetadataForPath(
     pageType: page,
     h1,
     h2,
-    bodyText
+    bodyText,
+    ogImage: DEFAULT_OG_IMAGE,
+    ogImageWidth: OG_IMAGE_WIDTH,
+    ogImageHeight: OG_IMAGE_HEIGHT,
+    ogImageType: OG_IMAGE_TYPE,
   };
 }

@@ -398,6 +398,14 @@ const d: Record<string, Record<string, string>> = {
     it: 'Regione di Winterthur',
     pt: 'Região de Winterthur'
   },
+  locThurgau: {
+    en: 'Thurgau Canton',
+    es: 'Cantón de Turgovia',
+    de: 'Kanton Thurgau',
+    fr: 'Canton de Thurgovie',
+    it: 'Canton Turgovia',
+    pt: 'Cantão de Turgóvia'
+  },
   srvStandard: {
     en: 'Standard (Office + Restrooms)',
     es: 'Estándar (Oficina + Baños)',
@@ -532,6 +540,7 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
     zuerich: MUNICIPALITIES.filter(m => m.region === 'zuerich').sort((a, b) => a.name.localeCompare(b.name)),
     schaffhausen: MUNICIPALITIES.filter(m => m.region === 'schaffhausen').sort((a, b) => a.name.localeCompare(b.name)),
     winterthur: MUNICIPALITIES.filter(m => m.region === 'winterthur').sort((a, b) => a.name.localeCompare(b.name)),
+    thurgau: MUNICIPALITIES.filter(m => m.region === 'thurgau').sort((a, b) => a.name.localeCompare(b.name)),
   };
 
   // State for interactive proposal calculator
@@ -596,7 +605,7 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
         it: ['Aree comuni', 'Ingresso / Uscita', 'Manutenzione preventiva'],
         pt: ['Áreas comuns', 'Entrada / Saída', 'Manutenção preventiva']
       },
-      imageUrl: '/servicio-comercial-limpieza-escaleras.png',
+      imageUrl: '/servicio-comercial-limpieza-escaleras.webp',
       icon: <Building className="w-5 h-5 text-blue-600" />
     },
     {
@@ -654,7 +663,7 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
         it: ['Pulizia quotidiana uffici', 'Servizi igienici e cucine', 'Disinfezione e forniture'],
         pt: ['Limpeza diária de escritórios', 'Casas de banho e cozinhas', 'Desinfecção e consumíveis']
       },
-      imageUrl: '/servicio-comercial-limpieza-showroom.png',
+      imageUrl: '/servicio-comercial-limpieza-showroom.webp',
       icon: <Briefcase className="w-5 h-5 text-blue-600" />
     },
     {
@@ -683,7 +692,7 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
         it: ['Cura dei pavimenti', 'Pulizia vetrate', 'Apertura / Chiusura'],
         pt: ['Tratamento de pisos', 'Limpeza de vidros', 'Abertura / Fecho']
       },
-      imageUrl: '/servicio-comercial-limpieza-retail.png',
+      imageUrl: '/servicio-comercial-limpieza-retail.webp',
       icon: <ShoppingBag className="w-5 h-5 text-blue-600" />
     },
     {
@@ -712,7 +721,7 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
         it: ['Pulizia profonda cucine', 'Conformità HACCP', 'Cura di grassi e cappe'],
         pt: ['Limpeza profunda de cozinhas', 'Conformidade HACCP', 'Limpeza de gordura e exaustor']
       },
-      imageUrl: '/servicio-comercial-limpieza-bar-restaurante.png',
+      imageUrl: '/servicio-comercial-limpieza-bar-restaurante.webp',
       icon: <Soup className="w-5 h-5 text-blue-600" />
     },
     {
@@ -741,7 +750,7 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
         it: ['Pulizia industriale', 'Cura macchinari e pavimentazioni', 'Magazzini e cortili'],
         pt: ['Limpeza industrial', 'Cuidado de máquinas e pisos', 'Armazéns e pátios']
       },
-      imageUrl: '/servicio-comercial-limpieza-industrial.png',
+      imageUrl: '/servicio-comercial-limpieza-industrial.webp',
       icon: <Factory className="w-5 h-5 text-blue-600" />
     }
   ];
@@ -1141,17 +1150,29 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
               {/* Action buttons */}
               <div className="flex flex-wrap gap-4 mb-10">
                 <button
-                  onClick={() => onNavigate('commercial-quote')}
-                  className="bg-[#1e6ffd] hover:bg-blue-600 text-white font-bold text-sm px-8 py-4 rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+                  onClick={() => onNavigate('consultation')}
+                  className="bg-gradient-to-r from-[#4ade80] to-[#2dd4bf] text-[#002d5b] hover:from-[#3feb73] hover:to-[#1ecdb6] font-black text-xs sm:text-sm uppercase tracking-wider px-8 py-4 rounded-full shadow-xl shadow-emerald-500/20 transition-all hover:scale-[1.03] active:scale-95 cursor-pointer flex items-center gap-2.5"
                 >
-                  {getL('reqProposal')}
-                  <ArrowRight className="w-4 h-4" />
+                  <span>
+                    {language === 'en' ? 'Request a Free Quote' :
+                     language === 'fr' ? 'Demander un devis gratuit' :
+                     language === 'it' ? 'Richiedi preventivo gratuito' :
+                     language === 'es' ? 'Solicitar presupuesto gratis' :
+                     language === 'pt' ? 'Solicitar orçamento gratuito' :
+                     'Kostenlose Offerte anfordern'}
+                  </span>
+                  <ArrowRight className="w-4 h-4 shrink-0" />
                 </button>
                 <button
                   onClick={() => onNavigate('commercial-quote')}
-                  className="border border-slate-600 hover:border-white text-white font-bold text-sm px-8 py-4 rounded-xl transition-all cursor-pointer"
+                  className="bg-transparent border-2 border-white/40 text-white hover:bg-white/10 hover:border-white/70 font-bold text-xs sm:text-sm uppercase tracking-wider px-7 py-4 rounded-full transition-all duration-300 cursor-pointer active:scale-95"
                 >
-                  {getL('bookCall')}
+                  {language === 'en' ? 'Request a Visit' :
+                   language === 'fr' ? 'Demander une visite' :
+                   language === 'it' ? 'Richiedi un sopralluogo' :
+                   language === 'es' ? 'Solicitar visita' :
+                   language === 'pt' ? 'Solicitar visita' :
+                   'Besuch anfordern'}
                 </button>
               </div>
 
@@ -1245,19 +1266,34 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
                       >
                         <optgroup label={getL('locZurich')}>
                           {regionGroups.zuerich.map(m => (
-                            <option key={m.slug} value={m.slug}>{m.name} ({m.plz[0]})</option>
+                            <option key={m.slug} value={m.slug}>
+                              {m.name} ({m.plz[0]} · Kanton {m.canton}{m.bezirk ? `, Bezirk ${m.bezirk}` : ''})
+                            </option>
                           ))}
                         </optgroup>
                         <optgroup label={getL('locSchaffhausen')}>
                           {regionGroups.schaffhausen.map(m => (
-                            <option key={m.slug} value={m.slug}>{m.name} ({m.plz[0]})</option>
+                            <option key={m.slug} value={m.slug}>
+                              {m.name} ({m.plz[0]} · Kanton {m.canton}{m.bezirk ? `, Bezirk ${m.bezirk}` : ''})
+                            </option>
                           ))}
                         </optgroup>
                         <optgroup label={getL('locWinterthur')}>
                           {regionGroups.winterthur.map(m => (
-                            <option key={m.slug} value={m.slug}>{m.name} ({m.plz[0]})</option>
+                            <option key={m.slug} value={m.slug}>
+                              {m.name} ({m.plz[0]} · Kanton {m.canton}{m.bezirk ? `, Bezirk ${m.bezirk}` : ''})
+                            </option>
                           ))}
                         </optgroup>
+                        {regionGroups.thurgau.length > 0 && (
+                          <optgroup label={getL('locThurgau')}>
+                            {regionGroups.thurgau.map(m => (
+                              <option key={m.slug} value={m.slug}>
+                                {m.name} ({m.plz[0]} · Kanton {m.canton}{m.bezirk ? `, Bezirk ${m.bezirk}` : ''})
+                              </option>
+                            ))}
+                          </optgroup>
+                        )}
                       </select>
                       <ChevronDown className="w-4 h-4 text-slate-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
                     </div>
@@ -1357,6 +1393,8 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
                     alt={getLangVal(item.title)} 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
+                    width="600"
+                    height="400"
                     referrerPolicy="no-referrer"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent"></div>
@@ -1632,16 +1670,28 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
           
           <div className="flex flex-wrap justify-center gap-4">
             <button 
-              onClick={() => onNavigate('commercial-quote')}
-              className="bg-[#1e6ffd] hover:bg-blue-600 text-white px-8 py-4 rounded-xl font-bold text-sm shadow-xl transition-all hover:scale-105 cursor-pointer"
+              onClick={() => onNavigate('consultation')}
+              className="bg-gradient-to-r from-[#4ade80] to-[#2dd4bf] text-[#002d5b] hover:from-[#3feb73] hover:to-[#1ecdb6] px-8 py-4 rounded-full font-black text-xs sm:text-sm uppercase tracking-wider shadow-xl shadow-emerald-500/20 transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-2.5"
             >
-              {getL('reqProposal')}
+              <span>
+                {language === 'en' ? 'Request a Free Quote' :
+                 language === 'fr' ? 'Demander un devis gratuit' :
+                 language === 'it' ? 'Richiedi preventivo gratuito' :
+                 language === 'es' ? 'Solicitar presupuesto gratis' :
+                 language === 'pt' ? 'Solicitar orçamento gratuito' :
+                 'Kostenlose Offerte anfordern'}
+              </span>
             </button>
             <button 
               onClick={() => onNavigate('commercial-quote')}
-              className="border border-slate-600 hover:border-white text-white px-8 py-4 rounded-xl font-bold text-sm transition-all hover:scale-105 cursor-pointer"
+              className="bg-transparent border-2 border-white/40 text-white hover:bg-white/10 hover:border-white/70 px-7 py-4 rounded-full font-bold text-xs sm:text-sm uppercase tracking-wider transition-all hover:scale-105 active:scale-95 cursor-pointer"
             >
-              {getL('bookCall')}
+              {language === 'en' ? 'Request a Visit' :
+               language === 'fr' ? 'Demander une visite' :
+               language === 'it' ? 'Richiedi un sopralluogo' :
+               language === 'es' ? 'Solicitar visita' :
+               language === 'pt' ? 'Solicitar visita' :
+               'Besuch anfordern'}
             </button>
           </div>
         </div>

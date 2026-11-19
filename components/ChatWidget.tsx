@@ -5,6 +5,8 @@ import { useTranslation } from '../i18n';
 import { mascotImageUrl, mascotVideoUrl } from '../assets';
 import emailjs from '@emailjs/browser';
 import JSZip from 'jszip';
+import { sendLead } from './leadWebhook';
+import { uploadFilesToStorage } from './fileUploadHelper';
 
 // EmailJS Configuration
 const SERVICE_ID = 'service_aiv15bc';
@@ -219,14 +221,30 @@ const ChatWidget: React.FC = () => {
               setVal('message', message);
 
               const fileInput = form.querySelector('input[name="my_file"]') as HTMLInputElement;
-              if (fileInput) {
-                  if (zipBlob) {
-                      const zipFile = new File([zipBlob], "attachments.zip", { type: "application/zip" });
-                      const dataTransfer = new DataTransfer();
-                      dataTransfer.items.add(zipFile);
-                      fileInput.files = dataTransfer.files;
-                  }
+              if (fileInput && zipBlob) {
+                  const zipFile = new File([zipBlob], "attachments.zip", { type: "application/zip" });
+                  const dataTransfer = new DataTransfer();
+                  dataTransfer.items.add(zipFile);
+                  fileInput.files = dataTransfer.files;
               }
+
+              const chatFileResult = await uploadFilesToStorage(allSessionFiles.current);
+
+              sendLead({
+                source: 'chat_lead',
+                name: bookingData.name,
+                email: bookingData.email,
+                phone: bookingData.phone,
+                address: bookingData.address,
+                date: bookingData.date,
+                total_price: bookingData.priceEstimate,
+                services_interest: bookingData.service,
+                notes: bookingData.notes || '',
+                fileUrl: chatFileResult.fileUrl,
+                fileUrls: chatFileResult.fileUrls,
+                fileName: chatFileResult.fileName,
+                fileCount: chatFileResult.fileCount
+              });
 
               await emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, form, PUBLIC_KEY);
               
@@ -344,7 +362,7 @@ const ChatWidget: React.FC = () => {
         {/* Header */}
         <div className="bg-[#002D5B] p-5 flex items-center gap-4">
             <div className="bg-white/10 p-2 rounded-xl overflow-hidden">
-                <img src="/SA.png" alt="Kai" className="w-8 h-8 object-contain" referrerPolicy="no-referrer" />
+                <img src="/kai services.webp" alt="Kai" className="w-8 h-8 object-contain" width="32" height="32" loading="lazy" referrerPolicy="no-referrer" />
             </div>
             <div className="flex flex-col">
                 <p className="text-white font-bold">{t('chatbot.header.title')}</p>

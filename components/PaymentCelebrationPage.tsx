@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Check, Shield, Calendar, Headphones, ArrowRight, ClipboardCheck } from 'lucide-react';
+import { sendLead } from './leadWebhook';
 
 interface PaymentCelebrationPageProps {
   booking: any;
@@ -141,10 +142,30 @@ export const PaymentCelebrationPage: React.FC<PaymentCelebrationPageProps> = ({ 
   // Determine booking type (Express vs Precision Quote)
   const isDirect = booking.bookingMode === 'direct';
 
-  // State to make confetti fall and recycle
-  const [confetti, setConfetti] = useState<Array<{ id: number; x: number; y: number; size: number; color: string; duration: number; delay: number; rotate: number }>>([]);
+  const hasSentLead = useRef(false);
 
   useEffect(() => {
+    if (!hasSentLead.current) {
+      hasSentLead.current = true;
+      const params = new URLSearchParams(window.location.search);
+      const urlPayment = params.get('payment');
+      const urlRef = params.get('ref') || params.get('transaction_id') || params.get('id');
+
+      sendLead({
+        source: 'payment_success',
+        amount: booking?.depositAmount || booking?.totalPrice || booking?.payment?.amountCharged || params.get('amount') || '',
+        currency: booking?.payment?.currency || 'CHF',
+        reference: booking?.id || urlRef || '',
+        name: booking?.clientName || booking?.client || '',
+        email: booking?.email || '',
+        payment_status: urlPayment || booking?.payment?.status || 'success',
+        bookingMode: booking?.bookingMode || ''
+      });
+    }
+  }, [booking]);
+
+  useEffect(() => {
+    // Generate 60 colorful confetti pieces
     // Generate 60 colorful confetti pieces
     const colors = ['#FFC107', '#4CAF50', '#00BCD4', '#E91E63', '#9C27B0', '#007BFF', '#FF5722', '#10B981', '#3B82F6', '#EC4899'];
     const generated = Array.from({ length: 65 }).map((_, i) => ({

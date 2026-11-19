@@ -352,7 +352,7 @@ const OurStoryPage: React.FC<OurStoryPageProps> = ({ onNavigate }) => {
       title: getS('timeline_p6_title'),
       desc: getS('timeline_p6_desc'),
       icon: <MapPin className="w-6 h-6" />,
-      img: '/sobre-nosotros-equipo-con-cliente-en-zurich.png'
+      img: '/sobre-nosotros-equipo-con-cliente-en-zurich.webp'
     }
   ] : [
     {
@@ -399,10 +399,17 @@ const OurStoryPage: React.FC<OurStoryPageProps> = ({ onNavigate }) => {
       <section className="relative min-h-[50vh] md:h-[80vh] flex items-center overflow-hidden bg-[#001A3D] py-20 md:py-0">
         <div className="absolute inset-0 z-0">
           <img 
-            src="/nuestra-historia-hero.png" 
+            src="/cinematic-design-workspace.webp" 
             alt="Kraken Story" 
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
+            onError={(e) => {
+              const target = e.currentTarget;
+              if (!target.dataset.fallback) {
+                target.dataset.fallback = 'true';
+                target.src = '/kai about us.webp';
+              }
+            }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#001A3D] via-[#001A3D]/70 to-transparent" />
         </div>

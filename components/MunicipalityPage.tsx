@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from '../i18n';
-import { MUNICIPALITIES, Municipality } from '../src/data/locations';
+import { MUNICIPALITIES, Municipality, KUENDIGUNGSTERMINE } from '../src/data/locations';
+import { SchaffhausenDossierSection } from './SchaffhausenDossierSection';
+import { ZurichDossierSection } from './ZurichDossierSection';
+import { MunicipalDossierSection } from './MunicipalDossierSection';
 import { 
   ServiceSchema, 
   FAQSchema, 
@@ -54,6 +57,7 @@ const LOCAL_TRANSLATIONS: Record<string, Record<string, string>> = {
     gavCompliant: "GAV-konform & versichert",
     noTravelFee: "Keine Anfahrtsgebühr",
     travelFeeLabel: "Anfahrtsgebühr: CHF {fee}",
+    noticeDatesTitle: "Mietrechtliche Kündigungstermine (Kanton {canton})",
     localPartnerTitle: "Ihr lokaler Reinigungspartner für {name}",
     localPriceAnchor: "Lokal-Preisanker für {name}",
     eotPriceFrom: "Umzugsreinigung ab CHF {price}",
@@ -865,7 +869,7 @@ export const MunicipalityPage: React.FC<MunicipalityPageProps> = ({ municipality
         metaRobots.setAttribute('name', 'robots');
         document.head.appendChild(metaRobots);
       }
-      metaRobots.setAttribute('content', 'noindex, nofollow');
+      metaRobots.setAttribute('content', 'noindex, follow');
     } else {
       if (metaRobots) {
         metaRobots.setAttribute('content', 'index, follow');
@@ -1298,6 +1302,24 @@ export const MunicipalityPage: React.FC<MunicipalityPageProps> = ({ municipality
           <p className="text-slate-600 leading-relaxed text-sm sm:text-base font-normal whitespace-pre-line border-l-2 border-slate-100 pl-4 sm:pl-6">
             {generateNarrative()}
           </p>
+
+          {/* Tenancy Notice Dates Callout Box */}
+          {(() => {
+            const noticeObj = KUENDIGUNGSTERMINE[mun.canton];
+            const noticeText = noticeObj ? (noticeObj[currentLang as keyof typeof noticeObj] || noticeObj['de']) : null;
+            if (!noticeText) return null;
+            return (
+              <div className="mt-6 flex items-start gap-3 p-4 bg-cyan-50/60 rounded-2xl border border-cyan-200/60 text-xs sm:text-sm text-slate-700">
+                <Calendar className="w-5 h-5 text-cyan-600 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-extrabold text-[#002D5B] block mb-0.5">
+                    {tLocal("noticeDatesTitle", { canton: mun.canton })}
+                  </span>
+                  <span>{noticeText}</span>
+                </div>
+              </div>
+            );
+          })()}
           
           <div className="mt-8 pt-8 border-t border-slate-100 flex flex-wrap items-center justify-between gap-6">
             <div>
@@ -1325,6 +1347,19 @@ export const MunicipalityPage: React.FC<MunicipalityPageProps> = ({ municipality
           </div>
         </div>
       </section>
+
+      {/* Render Official Municipal Waste & Local Dossier Section */}
+      <MunicipalDossierSection mun={mun} onNavigate={onNavigate} />
+
+      {/* Render Verified Schaffhausen Research Dossier Section if viewing Schaffhausen */}
+      {mun.slug === 'schaffhausen' && (
+        <SchaffhausenDossierSection onNavigate={onNavigate} />
+      )}
+
+      {/* Render Verified Zurich Research Dossier Section if viewing Zurich */}
+      {(mun.slug === 'zurich' || mun.slug === 'zuerich') && (
+        <ZurichDossierSection onNavigate={onNavigate} />
+      )}
 
       {/* Services and specific region links */}
       <section className="bg-slate-50/80 py-20 px-6 border-y border-slate-100">

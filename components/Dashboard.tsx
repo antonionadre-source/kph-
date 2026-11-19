@@ -46,9 +46,11 @@ import {
   Clock
 } from 'lucide-react';
 import { useAuth } from './Auth';
-import { db } from './firebase';
+import { db, sanitizeFirestoreData } from './firebase';
 import { detectZone } from './ConsultationPage';
 import { DetailInspectorModal } from './DetailInspectorModal';
+import { getDashboardTranslation } from './dashboardTranslations';
+import { companyLogoUrl } from '../assets';
 import { 
   collection, 
   query, 
@@ -139,6 +141,18 @@ type JobApplication = {
     status: 'Pending' | 'Reviewed' | 'Contacted' | 'Hired' | 'Rejected';
     createdAt?: any;
     updatedAt?: any;
+};
+
+// Contact Message Datastructure
+type ContactMessage = {
+    id: string;
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+    language?: string;
+    status: 'new' | 'done';
+    createdAt?: any;
 };
 
 // Seed fallback data for fresh developer portals
@@ -393,7 +407,8 @@ const getClientSeedData = (userName: string, userEmail: string) => [
 ];
 
 const Dashboard: React.FC = () => {
-  const { t } = useTranslation();
+  const { language } = useTranslation();
+  const dt = getDashboardTranslation(language);
   const { user } = useAuth();
   
   // States
@@ -444,8 +459,8 @@ const Dashboard: React.FC = () => {
       mediaUrlString: '' // parsed as array
   });
 
-  // Navigation & Tab States: 'requests' | 'careers'
-  const [activeTab, setActiveTab] = useState<'requests' | 'careers'>('requests');
+  // Navigation & Tab States: 'requests' | 'careers' | 'messages'
+  const [activeTab, setActiveTab] = useState<'requests' | 'careers' | 'messages'>('requests');
   const [jobApplications, setJobApplications] = useState<JobApplication[]>([]);
   const [loadingCareers, setLoadingCareers] = useState(false);
   const [selectedJobApp, setSelectedJobApp] = useState<JobApplication | null>(null);
@@ -453,7 +468,59 @@ const Dashboard: React.FC = () => {
   const [careerFilterStatus, setCareerFilterStatus] = useState('all');
   const [previewFile, setPreviewFile] = useState<{ url: string; name: string; title?: string } | null>(null);
 
+  const [contactMessages, setContactMessages] = useState<ContactMessage[]>([]);
+  const [loadingMessages, setLoadingMessages] = useState(false);
+  const [messageSearchQuery, setMessageSearchQuery] = useState('');
+  const [messageFilterStatus, setMessageFilterStatus] = useState<'all' | 'new' | 'done'>('all');
+
   const isStaff = user?.email?.toLowerCase().trim().endsWith('@krakenpfm.ch') || user?.email?.toLowerCase().trim() === 'kai@krakenpfm.ch' || user?.email?.toLowerCase().trim() === 'antonio.nadre@anotherstar.com';
+
+  const fetchContactMessages = async () => {
+    if (!user) return;
+    setLoadingMessages(true);
+    try {
+      const q = collection(db, 'contact_messages');
+      const querySnapshot = await getDocs(q);
+      const fetched: ContactMessage[] = [];
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data() as any;
+        fetched.push({
+          id: docSnap.id,
+          name: data.name || 'Anónimo',
+          email: data.email || 'No email',
+          subject: data.subject || 'Sin asunto',
+          message: data.message || '',
+          language: data.language || 'de',
+          status: data.status === 'done' ? 'done' : 'new',
+          createdAt: data.createdAt
+        });
+      });
+      fetched.sort((a, b) => {
+        if (a.status === 'new' && b.status !== 'new') return -1;
+        if (a.status !== 'new' && b.status === 'new') return 1;
+        return 0;
+      });
+      setContactMessages(fetched);
+    } catch (err) {
+      console.error("Error fetching contact messages from Firestore:", err);
+    } finally {
+      setLoadingMessages(false);
+    }
+  };
+
+  const handleMessageStatusToggle = async (msgId: string, currentStatus: 'new' | 'done') => {
+    const nextStatus = currentStatus === 'new' ? 'done' : 'new';
+    try {
+      await updateDoc(doc(db, 'contact_messages', msgId), {
+        status: nextStatus,
+        updatedAt: serverTimestamp()
+      });
+      setContactMessages(prev => prev.map(m => m.id === msgId ? { ...m, status: nextStatus } : m));
+      setActionAlert(`Estado del mensaje actualizado a: ${nextStatus === 'done' ? 'Atendido (Done)' : 'Nuevo (New)'}`);
+    } catch (err) {
+      console.error("Error updating contact message status:", err);
+    }
+  };
 
   const fetchJobApplications = async () => {
     if (!user) return;
@@ -613,7 +680,7 @@ const Dashboard: React.FC = () => {
               updatedAt: serverTimestamp()
             };
             
-            await setDoc(requestRef, payload);
+            await setDoc(requestRef, sanitizeFirestoreData(payload));
             
             seededList.push({
               ...payload,
@@ -639,6 +706,7 @@ const Dashboard: React.FC = () => {
 
     fetchRequests();
     fetchJobApplications();
+    fetchContactMessages();
   }, [user, isStaff]);
 
   // Actions
@@ -766,8 +834,8 @@ const Dashboard: React.FC = () => {
   };
 
   const handleSendEmail = (req: MaintenanceRequest) => {
-    const subjText = 'Kostenbestaetigung – ' + (req.service || req.client || 'Service') + ' | CHF ' + (req.amount || '0');
-    const bHtml = '<!DOCTYPE html><html><head><meta charset=\'utf-8\'><style>body{font-family:Arial,sans-serif;background:#f0f4f8;margin:0;padding:0}.c{max-width:600px;margin:20px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1)}.h{background:#0f1b2d;padding:28px 32px;text-align:center}.h h1{color:#00d4ff;margin:0;font-size:22px;letter-spacing:2px;text-transform:uppercase}.h p{color:#94a3b8;margin:4px 0 0;font-size:12px}.b{padding:28px 32px}.tbl{width:100%;border-collapse:collapse;margin:16px 0}.tbl th{background:#0f1b2d;color:#00d4ff;padding:10px 14px;text-align:left;font-size:12px;text-transform:uppercase}.tbl td{padding:10px 14px;border-bottom:1px solid #e2e8f0;font-size:13px;color:#334155}.tot td{font-weight:bold;background:#f8fafc}.totamt{color:#0f1b2d;font-size:18px;font-weight:900}.ft{background:#0f1b2d;padding:16px 32px;text-align:center}.ft p{color:#64748b;font-size:11px;margin:3px 0}</style></head><body><div class=\'c\'><div class=\'h\'><h1>Kraken PFM</h1><p>Properties &amp; Facilities Management</p></div><div class=\'b\'><p style=\'font-size:15px;color:#1e293b\'>Sehr geehrte Damen und Herren,<br><br>Hiermit bestaetigen wir die Kosten fuer folgende Dienstleistung:</p><table class=\'tbl\'><tr><th>Detail</th><th>Info</th></tr><tr><td>Kunde</td><td><b>' + (req.client||'N/A') + '</b></td></tr><tr><td>Service</td><td><b>' + (req.service||'Facility Management') + '</b></td></tr><tr><td>Datum</td><td><b>' + (req.date||new Date().toLocaleDateString('de-CH')) + '</b></td></tr><tr><td>Prioritaet</td><td><b>' + (req.priority||'Standard') + '</b></td></tr><tr class=\'tot\'><td><b>TOTAL (CHF)</b></td><td><span class=\'totamt\'>CHF ' + (req.amount||'0.00') + '</span></td></tr></table><p style=\'font-size:12px;color:#64748b\'>Bitte antworten Sie auf diese E-Mail zur Bestaetigung.</p></div><div class=\'ft\'><p style=\'color:#94a3b8;font-size:13px;font-weight:bold\'>Kraken Properties &amp; Facilities Management</p><p>info@krakenpfm.ch | krakenpfm.ch</p></div></div></body></html>';
+    const subjText = dt.emailSubjConfirmation + ' – ' + (req.service || req.client || 'Service') + ' | CHF ' + (req.amount || '0');
+    const bHtml = `<!DOCTYPE html><html><head><meta charset='utf-8'><style>body{font-family:Arial,sans-serif;background:#f0f4f8;margin:0;padding:0}.c{max-width:600px;margin:20px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1)}.h{background:#0f1b2d;padding:28px 32px;text-align:center}.h h1{color:#00d4ff;margin:0;font-size:22px;letter-spacing:2px;text-transform:uppercase}.h p{color:#94a3b8;margin:4px 0 0;font-size:12px}.b{padding:28px 32px}.tbl{width:100%;border-collapse:collapse;margin:16px 0}.tbl th{background:#0f1b2d;color:#00d4ff;padding:10px 14px;text-align:left;font-size:12px;text-transform:uppercase}.tbl td{padding:10px 14px;border-bottom:1px solid #e2e8f0;font-size:13px;color:#334155}.tot td{font-weight:bold;background:#f8fafc}.totamt{color:#0f1b2d;font-size:18px;font-weight:900}.ft{background:#0f1b2d;padding:16px 32px;text-align:center}.ft p{color:#64748b;font-size:11px;margin:3px 0}</style></head><body><div class='c'><div class='h'><h1>Kraken PFM</h1><p>Properties &amp; Facilities Management</p></div><div class='b'><p style='font-size:15px;color:#1e293b'>${dt.emailGreeting}<br><br>${dt.emailBodyIntro}</p><table class='tbl'><tr><th>${dt.emailThDetail}</th><th>${dt.emailThInfo}</th></tr><tr><td>${dt.emailThClient}</td><td><b>${req.client||'N/A'}</b></td></tr><tr><td>${dt.emailThService}</td><td><b>${req.service||'Facility Management'}</b></td></tr><tr><td>${dt.emailThDate}</td><td><b>${req.date||new Date().toLocaleDateString('de-CH')}</b></td></tr><tr><td>${dt.emailThPriority}</td><td><b>${req.priority||'Standard'}</b></td></tr><tr class='tot'><td><b>${dt.emailThTotal}</b></td><td><span class='totamt'>CHF ${req.amount||'0.00'}</span></td></tr></table><p style='font-size:12px;color:#64748b'>${dt.emailReplyPrompt}</p></div><div class='ft'><p style='color:#94a3b8;font-size:13px;font-weight:bold'>Kraken Properties &amp; Facilities Management</p><p>kai@krakenpfm.ch | krakenpfm.ch</p></div></div></body></html>`;
     setSelectedEmailRequest(req);
     setEmailTo(req.email || '');
     setEmailCC('');
@@ -787,10 +855,10 @@ const Dashboard: React.FC = () => {
 
           setRequests(prev => prev.map(r => r.id === req.id ? { ...r, status: 'In Progress' } : r));
 
-          // Trigger Google Calendar event & .ics download for kai@krakenpfm.ch with 1h reminder
+          // Trigger Outlook Calendar event & .ics download for kai@krakenpfm.ch with 1h reminder
           scheduleCalendarEventForKai(req);
 
-          setActionAlert(`SUCCESS: Evento agendado para kai@krakenpfm.ch con recordatorio de 1 hora. Sincronizado en Firebase.`);
+          setActionAlert(`SUCCESS: Evento agendado en Outlook para kai@krakenpfm.ch con recordatorio de 1 hora. Sincronizado en Firebase.`);
       } catch (err) {
           console.error('Error actualizando programación:', err);
           setActionAlert(`ERROR: No se pudo guardar la programación en Firebase.`);
@@ -806,18 +874,20 @@ const Dashboard: React.FC = () => {
       }
 
       const invoiceNum = `INV-${req.id.substring(0, 8).toUpperCase()}`;
-      const dateStr = new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+      const dateStr = new Date().toLocaleDateString(language === 'es' ? 'es-ES' : language === 'de' || language === 'de-CH' ? 'de-CH' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      const logoUrl = 'https://krakenpfm.ch/logo-kraken-azul.webp';
 
       printWindow.document.write(`
         <!DOCTYPE html>
         <html>
         <head>
-          <title>Factura ${invoiceNum} - Kraken PFM</title>
+          <title>${dt.pdfInvoiceTitle} ${invoiceNum} - Kraken PFM</title>
           <style>
             body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; color: #1e293b; max-width: 800px; margin: 0 auto; }
             .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0284c7; padding-bottom: 20px; margin-bottom: 30px; }
-            .logo { font-size: 24px; font-weight: 900; color: #0f172a; letter-spacing: -0.5px; }
-            .logo span { color: #0284c7; }
+            .brand { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+            .brand-logo { height: 50px; width: auto; object-fit: contain; display: block; }
+            .brand-sub { font-size: 11px; font-weight: 700; color: #002d5b; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
             .inv-title { font-size: 28px; font-weight: 800; color: #0284c7; text-align: right; }
             .details { display: flex; justify-content: space-between; margin-bottom: 30px; line-height: 1.6; }
             .box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; width: 45%; }
@@ -831,54 +901,57 @@ const Dashboard: React.FC = () => {
           </style>
         </head>
         <body>
-          <button class="btn-print" onclick="window.print()">📄 Imprimir / Guardar como PDF</button>
+          <button class="btn-print" onclick="window.print()">${dt.pdfPrintSave}</button>
           
           <div class="header">
-            <div class="logo">KRAKEN <span>PFM</span></div>
-            <div class="inv-title">FACTURA DE SERVICIO<br><span style="font-size:14px; color:#64748b;">${invoiceNum}</span></div>
+            <div class="brand">
+              <img src="${logoUrl}" alt="Kraken Logo" class="brand-logo" />
+              <div class="brand-sub">Properties and Facilities Management</div>
+            </div>
+            <div class="inv-title">${dt.pdfServiceInvoice}<br><span style="font-size:14px; color:#64748b;">${invoiceNum}</span></div>
           </div>
 
           <div class="details">
             <div class="box">
-              <strong>EMISOR:</strong><br>
+              <strong>${dt.pdfIssuer}:</strong><br>
               Kraken Properties & Facilities Management<br>
               Bahnhofstrasse 42, 8001 Zürich<br>
-              Suiza • CHE-109.823.411 TVA<br>
-              info@krakenpfm.ch
+              Schweiz • CHE-109.823.411 TVA<br>
+              kai@krakenpfm.ch
             </div>
             <div class="box">
-              <strong>CLIENTE:</strong><br>
+              <strong>${dt.pdfClient}:</strong><br>
               ${req.client}<br>
-              ${req.email || 'Sin email registrado'}<br>
-              ${req.address || 'Dirección en registro'}<br>
-              <strong>Fecha Emisión:</strong> ${dateStr}
+              ${req.email || dt.pdfNoEmail}<br>
+              ${req.address || dt.pdfAddressRecord}<br>
+              <strong>${dt.pdfIssueDate}:</strong> ${dateStr}
             </div>
           </div>
 
           <table>
             <thead>
               <tr>
-                <th>Descripción del Servicio</th>
-                <th>Fecha</th>
-                <th style="text-align:right;">Importe</th>
+                <th>${dt.pdfThDescription}</th>
+                <th>${dt.pdfThDate}</th>
+                <th style="text-align:right;">${dt.pdfThAmount}</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td><strong>${req.service}</strong><br><span style="font-size:12px; color:#64748b;">Mantenimiento y gestión de propiedad Kraken PFM</span></td>
+                <td><strong>${req.service}</strong><br><span style="font-size:12px; color:#64748b;">${dt.pdfServiceSubtext}</span></td>
                 <td>${req.date || dateStr}</td>
                 <td style="text-align:right;">CHF ${(req.amount || 0).toLocaleString('de-CH', { minimumFractionDigits: 2 })}</td>
               </tr>
               <tr class="total-row">
-                <td colspan="2" style="text-align:right;">TOTAL CHF (IVA inc.):</td>
+                <td colspan="2" style="text-align:right;">${dt.pdfTotalVat}:</td>
                 <td style="text-align:right; color:#0284c7;">CHF ${(req.amount || 0).toLocaleString('de-CH', { minimumFractionDigits: 2 })}</td>
               </tr>
             </tbody>
           </table>
 
           <div class="footer">
-            Kraken Properties & Facilities Management AG • Cuenta IBAN: CH93 0000 0000 0000 0000 0<br>
-            Documento fiscal válido generado por el sistema de gestión Kraken.
+            ${dt.pdfFooterTagline}<br>
+            ${dt.pdfValidFiscalDoc}
           </div>
         </body>
         </html>
@@ -948,7 +1021,7 @@ const Dashboard: React.FC = () => {
       };
 
       try {
-          await setDoc(requestRef, payload);
+          await setDoc(requestRef, sanitizeFirestoreData(payload));
           
           const localRequest: MaintenanceRequest = {
               id: newDocId,
@@ -1096,16 +1169,16 @@ const Dashboard: React.FC = () => {
                     <div className="flex items-center gap-3 mb-4">
                       <span className="w-8 h-px bg-blue-500"></span>
                       <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600">
-                          {isStaff ? '🛡️ STAFF SUPERVISOR CONSOLE' : '🔒 Secure Client Portal'}
+                          {isStaff ? `🛡️ ${dt.staffConsole}` : `🔒 ${dt.clientPortal}`}
                       </span>
                     </div>
                     <h1 className="text-4xl md:text-5xl font-black tracking-tighter uppercase mb-2 text-slate-900">
-                        {isStaff ? 'Worker' : 'My Secure'}{' '}
-                        <span className="text-blue-600">{isStaff ? 'Dashboard' : 'Facilities'}</span>
+                        {isStaff ? 'Worker' : dt.myFacilities.split(' ')[0]}{' '}
+                        <span className="text-blue-600">{isStaff ? 'Dashboard' : (dt.myFacilities.split(' ').slice(1).join(' ') || 'Facilities')}</span>
                     </h1>
                     <p className="text-slate-500 font-bold text-sm uppercase tracking-[0.2em]">
-                        Welcome back, {user ? user.name : 'Authorized Partner'} 
-                        {isStaff && <span className="text-emerald-700 text-xs font-black ml-3 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">Active Operator</span>}
+                        {dt.welcomeBack} {user ? user.name : 'Authorized Partner'} 
+                        {isStaff && <span className="text-emerald-700 text-xs font-black ml-3 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">{dt.activeOperator}</span>}
                     </p>
                 </div>
 
@@ -1120,7 +1193,7 @@ const Dashboard: React.FC = () => {
                       </div>
                       <div>
                         <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-0.5 leading-none">
-                            {isStaff ? 'Active Tasks' : 'Active Services'}
+                            {isStaff ? dt.activeTasks : dt.activeServices}
                         </p>
                         <p className="text-2xl font-black text-slate-800 leading-tight mt-1">{activeJobs}</p>
                       </div>
@@ -1136,7 +1209,7 @@ const Dashboard: React.FC = () => {
                       </div>
                       <div>
                         <p className="text-[10px] font-black text-rose-600 uppercase tracking-widest mb-0.5 leading-none">
-                            {isStaff ? 'High Priority' : 'Milestones'}
+                            {isStaff ? dt.highPriority : dt.milestones}
                         </p>
                         <p className="text-2xl font-black text-rose-600 leading-tight mt-1">{highPriorityCount}</p>
                       </div>
@@ -1152,7 +1225,7 @@ const Dashboard: React.FC = () => {
                       </div>
                       <div>
                         <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-0.5 leading-none">
-                            {isStaff ? 'Est. Revenue' : 'Est. Budget'}
+                            {isStaff ? dt.estRevenue : dt.estBudget}
                         </p>
                         <p className="text-2xl font-black text-emerald-600 leading-tight mt-1 font-mono">CHF {totalRevenue.toLocaleString()}</p>
                       </div>
@@ -1172,7 +1245,7 @@ const Dashboard: React.FC = () => {
             }`}
           >
             <Clipboard className="w-4 h-4" />
-            <span>Solicitudes & Borradores ({requests.length})</span>
+            <span>{dt.tabRequests} ({requests.length})</span>
           </button>
 
           <button
@@ -1184,11 +1257,136 @@ const Dashboard: React.FC = () => {
             }`}
           >
             <FileText className="w-4 h-4" />
-            <span>Mi Carrera / CVs ({jobApplications.length})</span>
+            <span>{dt.tabCareers} ({jobApplications.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('messages')}
+            className={`px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center gap-2 cursor-pointer ${
+              activeTab === 'messages'
+                ? 'bg-[#002D5B] text-white shadow-lg shadow-blue-900/20'
+                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+            }`}
+          >
+            <Mail className="w-4 h-4" />
+            <span>Mensajes ({contactMessages.length})</span>
           </button>
         </div>
 
-        {activeTab === 'careers' ? (
+        {activeTab === 'messages' ? (
+          /* ================= MENSAJES DE CONTACTO VIEW ================= */
+          <div className="space-y-8 animate-fade-in mb-12">
+            {/* Search & Filter Bar */}
+            <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm">
+              <div className="relative flex-1 max-w-md">
+                <input
+                  type="text"
+                  value={messageSearchQuery}
+                  onChange={(e) => setMessageSearchQuery(e.target.value)}
+                  placeholder="Buscar por nombre, email o asunto..."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-4 pr-10 text-sm font-bold text-slate-800 outline-none focus:border-blue-500 focus:bg-white transition-all shadow-sm"
+                />
+                {messageSearchQuery && (
+                  <button onClick={() => setMessageSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
+                {(['all', 'new', 'done'] as const).map((st) => (
+                  <button
+                    key={st}
+                    onClick={() => setMessageFilterStatus(st)}
+                    className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+                      messageFilterStatus === st
+                        ? 'bg-blue-600 text-white shadow-md'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    {st === 'all' ? 'Todos' : st === 'new' ? 'Nuevos' : 'Atendidos'}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {loadingMessages ? (
+              <div className="text-center py-12 bg-white rounded-3xl border border-slate-200 shadow-sm">
+                <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-sm font-bold text-slate-500">Cargando mensajes de contacto...</p>
+              </div>
+            ) : contactMessages.length === 0 ? (
+              <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 shadow-sm p-8">
+                <Mail className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                <h3 className="text-lg font-black text-slate-800">No hay mensajes registrados</h3>
+                <p className="text-sm text-slate-500 mt-1">Los mensajes enviados desde el formulario de contacto aparecerán aquí.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4">
+                {contactMessages
+                  .filter(m => {
+                    if (messageFilterStatus !== 'all' && m.status !== messageFilterStatus) return false;
+                    if (!messageSearchQuery) return true;
+                    const q = messageSearchQuery.toLowerCase();
+                    return m.name.toLowerCase().includes(q) || m.email.toLowerCase().includes(q) || m.subject.toLowerCase().includes(q) || m.message.toLowerCase().includes(q);
+                  })
+                  .map((msg) => (
+                    <div
+                      key={msg.id}
+                      className={`p-6 rounded-3xl border transition-all bg-white shadow-sm hover:shadow-md ${
+                        msg.status === 'new' ? 'border-amber-300 bg-amber-50/20' : 'border-slate-200'
+                      }`}
+                    >
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-100">
+                        <div className="flex items-center gap-3">
+                          <div className={`p-3 rounded-2xl ${msg.status === 'new' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600'}`}>
+                            <Mail className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-black text-slate-900 text-base">{msg.name}</h4>
+                              <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full ${
+                                msg.status === 'new' ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                              }`}>
+                                {msg.status === 'new' ? 'Nuevo' : 'Atendido'}
+                              </span>
+                              {msg.language && (
+                                <span className="text-[10px] font-mono font-bold text-slate-400 uppercase bg-slate-100 px-2 py-0.5 rounded-md">
+                                  {msg.language}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-slate-500 font-medium">{msg.email}</p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3 self-end md:self-auto">
+                          <button
+                            onClick={() => handleMessageStatusToggle(msg.id, msg.status)}
+                            className={`px-4 py-2 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer ${
+                              msg.status === 'new'
+                                ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm'
+                                : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                            }`}
+                          >
+                            <CheckCircle className="w-4 h-4" />
+                            <span>{msg.status === 'new' ? 'Marcar Atendido' : 'Marcar Nuevo'}</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <p className="text-xs font-black text-slate-700 uppercase tracking-wider">Asunto: {msg.subject}</p>
+                        <p className="text-sm text-slate-600 whitespace-pre-wrap leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                          {msg.message}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
+        ) : activeTab === 'careers' ? (
           /* ================= MI CARRERA & CVs VIEW ================= */
           <div className="space-y-8 animate-fade-in mb-12">
             {/* Careers Search & Status Filter Bar */}
@@ -1198,7 +1396,7 @@ const Dashboard: React.FC = () => {
                   type="text"
                   value={careerSearchQuery}
                   onChange={(e) => setCareerSearchQuery(e.target.value)}
-                  placeholder="Buscar candidato por nombre, cargo, teléfono o región..."
+                  placeholder={dt.searchCareersPlaceholder}
                   className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-4 pr-10 text-sm font-bold text-slate-800 outline-none focus:border-blue-500 focus:bg-white transition-all shadow-sm"
                 />
                 {careerSearchQuery && (
@@ -1212,12 +1410,12 @@ const Dashboard: React.FC = () => {
                 {['all', 'Pending', 'Reviewed', 'Contacted', 'Hired', 'Rejected'].map((statusKey) => {
                   const isActive = careerFilterStatus === statusKey;
                   const labelMap: Record<string, string> = {
-                    all: 'Todos',
-                    Pending: 'Pendiente',
-                    Reviewed: 'Revisado',
-                    Contacted: 'Contactado',
-                    Hired: 'Contratado',
-                    Rejected: 'Descartado'
+                    all: dt.filterAllCareers,
+                    Pending: dt.filterPendingCareer,
+                    Reviewed: dt.filterReviewedCareer,
+                    Contacted: dt.filterContactedCareer,
+                    Hired: dt.filterHiredCareer,
+                    Rejected: dt.filterRejectedCareer
                   };
                   return (
                     <button
@@ -1244,9 +1442,9 @@ const Dashboard: React.FC = () => {
                     <FileText className="w-5 h-5" />
                   </span>
                   <div>
-                    <h3 className="font-black text-lg text-slate-900 uppercase tracking-tight">Candidatos & Currículums (CVs)</h3>
+                    <h3 className="font-black text-lg text-slate-900 uppercase tracking-tight">{dt.careersTitle}</h3>
                     <p className="text-xs text-slate-500 font-bold">
-                      {jobApplications.length} solicitudes recibidas en la página de Mi Carrera
+                      {jobApplications.length} {dt.applicationsReceived}
                     </p>
                   </div>
                 </div>
@@ -1256,13 +1454,13 @@ const Dashboard: React.FC = () => {
                 <table className="w-full text-left border-collapse">
                   <thead className="bg-slate-100/70 text-slate-500 uppercase text-[9px] font-black tracking-[0.2em] border-b border-slate-200">
                     <tr>
-                      <th className="px-6 py-4 pl-8">Candidato / Contacto</th>
-                      <th className="px-6 py-4">Puesto Solicitado</th>
-                      <th className="px-6 py-4">Región & Permiso</th>
-                      <th className="px-6 py-4">Incorporación</th>
-                      <th className="px-6 py-4">Documento CV</th>
-                      <th className="px-6 py-4">Estado</th>
-                      <th className="px-6 py-4 text-right pr-8">Acciones</th>
+                      <th className="px-6 py-4 pl-8">{dt.tableCandidate}</th>
+                      <th className="px-6 py-4">{dt.tablePosition}</th>
+                      <th className="px-6 py-4">{dt.tableRegionPermit}</th>
+                      <th className="px-6 py-4">{dt.tableIncorporation}</th>
+                      <th className="px-6 py-4">{dt.tableCV}</th>
+                      <th className="px-6 py-4">{dt.tableStatus}</th>
+                      <th className="px-6 py-4 text-right pr-8">{dt.actions}</th>
                     </tr>
                   </thead>
                   <tbody className="text-sm">
@@ -1270,7 +1468,7 @@ const Dashboard: React.FC = () => {
                       <tr>
                         <td colSpan={7} className="px-8 py-16 text-center text-slate-400 font-bold italic">
                           <span className="inline-block animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full mr-2 align-middle"></span>
-                          Cargando candidatos desde la base de datos...
+                          {dt.loadingCareers}
                         </td>
                       </tr>
                     ) : jobApplications.filter(app => {
@@ -1285,7 +1483,7 @@ const Dashboard: React.FC = () => {
                       }).length === 0 ? (
                       <tr>
                         <td colSpan={7} className="px-8 py-16 text-center text-slate-400 font-bold">
-                          No hay postulaciones registradas en este momento.
+                          {dt.noCandidatesFound}
                         </td>
                       </tr>
                     ) : (
@@ -1352,7 +1550,7 @@ const Dashboard: React.FC = () => {
                                   title="Visualizar CV en pantalla"
                                 >
                                   <Eye className="w-3.5 h-3.5 text-blue-600" />
-                                  <span>Ver</span>
+                                  <span>{dt.actionView}</span>
                                 </button>
                                 <button
                                   type="button"
@@ -1361,11 +1559,11 @@ const Dashboard: React.FC = () => {
                                   title="Descargar CV seguro"
                                 >
                                   <Download className="w-3.5 h-3.5 text-emerald-600" />
-                                  <span>Descargar</span>
+                                  <span>{dt.actionDownload}</span>
                                 </button>
                               </div>
                             ) : (
-                              <span className="text-slate-400 text-xs italic">Sin archivo</span>
+                              <span className="text-slate-400 text-xs italic">{dt.noFile}</span>
                             )}
                           </td>
 
@@ -1382,11 +1580,11 @@ const Dashboard: React.FC = () => {
                                 'bg-amber-100 text-amber-800 border-amber-300'
                               }`}
                             >
-                              <option value="Pending">Pendiente</option>
-                              <option value="Reviewed">Revisado</option>
-                              <option value="Contacted">Contactado</option>
-                              <option value="Hired">Contratado</option>
-                              <option value="Rejected">Descartado</option>
+                              <option value="Pending">{dt.filterPendingCareer}</option>
+                              <option value="Reviewed">{dt.filterReviewedCareer}</option>
+                              <option value="Contacted">{dt.filterContactedCareer}</option>
+                              <option value="Hired">{dt.filterHiredCareer}</option>
+                              <option value="Rejected">{dt.filterRejectedCareer}</option>
                             </select>
                           </td>
 
@@ -1395,7 +1593,7 @@ const Dashboard: React.FC = () => {
                               onClick={(e) => { e.stopPropagation(); setSelectedJobApp(app); }}
                               className="px-3.5 py-1.5 bg-slate-100 hover:bg-blue-600 text-slate-700 hover:text-white rounded-xl text-[10px] font-black uppercase transition-all border border-slate-200"
                             >
-                              Ver Ficha
+                              {dt.viewRecord}
                             </button>
                           </td>
                         </tr>
@@ -1418,7 +1616,7 @@ const Dashboard: React.FC = () => {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search by client, service, address or notes..."
+                    placeholder={dt.searchRequestsPlaceholder}
                     className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 pl-5 pr-12 text-sm text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400 shadow-sm"
                 />
                 {searchQuery && (
@@ -1454,7 +1652,7 @@ const Dashboard: React.FC = () => {
                                     : 'bg-white text-slate-500 border-slate-200 hover:text-slate-800 hover:bg-slate-50 hover:border-slate-300 shadow-sm'
                             }`}
                         >
-                            {status === 'all' ? 'All Requests' : status === 'Draft' ? 'Borradores / Drafts' : status}
+                            {status === 'all' ? dt.allRequests : status === 'Draft' ? dt.draftsFilter : status === 'Pending' ? dt.statusPending : status === 'In Progress' ? dt.statusInProgress : status === 'Completed' ? dt.statusCompleted : status}
                         </button>
                     );
                 })}
@@ -1468,7 +1666,7 @@ const Dashboard: React.FC = () => {
                 className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3.5 rounded-2xl shadow-[0_20px_40px_rgba(37,99,235,0.15)] flex items-center justify-center gap-3 transition-all font-black text-[11px] uppercase tracking-[0.2em] shrink-0 cursor-pointer"
             >
                 <PlusIcon className="w-5 h-5" />
-                {isFormOpen ? 'Hide Portal' : isStaff ? 'Enter Custom Service' : 'Add New Request'}
+                {isFormOpen ? dt.hidePortal : isStaff ? dt.enterCustomService : dt.addNewRequest}
             </motion.button>
         </div>
 
@@ -1487,10 +1685,10 @@ const Dashboard: React.FC = () => {
                       <div className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-sm">
                           <div className="p-8 bg-slate-50/80 border-b border-slate-100">
                               <h3 className="font-black text-xl uppercase tracking-tight text-slate-800">
-                                  {isStaff ? 'Direct Staff Entry' : 'New Service Request'}
+                                  {isStaff ? dt.directStaffEntry : dt.newServiceRequest}
                               </h3>
                               <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">
-                                  {isStaff ? 'Record B2B/Client appointments' : 'Enter property & clean details'}
+                                  {isStaff ? dt.recordB2BAppointments : dt.enterPropertyDetails}
                               </p>
                           </div>
                           
@@ -1499,12 +1697,12 @@ const Dashboard: React.FC = () => {
                                   <>
                                       {/* Client Name */}
                                       <div className="space-y-1.5">
-                                          <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">Client Name</label>
+                                          <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.clientName}</label>
                                           <input 
                                               type="text" 
                                               required
                                               className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400" 
-                                              placeholder="e.g. Acme Corp AG or John Doe"
+                                              placeholder={dt.clientNamePlaceholder}
                                               value={newRequest.client}
                                               onChange={e => setNewRequest({...newRequest, client: e.target.value})}
                                           />
@@ -1513,7 +1711,7 @@ const Dashboard: React.FC = () => {
                                       {/* Contact Email & Phone */}
                                       <div className="grid grid-cols-2 gap-4">
                                           <div className="space-y-1.5">
-                                              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-3">Client Email</label>
+                                              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-3">{dt.clientEmail}</label>
                                               <input 
                                                   type="email" 
                                                   required={isStaff}
@@ -1524,7 +1722,7 @@ const Dashboard: React.FC = () => {
                                               />
                                           </div>
                                           <div className="space-y-1.5">
-                                              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-3">Telephone</label>
+                                              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-3">{dt.telephone}</label>
                                               <input 
                                                   type="text" 
                                                   required
@@ -1539,7 +1737,7 @@ const Dashboard: React.FC = () => {
                               ) : (
                                   /* Clean, streamlined layout for Clients */
                                   <div className="space-y-1.5">
-                                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">Telephone</label>
+                                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.telephone}</label>
                                       <input 
                                           type="text" 
                                           required
@@ -1553,11 +1751,11 @@ const Dashboard: React.FC = () => {
 
                               {/* Physical Address */}
                               <div className="space-y-1.5">
-                                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">Service Address</label>
+                                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.serviceAddress}</label>
                                   <input 
                                       type="text" 
                                       className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400" 
-                                      placeholder="street, postal code & city in Switzerland"
+                                      placeholder={dt.serviceAddressPlaceholder}
                                       value={newRequest.address}
                                       onChange={e => setNewRequest({...newRequest, address: e.target.value})}
                                   />
@@ -1565,14 +1763,14 @@ const Dashboard: React.FC = () => {
 
                               {/* Service Selection */}
                               <div className="space-y-1.5">
-                                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">Service Classification</label>
+                                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.serviceClassification}</label>
                                   <select 
                                       className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all appearance-none"
                                       value={newRequest.service}
                                       onChange={e => setNewRequest({...newRequest, service: e.target.value})}
                                       required
                                   >
-                                      <option value="">Select Line Of Work...</option>
+                                      <option value="">{dt.selectLineOfWork}</option>
                                       <option value="End of Tenancy Deluxe">End of Tenancy Deluxe (+ Handover Guarantee)</option>
                                       <option value="B2B Commercial Cleaning">B2B Commercial Cleaning (Office/Enterprise)</option>
                                       <option value="Regular Deep Cleaning">Regular Deep Cleaning (Residential)</option>
@@ -1585,7 +1783,7 @@ const Dashboard: React.FC = () => {
                               {/* Date & Priority */}
                               <div className="grid grid-cols-2 gap-4">
                                   <div className="space-y-1.5">
-                                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">Execution Date</label>
+                                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.executionDate}</label>
                                       <input 
                                           type="date" 
                                           required
@@ -1595,7 +1793,7 @@ const Dashboard: React.FC = () => {
                                       />
                                   </div>
                                   <div className="space-y-1.5">
-                                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">Priority</label>
+                                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.priority}</label>
                                       <select 
                                           className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-xs text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all appearance-none"
                                           value={newRequest.priority}
@@ -1610,11 +1808,11 @@ const Dashboard: React.FC = () => {
 
                               {/* Amount (Budget CHF) */}
                               <div className="space-y-1.5">
-                                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">Budget / Quoted Price (CHF)</label>
+                                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.budgetQuotedPrice}</label>
                                   <input 
                                       type="number" 
                                       className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400" 
-                                      placeholder="e.g. 1450 (Leave blank for default classification tier)"
+                                      placeholder={dt.budgetPlaceholder}
                                       value={newRequest.amount}
                                       onChange={e => setNewRequest({...newRequest, amount: e.target.value})}
                                   />
@@ -1622,11 +1820,11 @@ const Dashboard: React.FC = () => {
 
                               {/* Notes */}
                               <div className="space-y-1.5">
-                                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">Operational Notes</label>
+                                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.operationalNotes}</label>
                                   <textarea 
                                       rows={2}
                                       className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 px-5 text-xs text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400"
-                                      placeholder="Specific requests, keys, access instructions..."
+                                      placeholder={dt.notesPlaceholder}
                                       value={newRequest.notes}
                                       onChange={e => setNewRequest({...newRequest, notes: e.target.value})}
                                   />
@@ -1634,7 +1832,7 @@ const Dashboard: React.FC = () => {
 
                               {/* Custom Media Attachment URL */}
                               <div className="space-y-1.5">
-                                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">External Image Links (commas to split)</label>
+                                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.externalImageLinks}</label>
                                   <input 
                                       type="text" 
                                       className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-xs text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400" 
@@ -1650,7 +1848,7 @@ const Dashboard: React.FC = () => {
                                 type="submit" 
                                 className="w-full py-4.5 bg-blue-600 text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.25em] shadow-[0_20px_40px_rgba(37,99,235,0.15)] transition-all mt-3"
                               >
-                                Submit Request Record
+                                {dt.submitRequestRecord}
                               </motion.button>
                           </form>
                       </div>
@@ -1667,12 +1865,12 @@ const Dashboard: React.FC = () => {
                         <span className="p-2.5 bg-blue-50 text-blue-600 rounded-2xl border border-blue-100">
                             <Clipboard className="w-4 h-4" />
                         </span>
-                        <span>Showing <span className="text-slate-800 font-mono text-xs font-bold">{filteredRequests.length}</span> of <span className="text-slate-800 font-mono text-xs font-bold">{totalSubmissions}</span> database incidents</span>
+                        <span>{dt.showingIncidents.replace('{filtered}', String(filteredRequests.length)).replace('{total}', String(totalSubmissions))}</span>
                     </div>
                     <div className="flex flex-wrap gap-4">
-                        <span className="flex items-center gap-2 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200/60 text-[9px] text-amber-700 font-bold"><span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span> Pending</span>
-                        <span className="flex items-center gap-2 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-200/60 text-[9px] text-blue-700 font-bold"><span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping"></span> In Progress</span>
-                        <span className="flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200/60 text-[9px] text-emerald-700 font-bold"><span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Completed</span>
+                        <span className="flex items-center gap-2 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200/60 text-[9px] text-amber-700 font-bold"><span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span> {dt.statusPending}</span>
+                        <span className="flex items-center gap-2 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-200/60 text-[9px] text-blue-700 font-bold"><span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping"></span> {dt.statusInProgress}</span>
+                        <span className="flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200/60 text-[9px] text-emerald-700 font-bold"><span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> {dt.statusCompleted}</span>
                     </div>
                 </div>
 
@@ -1681,13 +1879,13 @@ const Dashboard: React.FC = () => {
                         <table className="w-full text-left border-collapse">
                             <thead className="bg-slate-50 text-slate-500 uppercase text-[9px] font-black tracking-[0.3em] border-b border-slate-100">
                                 <tr>
-                                    <th className="px-6 py-5 pl-8">Service ID</th>
-                                    <th className="px-6 py-5">Client Company & Contact</th>
-                                    <th className="px-6 py-5">Classification</th>
-                                    <th className="px-6 py-5">Schedule</th>
-                                    <th className="px-6 py-5 whitespace-nowrap">Media Attachments</th>
-                                    <th className="px-6 py-5">Status Tier</th>
-                                    <th className="px-6 py-5 text-right pr-8">Actions</th>
+                                    <th className="px-6 py-5 pl-8">{dt.tableServiceID}</th>
+                                    <th className="px-6 py-5">{dt.tableClientContact}</th>
+                                    <th className="px-6 py-5">{dt.tableClassification}</th>
+                                    <th className="px-6 py-5">{dt.tableSchedule}</th>
+                                    <th className="px-6 py-5 whitespace-nowrap">{dt.tableMedia}</th>
+                                    <th className="px-6 py-5">{dt.tableStatusTier}</th>
+                                    <th className="px-6 py-5 text-right pr-8">{dt.actions}</th>
                                 </tr>
                             </thead>
                             <tbody className="text-sm">
@@ -1695,13 +1893,13 @@ const Dashboard: React.FC = () => {
                                     <tr>
                                         <td colSpan={7} className="px-8 py-20 text-center text-slate-400 italic font-bold">
                                             <span className="inline-block animate-spin w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full mr-3 align-middle"></span>
-                                            Querying Switzerland facilities ledger...
+                                            {dt.loadingRequests}
                                         </td>
                                     </tr>
                                 ) : filteredRequests.length === 0 ? (
                                     <tr>
                                         <td colSpan={7} className="px-8 py-20 text-center text-slate-400 font-bold">
-                                            No facility records found matching active filters.
+                                            {dt.noRequestsFound}
                                         </td>
                                     </tr>
                                 ) : (
@@ -1754,7 +1952,7 @@ const Dashboard: React.FC = () => {
                                                     {hasMedia ? (
                                                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider bg-blue-50 text-blue-600 border border-blue-100">
                                                             <ImageIcon className="w-3.5 h-3.5" />
-                                                            {req.mediaUrls?.length} Attachment{req.mediaUrls && req.mediaUrls.length > 1 ? 's' : ''}
+                                                            {req.mediaUrls?.length} {req.mediaUrls && req.mediaUrls.length > 1 ? dt.attachments : dt.attachment}
                                                         </span>
                                                     ) : (
                                                         <span className="text-slate-350 text-xs">—</span>
@@ -1776,7 +1974,7 @@ const Dashboard: React.FC = () => {
                                                         {req.status === 'Pending' && <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span>}
                                                         {req.status === 'Completed' && <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>}
                                                         {req.status === 'Draft' && <span className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-bounce"></span>}
-                                                        {req.status === 'Draft' ? 'Borrador / Draft' : req.status}
+                                                        {req.status === 'Draft' ? dt.draftLabel : req.status === 'Pending' ? dt.statusPending : req.status === 'In Progress' ? dt.statusInProgress : req.status === 'Completed' ? dt.statusCompleted : req.status}
                                                     </span>
                                                 </td>
                                                 
@@ -1811,7 +2009,7 @@ const Dashboard: React.FC = () => {
                     className={`px-3.5 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all flex items-center gap-1 ${confirmationStatuses[req.id] === 'confirmed' ? 'bg-green-100 text-green-700' : 'bg-slate-100 hover:bg-green-50 text-slate-400 hover:text-green-600'}`}
                     title="Toggle Client Approval"
                   >
-                    <Check size={11} /> {confirmationStatuses[req.id] === 'confirmed' ? 'Approved' : 'Approve'}
+                    <Check size={11} /> {confirmationStatuses[req.id] === 'confirmed' ? dt.approved : dt.approve}
                   </motion.button>
                                                          {(isStaff || req.status === 'Pending') && (
                                                              <motion.button 
@@ -1824,7 +2022,7 @@ const Dashboard: React.FC = () => {
                                                                  <TrashIcon className="w-4 h-4" />
                                                              </motion.button>
                                                          )}
-                                                    </div>
+                                                     </div>
                                                 </td>
                                             </motion.tr>
                                         );
@@ -1866,7 +2064,7 @@ const Dashboard: React.FC = () => {
                                 </div>
                                 <div>
                                     <h3 className="font-black text-xl">{selectedJobApp.name}</h3>
-                                    <p className="text-xs text-blue-200 font-bold">{selectedJobApp.position || 'Candidato a Empleo'}</p>
+                                    <p className="text-xs text-blue-200 font-bold">{selectedJobApp.position || dt.tablePosition}</p>
                                 </div>
                             </div>
                             <button
@@ -1880,49 +2078,49 @@ const Dashboard: React.FC = () => {
                         <div className="p-8 overflow-y-auto space-y-6 text-slate-800 text-sm">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-5 rounded-2xl border border-slate-200">
                                 <div>
-                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Teléfono / Contacto</span>
+                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">{dt.phoneContact}</span>
                                     <span className="font-black text-slate-900 text-base">{selectedJobApp.phone}</span>
                                 </div>
                                 <div>
-                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Permiso de Trabajo</span>
-                                    <span className="font-bold text-slate-800">{selectedJobApp.permit || 'No especificado'}</span>
+                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">{dt.workPermit}</span>
+                                    <span className="font-bold text-slate-800">{selectedJobApp.permit || dt.noRecordsFound}</span>
                                 </div>
                                 <div>
-                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Región / Cantón</span>
-                                    <span className="font-bold text-slate-800">{selectedJobApp.region || 'Suiza'}</span>
+                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">{dt.regionCanton}</span>
+                                    <span className="font-bold text-slate-800">{selectedJobApp.region || 'Schweiz'}</span>
                                 </div>
                                 <div>
-                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Incorporación</span>
-                                    <span className="font-bold text-slate-800">{selectedJobApp.startDate || 'Inmediata'}</span>
+                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">{dt.incorporation}</span>
+                                    <span className="font-bold text-slate-800">{selectedJobApp.startDate || dt.tableIncorporation}</span>
                                 </div>
                                 <div>
-                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Jornada Deseada (Pensum)</span>
+                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">{dt.desiredWorkload}</span>
                                     <span className="font-bold text-slate-800">{selectedJobApp.pensum || '100%'}</span>
                                 </div>
                                 <div>
-                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Certificados / Conducir</span>
-                                    <span className="font-bold text-slate-800">{selectedJobApp.certificates || 'Ninguno'}</span>
+                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">{dt.certificatesDriving}</span>
+                                    <span className="font-bold text-slate-800">{selectedJobApp.certificates || '-'}</span>
                                 </div>
                             </div>
 
                             {selectedJobApp.languages && (
                                 <div>
-                                    <span className="text-xs font-black uppercase text-slate-400 block tracking-wider mb-1">Idiomas</span>
+                                    <span className="text-xs font-black uppercase text-slate-400 block tracking-wider mb-1">{dt.languages}</span>
                                     <p className="p-3 bg-slate-50 rounded-xl text-slate-700 font-medium border border-slate-200">{selectedJobApp.languages}</p>
                                 </div>
                             )}
 
                             {selectedJobApp.message && (
                                 <div>
-                                    <span className="text-xs font-black uppercase text-slate-400 block tracking-wider mb-1">Mensaje / Presentación</span>
+                                    <span className="text-xs font-black uppercase text-slate-400 block tracking-wider mb-1">{dt.presentation}</span>
                                     <p className="p-4 bg-slate-50 rounded-xl text-slate-700 italic border border-slate-200 whitespace-pre-wrap">{selectedJobApp.message}</p>
                                 </div>
                             )}
 
                             <div className="p-5 bg-blue-50/60 rounded-2xl border border-blue-200 flex flex-col sm:flex-row items-center justify-between gap-4">
                                 <div>
-                                    <span className="text-xs font-black text-blue-900 uppercase block">Documento de Currículum (CV)</span>
-                                    <span className="text-xs text-blue-700 font-mono font-bold">{selectedJobApp.cvName || 'Currículum Subido'}</span>
+                                    <span className="text-xs font-black text-blue-900 uppercase block">{dt.cvDocument}</span>
+                                    <span className="text-xs text-blue-700 font-mono font-bold">{selectedJobApp.cvName || dt.tableCV}</span>
                                 </div>
                                 {selectedJobApp.cvData ? (
                                     <div className="flex items-center gap-2">
@@ -1931,12 +2129,12 @@ const Dashboard: React.FC = () => {
                                             onClick={() => setPreviewFile({
                                                 url: selectedJobApp.cvData!,
                                                 name: selectedJobApp.cvName || `${selectedJobApp.name.replace(/\s+/g, '_')}_CV.pdf`,
-                                                title: `Currículum • ${selectedJobApp.name}`
+                                                title: `${dt.tableCV} • ${selectedJobApp.name}`
                                             })}
                                             className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-md transition-all cursor-pointer"
                                         >
                                             <Eye className="w-4 h-4" />
-                                            <span>Previsualizar</span>
+                                            <span>{dt.preview}</span>
                                         </button>
                                         <button
                                             type="button"
@@ -1944,23 +2142,23 @@ const Dashboard: React.FC = () => {
                                             className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-emerald-600/20 transition-all cursor-pointer"
                                         >
                                             <Download className="w-4 h-4" />
-                                            <span>Descargar CV</span>
+                                            <span>{dt.downloadCV}</span>
                                         </button>
                                     </div>
                                 ) : (
-                                    <span className="text-xs text-slate-400 font-bold italic">No se adjuntó archivo de CV</span>
+                                    <span className="text-xs text-slate-400 font-bold italic">{dt.noFile}</span>
                                 )}
                             </div>
 
                             <div>
-                                <span className="text-xs font-black uppercase text-slate-400 block tracking-wider mb-2">Cambiar Estado de Selección</span>
+                                <span className="text-xs font-black uppercase text-slate-400 block tracking-wider mb-2">{dt.changeStatus}</span>
                                 <div className="flex flex-wrap gap-2">
                                     {[
-                                        { key: 'Pending', label: 'Pendiente' },
-                                        { key: 'Reviewed', label: 'Revisado' },
-                                        { key: 'Contacted', label: 'Contactado' },
-                                        { key: 'Hired', label: 'Contratado' },
-                                        { key: 'Rejected', label: 'Descartado' }
+                                        { key: 'Pending', label: dt.filterPendingCareer },
+                                        { key: 'Reviewed', label: dt.filterReviewedCareer },
+                                        { key: 'Contacted', label: dt.filterContactedCareer },
+                                        { key: 'Hired', label: dt.filterHiredCareer },
+                                        { key: 'Rejected', label: dt.filterRejectedCareer }
                                     ].map(st => (
                                         <button
                                             key={st.key}
@@ -1988,18 +2186,18 @@ const Dashboard: React.FC = () => {
           <div className="bg-[#0f1b2d] px-6 py-4 flex items-center justify-between cursor-pointer select-none" onClick={() => setShowEmailHistory(v => !v)}>
             <div className="flex items-center gap-3">
               <Mail size={18} className="text-[#00d4ff]" />
-              <h3 className="text-white font-black text-sm uppercase tracking-widest">Email Confirmation Center</h3>
+              <h3 className="text-white font-black text-sm uppercase tracking-widest">{dt.emailCenterTitle}</h3>
               <span className="bg-[#00d4ff] text-[#0f1b2d] text-[10px] font-black px-2 py-0.5 rounded-full">{emailHistory.length}</span>
             </div>
             <ArrowLeft size={16} className={`text-slate-400 transition-transform duration-300 ${showEmailHistory ? 'rotate-90' : '-rotate-90'}`} />
           </div>
           <div className="grid grid-cols-5 divide-x divide-slate-100 border-b border-slate-100">
             {([
-              { label: 'Total', value: emailStats.total, color: 'text-slate-700', bg: 'bg-white', icon: '📨' },
-              { label: 'Delivered', value: emailStats.sent, color: 'text-green-600', bg: 'bg-green-50', icon: '✅' },
-              { label: 'Pending', value: emailStats.pending, color: 'text-yellow-500', bg: 'bg-yellow-50', icon: '⏳' },
-              { label: 'Failed', value: emailStats.error, color: 'text-red-500', bg: 'bg-red-50', icon: '❌' },
-              { label: 'Confirmed', value: emailStats.confirmed, color: 'text-[#00d4ff]', bg: 'bg-slate-50', icon: '🎯' },
+              { label: dt.total, value: emailStats.total, color: 'text-slate-700', bg: 'bg-white', icon: '📨' },
+              { label: dt.delivered, value: emailStats.sent, color: 'text-green-600', bg: 'bg-green-50', icon: '✅' },
+              { label: dt.filterPending, value: emailStats.pending, color: 'text-yellow-500', bg: 'bg-yellow-50', icon: '⏳' },
+              { label: dt.failed, value: emailStats.error, color: 'text-red-500', bg: 'bg-red-50', icon: '❌' },
+              { label: dt.confirmed, value: emailStats.confirmed, color: 'text-[#00d4ff]', bg: 'bg-slate-50', icon: '🎯' },
             ] as const).map((stat, i) => (
               <div key={i} className={`${stat.bg} px-3 py-3 text-center`}>
                 <div className="text-base">{stat.icon}</div>
@@ -2013,27 +2211,27 @@ const Dashboard: React.FC = () => {
               <div className="flex flex-wrap gap-2 mb-4">
                 {(['all','sent','pending','error'] as const).map(f => (
                   <button key={f} onClick={() => setEmailHistoryFilter(f)} className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all ${emailHistoryFilter === f ? 'bg-[#0f1b2d] text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
-                    {f === 'all' ? 'All' : f === 'sent' ? 'Sent' : f === 'pending' ? 'Pending' : 'Failed'}
+                    {f === 'all' ? dt.filterAll : f === 'sent' ? dt.delivered : f === 'pending' ? dt.filterPending : dt.failed}
                   </button>
                 ))}
-                <input type="text" value={emailHistoryClientFilter} onChange={e => setEmailHistoryClientFilter(e.target.value)} placeholder="Filter by client..." className="border border-slate-200 rounded-full px-3 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#00d4ff] flex-1 min-w-0 max-w-xs" />
+                <input type="text" value={emailHistoryClientFilter} onChange={e => setEmailHistoryClientFilter(e.target.value)} placeholder={dt.filterClientPlaceholder} className="border border-slate-200 rounded-full px-3 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#00d4ff] flex-1 min-w-0 max-w-xs" />
               </div>
               {filteredEmailHistory.length === 0 ? (
                 <div className="text-center py-8 text-slate-400">
                   <Mail size={28} className="mx-auto mb-2 opacity-30" />
-                  <p className="text-sm font-medium">No emails sent yet</p>
+                  <p className="text-sm font-medium">{dt.noEmailsSent}</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto rounded-xl border border-slate-100">
                   <table className="w-full text-xs">
                     <thead><tr className="bg-[#0f1b2d] text-[#00d4ff]">
-                      <th className="px-3 py-2.5 text-left font-black uppercase tracking-wider">Date</th>
-                      <th className="px-3 py-2.5 text-left font-black uppercase tracking-wider">Client</th>
-                      <th className="px-3 py-2.5 text-left font-black uppercase tracking-wider">To</th>
-                      <th className="px-3 py-2.5 text-right font-black uppercase tracking-wider">CHF</th>
-                      <th className="px-3 py-2.5 text-center font-black uppercase tracking-wider">Status</th>
-                      <th className="px-3 py-2.5 text-center font-black uppercase tracking-wider">Confirmed</th>
-                      <th className="px-3 py-2.5 text-center font-black uppercase tracking-wider">Action</th>
+                      <th className="px-3 py-2.5 text-left font-black uppercase tracking-wider">{dt.thDate}</th>
+                      <th className="px-3 py-2.5 text-left font-black uppercase tracking-wider">{dt.thClient}</th>
+                      <th className="px-3 py-2.5 text-left font-black uppercase tracking-wider">{dt.thTo}</th>
+                      <th className="px-3 py-2.5 text-right font-black uppercase tracking-wider">{dt.thCHF}</th>
+                      <th className="px-3 py-2.5 text-center font-black uppercase tracking-wider">{dt.thStatus}</th>
+                      <th className="px-3 py-2.5 text-center font-black uppercase tracking-wider">{dt.thConfirmed}</th>
+                      <th className="px-3 py-2.5 text-center font-black uppercase tracking-wider">{dt.thAction}</th>
                     </tr></thead>
                     <tbody>
                       {filteredEmailHistory.map((entry, idx) => (
@@ -2044,18 +2242,18 @@ const Dashboard: React.FC = () => {
                           <td className="px-3 py-2.5 text-right font-black text-[#0f1b2d]">{entry.amount}</td>
                           <td className="px-3 py-2.5 text-center">
                             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold ${entry.status==='sent'?'bg-green-100 text-green-700':entry.status==='pending'?'bg-yellow-100 text-yellow-600':'bg-red-100 text-red-600'}`}>
-                              {entry.status==='sent'?'Sent':entry.status==='pending'?'Pending':'Failed'}
+                              {entry.status==='sent'?dt.delivered:entry.status==='pending'?dt.filterPending:dt.failed}
                             </span>
                           </td>
                           <td className="px-3 py-2.5 text-center">
                             <select value={confirmationStatuses[entry.requestId]||'none'} onChange={e => markConfirmed(entry.requestId, e.target.value as 'confirmed'|'pending'|'none')} className="text-[10px] border border-slate-200 rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-[#00d4ff] bg-white">
-                              <option value="none">— None —</option>
-                              <option value="pending">Awaiting</option>
-                              <option value="confirmed">Confirmed</option>
+                              <option value="none">— {dt.filterAll} —</option>
+                              <option value="pending">{dt.filterPending}</option>
+                              <option value="confirmed">{dt.confirmed}</option>
                             </select>
                           </td>
                           <td className="px-3 py-2.5 text-center">
-                            <button onClick={() => doResendEmail(entry)} className="px-2 py-1 rounded-md bg-[#0f1b2d] text-white text-[9px] font-bold hover:bg-slate-700 transition-colors">Resend</button>
+                            <button onClick={() => doResendEmail(entry)} className="px-2 py-1 rounded-md bg-[#0f1b2d] text-white text-[9px] font-bold hover:bg-slate-700 transition-colors">{dt.resend}</button>
                           </td>
                         </tr>
                       ))}
@@ -2073,40 +2271,40 @@ const Dashboard: React.FC = () => {
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
               <div className="bg-[#0f1b2d] px-6 py-4 flex items-center justify-between flex-shrink-0">
                 <div>
-                  <h2 className="text-[#00d4ff] font-black text-base uppercase tracking-widest flex items-center gap-2"><Mail size={16}/> Send Cost Confirmation</h2>
-                  <p className="text-slate-400 text-xs mt-0.5">Client: {selectedEmailRequest.client} · CHF {selectedEmailRequest.amount}</p>
+                  <h2 className="text-[#00d4ff] font-black text-base uppercase tracking-widest flex items-center gap-2"><Mail size={16}/> {dt.sendCostConfirmation}</h2>
+                  <p className="text-slate-400 text-xs mt-0.5">{dt.thClient}: {selectedEmailRequest.client} · CHF {selectedEmailRequest.amount}</p>
                 </div>
                 <button onClick={() => setEmailModalOpen(false)} className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"><X size={18}/></button>
               </div>
               <div className="bg-slate-100 px-6 pt-3 flex gap-2 flex-shrink-0 border-b border-slate-200">
-                <button onClick={() => setEmailPreviewMode(false)} className={`px-4 py-2 rounded-t-lg text-xs font-bold uppercase tracking-wider transition-all ${!emailPreviewMode ? 'bg-white text-[#0f1b2d] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Compose</button>
-                <button onClick={() => setEmailPreviewMode(true)} className={`px-4 py-2 rounded-t-lg text-xs font-bold uppercase tracking-wider transition-all ${emailPreviewMode ? 'bg-white text-[#0f1b2d] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Preview</button>
+                <button onClick={() => setEmailPreviewMode(false)} className={`px-4 py-2 rounded-t-lg text-xs font-bold uppercase tracking-wider transition-all ${!emailPreviewMode ? 'bg-white text-[#0f1b2d] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>{dt.compose}</button>
+                <button onClick={() => setEmailPreviewMode(true)} className={`px-4 py-2 rounded-t-lg text-xs font-bold uppercase tracking-wider transition-all ${emailPreviewMode ? 'bg-white text-[#0f1b2d] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>{dt.preview}</button>
               </div>
               <div className="flex-1 overflow-y-auto p-6">
                 {!emailPreviewMode ? (
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">To *</label>
+                        <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{dt.to} *</label>
                         <input type="email" value={emailTo} onChange={e => setEmailTo(e.target.value)} className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d4ff] focus:border-transparent" placeholder="client@example.com"/>
                       </div>
                       <div>
-                        <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">CC (optional)</label>
+                        <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{dt.cc}</label>
                         <input type="email" value={emailCC} onChange={e => setEmailCC(e.target.value)} className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d4ff] focus:border-transparent" placeholder="cc@example.com"/>
                       </div>
                     </div>
                     <div>
-                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Subject</label>
+                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{dt.subject}</label>
                       <input type="text" value={emailSubject} onChange={e => setEmailSubject(e.target.value)} className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d4ff] focus:border-transparent"/>
                     </div>
                     <div>
-                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Email Body (HTML)</label>
+                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{dt.emailBody}</label>
                       <textarea value={emailBody} onChange={e => setEmailBody(e.target.value)} rows={14} className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-[#00d4ff] focus:border-transparent resize-none"/>
                     </div>
                   </div>
                 ) : (
                   <div className="border border-slate-200 rounded-xl overflow-hidden">
-                    <div className="bg-slate-100 px-4 py-2 text-xs text-slate-500 font-medium border-b border-slate-200">Email Preview</div>
+                    <div className="bg-slate-100 px-4 py-2 text-xs text-slate-500 font-medium border-b border-slate-200">{dt.preview}</div>
                     <iframe srcDoc={emailBody} className="w-full" style={{height:'420px',border:'none'}} title="Email Preview" sandbox="allow-same-origin"/>
                   </div>
                 )}
@@ -2116,9 +2314,9 @@ const Dashboard: React.FC = () => {
                   <CheckCircle size={12} className="text-green-400"/> Via Kraken PFM Dispatch
                 </div>
                 <div className="flex gap-3">
-                  <button onClick={() => setEmailModalOpen(false)} className="px-4 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors">Cancel</button>
+                  <button onClick={() => setEmailModalOpen(false)} className="px-4 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors">{dt.cancel}</button>
                   <button onClick={doSendEmail} disabled={emailSending || !emailTo} className="px-5 py-2 rounded-lg bg-[#0f1b2d] text-white text-sm font-bold uppercase tracking-wider hover:bg-slate-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
-                    {emailSending ? <><Clock size={13} className="animate-spin"/> Sending...</> : <><Send size={13}/> Send Email</>}
+                    {emailSending ? <><Clock size={13} className="animate-spin"/> {dt.sending}</> : <><Send size={13}/> {dt.sendEmail}</>}
                   </button>
                 </div>
               </div>

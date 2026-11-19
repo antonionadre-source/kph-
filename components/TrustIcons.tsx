@@ -5,9 +5,12 @@ const TrustIcons: React.FC = () => {
     <section className="py-12 bg-white border-t border-gray-50">
       <div className="container mx-auto px-4 flex justify-center">
         <img 
-          src="/iconos-why-us.jpg" 
+          src="/payrexx-checkout-banner.png" 
           alt="Trust Icons" 
           className="max-w-4xl w-full h-auto grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-700"
+          loading="lazy"
+          width="900"
+          height="120"
           referrerPolicy="no-referrer"
         />
       </div>

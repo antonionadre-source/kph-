@@ -638,8 +638,8 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
         {/* Full-width background image coverage */}
         <div className="absolute inset-0 z-0">
           <img 
-            src="/imagen-01-google-ai.webp" 
-            alt="Hero Background" 
+            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80" 
+            alt="Kraken PFM Modern Clean Facility Interior" 
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
@@ -675,14 +675,14 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
               <div className="flex flex-wrap gap-4 mb-10">
                 <button
                   onClick={() => onNavigate('consultation')}
-                  className="bg-[#007AFF] hover:bg-blue-600 text-white font-black text-xs uppercase tracking-widest px-8 py-4.5 rounded-full shadow-lg shadow-blue-500/20 transition-all hover:scale-[1.03] active:scale-95 cursor-pointer flex items-center gap-2"
+                  className="bg-gradient-to-r from-[#4ade80] to-[#2dd4bf] text-[#002d5b] hover:from-[#3feb73] hover:to-[#1ecdb6] font-black text-xs sm:text-sm uppercase tracking-wider px-8 py-4 rounded-full shadow-xl shadow-emerald-500/20 transition-all hover:scale-[1.03] active:scale-95 cursor-pointer flex items-center gap-2.5"
                 >
                   <span>{getL(d.ctaQuote)}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 shrink-0" />
                 </button>
                 <a
                   href="#servicios-grid"
-                  className="bg-white/5 border border-white/10 hover:border-white/30 text-white font-bold text-xs uppercase tracking-widest px-8 py-4.5 rounded-full transition-all flex items-center justify-center cursor-pointer"
+                  className="bg-transparent border-2 border-white/40 text-white hover:bg-white/10 hover:border-white/70 font-bold text-xs sm:text-sm uppercase tracking-wider px-7 py-4 rounded-full transition-all duration-300 flex items-center justify-center cursor-pointer active:scale-95"
                 >
                   {getL(d.ctaServices)}
                 </a>
@@ -797,10 +797,10 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
             
             <button
               onClick={() => onNavigate('consultation')}
-              className="bg-white border border-slate-200 hover:border-[#007AFF]/50 text-[#007AFF] text-xs font-black uppercase tracking-widest px-6 py-4 rounded-full transition-all flex items-center justify-center gap-2 self-start md:self-auto cursor-pointer"
+              className="bg-gradient-to-r from-[#4ade80] to-[#2dd4bf] text-[#002d5b] hover:from-[#3feb73] hover:to-[#1ecdb6] text-xs sm:text-sm font-black uppercase tracking-wider px-6 py-3.5 rounded-full shadow-lg shadow-emerald-500/10 transition-all flex items-center justify-center gap-2 self-start md:self-auto cursor-pointer hover:scale-105 active:scale-95"
             >
               <span>{getL(d.ourServices.btn)}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5 shrink-0" />
             </button>
           </div>
           
@@ -1203,6 +1203,41 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
         </div>
       </section>
 
+      {/* Bottom Primary CTA Banner */}
+      <section className="py-12 md:py-16 bg-[#001530] border-t border-white/10">
+        <div className="max-w-5xl mx-auto px-6 text-center">
+          <h3 className="text-2xl md:text-4xl font-black text-white tracking-tight mb-3">
+            {language === 'en' ? 'Ready for pristine results without stress?' :
+             language === 'fr' ? 'Prêt pour des résultats impeccables sans stress ?' :
+             language === 'it' ? 'Pronto per risultati impeccabili senza stress?' :
+             language === 'es' ? '¿Listo para resultados impecables sin estrés?' :
+             language === 'pt' ? 'Pronto para resultados impecáveis sem estresse?' :
+             'Bereit für saubere Ergebnisse ohne Stress?'}
+          </h3>
+          <p className="text-slate-300 text-xs sm:text-sm md:text-base max-w-2xl mx-auto mb-8 font-medium">
+            {language === 'en' ? 'Get your personalized, transparent Swiss quote in less than 2 minutes.' :
+             language === 'fr' ? 'Obtenez votre devis suisse personnalisé et transparent en moins de 2 minutes.' :
+             language === 'it' ? 'Ottieni il tuo preventivo svizzero personalizzato e trasparente in meno di 2 minuti.' :
+             language === 'es' ? 'Obtenga su presupuesto suizo personalizado y transparente en menos de 2 minutos.' :
+             language === 'pt' ? 'Obtenha seu orçamento suíço personalizado e transparente em menos de 2 minutos.' :
+             'Erhalten Sie Ihre transparente Schweizer Offerte in unter 2 Minuten.'}
+          </p>
+          <button
+            onClick={() => onNavigate('consultation')}
+            className="bg-gradient-to-r from-[#4ade80] to-[#2dd4bf] text-[#002d5b] hover:from-[#3feb73] hover:to-[#1ecdb6] px-8 py-4 rounded-full font-black text-xs sm:text-sm uppercase tracking-wider shadow-xl shadow-emerald-500/20 transition-all duration-300 hover:scale-105 active:scale-95 inline-flex items-center gap-2.5 cursor-pointer"
+          >
+            <span>
+              {language === 'en' ? 'Request a Free Quote' :
+               language === 'fr' ? 'Demander un devis gratuit' :
+               language === 'it' ? 'Richiedi preventivo gratuito' :
+               language === 'es' ? 'Solicitar presupuesto gratis' :
+               language === 'pt' ? 'Solicitar orçamento gratuito' :
+               'Kostenlose Offerte anfordern'}
+            </span>
+            <ArrowRight className="w-4 h-4 shrink-0" />
+          </button>
+        </div>
+      </section>
 
     </main>
   );

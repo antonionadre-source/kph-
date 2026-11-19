@@ -8,9 +8,15 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+# Build & env
 dist
 dist-ssr
 *.local
+.env
+.env.*
+!.env.example
+*.zip
+-quality
 
 # Editor directories and files
 .vscode/*
@@ -22,16 +28,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-# Ignore image assets in the root directory to avoid oversized builder archives
-/*.png
-/*.jpg
-/*.jpeg
-/*.webp
-/*.svg
-/*.PNG
-/*.JPG
-/*.JPEG
-/*.WEBP
-/*.SVG
 

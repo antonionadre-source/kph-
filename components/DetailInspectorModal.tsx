@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useTranslation } from '../i18n';
+import { getDashboardTranslation } from './dashboardTranslations';
 import { FilePreviewModal } from './FilePreviewModal';
 import { downloadFileSafely } from './fileUtils';
 import { scheduleCalendarEventForKai } from './calendarUtils';
@@ -30,11 +32,21 @@ import {
   Check,
   CheckSquare,
   Layers,
-  Clock
+  Clock,
+  Trash2,
+  MessageSquare
 } from 'lucide-react';
-import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from './firebase';
+import { doc, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { db, sanitizeFirestoreData } from './firebase';
 import { detectZone } from './ConsultationPage';
+
+export interface TeamNote {
+    id: string;
+    author: string;
+    text: string;
+    createdAt: string;
+    updatedAt?: string;
+}
 
 export type MaintenanceRequest = {
     id: string;
@@ -48,6 +60,7 @@ export type MaintenanceRequest = {
     phone?: string;
     address?: string;
     notes?: string;
+    teamNotes?: TeamNote[];
     mediaUrls?: string[];
     mediaNames?: string[];
     bookingMode?: string;
@@ -113,63 +126,219 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
   requests,
   setRequests
 }) => {
-  const [adminNotesText, setAdminNotesText] = useState(selectedRequest.notes || '');
+  const { language } = useTranslation();
+  const dt = getDashboardTranslation(language);
+  const [teamNotes, setTeamNotes] = useState<TeamNote[]>([]);
+  const [noteAuthor, setNoteAuthor] = useState(() => {
+    try {
+      return localStorage.getItem('kraken_last_author') || '';
+    } catch {
+      return '';
+    }
+  });
+  const [newNoteText, setNewNoteText] = useState('');
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [deletingNoteId, setDeletingNoteId] = useState<string | null>(null);
+  const [editText, setEditText] = useState('');
+  const [editAuthor, setEditAuthor] = useState('');
+  const [isSavingNotes, setIsSavingNotes] = useState(false);
   const [actionAlert, setActionAlert] = useState<string | null>(null);
   const [previewFile, setPreviewFile] = useState<{ url: string; name: string; title?: string } | null>(null);
 
   useEffect(() => {
-    setAdminNotesText(selectedRequest.notes || '');
+    let notesList: TeamNote[] = [];
+
+    if (selectedRequest.teamNotes && Array.isArray(selectedRequest.teamNotes) && selectedRequest.teamNotes.length > 0) {
+      notesList = selectedRequest.teamNotes;
+    } else if (selectedRequest.id) {
+      try {
+        const localKey = `kraken_team_notes_${selectedRequest.id}`;
+        const stored = localStorage.getItem(localKey);
+        if (stored) {
+          notesList = JSON.parse(stored);
+        }
+      } catch (e) {
+        console.warn('Error reading team notes from local storage:', e);
+      }
+    }
+
+    if (notesList.length === 0 && selectedRequest.notes && selectedRequest.notes.trim()) {
+      notesList = [{
+        id: 'legacy_note_1',
+        author: 'Sistema / Equipo',
+        text: selectedRequest.notes,
+        createdAt: selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' }) : 'Fecha registrada'
+      }];
+    }
+
+    setTeamNotes(notesList);
+    setNewNoteText('');
+    setEditingNoteId(null);
   }, [selectedRequest]);
 
-  const extractPostcode = (addr?: string): string => {
-      if (!addr) return '8000';
-      const match = addr.match(/\b\d{4}\b/);
-      return match ? match[0] : '8000';
+  const updateAndPersistTeamNotes = async (updatedNotes: TeamNote[], successMsg: string) => {
+    setIsSavingNotes(true);
+    try {
+      setTeamNotes(updatedNotes);
+
+      const summaryText = updatedNotes
+        .map(n => `[${n.author} - ${n.createdAt}]: ${n.text}`)
+        .join('\n\n');
+
+      const updatedList = requests.map(req => {
+        if (req.id === selectedRequest.id) {
+          const updated = { 
+            ...req, 
+            teamNotes: updatedNotes, 
+            notes: summaryText 
+          };
+          if (selectedRequest?.id === req.id) {
+            setSelectedRequest(updated);
+          }
+          return updated;
+        }
+        return req;
+      });
+      setRequests(updatedList);
+
+      try {
+        localStorage.setItem(`kraken_team_notes_${selectedRequest.id}`, JSON.stringify(updatedNotes));
+      } catch (e) {
+        console.warn('LocalStorage save error:', e);
+      }
+
+      try {
+        await setDoc(doc(db, 'maintenance_requests', selectedRequest.id), sanitizeFirestoreData({
+          teamNotes: updatedNotes,
+          notes: summaryText,
+          updatedAt: serverTimestamp()
+        }), { merge: true });
+      } catch (dbErr) {
+        console.warn('Firestore sync note warning:', dbErr);
+      }
+
+      setActionAlert(successMsg);
+      setTimeout(() => setActionAlert(null), 3500);
+    } catch (err) {
+      console.error('Error persisting notes:', err);
+      setActionAlert("Error al guardar las notas.");
+      setTimeout(() => setActionAlert(null), 3500);
+    } finally {
+      setIsSavingNotes(false);
+    }
   };
 
-  const handleSaveNotes = async (id: string, notesText: string) => {
-      try {
-          await updateDoc(doc(db, 'maintenance_requests', id), {
-              notes: notesText,
-              updatedAt: serverTimestamp()
-          });
+  const handleAddNote = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const cleanAuthor = noteAuthor.trim();
+    const cleanText = newNoteText.trim();
 
-          const updatedList = requests.map(req => {
-              if (req.id === id) {
-                  const updated = { ...req, notes: notesText };
-                  if (selectedRequest?.id === id) {
-                      setSelectedRequest(updated);
-                  }
-                  return updated;
-              }
-              return req;
-          });
-          setRequests(updatedList);
-          setActionAlert("Notes saved and synchronized with Cloud Database.");
-          setTimeout(() => setActionAlert(null), 3000);
-      } catch (error) {
-          console.error('Error saving notes:', error);
+    if (!cleanAuthor) {
+      setActionAlert("Por favor, introduce tu nombre como autor de la nota.");
+      setTimeout(() => setActionAlert(null), 3500);
+      return;
+    }
+    if (!cleanText) {
+      setActionAlert("Por favor, escribe el texto de la nota antes de guardar.");
+      setTimeout(() => setActionAlert(null), 3500);
+      return;
+    }
+
+    try {
+      localStorage.setItem('kraken_last_author', cleanAuthor);
+    } catch (e) {
+      // ignore
+    }
+
+    const nowStr = new Date().toLocaleString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    const newNoteObj: TeamNote = {
+      id: `note_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+      author: cleanAuthor,
+      text: cleanText,
+      createdAt: nowStr
+    };
+
+    const updated = [newNoteObj, ...teamNotes];
+    await updateAndPersistTeamNotes(updated, "Nota guardada e historial actualizado correctamente.");
+    setNewNoteText('');
+  };
+
+  const handleStartEditNote = (note: TeamNote) => {
+    setEditingNoteId(note.id);
+    setEditText(note.text);
+    setEditAuthor(note.author);
+  };
+
+  const handleSaveEditNote = async (noteId: string) => {
+    const cleanText = editText.trim();
+    const cleanAuthor = editAuthor.trim();
+
+    if (!cleanText || !cleanAuthor) {
+      setActionAlert("El autor y la nota no pueden estar vacíos.");
+      setTimeout(() => setActionAlert(null), 3500);
+      return;
+    }
+
+    const nowStr = new Date().toLocaleString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    const updated = teamNotes.map(n => {
+      if (n.id === noteId) {
+        return {
+          ...n,
+          author: cleanAuthor,
+          text: cleanText,
+          updatedAt: nowStr
+        };
       }
+      return n;
+    });
+
+    await updateAndPersistTeamNotes(updated, "Nota editada correctamente.");
+    setEditingNoteId(null);
+  };
+
+  const handleDeleteNote = async (noteId: string) => {
+    const updated = teamNotes.filter(n => n.id !== noteId);
+    await updateAndPersistTeamNotes(updated, "Nota eliminada correctamente.");
+    setDeletingNoteId(null);
+  };
+
+  const extractPostcode = (addr?: string): string => {
+    if (!addr) return '8000';
+    const match = addr.match(/\b\d{4}\b/);
+    return match ? match[0] : '8000';
   };
 
   const handleSendEmail = (req: MaintenanceRequest) => {
-      const subject = encodeURIComponent(`Confirmación de Servicio - Kraken PFM (${req.service})`);
+      const subject = encodeURIComponent(`${dt.emailDefaultSubject} (${req.service})`);
       const body = encodeURIComponent(
-          `Estimado/a ${req.client},\n\n` +
-          `Le confirmamos la recepción y programación de su solicitud de servicio con Kraken PFM:\n\n` +
-          `• Servicio: ${req.service}\n` +
-          `• Fecha: ${req.date || 'A convenir'}\n` +
-          `• Dirección: ${req.address || 'En registro'}\n` +
-          `• Importe total estimado: CHF ${(req.amount || 0).toLocaleString()}\n\n` +
-          `Quedamos a su disposición para cualquier duda o consulta adicional.\n\n` +
-          `Atentamente,\n` +
-          `Kraken Properties & Facilities Management`
+          `${dt.emailGreeting} ${req.client},\n\n` +
+          `${dt.emailBodyIntro}\n\n` +
+          `• ${dt.emailServiceLabel} ${req.service}\n` +
+          `• ${dt.emailDateLabel} ${req.date || '—'}\n` +
+          `• ${dt.emailAddressLabel} ${req.address || '—'}\n` +
+          `• ${dt.emailAmountLabel} CHF ${(req.amount || 0).toLocaleString()}\n\n` +
+          `${dt.emailQuestions}\n\n` +
+          `${dt.emailSincerely}`
       );
       if (req.email) {
           window.open(`mailto:${req.email}?subject=${subject}&body=${body}`, '_blank');
-          setActionAlert(`SUCCESS: Cliente de correo abierto para enviar confirmación a ${req.email}`);
+          setActionAlert(`SUCCESS: Email client opened to send confirmation to ${req.email}`);
       } else {
-          setActionAlert(`WARNING: La solicitud no tiene un email de cliente registrado.`);
+          setActionAlert(`WARNING: Request has no registered client email.`);
       }
       setTimeout(() => setActionAlert(null), 4000);
   };
@@ -194,10 +363,10 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
           });
           setRequests(updatedList);
 
-          // Trigger Google Calendar event & .ics download for kai@krakenpfm.ch with 1h reminder
+          // Trigger Outlook Calendar event & .ics download for kai@krakenpfm.ch with 1h reminder
           scheduleCalendarEventForKai(req);
 
-          setActionAlert(`SUCCESS: Evento agendado para kai@krakenpfm.ch con recordatorio de 1 hora. Sincronizado en Firebase.`);
+          setActionAlert(`SUCCESS: Event scheduled in Outlook for kai@krakenpfm.ch with 1h reminder. Synchronized in Firebase.`);
       } catch (err) {
           console.error('Error actualizando programación:', err);
           setActionAlert(`ERROR: No se pudo guardar la programación en Firebase.`);
@@ -213,13 +382,13 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
       }
 
       const invoiceNum = `INV-${req.id.substring(0, 8).toUpperCase()}`;
-      const dateStr = new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+      const dateStr = new Date().toLocaleDateString(language.startsWith('de') ? 'de-CH' : language.startsWith('fr') ? 'fr-CH' : language.startsWith('it') ? 'it-CH' : language.startsWith('es') ? 'es-ES' : 'en-CH', { year: 'numeric', month: 'long', day: 'numeric' });
 
       printWindow.document.write(`
         <!DOCTYPE html>
         <html>
         <head>
-          <title>Factura ${invoiceNum} - Kraken PFM</title>
+          <title>${dt.pdfInvoiceTitle} ${invoiceNum} - Kraken PFM</title>
           <style>
             body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; color: #1e293b; max-width: 800px; margin: 0 auto; }
             .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0284c7; padding-bottom: 20px; margin-bottom: 30px; }
@@ -238,60 +407,60 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
           </style>
         </head>
         <body>
-          <button class="btn-print" onclick="window.print()">📄 Imprimir / Guardar como PDF</button>
+          <button class="btn-print" onclick="window.print()">${dt.pdfPrintBtn}</button>
           
           <div class="header">
             <div class="logo">KRAKEN <span>PFM</span></div>
-            <div class="inv-title">FACTURA DE SERVICIO<br><span style="font-size:14px; color:#64748b;">${invoiceNum}</span></div>
+            <div class="inv-title">${dt.pdfInvoiceHeader}<br><span style="font-size:14px; color:#64748b;">${invoiceNum}</span></div>
           </div>
 
           <div class="details">
             <div class="box">
-              <strong>EMISOR:</strong><br>
+              <strong>${dt.pdfIssuer}</strong><br>
               Kraken Properties & Facilities Management<br>
               Bahnhofstrasse 42, 8001 Zürich<br>
               Suiza • CHE-109.823.411 TVA<br>
-              info@krakenpfm.ch
+              kai@krakenpfm.ch
             </div>
             <div class="box">
-              <strong>CLIENTE:</strong><br>
+              <strong>${dt.pdfClient}</strong><br>
               ${req.client}<br>
-              ${req.email || 'Sin email registrado'}<br>
-              ${req.address || 'Dirección en registro'}<br>
-              <strong>Fecha Emisión:</strong> ${dateStr}
+              ${req.email || dt.pdfNoEmail}<br>
+              ${req.address || dt.pdfAddressOnRecord}<br>
+              <strong>${dt.pdfIssueDate}</strong> ${dateStr}
             </div>
           </div>
 
           <table>
             <thead>
               <tr>
-                <th>Descripción del Servicio</th>
-                <th>Fecha</th>
-                <th style="text-align:right;">Importe</th>
+                <th>${dt.pdfServiceDesc}</th>
+                <th>${dt.pdfDate}</th>
+                <th style="text-align:right;">${dt.pdfAmount}</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td><strong>${req.service}</strong><br><span style="font-size:12px; color:#64748b;">Mantenimiento y gestión de propiedad Kraken PFM</span></td>
+                <td><strong>${req.service}</strong><br><span style="font-size:12px; color:#64748b;">${dt.pdfPropertyMaint}</span></td>
                 <td>${req.date || dateStr}</td>
                 <td style="text-align:right;">CHF ${(req.amount || 0).toLocaleString('de-CH', { minimumFractionDigits: 2 })}</td>
               </tr>
               <tr class="total-row">
-                <td colspan="2" style="text-align:right;">TOTAL CHF (IVA inc.):</td>
+                <td colspan="2" style="text-align:right;">${dt.pdfTotalVatInc}</td>
                 <td style="text-align:right; color:#0284c7;">CHF ${(req.amount || 0).toLocaleString('de-CH', { minimumFractionDigits: 2 })}</td>
               </tr>
             </tbody>
           </table>
 
           <div class="footer">
-            Kraken Properties & Facilities Management AG • Cuenta IBAN: CH93 0000 0000 0000 0000 0<br>
-            Documento fiscal válido generado por el sistema de gestión Kraken.
+            ${dt.pdfFooterIban}<br>
+            ${dt.pdfFooterDocNotice}
           </div>
         </body>
         </html>
       `);
       printWindow.document.close();
-      setActionAlert(`SUCCESS: Factura PDF generada e interactivamente lista para guardar o imprimir.`);
+      setActionAlert(`SUCCESS: Invoice PDF generated and ready to print/save.`);
       setTimeout(() => setActionAlert(null), 4000);
   };
 
@@ -339,7 +508,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                     <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-500">
                         <span className="text-slate-800 hover:text-blue-600 font-bold tracking-tight">Kraken PFM</span>
                         <span className="text-slate-300">/</span>
-                        <span className="text-slate-500 hover:text-slate-800 font-bold transition-all truncate max-w-[120px] sm:max-w-none">Service requests</span>
+                        <span className="text-slate-500 hover:text-slate-800 font-bold transition-all truncate max-w-[120px] sm:max-w-none">{dt.tabRequests}</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
@@ -349,7 +518,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                         className="px-4 py-2 bg-slate-100 hover:bg-slate-200/85 active:scale-95 text-slate-600 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all border border-slate-200"
                     >
                         <ArrowLeft className="w-3.5 h-3.5" />
-                        Back to dashboard
+                        {dt.backToDashboard}
                     </button>
                 </div>
             </div>
@@ -377,7 +546,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                             #{selectedRequest.id.toUpperCase()}
                         </span>
                         <span className="text-xs text-slate-400 font-bold">
-                            Submitted {selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleDateString() : 'online'}
+                            {dt.submitted} {selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleDateString() : 'online'}
                         </span>
                     </div>
                     <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-slate-900">
@@ -388,19 +557,16 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                             return <span key={wIdx}>{word} </span>;
                         })}
                     </h1>
-                    <p className="text-xs text-slate-500 max-w-2xl font-medium">
-                        Live monitoring of cleaning execution, scheduling milestones, real-time surcharge metrics, and security audit logs of client {selectedRequest.client}.
-                    </p>
                 </div>
 
                 <div className="flex items-center gap-2.5 flex-wrap">
                     {selectedRequest.priority === 'High' && (
                         <span className="px-3 py-1 bg-rose-50 text-rose-700 border border-rose-200 text-[9px] font-black uppercase tracking-widest rounded-full shadow-[0_4px_12px_rgba(239,68,68,0.06)] animate-pulse">
-                            High operational priority
+                            {dt.highPriorityBadge}
                         </span>
                     )}
                     <span className="px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 text-[9px] font-black uppercase tracking-widest rounded-full">
-                        {zoneInfo.label} Surcharge ×{zoneInfo.multiplier}
+                        {zoneInfo.label} {dt.surchargeApplied} ×{zoneInfo.multiplier}
                     </span>
                 </div>
             </div>
@@ -414,9 +580,9 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                     <div className="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
                         <div className="flex flex-col sm:flex-row bg-slate-100/50">
                             {([
-                                { label: 'Pending / Unscheduled', val: 'Pending' },
-                                { label: 'In Progress / Assigned', val: 'In Progress' },
-                                { label: 'Completed / Final Seal', val: 'Completed' }
+                                { label: dt.pendingUnscheduled, val: 'Pending', displayVal: dt.filterPending },
+                                { label: dt.inProgressAssigned, val: 'In Progress', displayVal: dt.filterInProgress },
+                                { label: dt.completedFinalSeal, val: 'Completed', displayVal: dt.filterCompleted }
                             ]).map((st, stepIdx) => {
                                 const statuses = ['Pending', 'In Progress', 'Completed'];
                                 const currentIdx = statuses.indexOf(selectedRequest.status);
@@ -441,7 +607,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                             <div className="flex flex-col">
                                                 <span className={`text-[10px] uppercase tracking-widest font-black leading-none ${
                                                     isActive ? 'text-blue-700' : isCompleted ? 'text-emerald-700' : 'text-slate-400'
-                                                }`}>{st.val}</span>
+                                                }`}>{st.displayVal}</span>
                                                 <span className="text-[9px] text-slate-550 mt-0.5">{st.label}</span>
                                             </div>
                                         </div>
@@ -457,21 +623,25 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                         {isStaff && (
                             <div className="p-4 bg-slate-100 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
                                 <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider">
-                                    Manual Crew State Override:
+                                    {dt.manualOverride}
                                 </span>
                                 <div className="flex gap-2 w-full sm:w-auto">
-                                    {(['Pending', 'In Progress', 'Completed'] as const).map((st) => (
+                                    {([
+                                      { key: 'Pending', label: dt.filterPending },
+                                      { key: 'In Progress', label: dt.filterInProgress },
+                                      { key: 'Completed', label: dt.filterCompleted }
+                                    ] as const).map((st) => (
                                         <button
-                                            key={st}
+                                            key={st.key}
                                             type="button"
-                                            onClick={() => updateStatusDirect(selectedRequest.id, st)}
+                                            onClick={() => updateStatusDirect(selectedRequest.id, st.key as any)}
                                             className={`flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border transition-all ${
-                                                selectedRequest.status === st 
+                                                selectedRequest.status === st.key 
                                                     ? 'bg-blue-600 text-white border-blue-500 shadow-md' 
                                                     : 'bg-white text-slate-550 hover:text-slate-850 border-slate-200 hover:bg-slate-50'
                                             }`}
                                         >
-                                            {st}
+                                            {st.label}
                                         </button>
                                     ))}
                                 </div>
@@ -485,61 +655,61 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                             <MapPin className="w-5 h-5" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <span className="text-[10px] uppercase font-black tracking-widest text-blue-700 block mb-0.5">Billing Postal Zone: {zoneInfo.label}</span>
+                            <span className="text-[10px] uppercase font-black tracking-widest text-blue-700 block mb-0.5">{dt.billingPostalZone} {zoneInfo.label}</span>
                             <p className="text-xs text-slate-500 truncate font-medium">
-                                Detected from location postcode <strong className="text-slate-805">{postcode}</strong>: Surcharge category <strong className="text-slate-900 font-bold">+{surchargePercent}%</strong> applied automatically to Swiss flat rate.
+                                Postcode <strong className="text-slate-805">{postcode}</strong>: {dt.surchargeApplied} (+{surchargePercent}%).
                             </p>
                         </div>
                         <div className="text-right shrink-0">
                             <span className="text-sm font-black text-blue-600 font-mono">CHF {calculatedSurcharge.toFixed(2)}</span>
-                            <span className="text-[9px] block text-slate-400 font-bold uppercase">Zone Extra</span>
+                            <span className="text-[9px] block text-slate-400 font-bold uppercase">{dt.zoneExtra}</span>
                         </div>
                     </div>
 
                     {/* 3) Detailed Quote calculation inputs (Room metrics etc.) */}
                     <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-4">
                         <h3 className="text-xs font-black uppercase text-slate-500 tracking-widest flex items-center gap-2">
-                            📋 Primary Quote Parameters & Sizing
+                            {dt.quoteParameters}
                         </h3>
                         
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="bg-white p-4 rounded-xl border border-slate-200">
                                 <span className="text-[9px] text-slate-500 uppercase tracking-widest block font-bold mb-1.5 flex items-center gap-1">
-                                    <Bed className="w-3 h-3 text-blue-600" /> Bed / Rooms
+                                    <Bed className="w-3 h-3 text-blue-600" /> {dt.bedRooms}
                                 </span>
                                 <span className="text-sm font-black text-slate-800 font-mono">
-                                    {roomsCount} <span className="text-[10px] text-slate-400 uppercase font-bold">Rooms</span>
+                                    {roomsCount}
                                 </span>
                             </div>
                             <div className="bg-white p-4 rounded-xl border border-slate-200">
                                 <span className="text-[9px] text-slate-500 uppercase tracking-widest block font-bold mb-1.5 flex items-center gap-1">
-                                    <Droplets className="w-3 h-3 text-blue-600" /> Bathrooms
+                                    <Droplets className="w-3 h-3 text-blue-600" /> {dt.bathrooms}
                                 </span>
                                 <span className="text-sm font-black text-slate-800 font-mono">
-                                    {bathroomsCount} <span className="text-[10px] text-slate-400 uppercase font-bold">Baths</span>
+                                    {bathroomsCount}
                                 </span>
                             </div>
                             <div className="bg-white p-4 rounded-xl border border-slate-200">
                                 <span className="text-[9px] text-slate-500 uppercase tracking-widest block font-bold mb-1.5 flex items-center gap-1">
-                                    <Layers className="w-3 h-3 text-blue-600" /> Carpet Area
+                                    <Layers className="w-3 h-3 text-blue-600" /> {dt.carpetArea}
                                 </span>
                                 <span className="text-sm font-black text-slate-800 font-mono">
-                                    {carpetCount > 0 ? `${carpetCount} m²` : 'None'}
+                                    {carpetCount > 0 ? `${carpetCount} m²` : '—'}
                                 </span>
                             </div>
                             <div className="bg-white p-4 rounded-xl border border-slate-200">
                                 <span className="text-[9px] text-slate-500 uppercase tracking-widest block font-bold mb-1.5 flex items-center gap-1">
-                                    <Clock className="w-3.5 h-3.5 text-blue-600" /> Allocated Duration
+                                    <Clock className="w-3.5 h-3.5 text-blue-600" /> {dt.allocatedDuration}
                                 </span>
                                 <span className="text-sm font-black text-blue-600 font-mono">
-                                    {customDuration} <span className="text-[10px] uppercase font-bold">Hours</span>
+                                    {customDuration} <span className="text-[10px] uppercase font-bold">{dt.hours}</span>
                                 </span>
                             </div>
                         </div>
 
                         {/* Checked Configuration items visually */}
                         <div className="pt-2">
-                            <span className="text-[9px] uppercase tracking-widest text-slate-400 font-bold block mb-2">Requested Cleaning Add-On Features:</span>
+                            <span className="text-[9px] uppercase tracking-widest text-slate-400 font-bold block mb-2">{dt.requestedAddons}</span>
                             <div className="flex flex-wrap gap-2">
                                 <span className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-colors flex items-center gap-1.5 ${
                                     balconyCount > 0 
@@ -547,7 +717,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                         : 'bg-slate-100 border-slate-200/80 text-slate-400'
                                 }`}>
                                     <CheckSquare className="w-3.5 h-3.5" /> 
-                                    Balconies Cleaner {balconyCount > 0 ? `(${balconyCount} pcs)` : ''}
+                                    {dt.balconiesCleaner} {balconyCount > 0 ? `(${balconyCount})` : ''}
                                 </span>
                                 <span className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-colors flex items-center gap-1.5 ${
                                     details.storageUnits 
@@ -555,7 +725,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                         : 'bg-slate-100 border-slate-200/80 text-slate-400'
                                 }`}>
                                     <CheckSquare className="w-3.5 h-3.5" /> 
-                                    Cellar/Garages {details.storageUnits ? `(${details.storageUnits} units)` : ''}
+                                    {dt.cellarGarages}
                                 </span>
                                 <span className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-colors flex items-center gap-1.5 ${
                                     details.furniture 
@@ -563,7 +733,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                         : 'bg-slate-100 border-slate-200/80 text-slate-400'
                                 }`}>
                                     <CheckSquare className="w-3.5 h-3.5" /> 
-                                    Furnished Cleaning {details.furniture ? `(${details.furniture} rooms)` : ''}
+                                    {dt.furnishedCleaning}
                                 </span>
                                 <span className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-colors flex items-center gap-1.5 ${
                                     selectedRequest.bookingMode === 'instant' 
@@ -571,7 +741,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                         : 'bg-slate-100 border-slate-200/80 text-slate-400'
                                 }`}>
                                     <CheckSquare className="w-3.5 h-3.5" /> 
-                                    Instant Booking Priority
+                                    {dt.instantBookingPriority}
                                 </span>
                             </div>
                         </div>
@@ -580,28 +750,28 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                     {/* 4) Financial price breakdown ledger */}
                     <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-4">
                         <h3 className="text-xs font-black uppercase text-slate-500 tracking-widest flex items-center gap-2">
-                            🪙 Transparent Swiss Pricing Matrix Breakdown
+                            {dt.pricingMatrix}
                         </h3>
                         
                         <div className="space-y-3 font-medium text-xs">
                             <div className="flex justify-between items-center py-2 border-b border-slate-200/60">
-                                <span className="text-slate-500">1. Base Quote flat-rate estimate (Subtotal for {roomsCount} rooms + {bathroomsCount} baths)</span>
+                                <span className="text-slate-500">{dt.baseQuote}</span>
                                 <span className="font-mono text-slate-705 text-slate-800">CHF {calculatedBase.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between items-center py-2 border-b border-slate-200/60">
-                                <span className="text-slate-500">2. Region Area Surcharge coefficient (Surcharge percentage +{surchargePercent}%)</span>
+                                <span className="text-slate-500">{dt.regionSurcharge} (+{surchargePercent}%)</span>
                                 <span className="font-mono text-slate-705 text-slate-800">+ CHF {calculatedSurcharge.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between items-center py-2 border-b border-slate-200/60">
-                                <span className="text-slate-500">3. Local Travel, call-out, environmental disposal, and equipment fee</span>
+                                <span className="text-slate-500">{dt.localTravelFee}</span>
                                 <span className="font-mono text-slate-705 text-slate-800">+ CHF {travelFee.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between items-center py-3 text-sm bg-blue-50 px-4 rounded-xl border border-blue-150">
-                                <span className="text-slate-700 font-bold">Total estimated service charge (VAT-included)</span>
+                                <span className="text-slate-700 font-bold">{dt.totalEstimated}</span>
                                 <span className="font-mono font-black text-blue-600">CHF {totalAmount.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between items-center py-2 border-t border-slate-200 border-dashed text-[10px] text-emerald-600 font-bold px-4">
-                                <span>🔒 Secure Payrexx Booking deposit payment pre-auth (15%)</span>
+                                <span>{dt.depositPayment}</span>
                                 <span className="font-mono">CHF {depositDue.toFixed(2)}</span>
                             </div>
                         </div>
@@ -611,7 +781,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                     <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-4">
                         <div className="flex justify-between items-center">
                             <h3 className="text-xs font-black uppercase text-slate-500 tracking-widest">
-                                💳 Secure Digital Payment & Capture Audit
+                                {dt.securePaymentAudit}
                             </h3>
                             <span className="text-[10px] font-black uppercase bg-emerald-50 text-emerald-700 border border-emerald-250 border-emerald-200 px-3 py-1 rounded-full">
                                 {selectedRequest.payment?.status || 'Authorized'}
@@ -634,13 +804,13 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                 </div>
                                 <div className="flex justify-between items-end">
                                     <div className="flex flex-col">
-                                        <span className="text-[7px] text-slate-550 uppercase tracking-widest font-black">Authorized cardholder</span>
+                                        <span className="text-[7px] text-slate-550 uppercase tracking-widest font-black">{dt.authorizedCardholder}</span>
                                         <span className="text-[11px] font-black tracking-tight text-white uppercase truncate max-w-[130px]">
                                             {selectedRequest.payment?.cardholderName || selectedRequest.client}
                                         </span>
                                     </div>
                                     <div className="flex flex-col text-right">
-                                        <span className="text-[7px] text-slate-550 uppercase tracking-widest font-black">Hold Deposit</span>
+                                        <span className="text-[7px] text-slate-550 uppercase tracking-widest font-black">{dt.holdDeposit}</span>
                                         <span className="text-xs font-mono font-black text-emerald-400">CHF {depositDue.toFixed(2)}</span>
                                     </div>
                                 </div>
@@ -650,13 +820,13 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                             {/* Payment details list */}
                             <div className="space-y-3 text-xs font-semibold">
                                 <div>
-                                    <span className="text-[9px] text-slate-400 uppercase tracking-wider block">Transaction reference UUID</span>
+                                    <span className="text-[9px] text-slate-400 uppercase tracking-wider block">{dt.txReference}</span>
                                     <span className="font-mono text-blue-600 word-break text-[10px] break-all block mt-0.5">
                                         {selectedRequest.payment?.transactionId || `tx_payrexx_7w9q8f${selectedRequest.id.substring(0, 6)}`}
                                     </span>
                                 </div>
                                 <div>
-                                    <span className="text-[9px] text-slate-400 uppercase tracking-wider block">Gateway Provider</span>
+                                    <span className="text-[9px] text-slate-400 uppercase tracking-wider block">{dt.gatewayProvider}</span>
                                     <span className="text-slate-600 block mt-0.5 uppercase font-bold">
                                         {selectedRequest.payment?.gateway || 'Payrexx AG'}
                                     </span>
@@ -668,7 +838,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                     {/* 6) Contact access credentials card */}
                     <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-4">
                         <h3 className="text-xs font-black uppercase text-slate-500 tracking-widest">
-                            🔑 Operational Contact & Building Access Coordinates
+                            {dt.operationalContact}
                         </h3>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs font-semibold">
@@ -678,7 +848,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                         <User className="w-4 h-4" />
                                     </div>
                                     <div>
-                                        <span className="text-[9px] text-slate-400 block uppercase">Authorized Contact Name</span>
+                                        <span className="text-[9px] text-slate-400 block uppercase">{dt.authorizedContact}</span>
                                         <span className="text-slate-800 font-bold block">{selectedRequest.client}</span>
                                     </div>
                                 </div>
@@ -687,8 +857,8 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                         <Mail className="w-4 h-4" />
                                     </div>
                                     <div>
-                                        <span className="text-[9px] text-slate-400 block uppercase">Official Email address</span>
-                                        <span className="text-slate-700 block normal-case font-bold">{selectedRequest.email || 'operator_unspecified'}</span>
+                                        <span className="text-[9px] text-slate-400 block uppercase">{dt.officialEmail}</span>
+                                        <span className="text-slate-700 block normal-case font-bold">{selectedRequest.email || '—'}</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
@@ -696,8 +866,8 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                         <Phone className="w-4 h-4" />
                                     </div>
                                     <div>
-                                        <span className="text-[9px] text-slate-400 block uppercase">Phone direct link</span>
-                                        <span className="text-slate-800 font-mono block font-bold">{selectedRequest.phone || '+41 XX XXX XX XX'}</span>
+                                        <span className="text-[9px] text-slate-400 block uppercase">{dt.phoneDirect}</span>
+                                        <span className="text-slate-800 font-mono block font-bold">{selectedRequest.phone || '—'}</span>
                                     </div>
                                 </div>
                             </div>
@@ -708,7 +878,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                         <MapPin className="w-4 h-4" />
                                     </div>
                                     <div className="min-w-0">
-                                        <span className="text-[9px] text-slate-400 block uppercase">Service Delivery Location</span>
+                                        <span className="text-[9px] text-slate-400 block uppercase">{dt.serviceLocation}</span>
                                         <span className="text-slate-800 font-bold block truncate text-slate-800" title={selectedRequest.address}>{selectedRequest.address || 'Zürich Area, Switzerland'}</span>
                                     </div>
                                 </div>
@@ -717,7 +887,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                         <Key className="w-4 h-4" />
                                     </div>
                                     <div>
-                                        <span className="text-[9px] text-slate-400 block uppercase">Building Access Method</span>
+                                        <span className="text-[9px] text-slate-400 block uppercase">{dt.buildingAccess}</span>
                                         <span className="text-slate-800 font-bold block uppercase text-slate-800">
                                             {selectedRequest.accessMethod === 'keys' ? '🔑 Keybox / code collection' :
                                              selectedRequest.accessMethod === 'onSite' ? '🤝 Person on-site meet' :
@@ -732,31 +902,31 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                     {/* 7) Scheduling timestamps audit tracker */}
                     <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-4">
                         <h3 className="text-xs font-black uppercase text-slate-500 tracking-widest flex items-center gap-2">
-                            📅 Service Timeline & Booking Coordinates
+                            {dt.serviceTimeline}
                         </h3>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs font-semibold">
                             <div className="bg-white p-4 rounded-xl border border-slate-200">
-                                <span className="text-[9px] text-slate-450 uppercase tracking-widest block font-black mb-1">Service Date</span>
+                                <span className="text-[9px] text-slate-450 uppercase tracking-widest block font-black mb-1">{dt.serviceDate}</span>
                                 <span className="text-slate-800 font-bold">{selectedRequest.scheduling?.requestedDate || selectedRequest.date}</span>
                             </div>
                             <div className="bg-white p-4 rounded-xl border border-slate-200">
-                                <span className="text-[9px] text-slate-450 uppercase tracking-widest block font-black mb-1">Preferred Slot</span>
+                                <span className="text-[9px] text-slate-450 uppercase tracking-widest block font-black mb-1">{dt.preferredSlot}</span>
                                 <span className="text-slate-800 font-bold uppercase">{selectedRequest.scheduling?.preferredTimeWindow || '08:00 - 12:00'}</span>
                             </div>
                             <div className="bg-blue-50 p-4 rounded-xl border border-blue-150">
-                                <span className="text-[9px] text-blue-700 uppercase tracking-widest block font-black mb-1">Duration</span>
-                                <span className="text-slate-800 font-mono font-bold block">{customDuration} Hours</span>
+                                <span className="text-[9px] text-blue-700 uppercase tracking-widest block font-black mb-1">{dt.allocatedDuration}</span>
+                                <span className="text-slate-800 font-mono font-bold block">{customDuration} {dt.hours}</span>
                             </div>
                             <div className="bg-white p-4 rounded-xl border border-slate-200">
-                                <span className="text-[9px] text-slate-450 uppercase tracking-widest block font-black mb-1">Est. Completion</span>
+                                <span className="text-[9px] text-slate-450 uppercase tracking-widest block font-black mb-1">{dt.estCompletion}</span>
                                 <span className="text-blue-600 font-mono font-bold block">{selectedRequest.scheduling?.estimatedEndTime || 'Flexible'}</span>
                             </div>
                         </div>
 
                         <div className="pt-2 border-t border-slate-200/80">
                             <span className="text-[9px] uppercase tracking-widest text-blue-700 font-black block ml-1 mb-3">
-                                ⏱️ Security Audit & Timestamp Chronology Log
+                                {dt.auditChronology}
                             </span>
                             <div className="space-y-2.5">
                                 <div className="flex justify-between items-center px-4 py-3 bg-white rounded-xl border border-slate-200 text-[11px] font-semibold text-slate-500">
@@ -774,13 +944,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                 <div className="flex justify-between items-center px-4 py-3 bg-white rounded-xl border border-slate-200 text-[11px] font-semibold text-slate-500">
                                     <span>3) Payrexx AG pre-auth capture check</span>
                                     <span className="font-mono text-emerald-600 font-bold">
-                                        {selectedRequest.timestamps?.depositCapturedAt ? new Date(selectedRequest.timestamps.depositCapturedAt).toLocaleString() : 'Authorized / Card on lock'}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between items-center px-4 py-3 bg-white rounded-xl border border-slate-200 text-[11px] font-semibold text-slate-500">
-                                    <span>4) Firestore cloud real-time sync</span>
-                                    <span className="font-mono text-amber-600 font-bold">
-                                        {selectedRequest.timestamps?.lastUpdatedAt ? new Date(selectedRequest.timestamps.lastUpdatedAt).toLocaleString() : 'Acknowledge Match'}
+                                        {selectedRequest.timestamps?.depositCapturedAt ? new Date(selectedRequest.timestamps.depositCapturedAt).toLocaleString() : 'Authorized'}
                                     </span>
                                 </div>
                             </div>
@@ -790,7 +954,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                     {/* 8) Media attachments grid dynamically filled */}
                     <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-4">
                         <h3 className="text-xs font-black uppercase text-slate-550 text-slate-500 tracking-widest">
-                            🖼️ Client uploaded documentation & media assets ({selectedRequest.mediaUrls ? selectedRequest.mediaUrls.length : 0})
+                            {dt.clientUploadedMedia} ({selectedRequest.mediaUrls ? selectedRequest.mediaUrls.length : 0})
                         </h3>
                         
                         {selectedRequest.mediaUrls && selectedRequest.mediaUrls.length > 0 ? (
@@ -816,7 +980,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                              ) : (
                                                 <div className="h-32 w-full bg-slate-100 flex flex-col items-center justify-center text-slate-400 gap-2">
                                                     <FileText className="w-8 h-8 text-blue-600" />
-                                                    <span className="text-[10px] font-mono">Attachment #{i+1}</span>
+                                                    <span className="text-[10px] font-mono">{dt.attachment} #{i+1}</span>
                                                 </div>
                                             )}
                                             <div className="p-3 bg-slate-50/85 border-t border-slate-100 flex items-center justify-between gap-2">
@@ -827,21 +991,21 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                                         onClick={() => setPreviewFile({
                                                             url,
                                                             name,
-                                                            title: `Adjunto • ${selectedRequest.client}`
+                                                            title: `${dt.attachment} • ${selectedRequest.client}`
                                                         })}
                                                         className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1 cursor-pointer"
-                                                        title="Visualizar archivo"
+                                                        title={dt.view}
                                                     >
-                                                        Ver
+                                                        {dt.view}
                                                         <Eye className="w-3 h-3" />
                                                     </button>
                                                     <button 
                                                         type="button"
                                                         onClick={() => downloadFileSafely(url, name)}
                                                         className="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1 cursor-pointer"
-                                                        title="Descargar archivo seguro"
+                                                        title={dt.download}
                                                     >
-                                                        Descargar
+                                                        {dt.download}
                                                         <Download className="w-3 h-3" />
                                                     </button>
                                                 </div>
@@ -852,7 +1016,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                             </div>
                         ) : (
                             <div className="bg-slate-100 border border-slate-200 rounded-xl p-8 text-center text-xs text-slate-400 font-semibold">
-                                No pictures or visual assets attached by client.
+                                {dt.noMediaAttached}
                             </div>
                         )}
                     </div>
@@ -864,13 +1028,13 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                     
                     {/* Summary Estimate Badge Widget from Mockup */}
                     <div className="bg-gradient-to-br from-blue-700 to-indigo-900 rounded-2xl p-6 border border-indigo-700/35 shadow-lg relative overflow-hidden text-white">
-                        <span className="text-[10px] font-black uppercase text-indigo-200 tracking-widest block mb-1">Dynamic Total Estimate</span>
+                        <span className="text-[10px] font-black uppercase text-indigo-200 tracking-widest block mb-1">{dt.dynamicTotalEstimate}</span>
                         <div className="text-3xl font-black text-white font-mono mt-2 mb-4">
                             CHF {totalAmount.toFixed(2)}
                         </div>
                         <div className="border-t border-indigo-500/30 pt-4 space-y-2.5 text-xs font-semibold">
                             <div className="flex justify-between text-indigo-200">
-                                <span>Base cleaning amount</span>
+                                <span>{dt.baseQuote}</span>
                                 <span className="font-mono text-white">CHF {calculatedBase.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between text-indigo-200">
@@ -878,11 +1042,11 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                 <span className="font-mono text-white">CHF {calculatedSurcharge.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between text-indigo-200">
-                                <span>Local Callout base fee</span>
+                                <span>{dt.localTravelFee}</span>
                                 <span className="font-mono text-cyan-200">CHF {travelFee.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between border-t border-indigo-500/30 pt-3 text-[#a5f3fc] font-bold text-[11px]">
-                                <span>15% Reservation Deposit</span>
+                                <span>{dt.depositPayment}</span>
                                 <span className="font-mono">CHF {depositDue.toFixed(2)}</span>
                             </div>
                         </div>
@@ -892,7 +1056,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                     {/* Operational Action Panel from Mockup */}
                     <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-5">
                         <h3 className="text-xs font-black uppercase text-slate-500 tracking-widest">
-                            ⚡ Interactive Crew Commands
+                            {dt.interactiveCrewCommands}
                         </h3>
                         
                         <div className="space-y-3 flex flex-col">
@@ -901,7 +1065,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                 onClick={() => handleSendEmail(selectedRequest)}
                                 className="w-full px-4 py-2.5 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 hover:border-blue-300 rounded-xl text-xs font-black uppercase tracking-widest flex items-center justify-between transition-all"
                             >
-                                Send Confirmation Email
+                                {dt.sendCostConfirmation}
                                 <Send className="w-4 h-4 shrink-0 text-slate-400 group-hover:text-blue-600" />
                             </button>
 
@@ -910,7 +1074,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                 onClick={() => handleScheduleService(selectedRequest)}
                                 className="w-full px-4 py-2.5 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 hover:border-blue-300 rounded-xl text-xs font-black uppercase tracking-widest flex items-center justify-between transition-all"
                             >
-                                Commit Live Scheduling
+                                {dt.scheduleOutlookBtn}
                                 <Calendar className="w-4 h-4 shrink-0 text-slate-400" />
                             </button>
 
@@ -919,48 +1083,232 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                 onClick={() => handleGenerateInvoice(selectedRequest)}
                                 className="w-full px-4 py-2.5 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 hover:border-blue-300 rounded-xl text-xs font-black uppercase tracking-widest flex items-center justify-between transition-all"
                             >
-                                Generate PDF Invoice
+                                {dt.generateInvoiceBtn}
                                 <FileText className="w-4 h-4 shrink-0 text-slate-400" />
                             </button>
                         </div>
                     </div>
 
                     {/* Admin notes memo text area */}
-                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-4">
+                    <div className="bg-slate-50 rounded-2xl p-5 sm:p-6 border border-slate-200 space-y-4">
                         <div className="flex justify-between items-center">
-                            <h3 className="text-xs font-black uppercase text-slate-500 tracking-widest">
-                                📝 Crew & Incident Internal Notes
+                            <h3 className="text-xs font-black uppercase text-slate-700 tracking-widest flex items-center gap-2">
+                                <MessageSquare className="w-4 h-4 text-blue-600" />
+                                {dt.internalNotesHeading}
                             </h3>
+                            <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700">
+                                {teamNotes.length} {teamNotes.length === 1 ? 'nota' : 'notas'}
+                            </span>
                         </div>
-                        <div className="space-y-3">
-                            <textarea 
-                                rows={4}
-                                value={adminNotesText}
-                                onChange={(e) => setAdminNotesText(e.target.value)}
-                                placeholder="Write internal team briefing details, client specific key codes, access logs, or invoice notes here..."
-                                className="w-full p-3 bg-white rounded-xl text-xs text-slate-800 border border-slate-200 focus:border-blue-500 outline-none placeholder-slate-400 font-semibold font-sans leading-relaxed"
-                            />
+
+                        {/* Form to add a new note */}
+                        <form onSubmit={handleAddNote} className="bg-white rounded-xl p-3.5 border border-slate-200/90 shadow-sm space-y-3">
+                            <div className="space-y-2">
+                                <div>
+                                    <label className="text-[9px] font-black uppercase text-slate-500 tracking-wider block mb-1">
+                                        Nombre del Autor *
+                                    </label>
+                                    <div className="relative">
+                                        <User className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                        <input 
+                                            type="text" 
+                                            value={noteAuthor}
+                                            onChange={(e) => setNoteAuthor(e.target.value)}
+                                            placeholder="Ej. Marco / Kai / Staff"
+                                            className="w-full pl-8 pr-3 py-1.5 bg-slate-50 rounded-lg text-xs text-slate-800 font-bold border border-slate-200 focus:border-blue-500 focus:bg-white outline-none placeholder-slate-400"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="text-[9px] font-black uppercase text-slate-500 tracking-wider block mb-1">
+                                        Escribir Nota *
+                                    </label>
+                                    <textarea 
+                                        rows={2}
+                                        value={newNoteText}
+                                        onChange={(e) => setNewNoteText(e.target.value)}
+                                        placeholder="Escribe la nota o instrucción..."
+                                        className="w-full p-2.5 bg-slate-50 rounded-lg text-xs text-slate-800 font-medium border border-slate-200 focus:border-blue-500 focus:bg-white outline-none placeholder-slate-400 leading-relaxed resize-y"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
                             <button 
-                                type="button"
-                                onClick={() => handleSaveNotes(selectedRequest.id, adminNotesText)}
-                                className="w-full py-2 bg-gradient-to-r from-blue-700 to-indigo-800 hover:from-blue-600 hover:to-indigo-700 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md flex items-center justify-center gap-1.5"
+                                type="submit"
+                                disabled={isSavingNotes || !newNoteText.trim() || !noteAuthor.trim()}
+                                className="w-full py-2 bg-gradient-to-r from-blue-700 to-indigo-800 hover:from-blue-600 hover:to-indigo-700 active:scale-[0.99] text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                             >
-                                <Check className="w-3.5 h-3.5" />
-                                Save Internal Memo
+                                {isSavingNotes ? (
+                                    <>
+                                        <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                        <span>Guardando...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Check className="w-3.5 h-3.5" />
+                                        <span>Guardar Nota</span>
+                                    </>
+                                )}
                             </button>
+                        </form>
+
+                        {/* List of saved notes */}
+                        <div className="space-y-2.5 pt-1">
+                            <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider block">
+                                Historial de Notas
+                            </span>
+
+                            {teamNotes.length === 0 ? (
+                                <div className="bg-white/80 rounded-xl p-4 text-center border border-dashed border-slate-200">
+                                    <FileText className="w-5 h-5 text-slate-300 mx-auto mb-1.5" />
+                                    <p className="text-[11px] text-slate-400 font-medium">
+                                        No hay notas guardadas aún.
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="space-y-2.5 max-h-[280px] overflow-y-auto pr-1 scrollbar-thin">
+                                    {teamNotes.map((note) => {
+                                        const isEditing = editingNoteId === note.id;
+
+                                        return (
+                                            <div 
+                                                key={note.id} 
+                                                className="bg-white rounded-xl p-3 border border-slate-200 shadow-sm space-y-2 hover:border-blue-200 transition-all text-xs"
+                                            >
+                                                {/* Header */}
+                                                <div className="flex items-center justify-between gap-1 pb-1.5 border-b border-slate-100">
+                                                    <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+                                                        <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 font-bold text-[10px] px-2 py-0.5 rounded border border-blue-100 truncate max-w-[110px]">
+                                                            <User className="w-3 h-3 text-blue-600 shrink-0" />
+                                                            {note.author}
+                                                        </span>
+                                                        <span className="inline-flex items-center gap-1 text-[9px] font-semibold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">
+                                                            <Clock className="w-2.5 h-2.5 text-slate-400" />
+                                                            {note.createdAt}
+                                                        </span>
+                                                    </div>
+
+                                                    {!isEditing && (
+                                                        <div className="flex items-center gap-0.5 shrink-0">
+                                                            <button 
+                                                                type="button"
+                                                                onClick={() => {
+                                                                  setDeletingNoteId(null);
+                                                                  handleStartEditNote(note);
+                                                                }}
+                                                                title="Editar nota"
+                                                                className="p-1 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors cursor-pointer"
+                                                            >
+                                                                <Edit className="w-3.5 h-3.5" />
+                                                            </button>
+                                                            <button 
+                                                                type="button"
+                                                                onClick={() => setDeletingNoteId(deletingNoteId === note.id ? null : note.id)}
+                                                                title="Borrar nota"
+                                                                className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer"
+                                                            >
+                                                                <Trash2 className="w-3.5 h-3.5" />
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Inline Deletion Confirmation */}
+                                                {deletingNoteId === note.id && (
+                                                    <div className="bg-rose-50 rounded-lg p-2.5 border border-rose-200 flex flex-wrap items-center justify-between gap-2">
+                                                        <span className="text-[10px] font-bold text-rose-700">
+                                                            ¿Seguro que deseas eliminar esta nota?
+                                                        </span>
+                                                        <div className="flex items-center gap-1.5 ml-auto">
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setDeletingNoteId(null)}
+                                                                className="px-2 py-0.5 bg-white text-slate-600 hover:bg-slate-100 rounded text-[9px] font-bold uppercase tracking-wider border border-slate-200"
+                                                            >
+                                                                Cancelar
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleDeleteNote(note.id)}
+                                                                disabled={isSavingNotes}
+                                                                className="px-2.5 py-0.5 bg-rose-600 hover:bg-rose-700 text-white rounded text-[9px] font-black uppercase tracking-wider shadow-xs flex items-center gap-1"
+                                                            >
+                                                                <Trash2 className="w-2.5 h-2.5" />
+                                                                Sí, borrar
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* Body */}
+                                                {isEditing ? (
+                                                    <div className="space-y-2 pt-1">
+                                                        <div>
+                                                            <label className="text-[9px] font-bold uppercase text-slate-400 block mb-0.5">
+                                                                Autor
+                                                            </label>
+                                                            <input 
+                                                                type="text" 
+                                                                value={editAuthor}
+                                                                onChange={(e) => setEditAuthor(e.target.value)}
+                                                                className="w-full p-1.5 bg-slate-50 rounded-lg text-xs font-bold text-slate-800 border border-slate-200 focus:border-blue-500 outline-none"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <label className="text-[9px] font-bold uppercase text-slate-400 block mb-0.5">
+                                                                Texto
+                                                            </label>
+                                                            <textarea 
+                                                                rows={2}
+                                                                value={editText}
+                                                                onChange={(e) => setEditText(e.target.value)}
+                                                                className="w-full p-2 bg-slate-50 rounded-lg text-xs font-medium text-slate-800 border border-slate-200 focus:border-blue-500 outline-none leading-relaxed"
+                                                            />
+                                                        </div>
+                                                        <div className="flex justify-end gap-1.5">
+                                                            <button 
+                                                                type="button"
+                                                                onClick={() => setEditingNoteId(null)}
+                                                                className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded text-[9px] font-bold uppercase tracking-wider"
+                                                            >
+                                                                Cancelar
+                                                            </button>
+                                                            <button 
+                                                                type="button"
+                                                                onClick={() => handleSaveEditNote(note.id)}
+                                                                disabled={isSavingNotes}
+                                                                className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-[9px] font-black uppercase tracking-wider flex items-center gap-1"
+                                                            >
+                                                                <Check className="w-3 h-3" />
+                                                                Guardar
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <p className="text-xs text-slate-700 font-medium whitespace-pre-wrap leading-relaxed pt-0.5">
+                                                        {note.text}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
                         </div>
                     </div>
 
                     {/* Danger Zone: Delete Option */}
                     {(isStaff || selectedRequest.status === 'Pending') && (
                         <div className="bg-rose-50 rounded-2xl p-5 border border-rose-200 transition-all text-center">
-                            <span className="text-[9px] uppercase tracking-widest font-black text-rose-600 block mb-2">Danger Incident Area</span>
+                            <span className="text-[9px] uppercase tracking-widest font-black text-rose-600 block mb-2">{dt.dangerZone}</span>
                             <button 
                                 type="button"
                                 onClick={() => handleDelete(selectedRequest.id)}
                                 className="py-1.5 w-full bg-rose-100 hover:bg-rose-600 text-rose-700 hover:text-white rounded-xl text-[9px] font-black uppercase tracking-widest transition-all border border-rose-200"
                             >
-                                Delete request ledger
+                                {dt.deleteRequestLedger}
                             </button>
                         </div>
                     )}
@@ -971,14 +1319,14 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
             {/* Modal Sticky Footer */}
             <div className="p-6 sm:p-8 bg-slate-50 border-t border-slate-205 border-slate-200 flex gap-4 justify-between items-center mt-auto">
                 <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider hidden sm:inline-block">
-                    Approved and compliant facilities ledger item
+                    Kraken PFM
                 </span>
                 <button 
                      type="button"
                      onClick={() => setSelectedRequest(null)}
                      className="bg-blue-600 hover:bg-blue-500 hover:scale-[1.01] active:scale-95 text-white px-8 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ml-auto shadow-[0_4px_20px_rgba(59,130,246,0.15)]"
                 >
-                    Dismiss view
+                    {dt.dismissView}
                 </button>
             </div>
 

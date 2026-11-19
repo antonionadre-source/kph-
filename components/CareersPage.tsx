@@ -23,11 +23,13 @@ import {
 } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import { useTranslation } from '../i18n';
-import { db, auth, storage } from './firebase';
+import { db, auth, storage, sanitizeFirestoreData } from './firebase';
 import { doc, setDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
-const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/ucxeqjygku2w6zyf9ynut5oantantx58';
+import { sendLead } from './leadWebhook';
+import { uploadFilesToStorage } from './fileUploadHelper';
+
 const SERVICE_ID = 'service_aiv15bc';
 const TEMPLATE_ID = 'template_aktj7t9';
 const PUBLIC_KEY = 'sH5K84ChHyssJrarm';
@@ -278,7 +280,7 @@ const LOCALIZED_CONTENT: Record<string, any> = {
     successTitle: "Bewerbung eingegangen!",
     successText: "Danke für dein Vertrauen und dein Interesse an Kraken PFM! Antonio wird sich so schnell wie möglich bei dir melden — in der Regel innerhalb von 2 Arbeitstagen.",
     successBtnHome: "Zur Hauptseite",
-    errorMsg: "Fehler beim Senden der Bewerbung. Bitte kontaktiere Antonio direkt unter info@krakenpfm.ch."
+    errorMsg: "Fehler beim Senden der Bewerbung. Bitte kontaktiere Antonio direkt unter kai@krakenpfm.ch."
   },
   en: {
     heroBadge: "CAREERS AT KRAKEN PFM",
@@ -435,7 +437,7 @@ const LOCALIZED_CONTENT: Record<string, any> = {
     successTitle: "Application Received!",
     successText: "Thank you for your trust and interest in Kraken PFM! Antonio will get back to you as soon as possible — usually within 2 working days.",
     successBtnHome: "To Home Page",
-    errorMsg: "Error sending application. Please contact Antonio directly at info@krakenpfm.ch."
+    errorMsg: "Error sending application. Please contact Antonio directly at kai@krakenpfm.ch."
   },
   es: {
     heroBadge: "TRABAJA EN KRAKEN PFM",
@@ -592,7 +594,7 @@ const LOCALIZED_CONTENT: Record<string, any> = {
     successTitle: "¡Solicitud recibida!",
     successText: "¡Gracias por tu confianza e interés en Kraken PFM! Antonio se pondrá en contacto contigo lo antes posible, normalmente en 2 días laborables.",
     successBtnHome: "Volver a la Página Principal",
-    errorMsg: "Error al enviar la solicitud. Por favor, contacte con Antonio directamente en info@krakenpfm.ch."
+    errorMsg: "Error al enviar la solicitud. Por favor, contacte con Antonio directamente en kai@krakenpfm.ch."
   },
   pt: {
     heroBadge: "CARREIRAS NA KRAKEN PFM",
@@ -749,7 +751,7 @@ const LOCALIZED_CONTENT: Record<string, any> = {
     successTitle: "Candidatura recebida!",
     successText: "Obrigado pela sua confiança e interesse na Kraken PFM! O Antonio entrará em contacto consigo o mais rápido possível — normalmente em 2 dias úteis.",
     successBtnHome: "Voltar à Página Principal",
-    errorMsg: "Erro ao enviar a candidatura. Por favor, contacte o Antonio diretamente através do e-mail info@krakenpfm.ch."
+    errorMsg: "Erro ao enviar a candidatura. Por favor, contacte o Antonio diretamente através do e-mail kai@krakenpfm.ch."
   },
   it: {
     heroBadge: "LAVORA CON NOI IN KRAKEN PFM",
@@ -906,7 +908,7 @@ const LOCALIZED_CONTENT: Record<string, any> = {
     successTitle: "Candidatura Ricevuta!",
     successText: "Grazie per la fiducia e l'interesse dimostrato per Kraken PFM! Antonio ti ricontatterà al più presto, solitamente entro 2 giorni lavorativi.",
     successBtnHome: "Torna alla Pagina Principale",
-    errorMsg: "Errore durante l'invio della candidatura. Si prega di contattare direttamente Antonio all'indirizzo info@krakenpfm.ch."
+    errorMsg: "Errore durante l'invio della candidatura. Si prega di contattare direttamente Antonio all'indirizzo kai@krakenpfm.ch."
   },
   fr: {
     heroBadge: "CARRIÈRE CHEZ KRAKEN PFM",
@@ -1064,7 +1066,7 @@ const LOCALIZED_CONTENT: Record<string, any> = {
     successTitle: "Candidature Reçue !",
     successText: "Merci de votre confiance et de votre intérêt pour Kraken PFM ! Antonio vous contactera dans les plus brefs délais — généralement sous 2 jours ouvrables.",
     successBtnHome: "Retour à l'accueil",
-    errorMsg: "Erreur lors de l'envoi de la candidature. Veuillez contacter Antonio directement à l'adresse info@krakenpfm.ch."
+    errorMsg: "Erreur lors de l'envoi de la candidature. Veuillez contacter Antonio directement à l'adresse kai@krakenpfm.ch."
   }
 };
 
@@ -1150,38 +1152,12 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
 
       const currentUid = auth.currentUser?.uid || 'anonymous_applicant';
 
-      // 2. Upload CV/Image file directly to Firebase Storage if present
-      let firebaseStorageCvUrl = '';
-      if (cvFile) {
-        try {
-          const cleanName = formData.name.trim().replace(/[^a-zA-Z0-9]/g, '_') || 'Applicant';
-          const uniqueId = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-          const storageRef = ref(storage, `job_applications_cvs/${cleanName}/${uniqueId}_${cvFile.name}`);
-          const uploadTask = uploadBytesResumable(storageRef, cvFile);
-
-          firebaseStorageCvUrl = await new Promise<string>((resolve) => {
-            uploadTask.on(
-              'state_changed',
-              null,
-              (err) => {
-                console.warn("Firebase Storage upload error, using fallback:", err);
-                resolve('');
-              },
-              async () => {
-                try {
-                  const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
-                  resolve(downloadUrl);
-                } catch (e) {
-                  console.warn("Error getting download URL from Firebase Storage:", e);
-                  resolve('');
-                }
-              }
-            );
-          });
-        } catch (stErr) {
-          console.warn("Firebase Storage upload exception:", stErr);
-        }
-      }
+      // 2. Upload CV file directly to Firebase Storage under solicitudes/AAAA-MM-DD/timestamp-nombrearchivo if present
+      const cvStorageResult = cvFile
+        ? await uploadFilesToStorage([cvFile])
+        : { fileUrl: '', fileUrls: '', fileName: '', fileCount: 0 };
+      
+      const firebaseStorageCvUrl = cvStorageResult.fileUrl;
 
       // Safe fallback if Firebase Storage URL was not obtained
       let safeCvData = cvDataUrl || '';
@@ -1227,7 +1203,7 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
       };
 
       const firestorePromise = withTimeout(
-        setDoc(appRef, firestorePayload)
+        setDoc(appRef, sanitizeFirestoreData(firestorePayload))
           .then(() => true)
           .catch(fsErr => {
             console.error("Firestore job application creation error:", fsErr);
@@ -1237,27 +1213,18 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
         false
       );
 
-      // 4. Prepare Make.com Payload with timeout
-      const webhookPromise = withTimeout(
-        fetch(MAKE_WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'JOB_APPLICATION_V2',
-            ...formData,
-            cvName: cvFile ? cvFile.name : (formData.cvName || ''),
-            languageUsed: language,
-            timestamp: new Date().toISOString()
-          })
-        })
-          .then(() => true)
-          .catch(whErr => {
-            console.warn("Make webhook notification error:", whErr);
-            return false;
-          }),
-        5000,
-        false
-      );
+      // 4. Send Lead Webhook
+      sendLead({
+        type: 'JOB_APPLICATION_V2',
+        ...formData,
+        cvName: cvFile ? cvFile.name : (formData.cvName || ''),
+        languageUsed: language,
+        source: 'Careers Application Form',
+        fileUrl: cvStorageResult.fileUrl,
+        fileUrls: cvStorageResult.fileUrls,
+        fileName: cvStorageResult.fileName || (cvFile ? cvFile.name : ''),
+        fileCount: cvFile ? 1 : 0
+      });
 
       // 5. Format rich message for EmailJS with timeout
       const emailPromise = withTimeout(
@@ -1336,12 +1303,16 @@ Language: ${language}`.trim(),
           <div id="careers-hero-bg-wrapper" className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-[#001D3D]">
             <img 
               id="careers-hero-bg-image"
-              src="/ChatGPT Image Jul 16, 2026, 03_06_15 AM.png" 
+              src="/kai-jul16-interview.webp" 
               alt="Kraken Careers Background" 
               className="absolute right-0 top-0 w-full md:w-[50%] h-full object-cover z-0"
               referrerPolicy="no-referrer"
               onError={(e) => {
-                console.error("Failed to load background image:", e);
+                const target = e.currentTarget;
+                if (!target.dataset.fallback) {
+                  target.dataset.fallback = 'true';
+                  target.src = '/kai careers.webp';
+                }
               }}
             />
             {/* Desktop: Smooth transition from solid blue behind the text to transparency over the image */}

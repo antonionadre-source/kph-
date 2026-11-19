@@ -4522,7 +4522,7 @@ const SeoServiceCityPage: React.FC<SeoServiceCityPageProps> = ({ cityId, service
           { slug: "neuhausen-am-rheinfall", name: "Neuhausen am Rheinfall", region: "schaffhausen", urlSlug: "neuhausen" },
           { slug: "thayngen", name: "Thayngen", region: "schaffhausen" },
           { slug: "stein-am-rhein", name: "Stein am Rhein", region: "schaffhausen" },
-          { slug: "feuerthalen", name: "Feuerthalen", region: "schaffhausen" }
+          { slug: "feuerthalen", name: "Feuerthalen", region: "zuerich" }
         ];
 
         const regionGroupList = [

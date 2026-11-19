@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from './Auth';
 import { useTranslation } from '../i18n';
 import { motion, AnimatePresence } from 'motion/react';
-import { db, auth } from './firebase';
+import { db, auth, sanitizeFirestoreData } from './firebase';
 import { doc, setDoc, serverTimestamp, collection } from 'firebase/firestore';
 import emailjs from '@emailjs/browser';
 import { 
@@ -21,6 +21,8 @@ import {
   FolderPlus,
   Bath
 } from 'lucide-react';
+
+import { sendLead } from './leadWebhook';
 
 interface RegisterPageProps {
   onNavigate: (page: string) => void;
@@ -95,6 +97,9 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
       const user = await register(name, email, password);
       console.log("Real client account registered in Firebase successfully ID:", user.uid);
 
+      // Dispatch lead webhook notification
+      sendLead({ source: 'new_account', name, email });
+
       // 2. Prepare Detailed Notes / Onboarding checklist string
       const fullNotesText = `DETAILED CLIENT REGISTRATION AND PROPERTY ONBOARDING APPLICATION:
 - Street & House: ${street}
@@ -110,7 +115,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
       // 3. Save as dynamic Profile Checklist request to firestore maintenance_requests collection
       const newDocId = doc(collection(db, 'maintenance_requests')).id;
       const requestRef = doc(db, 'maintenance_requests', newDocId);
-      await setDoc(requestRef, {
+      await setDoc(requestRef, sanitizeFirestoreData({
         id: newDocId,
         userId: user.uid,
         client: name,
@@ -125,7 +130,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
         notes: fullNotesText,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
-      });
+      }));
       console.log("Onboarding profile saved to Firestore as doc:", newDocId);
 
       // 4. Submit real email metadata directly to kai@krakenpfm.ch via EmailJS

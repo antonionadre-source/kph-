@@ -37,7 +37,7 @@ const HowItWorks: React.FC<HowItWorksProps> = ({ onNavigate }) => {
           <motion.button 
             whileHover={{ scale: 1.02, y: -8 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => window.location.href = 'mailto:info@krakenpfm.ch'}
+            onClick={() => window.location.href = 'mailto:kai@krakenpfm.ch'}
             className="group relative w-full md:w-1/2 bg-white border-2 border-slate-200 p-10 rounded-[3rem] shadow-2xl shadow-slate-200/50 transition-all flex flex-col items-center text-center gap-6 overflow-hidden"
           >
             <div className="absolute top-0 left-0 w-full h-2 bg-[#002d5b]" />

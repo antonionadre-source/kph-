@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './Auth';
-import { db } from './firebase';
+import { db, sanitizeFirestoreData } from './firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useTranslation, Language } from '../i18n';
 import { motion, AnimatePresence } from 'motion/react';
@@ -128,16 +128,16 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
     setIsSubmitting(true);
     try {
       // Save feedback in Firestore database securely
-      await addDoc(collection(db, 'reviews'), {
+      await addDoc(collection(db, 'reviews'), sanitizeFirestoreData({
         uid: user.uid || 'anonymous',
-        name: user.name,
-        email: user.email,
+        name: user.name || '',
+        email: user.email || '',
         rating,
-        comment,
-        tags: selectedTags,
+        comment: comment || '',
+        tags: selectedTags || [],
         source: 'review-invite',
         createdAt: serverTimestamp()
-      });
+      }));
       setIsSubmitted(true);
     } catch (err: any) {
       console.error('Firestore Error:', err);

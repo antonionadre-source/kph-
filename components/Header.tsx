@@ -39,15 +39,6 @@ const useCountUp = (end: number, duration: number = 2000) => {
   return count;
 };
 
-const getReviewText = (lang: string) => {
-  if (lang.startsWith('es')) return 'Dejar Opinión';
-  if (lang.startsWith('de')) return 'Google Bewerten';
-  if (lang.startsWith('fr')) return 'Avis Google';
-  if (lang.startsWith('it')) return 'Recensioni';
-  if (lang.startsWith('pt')) return 'Deixar Opinião';
-  return 'Google Reviews';
-};
-
 const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [headerTheme, setHeaderTheme] = useState<'light' | 'dark'>('dark');
@@ -226,12 +217,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
         <a href="/sustainability" onClick={(e) => handleNavClick(e, 'sustainability-page')} className={navLinkClass}>{t('nav.sustainability')}</a>
         <a href="/einsatzgebiete" onClick={(e) => handleNavClick(e, '/einsatzgebiete')} className={navLinkClass}>{t('nav.coverage')}</a>
         <a href="/blog" onClick={(e) => handleNavClick(e, 'blog')} className={navLinkClass}>{t('nav.blog')}</a>
-        <a href="/kontakt" onClick={(e) => handleNavClick(e, 'kontakt')} className={navLinkClass}>{t('nav.contact')}</a>
-        <a href="/review-invite" onClick={(e) => handleNavClick(e, 'review-invite')} className={`${navLinkClass} text-amber-500 font-extrabold flex items-center gap-1 hover:text-amber-600`}>
-          <span>⭐️</span>
-          <span>{getReviewText(language)}</span>
-        </a>
-         {user && (
+        {user && (
           <a href="/dashboard" onClick={(e) => handleNavClick(e, 'dashboard')} className={navLinkClass}>{t('nav.dashboard')}</a>
         )}
       </>
@@ -295,15 +281,11 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
                   <a href="/sustainability" onClick={(e) => handleNavClick(e, 'sustainability-page')} className={navLinkClass}>{t('nav.sustainability')}</a>
                   <a href="/einsatzgebiete" onClick={(e) => handleNavClick(e, '/einsatzgebiete')} className={navLinkClass}>{t('nav.coverage')}</a>
                   <a href="/blog" onClick={(e) => handleNavClick(e, 'blog')} className={navLinkClass}>{t('nav.blog')}</a>
-                  <a href="/review-invite" onClick={(e) => handleNavClick(e, 'review-invite')} className={`${navLinkClass} text-amber-500 font-extrabold flex items-center gap-1 hover:text-amber-600`}>
-                    <span>⭐️</span>
-                    <span>{getReviewText(language)}</span>
-                  </a>
                   {user && <a href="/dashboard" onClick={(e) => handleNavClick(e, 'dashboard')} className={navLinkClass}>{t('nav.dashboard')}</a>}
                 </>
               );
             })()}
-            
+
             <div className="relative" ref={desktopLangDropdownRef}>
               <button
                 id="desktop-language-selector-btn"
@@ -345,8 +327,10 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
             )}
           </nav>
 
-          {/* Mobile Nav Toggle */}
-          <div className="md:hidden flex items-center gap-4">
+          {/* Mobile Nav Toggle & Quick Actions */}
+          <div className="md:hidden flex items-center gap-2">
+
+
              <div className="relative" ref={mobileLangDropdownRef}>
                 <button
                     id="mobile-language-selector-btn"
@@ -386,6 +370,8 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
             <nav className="flex flex-col items-center space-y-4 w-full relative z-10">
                 {renderNavLinks(true)}
             </nav>
+
+
             
             <div className="absolute bottom-10 left-0 right-0 text-center">
                  <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">Kraken Properties and Facilities Management Gomes Mendes</p>

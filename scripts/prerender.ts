@@ -46,6 +46,29 @@ function injectMetaAndContent(html: string, pagePath: string, content: string): 
   // Replace <meta property="og:description" content="..." />
   modified = modified.replace(/<meta property="og:description" content=".*?"\s*\/?>/, `<meta property="og:description" content="${escapeHtml(meta.description)}" />`);
 
+  // Replace <meta property="og:image" content="..." />
+  if (modified.includes('property="og:image"')) {
+    modified = modified.replace(/<meta property="og:image" content=".*?"\s*\/?>/, `<meta property="og:image" content="${escapeHtml(meta.ogImage)}" />`);
+  } else {
+    modified = modified.replace('</head>', `    <meta property="og:image" content="${escapeHtml(meta.ogImage)}" />\n  </head>`);
+  }
+
+  // Ensure og:image:width, og:image:height, og:image:type
+  if (!modified.includes('property="og:image:width"')) {
+    modified = modified.replace('</head>', `    <meta property="og:image:width" content="${meta.ogImageWidth}" />\n  </head>`);
+  }
+  if (!modified.includes('property="og:image:height"')) {
+    modified = modified.replace('</head>', `    <meta property="og:image:height" content="${meta.ogImageHeight}" />\n  </head>`);
+  }
+  if (!modified.includes('property="og:image:type"')) {
+    modified = modified.replace('</head>', `    <meta property="og:image:type" content="${meta.ogImageType}" />\n  </head>`);
+  }
+
+  // Replace <meta name="twitter:image" content="..." />
+  if (modified.includes('name="twitter:image"')) {
+    modified = modified.replace(/<meta name="twitter:image" content=".*?"\s*\/?>/, `<meta name="twitter:image" content="${escapeHtml(meta.ogImage)}" />`);
+  }
+
   // Replace <meta property="og:url" content="..." />
   modified = modified.replace(/<meta property="og:url" content=".*?"\s*\/?>/, `<meta property="og:url" content="${escapeHtml(meta.canonical)}" />`);
 
@@ -129,6 +152,8 @@ async function prerender() {
   sitemapXml += `</urlset>\n`;
 
   fs.writeFileSync(sitemapPath, sitemapXml, 'utf-8');
+  const distSitemapPath = path.join(rootPath, 'dist', 'sitemap.xml');
+  fs.writeFileSync(distSitemapPath, sitemapXml, 'utf-8');
   const totalUrls = staticPages.length + regionHubs.length + indexableMunicipalities.length + (VALID_CITIES.length * VALID_SERVICES.length);
   console.log(`✅ Dynamically generated sitemap.xml with ${totalUrls} URLs.`);
 
@@ -227,4 +252,6 @@ async function prerender() {
   console.log(`🎉 Pre-rendering complete! Successfully generated ${successCount} of ${uniquePaths.length} routes.`);
 }
 
-prerender();
+await prerender().catch((err) => {
+  console.warn('⚠️ Pre-rendering warning (continuing build without blocking):', err && err.message ? err.message : err);
+});

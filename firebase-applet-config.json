@@ -6,5 +6,7 @@
   "firestoreDatabaseId": "ai-studio-c3c196d8-4523-4697-b51a-e29a8cc2483a",
   "storageBucket": "vivid-kite-477020-h6.firebasestorage.app",
   "messagingSenderId": "988352680203",
-  "measurementId": ""
+  "measurementId": "",
+  "oAuthClientId": "988352680203-b6p90pr602n0n24n503699j3d9h1jcsf.apps.googleusercontent.com",
+  "recaptchaSiteKey": ""
 }

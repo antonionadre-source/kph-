@@ -3,8 +3,10 @@ import { motion } from 'motion/react';
 import { useTranslation } from '../i18n';
 import { MapPinIcon, PhoneIcon, MailIcon, ClockIcon, CheckIcon } from './icons';
 import emailjs from '@emailjs/browser';
+import { db } from './firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { sendLead } from './leadWebhook';
 
-const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/ucxeqjygku2w6zyf9ynut5oantantx58';
 const SERVICE_ID = 'service_aiv15bc';
 const TEMPLATE_ID = 'template_aktj7t9';
 const PUBLIC_KEY = 'sH5K84ChHyssJrarm';
@@ -13,8 +15,236 @@ interface KontaktPageProps {
   onNavigate: (page: string) => void;
 }
 
+const kontaktTranslations: Record<string, {
+  thankYouTitle: string;
+  successDesc: string;
+  backToHome: string;
+  heroBadge: string;
+  heroTitle: string;
+  heroDesc: string;
+  contactInfoTitle: string;
+  contactInfoDesc: string;
+  labelAddress: string;
+  labelPhone: string;
+  labelEmail: string;
+  labelHours: string;
+  valHoursDays: string;
+  valHoursTime: string;
+  locationTitle: string;
+  locationDesc: string;
+  formTitle: string;
+  labelName: string;
+  placeholderName: string;
+  labelEmailForm: string;
+  placeholderEmail: string;
+  labelSubject: string;
+  placeholderSubject: string;
+  labelMessage: string;
+  placeholderMessage: string;
+  btnSending: string;
+  btnSend: string;
+  validationRequiredError: string;
+  sendFailedError: string;
+  defaultInterest: string;
+}> = {
+  de: {
+    thankYouTitle: "Vielen Dank!",
+    successDesc: "Ihre Nachricht wurde erfolgreich gesendet. Unser Team wird sich so schnell wie möglich bei Ihnen melden.",
+    backToHome: "Zur Startseite",
+    heroBadge: "KONTAKTIEREN SIE UNS",
+    heroTitle: "Kontakt",
+    heroDesc: "Haben Sie Fragen zu unseren Dienstleistungen oder möchten Sie ein individuelles Angebot erhalten? Wir sind gerne für Sie da.",
+    contactInfoTitle: "Kontaktinformationen",
+    contactInfoDesc: "Besuchen Sie uns, rufen Sie uns an oder schreiben Sie uns eine E-Mail. Wir freuen uns auf Sie.",
+    labelAddress: "Adresse",
+    labelPhone: "Telefon",
+    labelEmail: "E-Mail",
+    labelHours: "Öffnungszeiten",
+    valHoursDays: "Montag – Freitag",
+    valHoursTime: "08:00 – 18:00 Uhr",
+    locationTitle: "Kraken Properties & Facilities Management",
+    locationDesc: "Wir bedienen Privat- und Geschäftskunden in den Regionen Schaffhausen, Zürich, Winterthur und Umgebung mit erstklassigen Reinigungs- und Facility-Services.",
+    formTitle: "Senden Sie uns eine Nachricht",
+    labelName: "Name",
+    placeholderName: "Ihr Name",
+    labelEmailForm: "E-Mail-Adresse",
+    placeholderEmail: "ihre.email@beispiel.ch",
+    labelSubject: "Betreff",
+    placeholderSubject: "Worum geht es?",
+    labelMessage: "Ihre Nachricht",
+    placeholderMessage: "Wie können wir Ihnen helfen?",
+    btnSending: "Wird gesendet...",
+    btnSend: "Nachricht senden",
+    validationRequiredError: "Bitte füllen Sie alle erforderlichen Felder aus.",
+    sendFailedError: "Senden fehlgeschlagen. Bitte kontaktieren Sie uns direkt unter kai@krakenpfm.ch.",
+    defaultInterest: "Allgemeine Kontaktanfrage"
+  },
+  en: {
+    thankYouTitle: "Thank You!",
+    successDesc: "Your message has been sent successfully. Our team will get back to you as soon as possible.",
+    backToHome: "Back to Home",
+    heroBadge: "CONTACT US",
+    heroTitle: "Contact",
+    heroDesc: "Do you have questions about our services or would you like to receive a tailored quote? We are happy to help you.",
+    contactInfoTitle: "Contact Information",
+    contactInfoDesc: "Visit us, call us or send us an email. We look forward to hearing from you.",
+    labelAddress: "Address",
+    labelPhone: "Phone",
+    labelEmail: "Email",
+    labelHours: "Opening Hours",
+    valHoursDays: "Monday – Friday",
+    valHoursTime: "08:00 – 18:00",
+    locationTitle: "Kraken Properties & Facilities Management",
+    locationDesc: "We serve private and commercial clients across Schaffhausen, Zurich, Winterthur and surrounding areas with top-tier cleaning and facility services.",
+    formTitle: "Send Us a Message",
+    labelName: "Name",
+    placeholderName: "Your Name",
+    labelEmailForm: "Email Address",
+    placeholderEmail: "your.email@example.ch",
+    labelSubject: "Subject",
+    placeholderSubject: "What is it regarding?",
+    labelMessage: "Your Message",
+    placeholderMessage: "How can we help you?",
+    btnSending: "Sending...",
+    btnSend: "Send Message",
+    validationRequiredError: "Please fill out all required fields.",
+    sendFailedError: "Submission failed. Please contact us directly at kai@krakenpfm.ch.",
+    defaultInterest: "General Contact Inquiry"
+  },
+  es: {
+    thankYouTitle: "¡Muchas Gracias!",
+    successDesc: "Su mensaje ha sido enviado con éxito. Nuestro equipo se ponerá en contacto con usted lo antes posible.",
+    backToHome: "Volver al Inicio",
+    heroBadge: "CONTÁCTENOS",
+    heroTitle: "Contacto",
+    heroDesc: "¿Tiene preguntas sobre nuestros servicios o desea recibir un presupuesto personalizado? Con gusto le atenderemos.",
+    contactInfoTitle: "Información de Contacto",
+    contactInfoDesc: "Visítenos, llámenos o envíenos un correo electrónico. Estaremos encantados de atenderle.",
+    labelAddress: "Dirección",
+    labelPhone: "Teléfono",
+    labelEmail: "E-Mail",
+    labelHours: "Horario de Atención",
+    valHoursDays: "Lunes – Viernes",
+    valHoursTime: "08:00 – 18:00 hrs",
+    locationTitle: "Kraken Properties & Facilities Management",
+    locationDesc: "Atendemos a clientes particulares y comerciales en las regiones de Schaffhausen, Zúrich, Winterthur y alrededores con servicios de limpieza y gestión de instalaciones de primera calidad.",
+    formTitle: "Envíenos un Mensaje",
+    labelName: "Nombre",
+    placeholderName: "Su Nombre",
+    labelEmailForm: "Correo Electrónico",
+    placeholderEmail: "su.correo@ejemplo.ch",
+    labelSubject: "Asunto",
+    placeholderSubject: "¿De qué se trata?",
+    labelMessage: "Su Mensaje",
+    placeholderMessage: "¿Cómo podemos ayudarle?",
+    btnSending: "Enviando...",
+    btnSend: "Enviar Mensaje",
+    validationRequiredError: "Por favor, complete todos los campos obligatorios.",
+    sendFailedError: "Error al enviar. Por favor contáctenos directamente en kai@krakenpfm.ch.",
+    defaultInterest: "Consulta General de Contacto"
+  },
+  fr: {
+    thankYouTitle: "Merci Beaucoup !",
+    successDesc: "Votre message a été envoyé avec succès. Notre équipe vous contactera dans les plus brefs délais.",
+    backToHome: "Retour à l'Accueil",
+    heroBadge: "CONTACTEZ-NOUS",
+    heroTitle: "Contact",
+    heroDesc: "Vous avez des questions sur nos services ou vous souhaitez recibir un devis personnalisé ? Nous sommes à votre disposition.",
+    contactInfoTitle: "Coordonnées de Contact",
+    contactInfoDesc: "Rendez-nous visite, appelez-nous ou envoyez-nous un e-mail. Au plaisir d'échanger avec vous.",
+    labelAddress: "Adresse",
+    labelPhone: "Téléphone",
+    labelEmail: "E-mail",
+    labelHours: "Heures d'ouverture",
+    valHoursDays: "Lundi – Vendredi",
+    valHoursTime: "08:00 – 18:00",
+    locationTitle: "Kraken Properties & Facilities Management",
+    locationDesc: "Nous servons les clients privés et professionnels dans les régions de Schaffhouse, Zurich, Winterthour et environs avec des services de nettoyage et de facility management haut de gamme.",
+    formTitle: "Envoyez-nous un Message",
+    labelName: "Nom",
+    placeholderName: "Votre Nom",
+    labelEmailForm: "Adresse E-mail",
+    placeholderEmail: "votre.email@exemple.ch",
+    labelSubject: "Sujet",
+    placeholderSubject: "De quoi s'agit-il ?",
+    labelMessage: "Votre Message",
+    placeholderMessage: "Comment pouvons-nous vous aider ?",
+    btnSending: "Envoi en cours...",
+    btnSend: "Envoyer le Message",
+    validationRequiredError: "Veuillez remplir tous les champs obligatoires.",
+    sendFailedError: "Échec de l'envoi. Veuillez nous contacter directement à kai@krakenpfm.ch.",
+    defaultInterest: "Demande de contact générale"
+  },
+  it: {
+    thankYouTitle: "Grazie Mille!",
+    successDesc: "Il tuo messaggio è stato inviato con successo. Il nostro team ti contatterà al più presto.",
+    backToHome: "Torna alla Home",
+    heroBadge: "CONTATTACI",
+    heroTitle: "Contatti",
+    heroDesc: "Hai domande sui nostri servizi o desideri recibir un preventivo personalizzato? Siamo a tua completa disposizione.",
+    contactInfoTitle: "Informazioni di Contatto",
+    contactInfoDesc: "Vienici a trovare, chiamaci o inviaci un'e-mail. Saremo lieti di risponderti.",
+    labelAddress: "Indirizzo",
+    labelPhone: "Telefono",
+    labelEmail: "E-mail",
+    labelHours: "Orari di Apertura",
+    valHoursDays: "Lunedì – Venerdì",
+    valHoursTime: "08:00 – 18:00",
+    locationTitle: "Kraken Properties & Facilities Management",
+    locationDesc: "Serviamo clienti privati e commerciali nelle regioni di Sciaffusa, Zurigo, Winterthur e dintorni con servizi di pulizia e gestione strutture di prim'ordine.",
+    formTitle: "Inviaci un Messaggio",
+    labelName: "Nome",
+    placeholderName: "Il tuo Nome",
+    labelEmailForm: "Indirizzo E-mail",
+    placeholderEmail: "tua.email@esempio.ch",
+    labelSubject: "Oggetto",
+    placeholderSubject: "Di cosa si tratta?",
+    labelMessage: "Il tuo Messaggio",
+    placeholderMessage: "Come possiamo aiutarti?",
+    btnSending: "Invio in corso...",
+    btnSend: "Invia Messaggio",
+    validationRequiredError: "Si prega di compilare tutti i campi obbligatori.",
+    sendFailedError: "Invio fallito. Contattaci direttamente a kai@krakenpfm.ch.",
+    defaultInterest: "Richiesta di contatto generale"
+  },
+  pt: {
+    thankYouTitle: "Muito Obrigado!",
+    successDesc: "A sua mensagem foi enviada com sucesso. A nossa equipa entrará em contacto consigo o mais brevemente possível.",
+    backToHome: "Voltar ao Início",
+    heroBadge: "CONTACTE-NOS",
+    heroTitle: "Contacto",
+    heroDesc: "Tem dúvidas sobre os nossos serviços ou pretende receber um orçamento personalizado? Estamos à sua disposição.",
+    contactInfoTitle: "Informações de Contacto",
+    contactInfoDesc: "Visite-nos, ligue-nos ou envie-nos um e-mail. Teremos todo o gosto em atendê-lo.",
+    labelAddress: "Endereço",
+    labelPhone: "Telefone",
+    labelEmail: "E-mail",
+    labelHours: "Horário de Funcionamento",
+    valHoursDays: "Segunda-feira – Sexta-feira",
+    valHoursTime: "08:00 – 18:00",
+    locationTitle: "Kraken Properties & Facilities Management",
+    locationDesc: "Servimos clientes particulares e comerciais nas regiões de Schaffhausen, Zurique, Winterthur e arredores com serviços de limpeza e gestão de instalações de excelência.",
+    formTitle: "Envie-nos uma Mensagem",
+    labelName: "Nome",
+    placeholderName: "O seu Nome",
+    labelEmailForm: "Endereço de E-mail",
+    placeholderEmail: "seu.email@exemplo.ch",
+    labelSubject: "Assunto",
+    placeholderSubject: "Qual é o assunto?",
+    labelMessage: "A sua Mensagem",
+    placeholderMessage: "Como podemos ajudá-lo?",
+    btnSending: "A enviar...",
+    btnSend: "Enviar Mensagem",
+    validationRequiredError: "Por favor, preencha todos os campos obrigatórios.",
+    sendFailedError: "Falha ao enviar. Por favor contacte-nos directamente através de kai@krakenpfm.ch.",
+    defaultInterest: "Consulta Geral de Contacto"
+  }
+};
+
 const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
-  const { t } = useTranslation();
+  const { language } = useTranslation();
+  const d = kontaktTranslations[language] || kontaktTranslations['de'];
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -28,7 +258,7 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) {
-      setError('Bitte füllen Sie alle erforderlichen Felder aus.');
+      setError(d.validationRequiredError);
       return;
     }
 
@@ -36,20 +266,28 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
     setError(null);
 
     try {
-      // Send to webhook
-      const webhookPromise = fetch(MAKE_WEBHOOK_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          ...formData,
-          source: 'CONTACT_FORM',
-          timestamp: new Date().toISOString()
-        })
+      // 1. Save contact message to Firestore (non-blocking if it fails)
+      try {
+        await addDoc(collection(db, 'contact_messages'), {
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject || '',
+          message: formData.message,
+          language: language || 'de',
+          status: 'new',
+          createdAt: serverTimestamp()
+        });
+      } catch (fsErr) {
+        console.warn('Firestore contact_messages save failed:', fsErr);
+      }
+
+      // 2. Send lead to Make Webhook
+      const webhookPromise = sendLead({
+        ...formData,
+        source: 'CONTACT_FORM'
       });
 
-      // Send via EmailJS
+      // 3. Send notification via EmailJS
       const emailPromise = emailjs.send(
         SERVICE_ID,
         TEMPLATE_ID,
@@ -57,7 +295,7 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
           from_name: formData.name,
           from_email: formData.email,
           phone_number: 'N/A',
-          services_interest: formData.subject || 'Allgemeine Kontaktanfrage',
+          services_interest: formData.subject || d.defaultInterest,
           message: formData.message,
           property_address: 'N/A'
         },
@@ -69,7 +307,7 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
       window.scrollTo(0, 0);
     } catch (err) {
       console.error('Submission failed', err);
-      setError('Senden fehlgeschlagen. Bitte kontaktieren Sie uns direkt unter info@krakenpfm.ch.');
+      setError(d.sendFailedError);
     } finally {
       setIsLoading(false);
     }
@@ -82,15 +320,15 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
             <CheckIcon className="w-10 h-10 text-green-600" />
           </div>
-          <h1 className="text-3xl font-black text-[#002D5B] mb-4 uppercase tracking-tight">Vielen Dank!</h1>
+          <h1 className="text-3xl font-black text-[#002D5B] mb-4 uppercase tracking-tight">{d.thankYouTitle}</h1>
           <p className="text-gray-600 font-medium mb-8">
-            Ihre Nachricht wurde erfolgreich gesendet. Unser Team wird sich so schnell wie möglich bei Ihnen melden.
+            {d.successDesc}
           </p>
           <button
             onClick={() => onNavigate('home')}
             className="bg-[#002D5B] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#00254A] transition-all cursor-pointer shadow-lg"
           >
-            Zur Startseite
+            {d.backToHome}
           </button>
         </div>
       </main>
@@ -113,7 +351,7 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
               animate={{ opacity: 1, y: 0 }}
               className="text-blue-400 font-black text-xs uppercase tracking-[0.4em] mb-4"
             >
-              KONTAKTIEREN SIE UNS
+              {d.heroBadge}
             </motion.p>
             <motion.h1 
               initial={{ opacity: 0, y: 15 }}
@@ -121,7 +359,7 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
               transition={{ delay: 0.1 }}
               className="text-4xl md:text-6xl font-black text-white leading-tight mb-4 tracking-tighter"
             >
-              Kontakt
+              {d.heroTitle}
             </motion.h1>
             <motion.p 
               initial={{ opacity: 0, y: 15 }}
@@ -129,7 +367,7 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
               transition={{ delay: 0.2 }}
               className="text-white/70 text-lg font-medium max-w-2xl mx-auto"
             >
-              Haben Sie Fragen zu unseren Dienstleistungen oder möchten Sie ein individuelles Angebot erhalten? Wir sind gerne für Sie da.
+              {d.heroDesc}
             </motion.p>
           </div>
         </div>
@@ -145,10 +383,10 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
               <div className="bg-white p-8 md:p-10 rounded-[2rem] shadow-sm border border-slate-100 space-y-8">
                 <div>
                   <h2 className="text-2xl font-extrabold text-[#002D5B] tracking-tight mb-6">
-                    Kontaktinformationen
+                    {d.contactInfoTitle}
                   </h2>
                   <p className="text-gray-500 text-sm font-medium">
-                    Besuchen Sie uns, rufen Sie uns an oder schreiben Sie uns eine E-Mail. Wir freuen uns auf Sie.
+                    {d.contactInfoDesc}
                   </p>
                 </div>
 
@@ -159,7 +397,7 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
                       <MapPinIcon className="w-6 h-6 text-blue-600" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider mb-1">Adresse</h4>
+                      <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider mb-1">{d.labelAddress}</h4>
                       <p className="text-slate-800 font-bold text-base leading-relaxed">
                         Seewadelstrasse 3<br />
                         8203 Schaffhausen
@@ -173,7 +411,7 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
                       <PhoneIcon className="w-6 h-6 text-blue-600" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider mb-1">Telefon</h4>
+                      <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider mb-1">{d.labelPhone}</h4>
                       <p className="text-slate-800 font-bold text-base">
                         <a href="tel:+41774505705" className="hover:text-blue-600 transition-colors">
                           +41 77 450 57 05
@@ -188,10 +426,10 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
                       <MailIcon className="w-6 h-6 text-blue-600" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider mb-1">E-Mail</h4>
+                      <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider mb-1">{d.labelEmail}</h4>
                       <p className="text-slate-800 font-bold text-base">
-                        <a href="mailto:info@krakenpfm.ch" className="hover:text-blue-600 transition-colors">
-                          info@krakenpfm.ch
+                        <a href="mailto:kai@krakenpfm.ch" className="hover:text-blue-600 transition-colors">
+                          kai@krakenpfm.ch
                         </a>
                       </p>
                     </div>
@@ -203,10 +441,10 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
                       <ClockIcon className="w-6 h-6 text-blue-600" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider mb-1">Öffnungszeiten</h4>
+                      <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider mb-1">{d.labelHours}</h4>
                       <p className="text-slate-800 font-bold text-base leading-relaxed">
-                        Montag – Freitag<br />
-                        08:00 – 18:00 Uhr
+                        {d.valHoursDays}<br />
+                        {d.valHoursTime}
                       </p>
                     </div>
                   </div>
@@ -216,9 +454,9 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
               {/* Map/Location Card */}
               <div className="bg-[#002D5B] text-white p-8 md:p-10 rounded-[2rem] shadow-lg relative overflow-hidden">
                 <div className="relative z-10 space-y-4">
-                  <h3 className="text-xl font-extrabold tracking-tight">Kraken Properties & Facilities Management</h3>
+                  <h3 className="text-xl font-extrabold tracking-tight">{d.locationTitle}</h3>
                   <p className="text-white/80 text-sm leading-relaxed font-medium">
-                    Wir bedienen Privat- und Geschäftskunden in den Regionen Schaffhausen, Zürich, Winterthur und Umgebung mit erstklassigen Reinigungs- und Facility-Services.
+                    {d.locationDesc}
                   </p>
                 </div>
                 {/* Background Pattern */}
@@ -234,7 +472,7 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
             <div className="lg:col-span-7">
               <div className="bg-white p-8 md:p-12 rounded-[2rem] shadow-sm border border-slate-100">
                 <h2 className="text-2xl font-extrabold text-[#002D5B] tracking-tight mb-8">
-                  Senden Sie uns eine Nachricht
+                  {d.formTitle}
                 </h2>
 
                 {error && (
@@ -248,7 +486,7 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
                     {/* Name */}
                     <div className="space-y-2">
                       <label htmlFor="name" className="block text-xs font-black uppercase text-slate-400 tracking-wider">
-                        Name <span className="text-red-500">*</span>
+                        {d.labelName} <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -256,7 +494,7 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
                         required
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        placeholder="Ihr Name"
+                        placeholder={d.placeholderName}
                         className="w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-slate-800 font-medium placeholder-slate-400"
                       />
                     </div>
@@ -264,7 +502,7 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
                     {/* Email */}
                     <div className="space-y-2">
                       <label htmlFor="email" className="block text-xs font-black uppercase text-slate-400 tracking-wider">
-                        E-Mail-Adresse <span className="text-red-500">*</span>
+                        {d.labelEmailForm} <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="email"
@@ -272,7 +510,7 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
                         required
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        placeholder="ihre.email@beispiel.ch"
+                        placeholder={d.placeholderEmail}
                         className="w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-slate-800 font-medium placeholder-slate-400"
                       />
                     </div>
@@ -281,14 +519,14 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
                   {/* Subject */}
                   <div className="space-y-2">
                     <label htmlFor="subject" className="block text-xs font-black uppercase text-slate-400 tracking-wider">
-                      Betreff
+                      {d.labelSubject}
                     </label>
                     <input
                       type="text"
                       id="subject"
                       value={formData.subject}
                       onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                      placeholder="Worum geht es?"
+                      placeholder={d.placeholderSubject}
                       className="w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-slate-800 font-medium placeholder-slate-400"
                     />
                   </div>
@@ -296,7 +534,7 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
                   {/* Message */}
                   <div className="space-y-2">
                     <label htmlFor="message" className="block text-xs font-black uppercase text-slate-400 tracking-wider">
-                      Ihre Nachricht <span className="text-red-500">*</span>
+                      {d.labelMessage} <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       id="message"
@@ -304,7 +542,7 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
                       rows={6}
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      placeholder="Wie können wir Ihnen helfen?"
+                      placeholder={d.placeholderMessage}
                       className="w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-slate-800 font-medium placeholder-slate-400 resize-none"
                     />
                   </div>
@@ -318,10 +556,10 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
                     {isLoading ? (
                       <>
                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        Wird gesendet...
+                        {d.btnSending}
                       </>
                     ) : (
-                      'Nachricht senden'
+                      d.btnSend
                     )}
                   </button>
                 </form>

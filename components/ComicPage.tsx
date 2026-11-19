@@ -1274,7 +1274,7 @@ const ComicPage: React.FC<ComicPageProps> = ({ onNavigate }) => {
           {/* Main Visual with Sticky Note */}
           <div className="relative max-w-5xl mx-auto mb-0 group">
             <img 
-              src="/Mastering the chaos of property management.png" 
+              src="/Mastering the chaos of property management 2-2.png" 
               alt="Mastering the chaos of property management with Kai" 
               className="w-full h-auto block transition-transform duration-1000 group-hover:scale-105"
               style={{ 

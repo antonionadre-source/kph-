@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from '../i18n';
 import { MUNICIPALITIES, Municipality } from '../src/data/locations';
+import { SchaffhausenDossierSection } from './SchaffhausenDossierSection';
+import { ZurichDossierSection } from './ZurichDossierSection';
 import { 
   LocalBusinessSchema, 
   FAQSchema, 
@@ -752,6 +754,14 @@ export const RegionHubPage: React.FC<RegionHubPageProps> = ({ regionId, onNaviga
           </div>
         </div>
       </section>
+
+      {/* Verified Research Dossier Sections */}
+      {regionId === 'schaffhausen' && (
+        <SchaffhausenDossierSection onNavigate={onNavigate} />
+      )}
+      {regionId === 'zuerich' && (
+        <ZurichDossierSection onNavigate={onNavigate} />
+      )}
 
       {/* Services Grid (Level 3 Links) */}
       <section className="py-20 px-6">

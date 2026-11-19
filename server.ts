@@ -6,8 +6,8 @@ import crypto from "crypto";
 import path from "path";
 import compression from "compression";
 import fs from "fs";
-import { getMetadataForPath, isRouteValid } from "./seoConfig";
-import { MUNICIPALITIES } from "./src/data/locations";
+import { getMetadataForPath, isRouteValid, VALID_CITIES } from "./seoConfig.ts";
+import { MUNICIPALITIES } from "./src/data/locations.ts";
 // No need to define currentDirname or use import.meta.url as they are unused and cause a parse-time SyntaxError in bundled CommonJS on startup.
 
 dotenv.config();
@@ -17,23 +17,23 @@ if (!process.env.NODE_ENV) {
 
 async function startServer() {
   const app = express();
-  // In the development workspace (ais-dev-) or shared preview (ais-pre-) containers, we must bind strictly to port 3000.
-  // In the live production Cloud Run deployment, we must bind strictly to the port specified by the PORT environment variable (usually 8080).
-  const isWorkspaceOrPreview = !!(
-    process.env.DEFAULT_APP_PORT ||
-    (process.env.K_SERVICE && (
-      process.env.K_SERVICE.startsWith("ais-dev-") || 
-      process.env.K_SERVICE.startsWith("ais-pre-") || 
-      process.env.K_SERVICE.startsWith("ais-")
-    ))
-  );
-  const PORT = isWorkspaceOrPreview
-    ? 3000
-    : (process.env.PORT ? parseInt(process.env.PORT, 10) : 3000);
 
   app.use(compression());
   app.use(cors());
   app.use(express.json());
+
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "ok" });
+  });
+
+  app.get("/api/download-zip", (req, res) => {
+    const zipPath = path.join(process.cwd(), "public", "sitio-web-completo.zip");
+    if (fs.existsSync(zipPath)) {
+      res.download(zipPath, "sitio-web-completo.zip");
+    } else {
+      res.status(404).send("File not found");
+    }
+  });
 
   // ====================================================================
   // PAYREXX PAYMENT GATEWAY
@@ -391,7 +391,7 @@ async function startServer() {
         }));
 
         const chat = ai.chats.create({
-          model: 'gemini-3.5-flash',
+          model: 'gemini-2.5-flash',
           config: {
             systemInstruction: systemInstruction || undefined,
           },
@@ -542,8 +542,9 @@ async function startServer() {
   // Vite middleware for development (with graceful fallback if not installed/present)
   let viteLoaded = false;
   let viteInstance: any = null;
-  const isProduction = process.env.NODE_ENV === "production" || (typeof __filename !== "undefined" && __filename.endsWith("server.cjs"));
-  if (!isProduction) {
+  const hasBuiltAssets = fs.existsSync(path.join(process.cwd(), "dist", "index.html"));
+  const isDev = process.env.NODE_ENV === "development" && !hasBuiltAssets;
+  if (isDev) {
     try {
       const { createServer: createViteServer } = await (specifier => import(specifier))("vite") as any;
       viteInstance = await createViteServer({
@@ -554,7 +555,7 @@ async function startServer() {
       viteLoaded = true;
       console.log("Vite development server middleware loaded.");
     } catch (e) {
-      console.warn("Could not load Vite middleware in non-production. Falling back to serving built files.", e);
+      console.warn("Could not load Vite middleware in development mode. Falling back to serving built files.", e);
     }
   }
 
@@ -562,6 +563,17 @@ async function startServer() {
   const distPath = (typeof __dirname !== "undefined" && path.basename(__dirname) === "dist")
     ? __dirname
     : path.join(process.cwd(), "dist");
+
+  const publicPath = path.join(process.cwd(), "public");
+
+  if (fs.existsSync(publicPath)) {
+    app.use(express.static(publicPath, {
+      maxAge: "1d",
+      setHeaders: (res) => {
+        res.setHeader("Cache-Control", "public, max-age=604800");
+      }
+    }));
+  }
 
   app.use(express.static(distPath, {
     maxAge: "1d",
@@ -594,6 +606,22 @@ async function startServer() {
       const queryStr = req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : "";
       return res.redirect(301, `/kontakt${queryStr}`);
     }
+    if (lowerPath === "/reinigung/uhwiesen") {
+      const queryStr = req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : "";
+      return res.redirect(301, `/reinigung/laufen-uhwiesen${queryStr}`);
+    }
+
+    // 301 Redirect for Tier 3 municipality URLs to parent region hub
+    const munMatch = req.path.match(/^\/reinigung\/([a-zA-Z0-9_-]+)$/i);
+    if (munMatch) {
+      const slug = munMatch[1].toLowerCase();
+      const mun = MUNICIPALITIES.find(m => m.slug === slug);
+      if (mun && mun.tier === 3) {
+        const queryStr = req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : "";
+        const parentHub = mun.region === "zuerich" ? "/reinigung/region-zuerich" : mun.region === "winterthur" ? "/reinigung/region-winterthur" : "/reinigung/kanton-schaffhausen";
+        return res.redirect(301, `${parentHub}${queryStr}`);
+      }
+    }
 
     // 301 Redirect for legacy /reinigung-* URLs
     const deRegex = /^\/reinigung-(schaffhausen|zurich|winterthur|neuhausen|thayngen|stein-am-rhein|feuerthalen|kloten|buelach|dietikon|uster)-([a-zA-Z0-9_-]+)$/i;
@@ -601,7 +629,16 @@ async function startServer() {
     if (deMatch) {
       const city = deMatch[1].toLowerCase();
       const service = deMatch[2].toLowerCase();
-      return res.redirect(301, `/services/${city}/${service}`);
+      const normCity = city === "zuerich" ? "zurich" : city === "neuhausen-am-rheinfall" ? "neuhausen" : city;
+      if (VALID_CITIES.includes(normCity)) {
+        return res.redirect(301, `/services/${normCity}/${service}`);
+      } else {
+        const mun = MUNICIPALITIES.find(m => m.slug === city || m.slug === normCity);
+        if (mun && mun.tier === 2) {
+          return res.redirect(301, `/reinigung/${mun.slug}#${service}`);
+        }
+        return res.redirect(301, `/reinigung/kanton-schaffhausen#${service}`);
+      }
     }
 
     // 301 Redirect for legacy /seo/* URLs
@@ -610,33 +647,73 @@ async function startServer() {
     if (seoMatch) {
       const city = seoMatch[1].toLowerCase();
       const service = seoMatch[2].toLowerCase();
-      return res.redirect(301, `/services/${city}/${service}`);
+      const normCity = city === "zuerich" ? "zurich" : city === "neuhausen-am-rheinfall" ? "neuhausen" : city;
+      if (VALID_CITIES.includes(normCity)) {
+        return res.redirect(301, `/services/${normCity}/${service}`);
+      } else {
+        const mun = MUNICIPALITIES.find(m => m.slug === city || m.slug === normCity);
+        if (mun && mun.tier === 2) {
+          return res.redirect(301, `/reinigung/${mun.slug}#${service}`);
+        }
+        return res.redirect(301, `/reinigung/kanton-schaffhausen#${service}`);
+      }
     }
 
-    // 301 Redirect for invalid municipality-service combinations to regional targets
+    // 301 Redirect for Level 3 service pages on non-Tier 1 cities
     const srvMatch = req.path.match(/^\/services\/([a-zA-Z0-9_-]+)\/([a-zA-Z0-9_-]+)$/i);
     if (srvMatch) {
       const citySlug = srvMatch[1].toLowerCase();
       const serviceId = srvMatch[2].toLowerCase();
+      const normCity = citySlug === "zuerich" ? "zurich" : citySlug === "neuhausen-am-rheinfall" ? "neuhausen" : citySlug;
       
-      const normCity = citySlug === "zuerich" ? "zurich" : citySlug === "neuhausen" ? "neuhausen-am-rheinfall" : citySlug;
-      const mun = MUNICIPALITIES.find(m => m.slug === normCity);
-      if (mun) {
-        const isOffered = mun.services.includes(serviceId);
-        if (!isOffered) {
-          const targetRegion = mun.region === "zuerich" ? "zurich" : mun.region;
-          const queryStr = req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : "";
-          return res.redirect(301, `/services/${targetRegion}/${serviceId}${queryStr}`);
+      if (!VALID_CITIES.includes(normCity)) {
+        const mun = MUNICIPALITIES.find(m => m.slug === citySlug || m.slug === normCity);
+        const queryStr = req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : "";
+        if (mun && mun.tier === 2) {
+          return res.redirect(301, `/reinigung/${mun.slug}#${serviceId}${queryStr}`);
         }
+        const parentHub = mun?.region === "zuerich" ? "/reinigung/region-zuerich" : mun?.region === "winterthur" ? "/reinigung/region-winterthur" : "/reinigung/kanton-schaffhausen";
+        return res.redirect(301, `${parentHub}#${serviceId}${queryStr}`);
       }
     }
 
-    handleHtmlRequest(req, res);
+    return handleHtmlRequest(req, res);
   });
   console.log(`Serving static production assets with caching headers from: ${distPath}`);
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+  const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+
+  const server = app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+
+  server.on("error", (err: any) => {
+    console.error("SERVER LISTEN ERROR:", err);
+    process.exit(1);
+  });
+
+  process.on("SIGTERM", () => {
+    console.log("SIGTERM signal received: closing HTTP server gracefully.");
+    server.close(() => {
+      console.log("HTTP server closed.");
+      process.exit(0);
+    });
+  });
+
+  process.on("SIGINT", () => {
+    console.log("SIGINT signal received: closing HTTP server gracefully.");
+    server.close(() => {
+      console.log("HTTP server closed.");
+      process.exit(0);
+    });
+  });
+
+  process.on("unhandledRejection", (reason, promise) => {
+    console.error("Unhandled Rejection at:", promise, "reason:", reason);
+  });
+
+  process.on("uncaughtException", (err) => {
+    console.error("Uncaught Exception thrown:", err);
   });
 }
 

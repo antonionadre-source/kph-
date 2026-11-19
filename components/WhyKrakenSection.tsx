@@ -45,9 +45,12 @@ const WhyKrakenSection: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.8 }}
-            src="/iconos-why-us.jpg" 
+            src="/payrexx-checkout-banner.png" 
             alt="Why Kraken Icons" 
             className="w-full h-auto rounded-3xl"
+            loading="lazy"
+            width="1200"
+            height="200"
             referrerPolicy="no-referrer"
           />
         </div>

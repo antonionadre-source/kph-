@@ -95,7 +95,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
       <section data-header-theme="dark" className="relative min-h-[500px] md:h-[650px] overflow-hidden bg-slate-900 text-white">
         <div className="absolute inset-0 z-0">
           <img 
-            src="/sustainability-hero.png" 
+            src="/modern-office-greenery-mascot.webp" 
             alt="Sustainable Building" 
             className="w-full h-full object-cover object-center lg:object-right"
             referrerPolicy="no-referrer"
@@ -314,7 +314,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
                   {/* Background Illustration */}
                   <div className="absolute inset-0 z-0">
                     <img 
-                      src="/sustainability-circular.png" 
+                      src="/image-gen-2.webp" 
                       alt="Logistics Illustration" 
                       className="w-full h-full object-cover"
                       referrerPolicy="no-referrer"
@@ -342,7 +342,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
               {/* Card 1: Circular Sustainability */}
               <div className="bg-black rounded-[2rem] overflow-hidden min-h-[500px] md:h-[630px] relative group">
                 <img 
-                  src="/sustainability-people.png" 
+                  src="/image-gen-3.webp" 
                   alt="Certified" 
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   referrerPolicy="no-referrer"
@@ -363,7 +363,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
               {/* Card 3: Personnel Selection */}
               <div className="bg-black rounded-[2rem] overflow-hidden min-h-[300px] md:h-[288px] relative group">
                 <img 
-                  src="/sustainability-logistics.png" 
+                  src="/image-gen-1.webp" 
                   alt="People" 
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   referrerPolicy="no-referrer"
@@ -381,7 +381,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
               {/* Card 4: Inclusion and Diversity */}
               <div className="bg-black rounded-[2rem] overflow-hidden min-h-[300px] md:h-[288px] relative group">
                 <img 
-                  src="/sustainability-partner.png" 
+                  src="/image-gen-5.webp" 
                   alt="Team" 
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   referrerPolicy="no-referrer"
@@ -408,7 +408,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
               {/* Card 5: Local Partnership */}
               <div className="bg-black rounded-[2rem] overflow-hidden min-h-[300px] md:h-[288px] relative group">
                 <img 
-                  src="/sustainability-diversity.png" 
+                  src="/image-gen-4.webp" 
                   alt="Partnership" 
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   referrerPolicy="no-referrer"
@@ -424,7 +424,7 @@ const SustainabilityPage: React.FC<SustainabilityPageProps> = ({ onNavigate }) =
               {/* Card 6: Operational excellence */}
               <div className="bg-black rounded-[2rem] overflow-hidden min-h-[300px] md:h-[288px] relative group">
                 <img 
-                  src="/sustainability-ops.png" 
+                  src="/image-gen-6.webp" 
                   alt="Office" 
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   referrerPolicy="no-referrer"

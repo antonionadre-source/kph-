@@ -1,74 +1,70 @@
 import React from 'react';
 import { useTranslation } from '../i18n';
-import { Shield, Clock, ClipboardCheck, Zap, MessageCircle } from 'lucide-react';
-import { motion } from 'motion/react';
 
 const ValuesSection: React.FC = () => {
   const { t } = useTranslation();
 
   const values = [
     {
-      icon: <Shield className="w-10 h-10 text-blue-400" />,
+      img: '/kai-webp-aug17-2.webp',
+      alt: 'Kai - Qualität & Schweizer Präzision',
       title: t('values.item1.title'),
       desc: t('values.item1.desc')
     },
     {
-      icon: <Clock className="w-10 h-10 text-blue-400" />,
+      img: '/kai-webp-aug17-1.webp',
+      alt: 'Kai - 100% Abnahmegarantie',
       title: t('values.item2.title'),
       desc: t('values.item2.desc')
     },
     {
-      icon: <ClipboardCheck className="w-10 h-10 text-blue-400" />,
+      img: '/kai-webp-aug17-3.webp',
+      alt: 'Kai - Transparenz & Schweizer Service',
       title: t('values.item3.title'),
       desc: t('values.item3.desc')
-    },
-    {
-      icon: <Zap className="w-10 h-10 text-blue-400" />,
-      title: t('values.item4.title'),
-      desc: t('values.item4.desc')
-    },
-    {
-      icon: <MessageCircle className="w-10 h-10 text-blue-400" />,
-      title: t('values.item5.title'),
-      desc: t('values.item5.desc')
     }
   ];
 
   return (
-    <section className="container mx-auto px-4 mb-12">
-      <div className="bg-[#020d1f] rounded-[2.5rem] py-6 md:py-8 px-8 md:px-12 text-center relative overflow-hidden shadow-2xl">
-        {/* Decorative background elements */}
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+      <div className="bg-[#020d1f] rounded-2xl sm:rounded-3xl py-10 px-6 sm:px-10 md:px-12 text-center relative overflow-hidden shadow-2xl border border-slate-800">
+        {/* Decorative background elements (div:nth-of-type(1)) */}
         <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500 rounded-full blur-[120px]"></div>
           <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600 rounded-full blur-[120px]"></div>
         </div>
 
+        {/* Content container (div:nth-of-type(2)) */}
         <div className="relative z-10">
-          <div className="inline-block px-4 py-1.5 rounded-full bg-blue-900/40 border border-blue-500/30 text-blue-200 text-[10px] font-black uppercase tracking-[0.3em] mb-4">
+          <span className="inline-flex items-center px-3 py-1 rounded-full bg-blue-900/60 border border-blue-500/30 text-blue-200 text-xs font-bold uppercase tracking-wider mb-4">
             {t('values.badge')}
-          </div>
+          </span>
           
-          <h2 className="text-lg md:text-2xl font-bold text-white mb-8 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-10 tracking-tight">
             {t('values.title')}
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-0">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
             {values.map((value, index) => (
-              <div key={index} className="flex flex-col items-center px-4 relative">
-                {/* Vertical Divider */}
-                {index > 0 && (
-                  <div className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 w-px h-20 bg-white/10"></div>
-                )}
-                
-                <div className="mb-3 p-3 rounded-2xl bg-blue-500/5 border border-blue-500/10 shadow-inner">
-                  {value.icon}
+              <div key={index} className="flex flex-col items-center bg-slate-900/60 rounded-2xl p-6 border border-slate-800/80 shadow-xl hover:border-blue-500/40 transition-all group">
+                <div className="mb-5 w-full flex justify-center">
+                  <div className="relative w-full max-w-[280px] aspect-[4/3] rounded-2xl overflow-hidden border border-blue-500/20 shadow-md group-hover:scale-[1.02] transition-transform duration-300">
+                    <img
+                      src={value.img}
+                      alt={value.alt}
+                      className="w-full h-full object-cover object-center"
+                      loading="lazy"
+                      decoding="async"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
                 </div>
                 
-                <h3 className="text-white font-bold text-sm mb-1 leading-tight">
+                <h3 className="text-white font-bold text-lg mb-2 leading-tight">
                   {value.title}
                 </h3>
                 
-                <p className="text-slate-400 text-xs leading-relaxed max-w-[180px]">
+                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-[280px]">
                   {value.desc}
                 </p>
               </div>

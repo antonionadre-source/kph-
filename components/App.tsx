@@ -1,43 +1,126 @@
-import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense, Component, ReactNode } from 'react';
 import { useTranslation } from '../i18n';
 import { getMetadataForPath, parsePath } from '../seoConfig';
-import { MUNICIPALITIES } from '../src/data/locations';
 import Header from './Header';
 import Hero from './Hero';
-import SegmentationSection from './SegmentationSection';
-import Clients from './Clients';
 import Footer from './Footer';
-import FloatingMascot from './FloatingMascot';
-import FloatingCTA from './FloatingCTA';
 import { useAuth } from './Auth';
-import CookieConsent from './CookieConsent';
-import ValuesSection from './ValuesSection';
 
-// Direct imports for full pre-rendering SEO content inside #root
-import ConsultationPage from './ConsultationPage';
-import SeoServiceCityPage from './SeoServiceCityPage';
-import AboutPage from './AboutPage';
-import ComicPage from './ComicPage';
-import ServicesPage from './ServicesPage';
-import CommercialServicesPage from './CommercialServicesPage';
-import LoginPage from './LoginPage';
-import RegisterPage from './RegisterPage';
-import Dashboard from './Dashboard';
-import GDPRPage from './GDPRPage';
-import HSEPage from './HSEPage';
-import TermsPage from './TermsPage';
-import SustainabilityPage from './SustainabilityPage';
-import CareersPage from './CareersPage';
-import OurStoryPage from './OurStoryPage';
-import ImpressumPage from './ImpressumPage';
-import KontaktPage from './KontaktPage';
-import ComicShopPage from './ComicShopPage';
-import BlogPage from './BlogPage';
-import CommercialQuotePage from './CommercialQuotePage';
-import ReviewInvitePage from './ReviewInvitePage';
-import { RegionHubPage } from './RegionHubPage';
-import { MunicipalityPage } from './MunicipalityPage';
-import CoverageHubPage from './CoverageHubPage';
+// Helper for lazy loading modules with auto-retry on chunk load failures (e.g., stale bundle hashes)
+const lazyWithRetry = <T extends { default: React.ComponentType<any> }>(
+  factory: () => Promise<T>
+) =>
+  lazy(async () => {
+    const pageKey = 'chunk_reload_' + window.location.pathname;
+    const pageHasBeenReloaded = sessionStorage.getItem(pageKey);
+    try {
+      const module = await factory();
+      sessionStorage.removeItem(pageKey);
+      return module;
+    } catch (error) {
+      if (!pageHasBeenReloaded) {
+        sessionStorage.setItem(pageKey, 'true');
+        window.location.reload();
+        return new Promise<T>(() => {}); // Wait for reload to avoid unhandled rejections
+      }
+      throw error;
+    }
+  });
+
+// Lazy imports for below-the-fold Home sections
+const Section1Intro = lazyWithRetry(() => import('./Section1Intro'));
+const SegmentationSection = lazyWithRetry(() => import('./SegmentationSection'));
+const Section3Leistungen = lazyWithRetry(() => import('./Section3Leistungen'));
+const Section4Umzugsreinigung = lazyWithRetry(() => import('./Section4Umzugsreinigung'));
+const Section5Preise = lazyWithRetry(() => import('./Section5Preise'));
+const Section2Einsatzgebiete = lazyWithRetry(() => import('./Section2Einsatzgebiete'));
+const Section7Gruender = lazyWithRetry(() => import('./Section7Gruender'));
+const ValuesSection = lazyWithRetry(() => import('./ValuesSection'));
+const Section6FAQ = lazyWithRetry(() => import('./Section6FAQ'));
+const Section8Blog = lazyWithRetry(() => import('./Section8Blog'));
+const Clients = lazyWithRetry(() => import('./Clients'));
+const FloatingMascot = lazyWithRetry(() => import('./FloatingMascot'));
+const FloatingCTA = lazyWithRetry(() => import('./FloatingCTA'));
+const CookieConsent = lazyWithRetry(() => import('./CookieConsent'));
+
+// Lazy imports for subpages to reduce initial bundle size and enable route-based code splitting
+const ConsultationPage = lazyWithRetry(() => import('./ConsultationPage'));
+const SeoServiceCityPage = lazyWithRetry(() => import('./SeoServiceCityPage'));
+const AboutPage = lazyWithRetry(() => import('./AboutPage'));
+const ComicPage = lazyWithRetry(() => import('./ComicPage'));
+const ServicesPage = lazyWithRetry(() => import('./ServicesPage'));
+const CommercialServicesPage = lazyWithRetry(() => import('./CommercialServicesPage'));
+const LoginPage = lazyWithRetry(() => import('./LoginPage'));
+const RegisterPage = lazyWithRetry(() => import('./RegisterPage'));
+const Dashboard = lazyWithRetry(() => import('./Dashboard'));
+const GDPRPage = lazyWithRetry(() => import('./GDPRPage'));
+const HSEPage = lazyWithRetry(() => import('./HSEPage'));
+const TermsPage = lazyWithRetry(() => import('./TermsPage'));
+const SustainabilityPage = lazyWithRetry(() => import('./SustainabilityPage'));
+const CareersPage = lazyWithRetry(() => import('./CareersPage'));
+const OurStoryPage = lazyWithRetry(() => import('./OurStoryPage'));
+const ImpressumPage = lazyWithRetry(() => import('./ImpressumPage'));
+const KontaktPage = lazyWithRetry(() => import('./KontaktPage'));
+const ComicShopPage = lazyWithRetry(() => import('./ComicShopPage'));
+const BlogPage = lazyWithRetry(() => import('./BlogPage'));
+const CommercialQuotePage = lazyWithRetry(() => import('./CommercialQuotePage'));
+const ReviewInvitePage = lazyWithRetry(() => import('./ReviewInvitePage'));
+const RegionHubPage = lazyWithRetry(() => import('./RegionHubPage').then(m => ({ default: m.RegionHubPage })));
+const MunicipalityPage = lazyWithRetry(() => import('./MunicipalityPage').then(m => ({ default: m.MunicipalityPage })));
+const CoverageHubPage = lazyWithRetry(() => import('./CoverageHubPage'));
+
+interface ChunkErrorBoundaryProps {
+  children: ReactNode;
+}
+
+interface ChunkErrorBoundaryState {
+  hasError: boolean;
+}
+
+// Error boundary to catch lazy import failure and display a fallback
+class ChunkErrorBoundary extends Component<ChunkErrorBoundaryProps, ChunkErrorBoundaryState> {
+  declare props: ChunkErrorBoundaryProps;
+  declare state: ChunkErrorBoundaryState;
+
+  constructor(props: ChunkErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(): ChunkErrorBoundaryState {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: any) {
+    console.warn('Caught chunk loading error in ErrorBoundary:', error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-6 text-center font-sans">
+          <div className="w-16 h-16 mb-4 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 text-2xl font-bold shadow-sm">
+            ↻
+          </div>
+          <h2 className="text-xl font-bold text-slate-800 mb-2">Inhalt wird geladen...</h2>
+          <p className="text-sm text-slate-600 max-w-sm mb-6 leading-relaxed">
+            Eine Aktualisierung ist verfügbar. Bitte laden Sie die Seite neu, um die neuesten Inhalte zu sehen.
+          </p>
+          <button
+            onClick={() => {
+              sessionStorage.clear();
+              window.location.reload();
+            }}
+            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl text-sm transition-all shadow-md active:scale-95"
+          >
+            Seite neu laden
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // Loading fallback
 const PageLoader = () => (
@@ -46,9 +129,9 @@ const PageLoader = () => (
   </div>
 );
 
-// --- Firebase Configuration ---
-export const db = (window as any).db;
-export const auth = (window as any).auth;
+// --- Firebase Configuration (Modular v9+) ---
+import { auth as firebaseAuth } from './firebase';
+export const auth = firebaseAuth;
 // ------------------------------
 
 const CART_STORAGE_KEY = 'kraken_cart_persistent';
@@ -130,9 +213,15 @@ const App: React.FC = () => {
   // Persistent Cart State
   const [cart, setCart] = useState<any[]>([]);
 
-  // Load cart and set mounted state on mount (client-only)
+  // Load cart, set mounted state and force scroll to top on mount
   useEffect(() => {
     setMounted(true);
+    if (typeof window !== 'undefined') {
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual';
+      }
+      window.scrollTo(0, 0);
+    }
     try {
       const saved = localStorage.getItem(CART_STORAGE_KEY);
       if (saved) {
@@ -188,6 +277,7 @@ const App: React.FC = () => {
       } else {
         setPage(targetPage);
       }
+      window.scrollTo(0, 0);
     };
 
     window.addEventListener('popstate', handleLocationChange);
@@ -306,7 +396,8 @@ const App: React.FC = () => {
 
   const renderPage = () => {
     return (
-      <Suspense fallback={<PageLoader />}>
+      <ChunkErrorBoundary>
+        <Suspense fallback={<PageLoader />}>
         {(() => {
           switch (page) {
             case 'about':
@@ -469,31 +560,52 @@ const App: React.FC = () => {
             case 'home':
             default:
               return (
-                <>
-                  <main>
-                    <Hero onNavigate={handleNavigate} />
+                <main className="pb-16 sm:pb-24">
+                  <Hero onNavigate={handleNavigate} />
+                  <Suspense fallback={null}>
+                    <Section1Intro onNavigate={handleNavigate} />
                     <SegmentationSection onNavigate={handleNavigate} />
+                    <Section3Leistungen onNavigate={handleNavigate} />
+                    <Section4Umzugsreinigung onNavigate={handleNavigate} />
+                    <Section5Preise onNavigate={handleNavigate} />
+                    <Section2Einsatzgebiete onNavigate={handleNavigate} />
+                    <Section7Gruender onNavigate={handleNavigate} />
                     <ValuesSection />
-                  </main>
-                </>
+                    <Section6FAQ onNavigate={handleNavigate} />
+                    <Section8Blog onNavigate={handleNavigate} />
+                  </Suspense>
+                </main>
               );
           }
         })()}
       </Suspense>
-    );
-  };
+    </ChunkErrorBoundary>
+  );
+};
 
   const isReviewPage = page === 'review-invite';
 
   return (
     <div className="bg-slate-50 text-gray-800 relative">
-      {mounted && !isReviewPage && <FloatingMascot currentPage={page} cart={cart} onNavigate={handleNavigate} seoCityId={seoCityId} />}
-      {mounted && !isReviewPage && <FloatingCTA onNavigate={handleNavigate} currentPage={page} />}
+      {mounted && !isReviewPage && (
+        <Suspense fallback={null}>
+          <FloatingMascot currentPage={page} cart={cart} onNavigate={handleNavigate} seoCityId={seoCityId} />
+          <FloatingCTA onNavigate={handleNavigate} currentPage={page} />
+        </Suspense>
+      )}
       
       {!isReviewPage && <Header onNavigate={handleNavigate} currentPage={page as any} />}
       {renderPage()}
-      {!isReviewPage && <Footer onNavigate={handleNavigate} />}
-      {mounted && !isReviewPage && <CookieConsent onNavigate={handleNavigate} />}
+      {!isReviewPage && (
+        <Suspense fallback={null}>
+          <Footer onNavigate={handleNavigate} />
+        </Suspense>
+      )}
+      {mounted && !isReviewPage && (
+        <Suspense fallback={null}>
+          <CookieConsent onNavigate={handleNavigate} />
+        </Suspense>
+      )}
       
       <style>{`
         @keyframes float {

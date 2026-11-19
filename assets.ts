@@ -5,7 +5,7 @@ import React from 'react';
 
 export const companyLogoUrl = '/logo-kraken-azul.webp';
 export const companyLogoWhiteUrl = '/logo-kraken-blanco.webp';
-export const teamPhotoUrl = '/nuestra-historia-hero.png';
+export const teamPhotoUrl = '/ChatGPT Image Jun 29, 2026, 02_32_15 AM.png';
 export const mascotImageUrl = '/mascota-kraken-homepage.webp';
 export const mascotVideoUrl = '';
 export const tentacleImageUrl = '/mascota-kraken-homepage.webp';
@@ -13,6 +13,8 @@ export const heroVideoUrl = 'https://storage.googleapis.com/aai-web-samples/serv
 export const heroImageUrl = '/mascota-kraken-noche-zurich-home.webp';
 export const aboutHeroImageUrl = '/kai about us.webp';
 export const comicHeroImageUrl = '/kai comics.webp';
+export const careersHeroImageUrl = '/kai careers.webp';
+export const servicesHeroImageUrl = '/kai services.webp';
 
 export const aboutOriginImages = {
     panel1: '/sobre-nosotros-bienvenida-familia-equipo.webp',

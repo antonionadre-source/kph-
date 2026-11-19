@@ -224,7 +224,7 @@ const ComicShopPage: React.FC<ComicShopPageProps> = ({ onNavigate, cart, setCart
                 </div>
                 {/* Decorative Kai */}
                 <div className="absolute -bottom-12 -right-12 w-48 h-48 opacity-20 pointer-events-none grayscale invert rotate-12">
-                   <img src="/IMG_3927.PNG.png" alt="" />
+                   <img src="/evolucion-mascota-kraken.webp" alt="Kai Mascot Legend" className="w-full h-full object-contain" />
                 </div>
               </div>
             </div>

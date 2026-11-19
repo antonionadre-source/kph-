@@ -52,9 +52,10 @@
     <meta property="og:url" content="https://krakenpfm.ch/">
     <meta property="og:title" content="Kraken PFM – Facility Management & Reinigung | Schaffhausen, Zürich, Winterthur">
     <meta property="og:description" content="Professionelles Facility Management, Reinigung und Hausbetreuung in Schaffhausen, Zürich und Winterthur. Umzugsreinigung, Unterhaltsreinigung, Hauswartung – Schweizer Qualität.">
-    <meta property="og:image" content="https://krakenpfm.ch/og-image.png">
+    <meta property="og:image" content="https://krakenpfm.ch/kraken-og-1200x630.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:image:type" content="image/jpeg">
     <meta property="og:locale" content="de_CH">
     <meta property="og:locale:alternate" content="en_US">
     <meta property="og:locale:alternate" content="fr_FR">
@@ -65,7 +66,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Kraken PFM – Facility Management & Reinigung | Schaffhausen, Zürich, Winterthur">
     <meta name="twitter:description" content="Professionelles Facility Management, Reinigung und Hausbetreuung in Schaffhausen, Zürich und Winterthur. Umzugsreinigung, Unterhaltsreinigung, Hauswartung – Schweizer Qualität.">
-    <meta name="twitter:image" content="https://krakenpfm.ch/og-image.png">
+    <meta name="twitter:image" content="https://krakenpfm.ch/kraken-og-1200x630.jpg">
     
     <meta name="title" content="Kraken PFM – Facility Management & Reinigung | Schaffhausen, Zürich, Winterthur">
     <meta name="description" content="Professionelles Facility Management, Reinigung und Hausbetreuung in Schaffhausen, Zürich und Winterthur. Umzugsreinigung, Unterhaltsreinigung, Hauswartung – Schweizer Qualität.">
@@ -78,47 +79,49 @@
     <meta name="robots" content="index, follow">
     <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png">
-    <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#032B59">
         
+    <!-- Preload LCP Hero Image for Mobile and Desktop -->
+    <link rel="preload" as="image" href="/imagen-google-ai-compatible-mobile.webp" media="(max-width: 767px)" fetchpriority="high" type="image/webp">
+    <link rel="preload" as="image" href="/imagen-google-ai-compatible-desktop.webp" media="(min-width: 768px)" fetchpriority="high" type="image/webp">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" media="print" onload="this.media='all'">
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap">
+    </noscript>
     
     <style>
       html {
         scroll-behavior: smooth;
+        background-color: #032B59;
       }
       body {
-        font-family: 'Poppins', sans-serif;
+        font-family: 'Poppins', system-ui, -apple-system, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        margin: 0;
+        padding: 0;
+        background-color: #F8FAFC;
+        color: #0F172A;
+      }
+      #root {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
       }
     </style>
-    <!-- React and Utilities Import Map -->
-    <script type="importmap">
-    {
-      "imports": {
-        "react": "https://aistudiocdn.com/react@^19.2.0",
-        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-        "react/": "https://aistudiocdn.com/react@^19.2.0/",
-        "@emailjs/browser": "https://aistudiocdn.com/@emailjs/browser@^4.4.1",
-        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
-        "jszip": "https://aistudiocdn.com/jszip@^3.10.1"
-      }
-    }
-    </script>
-    
-    <!-- Firebase Compat CDN Scripts (Stable Solution) -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-    <link rel="stylesheet" href="/index.css">
+    <link rel="preload" as="style" href="/index.css" onload="this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="/index.css"></noscript>
 
   <script type="application/ld+json">
   {
@@ -157,27 +160,22 @@
   </script>
 </head>
   <body>
-    <div id="root"></div>
-    
-    <!-- Initialize Firebase Globally -->
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBz5yMBGH5wSfktRcpdPuzmnLUsCGbWKig",
-            authDomain: "krakenfacilitiesdashboard.firebaseapp.com",
-            projectId: "krakenfacilitiesdashboard",
-            storageBucket: "krakenfacilitiesdashboard.firebasestorage.app",
-            messagingSenderId: "374318265292",
-            appId: "1:374318265292:web:4f35c5de00336c4862a369"
-        };
-        
-        // Ensure single initialization
-        if (typeof firebase !== 'undefined' && !firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-            window.db = firebase.firestore();
-            window.auth = firebase.auth();
-            console.log("Firebase initialized successfully via CDN");
-        }
-    </script>
+    <div id="root">
+      <!-- Critical Static HTML Pre-render for instant LCP Paint (<200ms) -->
+      <section style="background-color: #020617; color: white; padding: 4rem 1rem; min-height: 70vh; display: flex; align-items: center; justify-content: center; text-align: center;">
+        <div style="max-width: 56rem; margin: 0 auto;">
+          <h1 style="font-size: 2.25rem; font-weight: 900; line-height: 1.15; margin-bottom: 1rem; color: #ffffff;">
+            Bändigen Sie das Chaos <br /> im Immobilien-Management
+          </h1>
+          <p style="color: #4ade80; font-size: 1.5rem; margin-bottom: 1.5rem;">
+            Kraken PFM – Die All-in-One Lösung.
+          </p>
+          <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.125rem; max-width: 36rem; margin: 0 auto;">
+            Professionelles Facility Management, Reinigung und Hausbetreuung in Schaffhausen, Zürich und Winterthur.
+          </p>
+        </div>
+      </section>
+    </div>
 
     <script type="module" src="/index.tsx"></script>
   </body>

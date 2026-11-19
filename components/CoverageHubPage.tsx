@@ -32,22 +32,29 @@ const hubTranslations: Record<string, Record<string, string>> = {
     shDesc: 'Zentrale Abdeckung am Hochrhein und Klettgau. Premium-Unterhalt für historische Altstädte und ländliche Gemeinden.',
     wnDesc: 'Präziser Service für die sechstgrösste Schweizer Stadt und angrenzende Agglomerationsgemeinden.',
     zhDesc: 'Umfassendes Facility Management und Reinigung im gesamten Wirtschafts- und Agglomerationsraum Zürich.',
-    shRegion: 'Kanton Schaffhausen',
+    shRegion: 'Region Schaffhausen & Hochrhein',
     wnRegion: 'Region Winterthur',
     zhRegion: 'Region Zürich',
+    tgRegion: 'Region Thurgau / Diessenhofen',
+    tgDesc: 'Spezialisierter Service für das Thurgauer Rhein- und Hinterland rund um Diessenhofen (Kanton Thurgau).',
+    shCanton: 'Kanton Schaffhausen (SH)',
+    zhCanton: 'Kanton Zürich (ZH)',
+    tgCanton: 'Kanton Thurgau (TG)',
+    filterByRegion: 'Nach Einsatzregion',
+    filterByCanton: 'Nach Kanton',
   },
   en: {
     badge: 'Swiss Precision Network',
     title: 'Our Service Areas & Locations',
     subtitle: 'From the historic Rhine Falls in Schaffhausen to the urban center of Winterthur and the entire Greater Zurich Area: We deliver professional facility services and certified cleaning right to your doorstep.',
-    searchPlaceholder: 'Search ZIP or municipality... (e.g., 8302 or Kloten)',
+    searchPlaceholder: 'Search ZIP, municipality or canton... (e.g., 8245, Feuerthalen or ZH)',
     statCovered: 'Covered Municipalities',
     statResponse: 'Response Time',
     statSatisfaction: 'Satisfaction Rate',
     statStaff: 'Certified Specialists',
     searchResults: 'Search Results',
-    noResults: 'No municipalities found matching this search term. Our service network covers Cantons SH, ZH, and the Winterthur region.',
-    allRegions: 'All Regions',
+    noResults: 'No municipalities found matching this search term. Our service network covers Cantons SH, ZH, TG, and the Winterthur region.',
+    allRegions: 'All Locations',
     factor: 'Factor',
     openHub: 'Open Regional Hub',
     placesIn: 'Municipalities & ZIPs in',
@@ -58,22 +65,29 @@ const hubTranslations: Record<string, Record<string, string>> = {
     shDesc: 'Centralized coverage in High Rhine and Klettgau. Premium maintenance for historic towns and rural municipalities.',
     wnDesc: 'Precise service for Switzerland’s sixth-largest city and surrounding agglomeration municipalities.',
     zhDesc: 'Comprehensive facility management and cleaning throughout the Zurich business and agglomeration area.',
-    shRegion: 'Canton of Schaffhausen',
+    shRegion: 'Schaffhausen & High Rhine Region',
     wnRegion: 'Winterthur Region',
     zhRegion: 'Zurich Region',
+    tgRegion: 'Thurgau / Diessenhofen Region',
+    tgDesc: 'Specialized service for the Thurgau Rhine and hinterland area around Diessenhofen (Canton Thurgau).',
+    shCanton: 'Canton Schaffhausen (SH)',
+    zhCanton: 'Canton Zurich (ZH)',
+    tgCanton: 'Canton Thurgau (TG)',
+    filterByRegion: 'By Operational Region',
+    filterByCanton: 'By Administrative Canton',
   },
   es: {
     badge: 'Red de Precisión Suiza',
     title: 'Nuestras Áreas de Servicio y Ubicaciones',
     subtitle: 'Desde las históricas cataratas del Rin en Schaffhausen hasta el centro urbano de Winterthur y toda la región metropolitana de Zúrich: Ofrecemos servicios profesionales de instalaciones y limpieza certificada directamente en su puerta.',
-    searchPlaceholder: 'Buscar código postal o municipio... (ej. 8302 o Kloten)',
+    searchPlaceholder: 'Buscar código postal, municipio o cantón... (ej. 8245, Feuerthalen o ZH)',
     statCovered: 'Municipios Cubiertos',
     statResponse: 'Tiempo de Respuesta',
     statSatisfaction: 'Tasa de Satisfacción',
     statStaff: 'Especialistas Certificados',
     searchResults: 'Resultados de Búsqueda',
-    noResults: 'No se encontraron municipios con este término de búsqueda. Nuestra red de servicio cubre los cantones SH, ZH y la región de Winterthur.',
-    allRegions: 'Todas las Regiones',
+    noResults: 'No se encontraron municipios con este término de búsqueda. Nuestra red de servicio cubre los cantones SH, ZH, TG y la región de Winterthur.',
+    allRegions: 'Todas las Localidades',
     factor: 'Factor',
     openHub: 'Abrir Hub Regional',
     placesIn: 'Municipios y Códigos Postales en',
@@ -84,22 +98,29 @@ const hubTranslations: Record<string, Record<string, string>> = {
     shDesc: 'Cobertura centralizada en el Alto Rin y Klettgau. Mantenimiento premium para cascos históricos y municipios rurales.',
     wnDesc: 'Servicio de precisión para la sexta ciudad más grande de Suiza y los municipios colindantes.',
     zhDesc: 'Gestión integral de instalaciones y limpieza en toda la zona comercial y metropolitana de Zúrich.',
-    shRegion: 'Cantón de Schaffhausen',
+    shRegion: 'Región Schaffhausen y Alto Rin',
     wnRegion: 'Región de Winterthur',
     zhRegion: 'Región de Zúrich',
+    tgRegion: 'Región de Turgovia / Diessenhofen',
+    tgDesc: 'Servicio especializado para la zona del Rin y Turgovia alrededor de Diessenhofen (Cantón de Turgovia).',
+    shCanton: 'Cantón de Schaffhausen (SH)',
+    zhCanton: 'Cantón de Zúrich (ZH)',
+    tgCanton: 'Cantón de Turgovia (TG)',
+    filterByRegion: 'Por Región Operativa',
+    filterByCanton: 'Por Cantón Administrativo',
   },
   fr: {
     badge: 'Réseau de Précision Suisse',
     title: 'Nos Zones de Service & Localisations',
     subtitle: 'Des chutes historiques du Rhin à Schaffhouse au centre urbain de Winterthour et à toute la région métropolitaine de Zurich : Nous assurons des services de facility management professionnels et des nettoyages certifiés directement chez vous.',
-    searchPlaceholder: 'Rechercher un NPA ou une commune... (ex. 8302 ou Kloten)',
+    searchPlaceholder: 'Rechercher un NPA, une commune ou un canton... (ex. 8245, Feuerthalen ou ZH)',
     statCovered: 'Communes Couvertes',
     statResponse: 'Temps de Réponse',
     statSatisfaction: 'Taux de Satisfaction',
     statStaff: 'Spécialistes Certifiés',
     searchResults: 'Résultats de Recherche',
-    noResults: 'Aucune commune trouvée pour ce terme de recherche. Notre réseau de service couvre les cantons de SH, ZH et la région de Winterthour.',
-    allRegions: 'Toutes les Régions',
+    noResults: 'Aucune commune trouvée pour ce terme de recherche. Notre réseau de service couvre les cantons de SH, ZH, TG et la région de Winterthour.',
+    allRegions: 'Toutes les Localités',
     factor: 'Facteur',
     openHub: 'Ouvrir le Hub Régional',
     placesIn: 'Communes & Codes Postaux à',
@@ -110,22 +131,29 @@ const hubTranslations: Record<string, Record<string, string>> = {
     shDesc: 'Couverture centralisée sur le Haut-Rhin et le Klettgau. Entretien premium pour les vieilles villes historiques et les communes rurales.',
     wnDesc: 'Service de précision pour la sixième plus grande ville de Suisse et les communes de son agglomération.',
     zhDesc: 'Gestion globale des bâtiments et nettoyage dans toute la zone économique et d’agglomération de Zurich.',
-    shRegion: 'Canton de Schaffhouse',
+    shRegion: 'Région Schaffhouse & Haut-Rhin',
     wnRegion: 'Région de Winterthour',
     zhRegion: 'Région de Zurich',
+    tgRegion: 'Région Thurgovie / Diessenhofen',
+    tgDesc: 'Service spécialisé pour la région thurgovienne du Rhin autour de Diessenhofen (Canton de Thurgovie).',
+    shCanton: 'Canton de Schaffhouse (SH)',
+    zhCanton: 'Canton de Zurich (ZH)',
+    tgCanton: 'Canton de Thurgovie (TG)',
+    filterByRegion: 'Par Région Opérationnelle',
+    filterByCanton: 'Par Canton Administratif',
   },
   it: {
     badge: 'Rete di Precisione Svizzera',
     title: 'Le Nostre Zone di Servizio e Sedi',
     subtitle: 'Dalle storiche cascate del Reno a Sciaffusa al centro urbano di Winterthur e all’intera area metropolitana di Zurigo: Forniamo servizi professionali di facility management e pulizie certificate direttamente a casa vostra.',
-    searchPlaceholder: 'Cerca CAP o comune... (es. 8302 o Kloten)',
+    searchPlaceholder: 'Cerca CAP, comune o cantone... (es. 8245, Feuerthalen o ZH)',
     statCovered: 'Comuni Coperti',
     statResponse: 'Tempo di Risposta',
     statSatisfaction: 'Tasso di Soddisfazione',
     statStaff: 'Specialisti Certificati',
     searchResults: 'Risultati della Ricerca',
-    noResults: 'Nessun comune trovato per questo termine di ricerca. La nostra rete di servizi copre i cantoni SH, ZH e la regione di Winterthur.',
-    allRegions: 'Tutte le Regioni',
+    noResults: 'Nessun comune trovato per questo termine di ricerca. La nostra rete di servizi copre i cantoni SH, ZH, TG e la regione di Winterthur.',
+    allRegions: 'Tutte le Località',
     factor: 'Fattore',
     openHub: 'Apri Hub Regionale',
     placesIn: 'Comuni e CAP a',
@@ -136,22 +164,29 @@ const hubTranslations: Record<string, Record<string, string>> = {
     shDesc: 'Copertura centralizzata nell’Alto Reno e nel Klettgau. Manutenzione premium per centri storici e comuni rurali.',
     wnDesc: 'Servizio di precisione per la sesta città più grande della Svizzera e i comuni dell’hinterland.',
     zhDesc: 'Gestione integrata degli stabili e pulizia in tutta l’area economica e urbana di Zurigo.',
-    shRegion: 'Canton Sciaffusa',
+    shRegion: 'Regione Sciaffusa e Alto Reno',
     wnRegion: 'Regione di Winterthur',
     zhRegion: 'Regione di Zurigo',
+    tgRegion: 'Regione Turgovia / Diessenhofen',
+    tgDesc: 'Servizio specializzato per l’area renana della Turgovia attorno a Diessenhofen (Canton Turgovia).',
+    shCanton: 'Canton Sciaffusa (SH)',
+    zhCanton: 'Canton Zurigo (ZH)',
+    tgCanton: 'Canton Turgovia (TG)',
+    filterByRegion: 'Per Regione Operativa',
+    filterByCanton: 'Per Cantone Amministrativo',
   },
   pt: {
     badge: 'Rede de Precisão Suíça',
     title: 'Nossas Áreas de Atendimento e Localizações',
     subtitle: 'Das históricas cataratas do Reno em Schaffhausen ao centro urbano de Winterthur e a toda a região metropolitana de Zurique: Oferecemos serviços profissionais de instalações e limpeza certificada diretamente à sua porta.',
-    searchPlaceholder: 'Buscar código postal ou município... (ex. 8302 ou Kloten)',
+    searchPlaceholder: 'Buscar código postal, município ou cantão... (ex. 8245, Feuerthalen ou ZH)',
     statCovered: 'Municípios Cobertos',
     statResponse: 'Tempo de Resposta',
     statSatisfaction: 'Taxa de Satisfação',
     statStaff: 'Especialistas Certificados',
     searchResults: 'Resultados de Busca',
-    noResults: 'Nenhum município encontrado com este termo de busca. Nossa rede de atendimento cobre os cantões SH, ZH e a região de Winterthur.',
-    allRegions: 'Todas as Regiões',
+    noResults: 'Nenhum município encontrado com este termo de busca. Nossa rede de atendimento cobre os cantões SH, ZH, TG e a região de Winterthur.',
+    allRegions: 'Todas as Localidades',
     factor: 'Fator',
     openHub: 'Abrir Hub Regional',
     placesIn: 'Municípios e Códigos Postais em',
@@ -162,9 +197,16 @@ const hubTranslations: Record<string, Record<string, string>> = {
     shDesc: 'Cobertura centralizada no Alto Reno e Klettgau. Manutenção premium para centros históricos e municípios rurais.',
     wnDesc: 'Serviço de previsão para a sexta maior cidade da Suíça e municípios limítrofes.',
     zhDesc: 'Gestão integral de instalações e limpeza em toda a área comercial e metropolitana de Zurique.',
-    shRegion: 'Cantão de Schaffhausen',
+    shRegion: 'Região Schaffhausen e Alto Reno',
     wnRegion: 'Região de Winterthur',
     zhRegion: 'Região de Zurique',
+    tgRegion: 'Região de Turgóvia / Diessenhofen',
+    tgDesc: 'Serviço especializado para a área do Reno em Turgóvia em torno de Diessenhofen (Cantão de Turgóvia).',
+    shCanton: 'Cantão de Schaffhausen (SH)',
+    zhCanton: 'Cantão de Zurique (ZH)',
+    tgCanton: 'Cantão de Turgóvia (TG)',
+    filterByRegion: 'Por Região Operativa',
+    filterByCanton: 'Por Cantão Administrativo',
   }
 };
 
@@ -477,14 +519,16 @@ export const CoverageHubPage: React.FC<CoverageHubPageProps> = ({ onNavigate }) 
     return dict[key] || hubTranslations['de'][key] || key;
   };
 
-  const [activeTab, setActiveTab] = useState<'all' | 'schaffhausen' | 'winterthur' | 'zuerich'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'reg_schaffhausen' | 'reg_winterthur' | 'reg_zuerich' | 'reg_thurgau' | 'canton_sh' | 'canton_zh' | 'canton_tg'>('all');
+  const [filterMode, setFilterMode] = useState<'region' | 'canton'>('region');
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
-  // Group municipalities by region
-  const regions = [
+  // Group municipalities by operational region
+  const regionGroups = [
     {
-      id: 'schaffhausen',
+      id: 'reg_schaffhausen',
+      regionId: 'schaffhausen',
       name: getL('shRegion'),
       multiplier: '1.00',
       description: getL('shDesc'),
@@ -492,7 +536,8 @@ export const CoverageHubPage: React.FC<CoverageHubPageProps> = ({ onNavigate }) 
       municipalities: MUNICIPALITIES.filter(m => m.region === 'schaffhausen')
     },
     {
-      id: 'winterthur',
+      id: 'reg_winterthur',
+      regionId: 'winterthur',
       name: getL('wnRegion'),
       multiplier: '1.12',
       description: getL('wnDesc'),
@@ -500,20 +545,68 @@ export const CoverageHubPage: React.FC<CoverageHubPageProps> = ({ onNavigate }) 
       municipalities: MUNICIPALITIES.filter(m => m.region === 'winterthur')
     },
     {
-      id: 'zuerich',
+      id: 'reg_zuerich',
+      regionId: 'zuerich',
       name: getL('zhRegion'),
       multiplier: '1.22',
       description: getL('zhDesc'),
       hubUrl: '/reinigung/region-zuerich',
       municipalities: MUNICIPALITIES.filter(m => m.region === 'zuerich')
+    },
+    {
+      id: 'reg_thurgau',
+      regionId: 'thurgau',
+      name: getL('tgRegion'),
+      multiplier: '1.08',
+      description: getL('tgDesc'),
+      hubUrl: '/reinigung/kanton-schaffhausen',
+      municipalities: MUNICIPALITIES.filter(m => m.region === 'thurgau')
     }
   ];
 
-  // Filter municipalities based on query
-  const filteredMunicipalities = MUNICIPALITIES.filter(m => 
-    m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    m.plz.some(p => p.includes(searchQuery))
-  );
+  // Group municipalities by administrative canton
+  const cantonGroups = [
+    {
+      id: 'canton_sh',
+      cantonCode: 'SH',
+      name: getL('shCanton'),
+      description: 'Amtlicher Kanton Schaffhausen (BFS-Kanton SH): 15 politisch zugehörige Gemeinden im Klettgau, Reiat, Schleitheim, Stein und Schaffhausen.',
+      hubUrl: '/reinigung/kanton-schaffhausen',
+      municipalities: MUNICIPALITIES.filter(m => m.canton === 'SH')
+    },
+    {
+      id: 'canton_zh',
+      cantonCode: 'ZH',
+      name: getL('zhCanton'),
+      description: 'Amtlicher Kanton Zürich (BFS-Kanton ZH): Gemeinden im Bezirk Andelfingen (u.a. Feuerthalen, Laufen-Uhwiesen), Bezirk Bülach (u.a. Rafz) sowie Stadt Zürich & Agglomeration.',
+      hubUrl: '/reinigung/region-zuerich',
+      municipalities: MUNICIPALITIES.filter(m => m.canton === 'ZH')
+    },
+    {
+      id: 'canton_tg',
+      cantonCode: 'TG',
+      name: getL('tgCanton'),
+      description: 'Amtlicher Kanton Thurgau (BFS-Kanton TG): Bezirk Frauenfeld (u.a. Stadt Diessenhofen).',
+      hubUrl: '/reinigung/kanton-schaffhausen',
+      municipalities: MUNICIPALITIES.filter(m => m.canton === 'TG')
+    }
+  ];
+
+  // Search filter across name, PLZ, canton, bezirk, region
+  const normQuery = searchQuery.trim().toLowerCase();
+  const filteredMunicipalities = MUNICIPALITIES.filter(m => {
+    if (!normQuery) return true;
+    return (
+      m.name.toLowerCase().includes(normQuery) ||
+      m.plz.some(p => p.includes(normQuery)) ||
+      m.canton.toLowerCase() === normQuery ||
+      (m.canton === 'SH' && (normQuery.includes('schaffhausen') || normQuery.includes('sh'))) ||
+      (m.canton === 'ZH' && (normQuery.includes('zürich') || normQuery.includes('zurich') || normQuery.includes('zh'))) ||
+      (m.canton === 'TG' && (normQuery.includes('thurgau') || normQuery.includes('tg'))) ||
+      (m.bezirk && m.bezirk.toLowerCase().includes(normQuery)) ||
+      m.region.toLowerCase().includes(normQuery)
+    );
+  });
 
   const stats = [
     { label: getL('statCovered'), value: '40+', icon: MapPin, color: 'text-blue-500' },
@@ -624,7 +717,7 @@ export const CoverageHubPage: React.FC<CoverageHubPageProps> = ({ onNavigate }) 
             </h2>
             
             {filteredMunicipalities.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {filteredMunicipalities.map(mun => (
                   <a
                     key={mun.slug}
@@ -633,11 +726,30 @@ export const CoverageHubPage: React.FC<CoverageHubPageProps> = ({ onNavigate }) 
                       e.preventDefault();
                       onNavigate(getMunicipalityUrl(mun.slug));
                     }}
-                    className="flex flex-col items-start p-4 rounded-xl bg-white/5 hover:bg-blue-600/20 border border-white/10 hover:border-blue-500/50 transition-all group text-left"
+                    className="flex flex-col justify-between p-4 rounded-2xl bg-white/5 hover:bg-blue-600/20 border border-white/10 hover:border-blue-500/50 transition-all group text-left"
                   >
-                    <span className="text-xs text-blue-400 font-bold mb-1">PLZ {mun.plz[0]}</span>
-                    <span className="text-sm font-bold text-white group-hover:text-blue-300 transition-colors">{mun.name}</span>
-                    <span className="text-[10px] uppercase font-black tracking-wider text-slate-500 mt-2">Region {mun.region}</span>
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <span className="text-xs text-blue-400 font-bold">PLZ {mun.plz.join(', ')}</span>
+                        <div className="flex gap-1.5">
+                          <span className="px-2 py-0.5 rounded text-[9px] font-black bg-cyan-500/20 text-cyan-300 uppercase tracking-wider border border-cyan-500/30">
+                            {mun.canton}
+                          </span>
+                        </div>
+                      </div>
+                      <span className="text-base font-bold text-white group-hover:text-blue-300 transition-colors block mb-1">
+                        {mun.name}
+                      </span>
+                      {mun.bezirk && (
+                        <span className="text-xs text-slate-400 block font-medium">
+                          Bezirk {mun.bezirk}
+                        </span>
+                      )}
+                    </div>
+                    <div className="pt-3 mt-3 border-t border-white/5 flex items-center justify-between text-[11px] text-slate-500 font-semibold">
+                      <span>Region {mun.region}</span>
+                      <ChevronRight className="w-3.5 h-3.5 text-blue-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </a>
                 ))}
               </div>
@@ -649,133 +761,270 @@ export const CoverageHubPage: React.FC<CoverageHubPageProps> = ({ onNavigate }) 
           </div>
         ) : (
           <div>
-            {/* Filter Tabs */}
-            <div className="flex flex-wrap gap-2 mb-12 justify-center">
-              <button
-                onClick={() => setActiveTab('all')}
-                className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider transition-all border ${
-                  activeTab === 'all'
-                    ? 'bg-blue-600 border-blue-500 text-white shadow-lg'
-                    : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
-                }`}
-              >
-                {getL('allRegions')}
-              </button>
-              {regions.map(r => (
+            {/* View Mode Toggle (Region vs Canton) & Filter Tabs */}
+            <div className="flex flex-col items-center gap-4 mb-12">
+              <div className="inline-flex p-1 bg-white/5 border border-white/10 rounded-2xl">
                 <button
-                  key={r.id}
-                  onClick={() => setActiveTab(r.id as any)}
-                  className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-wider transition-all border ${
-                    activeTab === r.id
+                  onClick={() => {
+                    setFilterMode('region');
+                    setActiveTab('all');
+                  }}
+                  className={`px-5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
+                    filterMode === 'region'
+                      ? 'bg-blue-600 text-white shadow'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {getL('filterByRegion')}
+                </button>
+                <button
+                  onClick={() => {
+                    setFilterMode('canton');
+                    setActiveTab('all');
+                  }}
+                  className={`px-5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
+                    filterMode === 'canton'
+                      ? 'bg-blue-600 text-white shadow'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {getL('filterByCanton')}
+                </button>
+              </div>
+
+              {/* Specific Filter Tabs */}
+              <div className="flex flex-wrap gap-2 justify-center">
+                <button
+                  onClick={() => setActiveTab('all')}
+                  className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all border ${
+                    activeTab === 'all'
                       ? 'bg-blue-600 border-blue-500 text-white shadow-lg'
                       : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
                   }`}
                 >
-                  {r.name}
+                  {getL('allRegions')}
                 </button>
-              ))}
+
+                {filterMode === 'region' ? (
+                  regionGroups.map(r => (
+                    <button
+                      key={r.id}
+                      onClick={() => setActiveTab(r.id as any)}
+                      className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all border ${
+                        activeTab === r.id
+                          ? 'bg-blue-600 border-blue-500 text-white shadow-lg'
+                          : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
+                      }`}
+                    >
+                      {r.name}
+                    </button>
+                  ))
+                ) : (
+                  cantonGroups.map(c => (
+                    <button
+                      key={c.id}
+                      onClick={() => setActiveTab(c.id as any)}
+                      className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all border ${
+                        activeTab === c.id
+                          ? 'bg-blue-600 border-blue-500 text-white shadow-lg'
+                          : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
+                      }`}
+                    >
+                      {c.name}
+                    </button>
+                  ))
+                )}
+              </div>
             </div>
 
-            {/* Regions rendering */}
+            {/* Render Groups based on filterMode */}
             <div className="space-y-16">
-              {regions
-                .filter(r => activeTab === 'all' || r.id === activeTab)
-                .map(region => (
-                  <div key={region.id} className="bg-white/2 border border-white/5 rounded-3xl p-8 lg:p-12 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-radial-gradient from-blue-500/5 to-transparent opacity-50" />
-                    
-                    <div className="grid lg:grid-cols-12 gap-8 items-start mb-10 pb-8 border-b border-white/5">
-                      <div className="lg:col-span-8">
-                        <div className="flex items-center gap-3 mb-4">
-                          <h2 className="text-2xl md:text-3xl font-black text-white">{region.name}</h2>
-                          <span className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-widest">
-                            {getL('factor')} {region.multiplier}
-                          </span>
+              {filterMode === 'region' ? (
+                regionGroups
+                  .filter(r => activeTab === 'all' || r.id === activeTab)
+                  .map(region => (
+                    <div key={region.id} className="bg-white/2 border border-white/5 rounded-3xl p-8 lg:p-12 relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-radial-gradient from-blue-500/5 to-transparent opacity-50" />
+                      
+                      <div className="grid lg:grid-cols-12 gap-8 items-start mb-10 pb-8 border-b border-white/5">
+                        <div className="lg:col-span-8">
+                          <div className="flex items-center gap-3 mb-4">
+                            <h2 className="text-2xl md:text-3xl font-black text-white">{region.name}</h2>
+                            <span className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-widest">
+                              {getL('factor')} {region.multiplier}
+                            </span>
+                          </div>
+                          <p className="text-slate-400 text-sm md:text-base leading-relaxed">{region.description}</p>
                         </div>
-                        <p className="text-slate-400 text-sm md:text-base leading-relaxed">{region.description}</p>
-                      </div>
-                      
-                      <div className="lg:col-span-4 lg:text-right flex lg:justify-end">
-                        <a
-                          href={region.hubUrl}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            onNavigate(region.hubUrl);
-                          }}
-                          className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-black uppercase tracking-wider text-white transition-all hover:scale-[1.02] active:scale-[0.98]"
-                        >
-                          <span>{getL('openHub')}</span>
-                          <ChevronRight className="w-4 h-4 text-blue-500" />
-                        </a>
-                      </div>
-                    </div>
-
-                    {/* Municipality Subsections as Chips */}
-                    <div className="mb-10">
-                      <h3 className="text-xs uppercase tracking-[0.3em] text-blue-400 font-black mb-6 flex items-center gap-2">
-                        <Building className="w-4 h-4 text-blue-400" />
-                        <span>{getL('placesIn')} {region.name}</span>
-                      </h3>
-                      
-                      <div className="flex flex-wrap gap-2.5">
-                        {region.municipalities.map(mun => (
+                        
+                        <div className="lg:col-span-4 lg:text-right flex lg:justify-end">
                           <a
-                            key={mun.slug}
-                            href={getMunicipalityUrl(mun.slug)}
+                            href={region.hubUrl}
                             onClick={(e) => {
                               e.preventDefault();
-                              onNavigate(getMunicipalityUrl(mun.slug));
+                              onNavigate(region.hubUrl);
                             }}
-                            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-blue-600/20 border border-white/10 hover:border-blue-500/50 text-xs font-bold text-slate-300 hover:text-white transition-all hover:-translate-y-0.5"
+                            className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-black uppercase tracking-wider text-white transition-all hover:scale-[1.02] active:scale-[0.98]"
                           >
-                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                            <span>{mun.name}</span>
-                            <span className="text-[10px] text-slate-500 font-semibold">({mun.plz[0]})</span>
+                            <span>{getL('openHub')}</span>
+                            <ChevronRight className="w-4 h-4 text-blue-500" />
                           </a>
-                        ))}
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Services Subsections for this specific Region */}
-                    <div>
-                      <h3 className="text-xs uppercase tracking-[0.3em] text-blue-400 font-black mb-6 flex items-center gap-2">
-                        <Activity className="w-4 h-4 text-blue-400" />
-                        <span>{getL('servicesIn')} {region.name}</span>
-                      </h3>
-                      
-                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {VALID_SERVICES.map(srvId => {
-                          const routeCity = region.id === 'zuerich' ? 'zurich' : region.id;
-                          const targetUrl = `/services/${routeCity}/${srvId}`;
-                          const labelEntry = localizedServiceLabels[srvId];
-                          const localizedServiceLabel = labelEntry 
-                            ? (labelEntry[currentLang] || labelEntry['de']) 
-                            : srvId.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-                          return (
+                      {/* Municipality Subsections as Chips with Canton / Bezirk badges */}
+                      <div className="mb-10">
+                        <h3 className="text-xs uppercase tracking-[0.3em] text-blue-400 font-black mb-6 flex items-center gap-2">
+                          <Building className="w-4 h-4 text-blue-400" />
+                          <span>{getL('placesIn')} {region.name}</span>
+                        </h3>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {region.municipalities.map(mun => (
                             <a
-                              key={srvId}
-                              href={targetUrl}
+                              key={mun.slug}
+                              href={getMunicipalityUrl(mun.slug)}
                               onClick={(e) => {
                                 e.preventDefault();
-                                onNavigate(targetUrl);
+                                onNavigate(getMunicipalityUrl(mun.slug));
                               }}
-                              className="flex items-center justify-between p-4 rounded-2xl bg-white/2 hover:bg-white/5 border border-white/5 hover:border-white/10 transition-all text-left group"
+                              className="p-4 rounded-2xl bg-white/5 hover:bg-blue-600/20 border border-white/10 hover:border-blue-500/50 text-left transition-all hover:-translate-y-0.5 group flex flex-col justify-between"
                             >
-                              <div className="pr-3">
-                                <div className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors">
-                                  {localizedServiceLabel || srvId}
-                                </div>
-                                <div className="text-[10px] text-slate-500 font-medium mt-1">{getL('allPlacesIn')} {region.name}</div>
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs font-mono font-bold text-blue-400">PLZ {mun.plz.join(', ')}</span>
+                                <span className="px-2 py-0.5 rounded text-[9px] font-black bg-cyan-500/20 text-cyan-300 uppercase tracking-wider border border-cyan-500/30">
+                                  Kanton {mun.canton}
+                                </span>
                               </div>
-                              <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-blue-500 transition-colors flex-shrink-0" />
+                              <div>
+                                <h4 className="text-sm font-black text-white group-hover:text-blue-300 transition-colors">
+                                  {mun.name}
+                                </h4>
+                                {mun.bezirk && (
+                                  <p className="text-[11px] text-slate-400 mt-0.5 font-medium">
+                                    Bezirk {mun.bezirk}
+                                  </p>
+                                )}
+                              </div>
                             </a>
-                          );
-                        })}
+                          ))}
+                        </div>
                       </div>
-                    </div>
 
-                  </div>
-                ))}
+                      {/* Services Subsections for this specific Region */}
+                      <div>
+                        <h3 className="text-xs uppercase tracking-[0.3em] text-blue-400 font-black mb-6 flex items-center gap-2">
+                          <Activity className="w-4 h-4 text-blue-400" />
+                          <span>{getL('servicesIn')} {region.name}</span>
+                        </h3>
+                        
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {VALID_SERVICES.map(srvId => {
+                            const routeCity = region.regionId === 'zuerich' ? 'zurich' : region.regionId;
+                            const targetUrl = `/services/${routeCity}/${srvId}`;
+                            const labelEntry = localizedServiceLabels[srvId];
+                            const localizedServiceLabel = labelEntry 
+                              ? (labelEntry[currentLang] || labelEntry['de']) 
+                              : srvId.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                            return (
+                              <a
+                                key={srvId}
+                                href={targetUrl}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  onNavigate(targetUrl);
+                                }}
+                                className="flex items-center justify-between p-4 rounded-2xl bg-white/2 hover:bg-white/5 border border-white/5 hover:border-white/10 transition-all text-left group"
+                              >
+                                <div className="pr-3">
+                                  <div className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors">
+                                    {localizedServiceLabel || srvId}
+                                  </div>
+                                </div>
+                                <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-blue-500 transition-colors flex-shrink-0" />
+                              </a>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                    </div>
+                  ))
+              ) : (
+                cantonGroups
+                  .filter(c => activeTab === 'all' || c.id === activeTab)
+                  .map(canton => (
+                    <div key={canton.id} className="bg-white/2 border border-white/5 rounded-3xl p-8 lg:p-12 relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-radial-gradient from-blue-500/5 to-transparent opacity-50" />
+                      
+                      <div className="grid lg:grid-cols-12 gap-8 items-start mb-10 pb-8 border-b border-white/5">
+                        <div className="lg:col-span-8">
+                          <div className="flex items-center gap-3 mb-4">
+                            <h2 className="text-2xl md:text-3xl font-black text-white">{canton.name}</h2>
+                            <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-black uppercase tracking-widest">
+                              BFS-Kanton {canton.cantonCode}
+                            </span>
+                          </div>
+                          <p className="text-slate-400 text-sm md:text-base leading-relaxed">{canton.description}</p>
+                        </div>
+                        
+                        <div className="lg:col-span-4 lg:text-right flex lg:justify-end">
+                          <a
+                            href={canton.hubUrl}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              onNavigate(canton.hubUrl);
+                            }}
+                            className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-black uppercase tracking-wider text-white transition-all hover:scale-[1.02] active:scale-[0.98]"
+                          >
+                            <span>{getL('openHub')}</span>
+                            <ChevronRight className="w-4 h-4 text-blue-500" />
+                          </a>
+                        </div>
+                      </div>
+
+                      {/* Municipalities under this Canton */}
+                      <div>
+                        <h3 className="text-xs uppercase tracking-[0.3em] text-cyan-400 font-black mb-6 flex items-center gap-2">
+                          <Building className="w-4 h-4 text-cyan-400" />
+                          <span>Offizielle Gemeinden im {canton.name} ({canton.municipalities.length})</span>
+                        </h3>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {canton.municipalities.map(mun => (
+                            <a
+                              key={mun.slug}
+                              href={getMunicipalityUrl(mun.slug)}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                onNavigate(getMunicipalityUrl(mun.slug));
+                              }}
+                              className="p-4 rounded-2xl bg-white/5 hover:bg-blue-600/20 border border-white/10 hover:border-blue-500/50 text-left transition-all hover:-translate-y-0.5 group flex flex-col justify-between"
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs font-mono font-bold text-blue-400">PLZ {mun.plz.join(', ')}</span>
+                                <span className="px-2 py-0.5 rounded text-[9px] font-black bg-blue-500/20 text-blue-300 uppercase tracking-wider">
+                                  Region {mun.region}
+                                </span>
+                              </div>
+                              <div>
+                                <h4 className="text-sm font-black text-white group-hover:text-blue-300 transition-colors">
+                                  {mun.name}
+                                </h4>
+                                {mun.bezirk && (
+                                  <p className="text-[11px] text-slate-400 mt-0.5 font-medium">
+                                    Bezirk {mun.bezirk}
+                                  </p>
+                                )}
+                              </div>
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+
+                    </div>
+                  ))
+              )}
             </div>
           </div>
         )}

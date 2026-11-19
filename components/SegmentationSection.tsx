@@ -956,6 +956,8 @@ const SegmentationSection: React.FC<SegmentationSectionProps> = ({ onNavigate })
                 alt={t('segment.private.alt')}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 loading="lazy"
+                width="600"
+                height="400"
                 decoding="async"
                 referrerPolicy="no-referrer"
               />
@@ -1019,6 +1021,8 @@ const SegmentationSection: React.FC<SegmentationSectionProps> = ({ onNavigate })
                 alt={t('segment.commercial.alt')}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 loading="lazy"
+                width="600"
+                height="400"
                 decoding="async"
                 referrerPolicy="no-referrer"
               />
@@ -1874,12 +1878,12 @@ const SegmentationSection: React.FC<SegmentationSectionProps> = ({ onNavigate })
     </section>
 
     {/* Before/After Oven Experience Section */}
-    <section id="before-after-experience" className="py-16 md:py-24 bg-slate-50/50 relative overflow-hidden border-t border-slate-100">
-      <div className="container mx-auto px-4 relative z-10">
+    <section id="before-after-experience" className="py-12 md:py-16 bg-slate-50 border-b border-slate-200 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Sub-header above the card */}
-        <div className="text-center mb-12 sm:mb-16 select-none">
-          <p className="text-xs sm:text-sm font-semibold tracking-wide text-gray-500 uppercase">
+        <div className="text-center mb-10 select-none">
+          <p className="text-xs sm:text-sm font-semibold tracking-wider text-slate-500 uppercase">
             {mt(
               'Trusted by homeowners, tenants & businesses across the region.',
               'De la confianza de propietarios, inquilinos y empresas en toda la región.',
@@ -1892,12 +1896,12 @@ const SegmentationSection: React.FC<SegmentationSectionProps> = ({ onNavigate })
         </div>
 
         {/* Bento Card Housing the 3 Panels */}
-        <div className="max-w-6xl mx-auto bg-white rounded-[2.5rem] border border-slate-200/40 p-6 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.02)] filter backdrop-blur-md">
+        <div className="max-w-6xl mx-auto bg-white rounded-3xl border border-slate-200 p-6 md:p-10 shadow-xs">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-center">
             
             {/* Panel 1: Left Description & Checklist */}
-            <div className="lg:col-span-3 space-y-5 flex flex-col items-start text-left">
-              <span className="inline-flex px-3 py-1 rounded-full bg-blue-50 text-[9px] font-black tracking-widest text-[#007bff] border border-blue-100 uppercase">
+            <div className="lg:col-span-3 space-y-4 flex flex-col items-start text-left">
+              <span className="inline-flex items-center text-xs font-bold uppercase tracking-wider text-[#032B59] bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
                 {mt(
                   'PROOF, NOT PROMISES', 
                   'PRUEBA, NO PROMESAS', 
@@ -1908,14 +1912,14 @@ const SegmentationSection: React.FC<SegmentationSectionProps> = ({ onNavigate })
                 )}
               </span>
               
-              <h3 className="text-2xl sm:text-3xl font-black text-[#002D5B] tracking-tight leading-tight select-none">
+              <h3 className="text-2xl sm:text-3xl font-bold text-[#032B59] tracking-tight leading-tight select-none">
                 {mt('See the standard', 'Vea el estándar', 'Sehen Sie den Standard', 'Découvrez le standard', 'Guarda lo standard', 'Veja o padrão')}{' '}
-                <span className="text-[#007bff]">
+                <span className="text-blue-600">
                   {mt('before you book.', 'antes de reservar.', 'bevor Sie buchen.', 'avant de réserver.', 'prima di prenotare.', 'antes de reservar.')}
                 </span>
               </h3>
               
-              <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-semibold select-none">
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal select-none">
                 {mt(
                   'Move-out cleaning that passes inspection — so you get your deposit back.',
                   'Limpieza de entrega de vivienda que supera la inspección para asegurar la devolución de su fianza.',
@@ -1959,21 +1963,41 @@ const SegmentationSection: React.FC<SegmentationSectionProps> = ({ onNavigate })
               >
                 {/* After Image / Base background (Clean) */}
                 <img 
-                  src="/despues-limpieza-experiencia.png" 
+                  src="/oven-after.webp" 
                   alt="After cleaning experience"
                   className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+                  loading="lazy"
+                  width="500"
+                  height="380"
                   referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.dataset.fallback) {
+                      target.dataset.fallback = 'true';
+                      target.src = '/despues-limpieza-experiencia.webp';
+                    }
+                  }}
                 />
                 
                 {/* Before Image / Top Clipped layer (Dirty) */}
                 <img 
-                  src="/antes-limpieza-experiencia.png" 
+                  src="/oven-before.webp" 
                   alt="Before cleaning experience"
                   className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none z-10"
+                  loading="lazy"
+                  width="500"
+                  height="380"
                   style={{
                     clipPath: `polygon(0 0, ${sliderX}% 0, ${sliderX}% 100%, 0 100%)`
                   }}
                   referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.dataset.fallback) {
+                      target.dataset.fallback = 'true';
+                      target.src = '/antes-limpieza-experiencia.webp';
+                    }
+                  }}
                 />
 
                 {/* Badges */}

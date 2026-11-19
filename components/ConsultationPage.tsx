@@ -35,18 +35,25 @@ import {
 } from './icons';
 import { mascotImageUrl, teamPhotoUrl } from '../assets';
 import emailjs from '@emailjs/browser';
-import { db, auth, storage } from './firebase';
+import { db, auth, storage, sanitizeFirestoreData } from './firebase';
 import { doc, setDoc, updateDoc, serverTimestamp, collection } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { useAuth } from './Auth';
-import { generateQuotePDF } from './QuotePdfGenerator';
+import { generateQuotePDF, translateSperrgutModell, translateBereitstellung, translateConfidence } from './QuotePdfGenerator';
 import { PaymentCelebrationPage } from './PaymentCelebrationPage';
 import { ServiceDetailsModal } from './ServiceDetailsModal';
+import { 
+  computeThreeLayerQuote, 
+  getEntsorgungsRegime, 
+  getZugangsRegime, 
+  QuoteComposition 
+} from '../src/data/municipalRegimes';
+
+import { sendLead } from './leadWebhook';
 
 const SERVICE_ID = 'service_aiv15bc'; 
 const TEMPLATE_ID = 'template_aktj7t9'; 
 const PUBLIC_KEY = 'sH5K84ChHyssJrarm'; 
-const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/ucxeqjygku2w6zyf9ynut5oantantx58';
 const PERSISTENCE_KEY = 'kraken_consultation_data_v2';
 const MAX_FILE_SIZE = 250 * 1024 * 1024; // 250 MB limit
 
@@ -2184,6 +2191,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   const [showInclusionsModal, setShowInclusionsModal] = useState<string | null>(null);
   const [comingSoonModalService, setComingSoonModalService] = useState<ServiceType | null>(null);
   const [showTravelModal, setShowTravelModal] = useState(false);
+  const [showInternalDetails, setShowInternalDetails] = useState(false);
   const [config, setConfig] = useState<any>({});
   const [showWindowInfo, setShowWindowInfo] = useState(false);
   const [isMobileSummaryOpen, setMobileSummaryOpen] = useState(false);
@@ -2306,7 +2314,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
       const fullPhone = `${phonePrefix} ${phone}`.trim();
       const fullAddress = [address, `${postcode} ${city}`].filter(Boolean).join(', ');
       
-      const draftPayload = {
+      const draftPayload = sanitizeFirestoreData({
         id: idToUse,
         userId: currentUid,
         client: (clientName.trim() || email.split('@')[0] || 'Draft Client').substring(0, 100),
@@ -2325,14 +2333,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         accessMethod: accessMethod || '',
         time: selectedTime || 'flexible',
         services: cart.map(item => ({
-          type: item.type,
-          title: item.title,
+          type: item.type || '',
+          title: item.title || item.type || '',
           price: item.calculatedPrice || item.price || 0,
           details: item
         })),
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
-      };
+      });
 
       const requestRef = doc(db, 'maintenance_requests', idToUse);
       await setDoc(requestRef, draftPayload, { merge: true });
@@ -3486,7 +3494,26 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   }
 
   const servicesSubtotal = revaluedCart.reduce((acc, item) => acc + (item.price || 0), 0);
-  const grandTotal = servicesSubtotal + travelFee;
+
+  const hasClearing = revaluedCart.some(item => 
+    item.type === 'waste-management' || 
+    item.details?.withClearing || 
+    item.details?.wasteType || 
+    item.details?.cleaning
+  );
+
+  const targetDateObj = selectedDate ? new Date(selectedDate) : new Date();
+  const noticeDaysAhead = Math.max(0, Math.ceil((targetDateObj.getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+
+  const quoteComposition: QuoteComposition = computeThreeLayerQuote({
+    plz: currentPostcode,
+    addressOrDistrict: address,
+    hasClearingOrWasteService: hasClearing,
+    baseLabourMaterialsChf: servicesSubtotal,
+    noticeDaysAhead
+  });
+
+  const grandTotal = quoteComposition.costs.total > 0 ? quoteComposition.costs.total : (servicesSubtotal + travelFee);
   const totalDuration = revaluedCart.reduce((acc, item) => acc + (item.duration || 0), 0);
 
   const handleDirectPDFExport = () => {
@@ -3503,7 +3530,24 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
           bookingMode: bookingMode === 'direct' ? 'direct' : 'precision',
           selectedDate: selectedDate,
           selectedTime: selectedTime,
-          language: language
+          language: language,
+          entsorgungRegime: {
+              gemeindeName: quoteComposition.entsorgungRegime.gemeindeName,
+              sperrgutModell: quoteComposition.entsorgungRegime.sperrgutModell,
+              annahmestelleName: quoteComposition.entsorgungRegime.annahmestelleName || undefined,
+              annahmestelleDistanzKm: quoteComposition.entsorgungRegime.annahmestelleDistanzKm,
+              bereitstellungUhrzeit: quoteComposition.entsorgungRegime.bereitstellungUhrzeit,
+              quelle: quoteComposition.entsorgungRegime.quelle,
+              stand: quoteComposition.entsorgungRegime.stand,
+              confidence: quoteComposition.entsorgungRegime.confidence
+          },
+          costsBreakdown: {
+              durchfuehrung: quoteComposition.costs.durchfuehrung,
+              bewilligung: quoteComposition.costs.bewilligung,
+              entsorgung: quoteComposition.costs.entsorgung,
+              zuschlaege: quoteComposition.costs.zuschlaege,
+              total: quoteComposition.costs.total
+          }
       });
   };
 
@@ -3523,7 +3567,24 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
           bookingId: submittedRequestData.formattedId || submittedRequestData.id,
           selectedDate: submittedRequestData.date || selectedDate,
           selectedTime: submittedRequestData.time || selectedTime,
-          language: language
+          language: language,
+          entsorgungRegime: {
+              gemeindeName: quoteComposition.entsorgungRegime.gemeindeName,
+              sperrgutModell: quoteComposition.entsorgungRegime.sperrgutModell,
+              annahmestelleName: quoteComposition.entsorgungRegime.annahmestelleName || undefined,
+              annahmestelleDistanzKm: quoteComposition.entsorgungRegime.annahmestelleDistanzKm,
+              bereitstellungUhrzeit: quoteComposition.entsorgungRegime.bereitstellungUhrzeit,
+              quelle: quoteComposition.entsorgungRegime.quelle,
+              stand: quoteComposition.entsorgungRegime.stand,
+              confidence: quoteComposition.entsorgungRegime.confidence
+          },
+          costsBreakdown: {
+              durchfuehrung: quoteComposition.costs.durchfuehrung,
+              bewilligung: quoteComposition.costs.bewilligung,
+              entsorgung: quoteComposition.costs.entsorgung,
+              zuschlaege: quoteComposition.costs.zuschlaege,
+              total: quoteComposition.costs.total
+          }
       });
   };
 
@@ -3590,7 +3651,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
           setUploadStates(prev => [...prev, newStateItem]);
 
-          const storageRef = ref(storage, `quotes_media/${cleanName}/${uniqueId}_${file.name}`);
+          const today = new Date().toISOString().split('T')[0];
+          const cleanFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          const storageRef = ref(storage, `solicitudes/${today}/${uniqueId}_${cleanFileName}`);
           const uploadTask = uploadBytesResumable(storageRef, file);
 
           uploadTask.on('state_changed', 
@@ -3676,12 +3739,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                 requestedServiceTime: booking.time || 'flexible'
                             };
 
-                            await updateDoc(doc(db, 'maintenance_requests', docId), {
+                            await updateDoc(doc(db, 'maintenance_requests', docId), sanitizeFirestoreData({
                                 status: isInvoice ? 'Pending' : 'In Progress',
                                 payment: updatedPayment,
                                 timestamps: updatedTimestamps,
                                 updatedAt: serverTimestamp()
-                            });
+                            }));
                             console.log("Successfully updated Firestore payment status for doc:", docId);
                         } catch (updateError) {
                             console.error("Failed to update Firestore request status on return:", updateError);
@@ -3715,7 +3778,11 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     }
                     const computedRemainingAmt = Math.max(0, (Number(booking.totalPrice) || 0) - computedDepositAmt);
                     const preferredLanguage = localStorage.getItem('kraken_preferred_lang') || 'en';
-                    const photoUrlsStr = JSON.stringify(booking.photoUrls || booking.files || []);
+                    const rawPhotos = booking.photoUrls || booking.files || [];
+                    const safePhotoUrls = Array.isArray(rawPhotos)
+                        ? rawPhotos.map((item: any) => typeof item === 'string' ? item : (item?.url || item?.name || ''))
+                        : [];
+                    const photoUrlsStr = JSON.stringify(safePhotoUrls);
                     const pdfUrlStr = booking.pdfUrl || '';
 
                     hookData.append('deposit_amount', computedDepositAmt.toFixed(2));
@@ -3838,10 +3905,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 </body>
 </html>`;
 
-                    hookData.append('email_html', emailHtml);
-                    hookData.append('email_subject', emailSubject);
-                    
-                    fetch(MAKE_WEBHOOK_URL, { method: 'POST', body: hookData }).catch(e => console.warn("Webhook failed", e));
+                    const hookPayload: Record<string, any> = { source: 'Consultation Booking Payment' };
+                    hookData.forEach((val, key) => { hookPayload[key] = val; });
+                    sendLead(hookPayload);
 
                     // 2. Send Email Notification
                     const serviceList = booking.services.map((i: any) => i.type.replace(/-/g, ' ').toUpperCase()).join(', ');
@@ -4024,7 +4090,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                 console.log("Saving booking to Firestore with rich fields...");
                 const requestRef = doc(db, 'maintenance_requests', newDocId);
                 
-                const payload = {
+                const payload = sanitizeFirestoreData({
                     id: newDocId,
                     userId: currentUid,
                     client: clientName.trim().substring(0, 100) || 'Client',
@@ -4050,7 +4116,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     scheduling,
                     createdAt: serverTimestamp(),
                     updatedAt: serverTimestamp()
-                };
+                });
 
                 await setDoc(requestRef, payload);
                 console.log("Successfully created Firestore request document ID:", newDocId);
@@ -4081,6 +4147,30 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
             payment,
             timestamp: Date.now()
         };
+
+        const bookingSummary = [
+            clientName,
+            email,
+            fullPhone,
+            fullAddress,
+            selectedDate,
+            timeWindow,
+            accessMethod,
+            grandTotal ? `Total: CHF ${grandTotal}` : '',
+            amount ? `Deposit: CHF ${amount}` : '',
+            appendedNotes
+        ].filter(Boolean).join(' | ').replace(/[\r\n]+/g, ' ').trim().substring(0, 650);
+
+        sendLead({
+            ...bookingData,
+            name: clientName,
+            summary: bookingSummary,
+            source: 'Consultation Booking Page',
+            fileUrl: mediaUrls[0] || '',
+            fileUrls: mediaUrls.join(', '),
+            fileName: mediaNames[0] || '',
+            fileCount: mediaUrls.length
+        });
 
         console.log("Creating Payrexx Transaction via Server...");
 
@@ -6000,6 +6090,254 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     )}
                                 </div>
                                 <div className="mt-8 pt-8 border-t border-gray-100 hidden lg:block">
+                                    {cart.length > 0 && (
+                                        <div className="mb-6 space-y-2.5 bg-slate-50 border border-slate-100 p-4 rounded-2xl">
+                                            <div className="text-[10px] font-black uppercase tracking-widest text-[#002D5B] mb-1">
+                                                {mt(
+                                                    '📊 Cost Breakdown (3-Layer Regime)',
+                                                    '📊 Desglose de Costes (Régimen de 3 Capas)',
+                                                    '📊 Kosten-Aufschlüsselung (3-Ebenen-Regime)',
+                                                    '📊 Ventilation des coûts (Régime à 3 niveaux)',
+                                                    '📊 Dettaglio costi (Regime a 3 livelli)',
+                                                    '📊 Desdobramento de Custos (Regime de 3 Camadas)'
+                                                )}
+                                            </div>
+
+                                            <div className="flex justify-between items-center text-xs">
+                                                <span className="font-bold text-slate-600">
+                                                    {mt('🔨 Execution Costs:', '🔨 Costes de Ejecución:', '🔨 Durchführungskosten:', '🔨 Coûts d\'exécution :', '🔨 Costi di esecuzione:', '🔨 Custos de Execução:')}
+                                                </span>
+                                                <span className="font-black text-slate-900">CHF {quoteComposition.costs.durchfuehrung.toFixed(2)}</span>
+                                            </div>
+
+                                            <div className="flex justify-between items-center text-xs">
+                                                <span className="font-bold text-slate-600">
+                                                    {mt('📋 Permit Costs:', '📋 Costes de Permisos:', '📋 Bewilligungskosten:', '📋 Coûts de permis :', '📋 Costi dei permessi:', '📋 Custos de Licenças:')}
+                                                </span>
+                                                <span className="font-black text-slate-900">CHF {quoteComposition.costs.bewilligung.toFixed(2)}</span>
+                                            </div>
+
+                                            <div className="flex justify-between items-start text-xs">
+                                                <div className="flex flex-col">
+                                                    <span className="font-bold text-slate-600">
+                                                        {mt('🗑️ Disposal Costs:', '🗑️ Costes de Eliminación:', '🗑️ Entsorgungskosten:', '🗑️ Coûts d\'élimination :', '🗑️ Costi di smaltimento:', '🗑️ Custos de Eliminação:')}
+                                                    </span>
+                                                    {!hasClearing && (
+                                                        <span className="text-[9px] font-semibold text-slate-400">
+                                                            {mt('(No clearing ordered)', '(Sin servicio de vaciado)', '(Keine Räumung bestellt)', '(Pas de débarras commandé)', '(Nessun sgombero ordinato)', '(Sem remoção encomendada)')}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <span className="font-black text-slate-900">CHF {quoteComposition.costs.entsorgung.toFixed(2)}</span>
+                                            </div>
+
+                                            {/* Provisional disposal warning note if unknown or provisional */}
+                                            {hasClearing && quoteComposition.isProvisional && (
+                                                <div className="p-2.5 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-[10px] font-semibold leading-relaxed">
+                                                    ⚠️ <em>
+                                                        {mt(
+                                                            'Waste surcharge will be definitively confirmed after checking municipal regulations',
+                                                            'El recargo por eliminación de residuos se confirmará definitivamente tras revisar la normativa municipal',
+                                                            'Entsorgungszuschlag wird nach Prüfung der Gemeindeordnung definitiv bestätigt',
+                                                            'Le supplément d\'élimination sera confirmé définitivement après vérification du règlement municipal',
+                                                            'Il supplemento per lo smaltimento sarà confermato definitivamente dopo la verifica del regolamento comunale',
+                                                            'A taxa de eliminação será confirmada definitivamente após verificação dos regulamentos municipais'
+                                                        )}
+                                                    </em>
+                                                </div>
+                                            )}
+
+                                            <div className="flex justify-between items-center text-xs border-t border-slate-200/60 pt-2">
+                                                <span className="font-bold text-slate-600">
+                                                    {mt('📍 Surcharges (Zone & Index):', '📍 Recargos (Zona e Índice):', '📍 Zuschläge (Zone & Index):', '📍 Suppléments (Zone & Index) :', '📍 Supplementi (Zona & Indice):', '📍 Sobretaxas (Zona & Índice):')}
+                                                </span>
+                                                <span className="font-black text-slate-900">CHF {quoteComposition.costs.zuschlaege.toFixed(2)}</span>
+                                            </div>
+
+                                            {/* Constraints & Feasibility Warnings */}
+                                            {quoteComposition.constraints.map((c, idx) => {
+                                                let typeLabel = c.type.replace(/_/g, ' ');
+                                                let msg = c.message;
+                                                let act = c.actionRequired;
+
+                                                if (c.type === 'halteverbot_lead_time') {
+                                                    typeLabel = mt('NO-PARKING LEAD TIME', 'TIEMPO DE ANTELACIÓN ZONA DE CARGA', 'HALTEVERBOT-VORLAUFZEIT', 'PRÉAVIS INTERDICTION DE STATIONNER', 'PREAVVISO DIVIETO DI SOSTA', 'PREAVISO DE ESTACIONAMENTO');
+                                                    msg = mt(
+                                                        `Short Notice: No-parking permit in ${quoteComposition.entsorgungRegime.gemeindeName} requires at least ${quoteComposition.zugangRegime.halteverbotVorlaufTage} days notice (provided: ${noticeDaysAhead} days).`,
+                                                        `Aviso urgente: El permiso de reserva de aparcamiento en ${quoteComposition.entsorgungRegime.gemeindeName} requiere al menos ${quoteComposition.zugangRegime.halteverbotVorlaufTage} días de antelación (días indicados: ${noticeDaysAhead}).`,
+                                                        `Fehlende Vorlaufzeit: Halteverbot in ${quoteComposition.entsorgungRegime.gemeindeName} erfordert mind. ${quoteComposition.zugangRegime.halteverbotVorlaufTage} Tage Vorlaufzeit (erhalten: ${noticeDaysAhead} Tage).`,
+                                                        `Préavis insuffisant : L'autorisation de stationnement à ${quoteComposition.entsorgungRegime.gemeindeName} exige au moins ${quoteComposition.zugangRegime.halteverbotVorlaufTage} jours de préavis (${noticeDaysAhead} jours fournis).`,
+                                                        `Preavviso insufficiente: Il permesso di sosta a ${quoteComposition.entsorgungRegime.gemeindeName} richiede almeno ${quoteComposition.zugangRegime.halteverbotVorlaufTage} giorni di preavviso (${noticeDaysAhead} giorni forniti).`,
+                                                        `Aviso urgente: A licença de estacionamento em ${quoteComposition.entsorgungRegime.gemeindeName} requer pelo menos ${quoteComposition.zugangRegime.halteverbotVorlaufTage} dias de antecedência (${noticeDaysAhead} dias indicados).`
+                                                    );
+                                                    act = mt(
+                                                        'Arrival without reserved parking space; unloading must be coordinated directly on site.',
+                                                        'Llegada sin plaza reservada; la carga/descarga debe coordinarse directamente en el lugar.',
+                                                        'Anfahrt ohne reservierten Parkplatz; Güterumschlag muss direkt vor Ort koordiniert werden.',
+                                                        'Arrivée sans place réservée ; la manutention doit être coordonnée sur place.',
+                                                        'Arrivo senza parcheggio riservato; le operazioni di carico/scarico devono essere coordinate sul posto.',
+                                                        'Chegada sem lugar reservado; a carga/descarga deve ser coordenada no local.'
+                                                    );
+                                                } else if (c.type === 'opening_hours') {
+                                                    typeLabel = mt('DISPOSAL HOURS', 'HORARIO DE DÉPÓSITO DE RESIDUOS', 'ENTSORGUNGSHINWEIS', 'HORAIRES ÉLIMINATION', 'ORARI SMALTIMENTO', 'HORÁRIO DE RECOLHA');
+                                                    msg = mt(
+                                                        `Disposal Info (${quoteComposition.entsorgungRegime.annahmestelleName}): Opening hours ${quoteComposition.entsorgungRegime.annahmestelleOeffnungszeiten}.`,
+                                                        `Información de vertido (${quoteComposition.entsorgungRegime.annahmestelleName}): Horario de apertura ${quoteComposition.entsorgungRegime.annahmestelleOeffnungszeiten}.`,
+                                                        `Entsorgungshinweis (${quoteComposition.entsorgungRegime.annahmestelleName}): Öffnungszeiten ${quoteComposition.entsorgungRegime.annahmestelleOeffnungszeiten}.`,
+                                                        `Info élimination (${quoteComposition.entsorgungRegime.annahmestelleName}) : Horaires d'ouverture ${quoteComposition.entsorgungRegime.annahmestelleOeffnungszeiten}.`,
+                                                        `Info smaltimento (${quoteComposition.entsorgungRegime.annahmestelleName}): Orari di apertura ${quoteComposition.entsorgungRegime.annahmestelleOeffnungszeiten}.`,
+                                                        `Informação de eliminação (${quoteComposition.entsorgungRegime.annahmestelleName}): Horário de funcionamento ${quoteComposition.entsorgungRegime.annahmestelleOeffnungszeiten}.`
+                                                    );
+                                                    act = mt(
+                                                        `Provision according to municipal regulations until ${quoteComposition.entsorgungRegime.bereitstellungUhrzeit}.`,
+                                                        `Disposición según la ordenanza municipal hasta las ${quoteComposition.entsorgungRegime.bereitstellungUhrzeit}.`,
+                                                        `Bereitstellung gemäss Gemeindeordnung bis ${quoteComposition.entsorgungRegime.bereitstellungUhrzeit}.`,
+                                                        `Mise à disposition selon le règlement municipal jusqu'à ${quoteComposition.entsorgungRegime.bereitstellungUhrzeit}.`,
+                                                        `Messa a disposizione secondo il regolamento comunale entro le ${quoteComposition.entsorgungRegime.bereitstellungUhrzeit}.`,
+                                                        `Disponibilização de acordo com o regulamento municipal até ${quoteComposition.entsorgungRegime.bereitstellungUhrzeit}.`
+                                                    );
+                                                } else if (c.type === 'provisional_pricing') {
+                                                    typeLabel = mt('PROVISIONAL QUOTE', 'PRESUPUESTO PROVISIONAL', 'VORLÄUFIGE OFFERTE', 'DEVIS PROVISOIRE', 'PREVENTIVO PROVVISORIO', 'ORÇAMENTO PROVISÓRIO');
+                                                    msg = mt(
+                                                        `Provisional Quote: Municipal regulations in ${quoteComposition.entsorgungRegime.gemeindeName} contain incomplete data.`,
+                                                        `Presupuesto provisional: La normativa municipal de ${quoteComposition.entsorgungRegime.gemeindeName} contiene datos incompletos.`,
+                                                        `Vorläufige Offerte: Die Gemeindeordnung von ${quoteComposition.entsorgungRegime.gemeindeName} beinhaltet unvollständige Angaben.`,
+                                                        `Devis provisoire : Le règlement municipal de ${quoteComposition.entsorgungRegime.gemeindeName} contient des données incomplètes.`,
+                                                        `Preventivo provvisorio: Il regolamento comunale di ${quoteComposition.entsorgungRegime.gemeindeName} contiene dati incompleti.`,
+                                                        `Orçamento provisório: O regulamento municipal de ${quoteComposition.entsorgungRegime.gemeindeName} contém dados incompletos.`
+                                                    );
+                                                    act = mt(
+                                                        'Disposal and permit fees will be manually verified prior to booking confirmation.',
+                                                        'Los costes de eliminación y permisos se verificarán manualmente antes de la confirmación.',
+                                                        'Entsorgungs- und Bewilligungsgebühren werden vor Auftragsbestätigung manuell verifiziert.',
+                                                        'Les frais d\'élimination et de permis seront vérifiés manuellement avant confirmation.',
+                                                        'I costi di smaltimento e permessi saranno verificati manualmente prima della conferma.',
+                                                        'As taxas de eliminação e licenças serão verificadas manualmente antes da confirmação.'
+                                                    );
+                                                }
+
+                                                return (
+                                                    <div key={idx} className={`p-2.5 rounded-xl text-[10px] font-bold leading-relaxed border ${
+                                                        c.severity === 'warning' ? 'bg-amber-50 border-amber-200 text-amber-900' : 'bg-blue-50 border-blue-200 text-blue-900'
+                                                    }`}>
+                                                        <span className="block font-black uppercase text-[9px] mb-0.5">{typeLabel}</span>
+                                                        <span>{msg}</span>
+                                                        {act && (
+                                                            <span className="block text-[9px] font-normal text-slate-600 mt-1">👉 {act}</span>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+
+                                            {/* Internal Provenance Detail */}
+                                            <div className="pt-3 border-t border-slate-200/80 space-y-3">
+                                                <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2.5 text-xs font-sans text-slate-800 shadow-sm">
+                                                    <div className="flex items-center justify-between pb-2 border-b border-slate-200/60">
+                                                        <span className="font-extrabold text-[#002D5B] text-xs flex items-center gap-1.5">
+                                                            <span>🏛️</span>
+                                                            <span>
+                                                                {mt(
+                                                                    'Municipal Provenance & Ordinance Details',
+                                                                    'Procedencia Municipal y Detalles de Normativa',
+                                                                    'Gemeinde-Provenienz & Verordnungsdetails',
+                                                                    'Provenance municipale et détails de règlement',
+                                                                    'Provenienza comunale e dettagli regolamento',
+                                                                    'Proveniência Municipal e Regulamento'
+                                                                )}
+                                                            </span>
+                                                        </span>
+                                                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wide ${
+                                                            quoteComposition.entsorgungRegime.confidence === 'VERIFIED' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
+                                                            quoteComposition.entsorgungRegime.confidence === 'REPORTED' ? 'bg-blue-100 text-blue-800 border border-blue-200' :
+                                                            'bg-amber-100 text-amber-800 border border-amber-200'
+                                                        }`}>
+                                                            {translateConfidence(quoteComposition.entsorgungRegime.confidence, language)}
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-1 gap-2 text-xs text-slate-700 pt-1">
+                                                        <div className="flex justify-between items-baseline pb-1.5 border-b border-slate-200/50">
+                                                            <span className="font-bold text-slate-600">{mt('Municipality:', 'Municipio:', 'Gemeinde:', 'Municipalité :', 'Comune:', 'Município:')}</span>
+                                                            <span className="font-extrabold text-slate-900 text-right">{quoteComposition.entsorgungRegime.gemeindeName} ({currentPostcode})</span>
+                                                        </div>
+                                                        <div className="flex justify-between items-baseline pb-1.5 border-b border-slate-200/50">
+                                                            <span className="font-bold text-slate-600">{mt('Bulky Waste Model:', 'Modelo Residuos:', 'Sperrgut-Modell:', 'Modèle encombrants :', 'Modello rifiuti:', 'Modelo de Entulho:')}</span>
+                                                            <span className="font-extrabold text-slate-900 text-right">{translateSperrgutModell(quoteComposition.entsorgungRegime.sperrgutModell, language)}</span>
+                                                        </div>
+                                                        <div className="flex justify-between items-baseline pb-1.5 border-b border-slate-200/50">
+                                                            <span className="font-bold text-slate-600">{mt('Collection Point:', 'Punto de Recogida:', 'Annahmestelle:', 'Centre de collecte :', 'Centro di raccolta:', 'Ponto de Recolha:')}</span>
+                                                            <span className="font-extrabold text-slate-900 text-right">{quoteComposition.entsorgungRegime.annahmestelleName || 'k.A.'} ({quoteComposition.entsorgungRegime.annahmestelleDistanzKm || '?'} km)</span>
+                                                        </div>
+                                                        <div className="flex justify-between items-baseline pb-1.5 border-b border-slate-200/50">
+                                                            <span className="font-bold text-slate-600">{mt('Collection Time:', 'Hora Disposición:', 'Bereitstellung:', 'Mise à disposition :', 'Messa a disposition:', 'Horário de Recolha:')}</span>
+                                                            <span className="font-extrabold text-slate-900 text-right">{translateBereitstellung(quoteComposition.entsorgungRegime.bereitstellungUhrzeit, language)}</span>
+                                                        </div>
+                                                        <div className="flex justify-between items-baseline text-[11px] text-slate-500 pt-1">
+                                                            <span>{mt('Source & Version:', 'Fuente y Fecha:', 'Quelle & Stand:', 'Source & Version :', 'Fonte & Data:', 'Fonte e Data:')}</span>
+                                                            <span className="font-medium text-slate-600">{quoteComposition.entsorgungRegime.quelle} ({quoteComposition.entsorgungRegime.stand})</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="mt-3.5 p-3.5 bg-gradient-to-br from-blue-50/90 to-slate-50 border border-blue-100 rounded-xl space-y-2.5 text-xs text-slate-700 leading-relaxed shadow-sm">
+                                                    <div className="font-extrabold text-[#002D5B] flex items-center gap-1.5 text-xs">
+                                                        <span>💡</span>
+                                                        <span>
+                                                            {mt(
+                                                                'Price Rationale & Municipal Calculation:',
+                                                                'Justificación del Precio y Cálculo Municipal:',
+                                                                'Preisbegründung & Gemeindeberechnung:',
+                                                                'Justification du prix et calcul municipal :',
+                                                                'Giustificazione del prezzo e calcolo comunale:',
+                                                                'Justificação do preço e cálculo municipal:'
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                    <ul className="space-y-2 text-xs text-slate-700 list-disc list-inside">
+                                                        <li>
+                                                            <strong className="text-slate-900">
+                                                                {mt('Certified Labor:', 'Mano de Obra:', 'Fachpersonal:', 'Main-d\'œuvre :', 'Personale specializzato:', 'Mão de Obra:')}
+                                                            </strong>{' '}
+                                                            {mt(
+                                                                'Calculated per hour/team size, room complexity, dismantling, and floor accessibility.',
+                                                                'Calculado según horas/equipo, complejidad por estancias, desmontaje y acceso a planta.',
+                                                                'Berechnet nach Stunden/Teamgrösse, Raumniveau, Demontage und Stockwerkzugang.',
+                                                                'Calculé selon le nombre d\'heures/équipe, la complexité, le démontage et l\'étage.',
+                                                                'Calcolato in base a ore/squadra, complessità stanze, smontaggio e piano.',
+                                                                'Calculado por horas/equipa, complexidade, desmontagem e acesso ao piso.'
+                                                            )}
+                                                        </li>
+                                                        <li>
+                                                            <strong className="text-slate-900">
+                                                                {mt('Municipal Ordinance:', 'Normativa Municipal:', 'Gemeindeverordnung:', 'Règlement municipal :', 'Regolamento comunale:', 'Regulamento Municipal:')}
+                                                            </strong>{' '}
+                                                            {quoteComposition.entsorgungRegime.gemeindeName} ({translateSperrgutModell(quoteComposition.entsorgungRegime.sperrgutModell, language)}) - {mt(
+                                                                `Official recycling logistics via ${quoteComposition.entsorgungRegime.annahmestelleName || 'Recyclinghof'} (~${quoteComposition.entsorgungRegime.annahmestelleDistanzKm || 5} km).`,
+                                                                `Logística oficial de punto limpio en ${quoteComposition.entsorgungRegime.annahmestelleName || 'Recyclinghof'} (~${quoteComposition.entsorgungRegime.annahmestelleDistanzKm || 5} km).`,
+                                                                `Offizielle Entsorgungslogistik via ${quoteComposition.entsorgungRegime.annahmestelleName || 'Recyclinghof'} (~${quoteComposition.entsorgungRegime.annahmestelleDistanzKm || 5} km).`,
+                                                                `Logistique officielle de déchèterie via ${quoteComposition.entsorgungRegime.annahmestelleName || 'Recyclinghof'} (~${quoteComposition.entsorgungRegime.annahmestelleDistanzKm || 5} km).`,
+                                                                `Logistica ufficiale del centro di raccolta presso ${quoteComposition.entsorgungRegime.annahmestelleName || 'Recyclinghof'} (~${quoteComposition.entsorgungRegime.annahmestelleDistanzKm || 5} km).`,
+                                                                `Logística oficial de reciclagem via ${quoteComposition.entsorgungRegime.annahmestelleName || 'Recyclinghof'} (~${quoteComposition.entsorgungRegime.annahmestelleDistanzKm || 5} km).`
+                                                            )}
+                                                        </li>
+                                                        <li>
+                                                            <strong className="text-slate-900">
+                                                                {mt('Swiss Guarantees:', 'Garantía Suiza:', 'Schweizer Garantien:', 'Garanties suisses :', 'Garanzie svizzere:', 'Garantia Suíça:')}
+                                                            </strong>{' '}
+                                                            {mt(
+                                                                'Includes CHF 10,000,000 liability insurance and 100% lease handover acceptance guarantee.',
+                                                                'Incluye seguro de responsabilidad civil de CHF 10.000.000 y garantía de entrega al 100%.',
+                                                                'Inklusive CHF 10\'000\'000 Betriebshaftpflichtversicherung und 100% Abgabegarantie.',
+                                                                'Inclut une assurance responsabilité de CHF 10 000 000 et garantie de remise à 100%.',
+                                                                'Include assicurazione di responsabilità civile di CHF 10.000.000 e garanzia di consegna al 100%.',
+                                                                'Inclui seguro de responsabilidade civil de CHF 10.000.000 e garantia de entrega a 100%.'
+                                                            )}
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
                                     {cart.length > 0 && (
                                         <div className="mb-6 flex justify-between items-center px-2">
                                             <div className="flex flex-col">
@@ -8855,7 +9193,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             {/* Mascot image */}
                                             <div className="flex-1 flex items-center justify-center my-6 max-h-[220px]">
                                                 <img 
-                                                    src="/ChatGPT%20Image%20Jul%201,%202026,%2010_36_53%20AM.png" 
+                                                    src="/kai build your quote.webp" 
                                                     alt="Kai Kraken Mascot" 
                                                     className="max-h-[200px] w-auto object-contain animate-float"
                                                     referrerPolicy="no-referrer"
@@ -9007,7 +9345,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         {/* Peeking Mascot on the right */}
                                         <div className="absolute right-4 bottom-0 w-16 h-16 pointer-events-none hidden lg:block select-none overflow-visible">
                                             <img 
-                                                src="/ChatGPT%20Image%20Jul%201,%202026,%2010_36_53%20AM.png" 
+                                                src="/kai build your quote.webp" 
                                                 alt="Kai peeking" 
                                                 className="w-full h-auto object-contain transform translate-y-3.5 scale-x-[-1] opacity-90"
                                                 referrerPolicy="no-referrer"

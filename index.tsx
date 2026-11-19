@@ -61,9 +61,5 @@ const appEl = (
   </React.StrictMode>
 );
 
-if (rootElement.hasChildNodes()) {
-  ReactDOM.hydrateRoot(rootElement, appEl);
-} else {
-  const root = ReactDOM.createRoot(rootElement);
-  root.render(appEl);
-}
+const root = ReactDOM.createRoot(rootElement);
+root.render(appEl);
