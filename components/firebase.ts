@@ -1,15 +1,46 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getAuth, connectAuthEmulator } from 'firebase/auth';
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
+import { getStorage, connectStorageEmulator } from 'firebase/storage';
 import firebaseConfig from '../firebase-applet-config.json';
+import { isLocalRuntime, isServerRuntime } from './integrationConfig';
 
-const app = initializeApp(firebaseConfig);
+const env: Partial<ImportMetaEnv> = import.meta.env ?? {};
+// Node prerendering and its mock DOM must never select the production project.
+const firebaseMode = isServerRuntime ? 'emulator' : (env.VITE_FIREBASE_MODE || ((env.DEV || isLocalRuntime) ? 'emulator' : 'production'));
+if (!['emulator', 'production'].includes(firebaseMode)) {
+  throw new Error('VITE_FIREBASE_MODE must be emulator or production.');
+}
+export const usingFirebaseEmulators = firebaseMode === 'emulator';
+const emulatorConfig = {
+  apiKey: 'demo-kraken-pfm',
+  projectId: 'demo-kraken-pfm',
+  appId: 'demo-kraken-pfm',
+  authDomain: 'localhost',
+  storageBucket: 'demo-kraken-pfm.appspot.com',
+};
+const productionConfig = {
+  ...firebaseConfig,
+  apiKey: env.VITE_FIREBASE_API_KEY || firebaseConfig.apiKey,
+  projectId: env.VITE_FIREBASE_PROJECT_ID || firebaseConfig.projectId,
+  appId: env.VITE_FIREBASE_APP_ID || firebaseConfig.appId,
+  authDomain: env.VITE_FIREBASE_AUTH_DOMAIN || firebaseConfig.authDomain,
+  storageBucket: env.VITE_FIREBASE_STORAGE_BUCKET || firebaseConfig.storageBucket,
+};
+const isNewApp = getApps().length === 0;
+const app = isNewApp ? initializeApp(usingFirebaseEmulators ? emulatorConfig : productionConfig) : getApp();
 
-// Initialize Firestore with the provisioned database ID
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+// The local demo project cannot access the production project's data.
+export const db = getFirestore(app, usingFirebaseEmulators ? '(default)' : (env.VITE_FIREBASE_DATABASE_ID || firebaseConfig.firestoreDatabaseId));
 export const auth = getAuth(app);
 export const storage = getStorage(app);
+
+if (usingFirebaseEmulators && isNewApp) {
+  const host = env.VITE_FIREBASE_EMULATOR_HOST || '127.0.0.1';
+  connectAuthEmulator(auth, `http://${host}:9099`, { disableWarnings: true });
+  connectFirestoreEmulator(db, host, 8080);
+  connectStorageEmulator(storage, host, 9199);
+}
 
 function isPlainObjectOrArray(obj: any): boolean {
   if (obj === null || typeof obj !== 'object') return false;

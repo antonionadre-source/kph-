@@ -1,0 +1,12 @@
+Kraken PFM — continuación local, 20 de noviembre de 2026
+
+La carpeta aportada another-star---kraken-properties se ha comparado con el
+commit fd8cc1ee9c9947cb7e2c718bc433a896c3da244a. Su única diferencia era
+la retirada de las definiciones cliente de Gemini en vite.config.ts, conservada.
+No contenía los documentos de preparación ni el lock corregido descritos en
+el CODEX_SETUP.md adjunto; se han creado/reparado en esta continuación.
+
+Lee docs/CODEX_SETUP.md. Usa Node.js 24, npm ci y npm run dev.
+No pongas claves privadas en el chat, en Git ni en variables VITE_*.
+No se han creado pagos, usuarios, mensajes ni datos en producción.
+El repositorio conserva historial y rama local; no hay permiso para subir a GitHub.

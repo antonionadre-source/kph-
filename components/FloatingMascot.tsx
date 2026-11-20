@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { mascotImageUrl, mascotVideoUrl } from '../assets';
 import { useTranslation } from '../i18n';
 import { XMarkIcon, PaperAirplaneIcon, WhatsAppIcon, PlusIcon, ShieldCheckIcon } from './icons';
-import emailjs from '@emailjs/browser';
+import emailjs, { EMAIL_SERVICE_ID as EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID as EMAIL_TEMPLATE_ID, EMAIL_PUBLIC_KEY as EMAIL_PUBLIC_KEY } from './emailClient';
 
 interface FloatingMascotProps {
   currentPage: string;
@@ -12,12 +12,10 @@ interface FloatingMascotProps {
   seoCityId?: string;
 }
 
-import { sendLead, MAKE_WEBHOOK_URL } from './leadWebhook';
+import { sendLead, MAKE_WEBHOOK_URL, postWebhook } from './leadWebhook';
+import { bookingConfirmation } from './integrationConfig';
 
 const STORAGE_KEY = 'kraken_kai_ultimate_agent_v2';
-const EMAIL_SERVICE_ID = 'service_aiv15bc';
-const EMAIL_TEMPLATE_ID = 'template_aktj7t9';
-const EMAIL_PUBLIC_KEY = 'sH5K84ChHyssJrarm';
 
 const LOCAL_MASCOT_GUIDANCE: Record<string, Record<string, string[]>> = {
   en: {
@@ -592,15 +590,11 @@ const FloatingMascot: React.FC<FloatingMascotProps> = ({ currentPage, cart, onNa
     const historyText = messages.map(m => `${m.role.toUpperCase()}: ${m.text}`).join('\n\n');
     
     try {
-        const webhookPromise = fetch(MAKE_WEBHOOK_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                source: 'KAI_AI_CONSULTANT',
-                ...data,
-                transcript: historyText,
-                timestamp: new Date().toISOString()
-            })
+        const webhookPromise = postWebhook(MAKE_WEBHOOK_URL, {
+            source: 'KAI_AI_CONSULTANT',
+            ...data,
+            transcript: historyText,
+            timestamp: new Date().toISOString()
         });
 
         const emailPromise = emailjs.send(EMAIL_SERVICE_ID, EMAIL_TEMPLATE_ID, {
@@ -670,7 +664,9 @@ const FloatingMascot: React.FC<FloatingMascotProps> = ({ currentPage, cart, onNa
                     if (submissionData.trigger === "SUBMIT_BOOKING") {
                         const visibleText = cleanText.replace(/```json[\s\S]*?```/, "").trim();
                         setMessages(prev => [...prev, { role: 'model', text: visibleText, options }]);
-                        await handleExternalSubmission(submissionData.data);
+                        if (window.confirm(bookingConfirmation[language] || bookingConfirmation.en)) {
+                            await handleExternalSubmission(submissionData.data);
+                        }
                     }
                 } catch (e) {
                     setMessages(prev => [...prev, { role: 'model', text: cleanText, options }]);

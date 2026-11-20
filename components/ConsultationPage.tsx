@@ -34,7 +34,7 @@ import {
     PaperClipIcon
 } from './icons';
 import { mascotImageUrl, teamPhotoUrl } from '../assets';
-import emailjs from '@emailjs/browser';
+import emailjs, { EMAIL_SERVICE_ID as SERVICE_ID, EMAIL_TEMPLATE_ID as TEMPLATE_ID, EMAIL_PUBLIC_KEY as PUBLIC_KEY } from './emailClient';
 import { db, auth, storage, sanitizeFirestoreData } from './firebase';
 import { doc, setDoc, updateDoc, serverTimestamp, collection } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
@@ -51,9 +51,6 @@ import {
 
 import { sendLead } from './leadWebhook';
 
-const SERVICE_ID = 'service_aiv15bc'; 
-const TEMPLATE_ID = 'template_aktj7t9'; 
-const PUBLIC_KEY = 'sH5K84ChHyssJrarm'; 
 const PERSISTENCE_KEY = 'kraken_consultation_data_v2';
 const MAX_FILE_SIZE = 250 * 1024 * 1024; // 250 MB limit
 
@@ -3705,7 +3702,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     // Prevent duplicate processing if page is refreshed
                     localStorage.removeItem('pending_booking');
                     
-                    setPaymentCompletedBooking(booking);
+                    if (paymentStatus === 'success') {
+                        setPaymentCompletedBooking({ ...booking, payment: { ...booking.payment, status: 'pending' } });
+                        const returnUrl = new URL(window.location.href);
+                        returnUrl.searchParams.delete('payment');
+                        window.history.replaceState({}, document.title, returnUrl.pathname + returnUrl.search + returnUrl.hash);
+                        return; // A verified server-side Payrexx notification must confirm payment.
+                    }
+                    setPaymentCompletedBooking({ ...booking, payment: { ...booking.payment, status: 'pending' } });
                     setCart([]);
                     
                     console.log(`Processing ${paymentStatus} payment for:`, booking.clientName);
@@ -3723,24 +3727,24 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                 cardholderName: booking.clientName || '',
                                 expiryMonth: '',
                                 expiryYear: '',
-                                transactionId: isInvoice ? 'invoice_bank_transfer' : 'paid_via_gateway',
-                                amountCharged: booking.depositAmount || 0,
+                                transactionId: 'invoice_bank_transfer',
+                                amountCharged: 0,
                                 currency: 'CHF',
-                                status: isInvoice ? 'pending' : 'captured',
+                                status: 'pending',
                                 billingPostal: booking.address?.split(',').pop()?.trim()?.split(' ')?.[0] || ''
                             };
 
                             const updatedTimestamps = {
                                 formSubmittedAt: booking.timestamps?.formSubmittedAt || new Date().toISOString(),
                                 priceCalculatedAt: booking.timestamps?.priceCalculatedAt || new Date().toISOString(),
-                                depositCapturedAt: isInvoice ? null : new Date().toISOString(),
+                                depositCapturedAt: null,
                                 lastUpdatedAt: new Date().toISOString(),
                                 requestedServiceDate: booking.date || '',
                                 requestedServiceTime: booking.time || 'flexible'
                             };
 
                             await updateDoc(doc(db, 'maintenance_requests', docId), sanitizeFirestoreData({
-                                status: isInvoice ? 'Pending' : 'In Progress',
+                                status: 'Pending',
                                 payment: updatedPayment,
                                 timestamps: updatedTimestamps,
                                 updatedAt: serverTimestamp()
@@ -3763,8 +3767,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     hookData.append('totalPrice', booking.totalPrice.toFixed(2));
                     hookData.append('bookingMode', booking.bookingMode);
                     hookData.append('services', JSON.stringify(booking.services));
-                    hookData.append('transactionId', isInvoice ? 'invoice_bank_transfer' : 'paid_via_gateway');
-                    hookData.append('payment_status', isInvoice ? 'PENDING' : 'PAID');
+                    hookData.append('transactionId', 'invoice_bank_transfer');
+                    hookData.append('payment_status', 'PENDING');
                     
                     let computedDepositAmt: number;
                     if (typeof booking.depositAmount === 'number') {
@@ -3797,7 +3801,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     const totalPriceFormatted = (Number(booking.totalPrice) || 0).toFixed(2);
                     const depositAmtFormatted = computedDepositAmt.toFixed(2);
                     const remainingAmtFormatted = computedRemainingAmt.toFixed(2);
-                    const transactionIdVal = isInvoice ? 'invoice_bank_transfer' : 'paid_via_gateway';
+                    const transactionIdVal = 'invoice_bank_transfer';
                     const dateVal = booking.date || '';
                     const timeVal = booking.time || '';
                     const servicesFormatted = Array.isArray(booking.services)
@@ -3923,8 +3927,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         total_price: `CHF ${booking.totalPrice.toFixed(2)}`,
                         preferred_date: booking.date,
                         preferred_time: booking.time,
-                        payment_status: isInvoice ? 'PENDING_INVOICE' : 'PAID',
-                        transaction_id: isInvoice ? 'INVOICE_BANK_TRANSFER' : 'GATEWAY_PAYMENT',
+                        payment_status: 'PENDING_INVOICE',
+                        transaction_id: 'INVOICE_BANK_TRANSFER',
                         services_list: serviceList
                     }, PUBLIC_KEY)
                     .then(() => {
@@ -3934,20 +3938,26 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             alert(t('consultation.alert.paymentSuccess'));
                         }
                         // Clean URL
-                        window.history.replaceState({}, document.title, window.location.pathname);
+                        const returnUrl = new URL(window.location.href);
+                        returnUrl.searchParams.delete('payment');
+                        window.history.replaceState({}, document.title, returnUrl.pathname + returnUrl.search + returnUrl.hash);
                     })
                     .catch((error) => {
                         console.error("EmailJS Error after payment:", error);
                         alert(t('consultation.alert.emailError'));
-                        window.history.replaceState({}, document.title, window.location.pathname);
+                        const returnUrl = new URL(window.location.href);
+                        returnUrl.searchParams.delete('payment');
+                        window.history.replaceState({}, document.title, returnUrl.pathname + returnUrl.search + returnUrl.hash);
                     });
                 } catch (e) {
                     console.error("Failed to process pending booking", e);
                 }
             }
-        } else if (paymentStatus === 'failed' || paymentStatus === 'cancel') {
+        } else if (paymentStatus === 'failed' || paymentStatus === 'cancel' || paymentStatus === 'cancelled') {
             alert(t('consultation.alert.paymentFailed'));
-            window.history.replaceState({}, document.title, window.location.pathname);
+            const returnUrl = new URL(window.location.href);
+                        returnUrl.searchParams.delete('payment');
+                        window.history.replaceState({}, document.title, returnUrl.pathname + returnUrl.search + returnUrl.hash);
         }
     };
     processReturn();
@@ -4185,7 +4195,6 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
         let response;
         let data;
-        let primaryErrorMsg = "";
 
         // Standardized request function that handles parsing and non-JSON checks
         const makeRequest = async (url: string) => {
@@ -4217,31 +4226,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
             response = result.res;
             data = result.data;
         } catch (err: any) {
-            console.warn("Primary API endpoint request resulted in an error, trying fail-safe absolute Cloud Run router. Error:", err.message);
-            primaryErrorMsg = err.message;
-
-            // Automatically detect the Cloud Run target region of this project
-            let fallbackHost = 'https://another-star-kraken-properties-988352680203.us-west1.run.app';
-            if (typeof window !== 'undefined' && (window.location.hostname.includes('dev-') || window.location.port)) {
-                fallbackHost = 'https://another-star-kraken-properties-988352680203.us-west1.run.app';
-            }
-            
-            const fallbackUrl = `${fallbackHost}/api/payrexx/create-gateway`;
-            
-            try {
-                console.log(`Connecting to secure absolute server backend (CORS): ${fallbackUrl}`);
-                const result = await makeRequest(fallbackUrl);
-                response = result.res;
-                data = result.data;
-            } catch (fallbackErr: any) {
-                console.error("Fallback absolute API request failed too:", fallbackErr);
-                setPayrexxError({
-                    message: `Server Connection Issue: Payrexx handler could not process the response. Details: ${fallbackErr.message} (Primary endpoint returned: ${primaryErrorMsg})`,
-                    dataToSave: bookingData
-                });
-                setIsSubmitting(false);
-                return;
-            }
+            console.error("Payment API request failed:", err);
+            setPayrexxError({
+                message: `Payment service unavailable: ${err.message}`,
+                dataToSave: bookingData
+            });
+            setIsSubmitting(false);
+            return;
         }
 
         const formattedId = `KPM-${(selectedDate || new Date().toISOString().split('T')[0]).replace(/-/g, '').substring(0, 8)}`;
@@ -6533,42 +6524,6 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
               </div>
 
               <div className="space-y-4 relative z-10 text-left">
-                {/* Option 1: Sandbox success */}
-                <button 
-                  type="button"
-                  onClick={() => {
-                    const dataWithSuccess = {
-                      ...payrexxError.dataToSave,
-                      payment: {
-                        ...(payrexxError.dataToSave.payment || {}),
-                        status: 'captured' as const,
-                        method: 'card' as const,
-                        gateway: 'payrexx' as const,
-                        transactionId: 'paid_via_gateway'
-                      },
-                      timestamps: {
-                        ...(payrexxError.dataToSave.timestamps || {}),
-                        depositCapturedAt: new Date().toISOString()
-                      }
-                    };
-                    localStorage.setItem('pending_booking', JSON.stringify(dataWithSuccess));
-                    setPayrexxError(null);
-                    window.location.search = '?payment=success';
-                  }}
-                  className="w-full p-5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-95 text-white rounded-[2rem] text-left transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-lg shadow-emerald-500/20 group relative overflow-hidden"
-                >
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full translate-x-8 -translate-y-8 group-hover:scale-125 transition-transform"></div>
-                  <div className="flex items-start gap-4">
-                    <span className="text-2xl pt-0.5">🚀</span>
-                    <div>
-                      <h4 className="font-black text-sm uppercase tracking-wide">{t('payment.bypass.title')}</h4>
-                      <p className="text-xs text-emerald-100 mt-1 leading-snug">
-                        {t('payment.bypass.desc')}
-                      </p>
-                    </div>
-                  </div>
-                </button>
-
                 {/* Option 2: Wire Transfer / Invoice */}
                 <button 
                   type="button"

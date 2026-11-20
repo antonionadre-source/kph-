@@ -7583,6 +7583,11 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setLanguageState(lang);
     try {
       localStorage.setItem('kraken_preferred_lang', lang);
+      // Keep explicit URL overrides in sync so reloading retains this selection.
+      const url = new URL(window.location.href);
+      url.searchParams.set('lang', lang);
+      url.searchParams.delete('hl');
+      window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
     } catch (e) {
       console.error('Failed to save language to localStorage', e);
     }

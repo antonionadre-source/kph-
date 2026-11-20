@@ -24,26 +24,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
     setError(null);
     setIsLoading(true);
     
-    // Safety check - If the user edits the email field, ensure it matches the operator credentials
-    let loginEmail = email.trim();
-    if (!loginEmail) {
-        loginEmail = 'kai@krakenpfm.ch';
-    }
-
     try {
-      await login(loginEmail, password || 'kraken2026');
+      await login(email.trim(), password);
       onNavigate('dashboard');
     } catch (err: any) {
       setError(err.message || 'Failed to login');
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleAutofillStaff = () => {
-    setEmail('kai@krakenpfm.ch');
-    setPassword('kraken2026');
-    setError(null);
   };
 
   return (
@@ -62,14 +50,11 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
       >
         <div className="bg-white p-8 sm:p-10 rounded-[2.5rem] border border-slate-150/85 shadow-[0_30px_70px_rgba(15,23,42,0.06)]">
           <div className="text-center mb-8">
-            <button
-              onClick={handleAutofillStaff}
-              type="button"
-              className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-50 border border-blue-100 mb-5 hover:bg-blue-100/80 transition-colors cursor-pointer"
-              title="Click securely to prefill staff access credentials"
+            <div
+              className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-50 border border-blue-100 mb-5"
             >
               <ShieldCheckIcon className="w-8 h-8 text-blue-600" />
-            </button>
+            </div>
             <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase mb-1">
               Staff Access
             </h2>

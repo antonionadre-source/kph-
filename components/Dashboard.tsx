@@ -1,3 +1,4 @@
+import { postWebhook } from './leadWebhook';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../i18n';
 import { motion, AnimatePresence } from 'motion/react';
@@ -46,7 +47,7 @@ import {
   Clock
 } from 'lucide-react';
 import { useAuth } from './Auth';
-import { db, sanitizeFirestoreData } from './firebase';
+import { db, sanitizeFirestoreData, usingFirebaseEmulators } from './firebase';
 import { detectZone } from './ConsultationPage';
 import { DetailInspectorModal } from './DetailInspectorModal';
 import { getDashboardTranslation } from './dashboardTranslations';
@@ -641,7 +642,7 @@ const Dashboard: React.FC = () => {
 
         // Seed if totally empty to prevent cold start feedback on clean dbs
         const seedFlag = `seeded_v3_${user.uid}`;
-        if (fetched.length === 0 && !localStorage.getItem(seedFlag)) {
+        if (usingFirebaseEmulators && import.meta.env?.VITE_ENABLE_DEMO_DATA === 'true' && fetched.length === 0 && !localStorage.getItem(seedFlag)) {
           const seededList: MaintenanceRequest[] = [];
           
           const seedData = isStaff 
@@ -1096,19 +1097,15 @@ const Dashboard: React.FC = () => {
       amount: selectedEmailRequest.amount || '0',
     };
     try {
-      await fetch('https://hook.eu1.make.com/uc1q47ys3jwjkl3bm9cxpvbdgp9i1u37', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'cost_confirmation_email',
-          to: emailTo, cc: emailCC, subject: emailSubject,
-          html: emailBody,
-          requestId: selectedEmailRequest.id,
-          client: selectedEmailRequest.client,
-          amount: selectedEmailRequest.amount,
-          service: selectedEmailRequest.service,
-          sentAt: entry.sentAt,
-        }),
+      await postWebhook(import.meta.env?.VITE_MAKE_EMAIL_WEBHOOK_URL || '', {
+        type: 'cost_confirmation_email',
+        to: emailTo, cc: emailCC, subject: emailSubject,
+        html: emailBody,
+        requestId: selectedEmailRequest.id,
+        client: selectedEmailRequest.client,
+        amount: selectedEmailRequest.amount,
+        service: selectedEmailRequest.service,
+        sentAt: entry.sentAt,
       });
       entry.status = 'sent';
       setActionAlert('SUCCESS: Cost confirmation email sent to ' + emailTo);

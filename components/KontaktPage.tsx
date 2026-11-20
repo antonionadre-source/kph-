@@ -2,14 +2,11 @@ import React, { useState, FormEvent } from 'react';
 import { motion } from 'motion/react';
 import { useTranslation } from '../i18n';
 import { MapPinIcon, PhoneIcon, MailIcon, ClockIcon, CheckIcon } from './icons';
-import emailjs from '@emailjs/browser';
+import emailjs, { EMAIL_SERVICE_ID as SERVICE_ID, EMAIL_TEMPLATE_ID as TEMPLATE_ID, EMAIL_PUBLIC_KEY as PUBLIC_KEY } from './emailClient';
 import { db } from './firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { sendLead } from './leadWebhook';
 
-const SERVICE_ID = 'service_aiv15bc';
-const TEMPLATE_ID = 'template_aktj7t9';
-const PUBLIC_KEY = 'sH5K84ChHyssJrarm';
 
 interface KontaktPageProps {
   onNavigate: (page: string) => void;

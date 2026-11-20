@@ -4,7 +4,7 @@ import { useTranslation } from '../i18n';
 import { motion, AnimatePresence } from 'motion/react';
 import { db, auth, sanitizeFirestoreData } from './firebase';
 import { doc, setDoc, serverTimestamp, collection } from 'firebase/firestore';
-import emailjs from '@emailjs/browser';
+import emailjs, { EMAIL_SERVICE_ID as SERVICE_ID, EMAIL_TEMPLATE_ID as TEMPLATE_ID, EMAIL_PUBLIC_KEY as PUBLIC_KEY } from './emailClient';
 import { 
   User as UserIcon, 
   Mail as MailIcon, 
@@ -28,9 +28,6 @@ interface RegisterPageProps {
   onNavigate: (page: string) => void;
 }
 
-const SERVICE_ID = 'service_aiv15bc'; 
-const TEMPLATE_ID = 'template_aktj7t9'; 
-const PUBLIC_KEY = 'sH5K84ChHyssJrarm'; 
 
 const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
   const { register } = useAuth();

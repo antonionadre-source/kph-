@@ -21,18 +21,15 @@ import {
   Award,
   ChevronRight
 } from 'lucide-react';
-import emailjs from '@emailjs/browser';
+import emailjs, { EMAIL_SERVICE_ID as SERVICE_ID, EMAIL_TEMPLATE_ID as TEMPLATE_ID, EMAIL_PUBLIC_KEY as PUBLIC_KEY } from './emailClient';
 import { useTranslation } from '../i18n';
 import { db, auth, storage, sanitizeFirestoreData } from './firebase';
 import { doc, setDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
-import { sendLead } from './leadWebhook';
+import { postWebhook, MAKE_WEBHOOK_URL } from './leadWebhook';
 import { uploadFilesToStorage } from './fileUploadHelper';
 
-const SERVICE_ID = 'service_aiv15bc';
-const TEMPLATE_ID = 'template_aktj7t9';
-const PUBLIC_KEY = 'sH5K84ChHyssJrarm';
 
 interface CareersPageProps {
   onNavigate: (page: string) => void;
@@ -1214,16 +1211,22 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
       );
 
       // 4. Send Lead Webhook
-      sendLead({
+      const webhookPromise = postWebhook(MAKE_WEBHOOK_URL, {
         type: 'JOB_APPLICATION_V2',
         ...formData,
         cvName: cvFile ? cvFile.name : (formData.cvName || ''),
         languageUsed: language,
         source: 'Careers Application Form',
+        timestamp: new Date().toISOString(),
+        page: window.location.href,
+        summary: [formData.name, formData.phone, formData.position, formData.region, formData.message].filter(Boolean).join(' | ').slice(0, 650),
         fileUrl: cvStorageResult.fileUrl,
         fileUrls: cvStorageResult.fileUrls,
         fileName: cvStorageResult.fileName || (cvFile ? cvFile.name : ''),
         fileCount: cvFile ? 1 : 0
+      }).then(() => true).catch(webhookError => {
+        console.warn('Job application webhook failed:', webhookError);
+        return false;
       });
 
       // 5. Format rich message for EmailJS with timeout
@@ -1256,15 +1259,17 @@ Language: ${language}`.trim(),
         false
       );
 
-      await Promise.allSettled([firestorePromise, webhookPromise, emailPromise]);
+      const deliveries = await Promise.allSettled([firestorePromise, webhookPromise, emailPromise]);
+      const delivered = deliveries.some(result => result.status === 'fulfilled' && result.value === true);
+      if (!delivered) {
+        throw new Error('No application delivery channel confirmed success.');
+      }
 
       setIsSubmitted(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       console.error('Submission encountered an unexpected error:', err);
-      // Fallback transition to submission screen if candidate tried to submit
-      setIsSubmitted(true);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setError(t.errorMsg);
     } finally {
       setIsLoading(false);
     }

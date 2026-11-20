@@ -1,0 +1,2307 @@
+{
+  "summary": {
+    "totalPaths": 180,
+    "valid": 134,
+    "invalid": 41,
+    "missing": 5,
+    "referencedInvalid": 19,
+    "referencedMissing": 5
+  },
+  "assets": [
+    {
+      "path": "/Amazon-logo-svg.png",
+      "references": [
+        "assets.ts:100"
+      ],
+      "bytes": 41432,
+      "format": "PNG",
+      "dimensions": [
+        1280,
+        387
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/Asset-47-jpg.webp",
+      "references": [
+        "assets.ts:99"
+      ],
+      "bytes": 0,
+      "status": "missing",
+      "error": "Missing local image"
+    },
+    {
+      "path": "/ChatGPT Image Aug 12, 2026, 09_30_31 AM.png",
+      "references": [],
+      "bytes": 3275048,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/ChatGPT Image Aug 12, 2026, 09_30_31 AM.png'"
+    },
+    {
+      "path": "/ChatGPT Image Aug 12, 2026, 09_33_16 AM copy.png",
+      "references": [],
+      "bytes": 1492092,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/ChatGPT Image Aug 12, 2026, 09_33_16 AM copy.png'"
+    },
+    {
+      "path": "/ChatGPT Image Aug 20, 2026, 06_37_46 PM.png",
+      "references": [],
+      "bytes": 1921848,
+      "format": "PNG",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/ChatGPT Image Jul 1, 2026, 10_36_53 AM.png",
+      "references": [],
+      "bytes": 3506450,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/ChatGPT Image Jul 1, 2026, 10_36_53 AM.png'"
+    },
+    {
+      "path": "/ChatGPT Image Jul 11, 2026, 03_32_16 AM.png",
+      "references": [
+        "assets.ts:47"
+      ],
+      "bytes": 0,
+      "status": "missing",
+      "error": "Missing local image"
+    },
+    {
+      "path": "/ChatGPT Image Jul 16, 2026, 03_06_15 AM.png",
+      "references": [],
+      "bytes": 1896281,
+      "format": "PNG",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/ChatGPT Image Jul 18, 2026, 07_40_06 PM.png",
+      "references": [
+        "components/PaymentCelebrationPage.tsx:313"
+      ],
+      "bytes": 2203417,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/ChatGPT Image Jul 18, 2026, 07_40_06 PM.png'"
+    },
+    {
+      "path": "/ChatGPT Image Jun 29, 2026, 02_32_15 AM.png",
+      "references": [
+        "assets.ts:8"
+      ],
+      "bytes": 2236267,
+      "format": "PNG",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/ChatGPT%20Image%20Aug%2020,%202026,%2006_37_46%20PM.png",
+      "references": [],
+      "bytes": 3494499,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/ChatGPT%20Image%20Aug%2020,%202026,%2006_37_46%20PM.png'"
+    },
+    {
+      "path": "/Crisis-logo-1024x366.jpg",
+      "references": [
+        "assets.ts:98"
+      ],
+      "bytes": 29789,
+      "format": "JPEG",
+      "dimensions": [
+        1024,
+        366
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/Logo-Steinfels-Swiss-RGB.png",
+      "references": [
+        "assets.ts:107"
+      ],
+      "bytes": 10604,
+      "format": "PNG",
+      "dimensions": [
+        600,
+        205
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/Logo.jpg",
+      "references": [
+        "assets.ts:95"
+      ],
+      "bytes": 0,
+      "status": "missing",
+      "error": "Missing local image"
+    },
+    {
+      "path": "/Logo_EBP_Logo.jpg",
+      "references": [
+        "assets.ts:109"
+      ],
+      "bytes": 306287,
+      "format": "JPEG",
+      "dimensions": [
+        2358,
+        694
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/MOZUR-gold-logo-1024x884.png",
+      "references": [
+        "assets.ts:93"
+      ],
+      "bytes": 46729,
+      "format": "PNG",
+      "dimensions": [
+        1024,
+        884
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/Mastering the chaos of property management 2-2.png",
+      "references": [
+        "components/ComicPage.tsx:1277"
+      ],
+      "bytes": 573335,
+      "format": "PNG",
+      "dimensions": [
+        2048,
+        1152
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/Mastering the chaos of property management.png",
+      "references": [],
+      "bytes": 3868049,
+      "format": "PNG",
+      "dimensions": [
+        2732,
+        1536
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/Meili-Logo-black-cmyc-png.webp",
+      "references": [
+        "assets.ts:94"
+      ],
+      "bytes": 2306,
+      "format": "WEBP",
+      "dimensions": [
+        709,
+        299
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/Schweizerische-Unfallversicherungsanstalt-logo-svg.png",
+      "references": [
+        "assets.ts:105"
+      ],
+      "bytes": 68229,
+      "format": "PNG",
+      "dimensions": [
+        2560,
+        635
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/android-chrome-192x192.png",
+      "references": [
+        "site.webmanifest:12",
+        "public/site.webmanifest:12"
+      ],
+      "bytes": 14175,
+      "format": "PNG",
+      "dimensions": [
+        192,
+        192
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/android-chrome-512x512.png",
+      "references": [
+        "site.webmanifest:18",
+        "public/site.webmanifest:18"
+      ],
+      "bytes": 40892,
+      "format": "PNG",
+      "dimensions": [
+        512,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/android-chrome-maskable-192x192.png",
+      "references": [
+        "site.webmanifest:24",
+        "public/site.webmanifest:24"
+      ],
+      "bytes": 7709,
+      "format": "PNG",
+      "dimensions": [
+        192,
+        192
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/android-chrome-maskable-512x512.png",
+      "references": [
+        "site.webmanifest:30",
+        "public/site.webmanifest:30"
+      ],
+      "bytes": 21863,
+      "format": "PNG",
+      "dimensions": [
+        512,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/antes-limpieza-experiencia.webp",
+      "references": [
+        "components/SegmentationSection.tsx:1998"
+      ],
+      "bytes": 0,
+      "status": "missing",
+      "error": "Missing local image"
+    },
+    {
+      "path": "/apple-touch-icon.png",
+      "references": [
+        "index.html:87",
+        "favicon-head.html:7",
+        "public/favicon-head.html:7"
+      ],
+      "bytes": 8131,
+      "format": "PNG",
+      "dimensions": [
+        180,
+        180
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/car-detailing-schaffhausen.webp",
+      "references": [
+        "assets.ts:54"
+      ],
+      "bytes": 654045,
+      "status": "invalid",
+      "error": "could not create decoder object"
+    },
+    {
+      "path": "/chatgpt-image-aug12-093031.png",
+      "references": [],
+      "bytes": 1999579,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/chatgpt-image-aug12-093031.png'"
+    },
+    {
+      "path": "/chatgpt-image-aug12-093316.png",
+      "references": [],
+      "bytes": 1492092,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/chatgpt-image-aug12-093316.png'"
+    },
+    {
+      "path": "/chatgpt-image-aug12.png",
+      "references": [],
+      "bytes": 1492092,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/chatgpt-image-aug12.png'"
+    },
+    {
+      "path": "/chatgpt-image-aug20.png",
+      "references": [],
+      "bytes": 3494499,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/chatgpt-image-aug20.png'"
+    },
+    {
+      "path": "/chatgpt-image-jun-13-1.png",
+      "references": [],
+      "bytes": 3605824,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/chatgpt-image-jun-13-1.png'"
+    },
+    {
+      "path": "/chatgpt-image-jun-13-2.png",
+      "references": [],
+      "bytes": 3616730,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/chatgpt-image-jun-13-2.png'"
+    },
+    {
+      "path": "/cinematic-design-workspace.webp",
+      "references": [
+        "components/OurStoryPage.tsx:402"
+      ],
+      "bytes": 197822,
+      "format": "WEBP",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/comic-promotion.webp",
+      "references": [
+        "assets.ts:29",
+        "assets.ts:37",
+        "components/SegmentationSection.tsx:1714",
+        "components/ComicPage.tsx:954"
+      ],
+      "bytes": 316790,
+      "format": "WEBP",
+      "dimensions": [
+        1055,
+        1491
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/common-area-cleaning-schaffhausen.webp",
+      "references": [
+        "assets.ts:55"
+      ],
+      "bytes": 483762,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/common-area-cleaning-schaffhausen.webp'"
+    },
+    {
+      "path": "/daily-recurring-cleaning-schaffhausen.webp",
+      "references": [
+        "assets.ts:56"
+      ],
+      "bytes": 399887,
+      "status": "invalid",
+      "error": "could not create decoder object"
+    },
+    {
+      "path": "/deep-cleaning-schaffhausen.webp",
+      "references": [
+        "assets.ts:57"
+      ],
+      "bytes": 372176,
+      "status": "invalid",
+      "error": "could not create decoder object"
+    },
+    {
+      "path": "/despues-limpieza-experiencia.png",
+      "references": [],
+      "bytes": 2052118,
+      "format": "PNG",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/despues-limpieza-experiencia.webp",
+      "references": [
+        "components/SegmentationSection.tsx:1977"
+      ],
+      "bytes": 1451184,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/display-green-mountain-as-logo.png",
+      "references": [
+        "assets.ts:101"
+      ],
+      "bytes": 47698,
+      "format": "PNG",
+      "dimensions": [
+        700,
+        492
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/evolucion-mascota-kraken.webp",
+      "references": [
+        "assets.ts:30",
+        "assets.ts:38",
+        "components/ComicShopPage.tsx:227",
+        "components/ComicPage.tsx:864"
+      ],
+      "bytes": 117332,
+      "format": "WEBP",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/exterior-cleaning-schaffhausen.webp",
+      "references": [
+        "assets.ts:58"
+      ],
+      "bytes": 650823,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/exterior-cleaning-schaffhausen.webp'"
+    },
+    {
+      "path": "/favicon-128x128.png",
+      "references": [],
+      "bytes": 9150,
+      "format": "PNG",
+      "dimensions": [
+        128,
+        128
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/favicon-16x16.png",
+      "references": [
+        "index.html:83",
+        "favicon-head.html:3",
+        "public/favicon-head.html:3"
+      ],
+      "bytes": 767,
+      "format": "PNG",
+      "dimensions": [
+        16,
+        16
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/favicon-256x256.png",
+      "references": [],
+      "bytes": 19014,
+      "format": "PNG",
+      "dimensions": [
+        256,
+        256
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/favicon-32x32.png",
+      "references": [
+        "index.html:84",
+        "favicon-head.html:4",
+        "public/favicon-head.html:4"
+      ],
+      "bytes": 1796,
+      "format": "PNG",
+      "dimensions": [
+        32,
+        32
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/favicon-48x48.png",
+      "references": [
+        "index.html:85",
+        "favicon-head.html:5",
+        "public/favicon-head.html:5"
+      ],
+      "bytes": 3058,
+      "format": "PNG",
+      "dimensions": [
+        48,
+        48
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/favicon-512x512.png",
+      "references": [],
+      "bytes": 40892,
+      "format": "PNG",
+      "dimensions": [
+        512,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/favicon-64x64.png",
+      "references": [],
+      "bytes": 4234,
+      "format": "PNG",
+      "dimensions": [
+        64,
+        64
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/favicon-96x96.png",
+      "references": [
+        "index.html:86",
+        "favicon-head.html:6",
+        "public/favicon-head.html:6"
+      ],
+      "bytes": 6813,
+      "format": "PNG",
+      "dimensions": [
+        96,
+        96
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/favicon-master-1024.png",
+      "references": [],
+      "bytes": 89213,
+      "format": "PNG",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/favicon.ico",
+      "references": [
+        "index.html:82",
+        "favicon-head.html:2",
+        "public/favicon-head.html:2"
+      ],
+      "bytes": 5747,
+      "format": "ICO",
+      "dimensions": [
+        48,
+        48
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/favicon.png",
+      "references": [],
+      "bytes": 82,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/favicon.png'"
+    },
+    {
+      "path": "/furniture-moving-schaffhausen.webp",
+      "references": [
+        "assets.ts:59"
+      ],
+      "bytes": 407696,
+      "status": "invalid",
+      "error": "could not create decoder object"
+    },
+    {
+      "path": "/gardening-schaffhausen.webp",
+      "references": [
+        "assets.ts:60"
+      ],
+      "bytes": 659537,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/gardening-schaffhausen.webp'"
+    },
+    {
+      "path": "/gutter-cleaning-schaffhausen.webp",
+      "references": [
+        "assets.ts:61"
+      ],
+      "bytes": 462874,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/gutter-cleaning-schaffhausen.webp'"
+    },
+    {
+      "path": "/head-logo-Basque-Trade-jpg.webp",
+      "references": [
+        "assets.ts:97"
+      ],
+      "bytes": 2628,
+      "format": "WEBP",
+      "dimensions": [
+        230,
+        100
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/image-gen-1.webp",
+      "references": [
+        "components/SustainabilityPage.tsx:366"
+      ],
+      "bytes": 166170,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/image-gen-2.webp",
+      "references": [
+        "components/SustainabilityPage.tsx:317"
+      ],
+      "bytes": 221396,
+      "format": "WEBP",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/image-gen-3.webp",
+      "references": [
+        "components/SustainabilityPage.tsx:345"
+      ],
+      "bytes": 128120,
+      "format": "WEBP",
+      "dimensions": [
+        992,
+        1586
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/image-gen-4.webp",
+      "references": [
+        "components/SustainabilityPage.tsx:411"
+      ],
+      "bytes": 161360,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/image-gen-5.webp",
+      "references": [
+        "components/SustainabilityPage.tsx:384"
+      ],
+      "bytes": 147118,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/image-gen-6.webp",
+      "references": [
+        "components/SustainabilityPage.tsx:427"
+      ],
+      "bytes": 161538,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/imagen-01-google-ai.webp",
+      "references": [],
+      "bytes": 1528476,
+      "format": "WEBP",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/imagen-02-google-ai.webp",
+      "references": [
+        "assets.ts:267",
+        "components/CommercialServicesPage.tsx:637"
+      ],
+      "bytes": 1677564,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/imagen-google-ai-compatible-desktop.webp",
+      "references": [
+        "index.html:93",
+        "components/Hero.tsx:26"
+      ],
+      "bytes": 133410,
+      "format": "WEBP",
+      "dimensions": [
+        1200,
+        900
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/imagen-google-ai-compatible-mobile.webp",
+      "references": [
+        "index.html:92"
+      ],
+      "bytes": 49990,
+      "format": "WEBP",
+      "dimensions": [
+        640,
+        480
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/imagen-google-ai-compatible.webp",
+      "references": [],
+      "bytes": 1769208,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/images-2.png",
+      "references": [
+        "assets.ts:96"
+      ],
+      "bytes": 9718,
+      "format": "PNG",
+      "dimensions": [
+        432,
+        117
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/images-3.png",
+      "references": [
+        "assets.ts:110"
+      ],
+      "bytes": 0,
+      "status": "missing",
+      "error": "Missing local image"
+    },
+    {
+      "path": "/industrial-maintenance-schaffhausen.webp",
+      "references": [
+        "assets.ts:62"
+      ],
+      "bytes": 406449,
+      "status": "invalid",
+      "error": "could not create decoder object"
+    },
+    {
+      "path": "/kai about us.webp",
+      "references": [
+        "assets.ts:14",
+        "assets.ts:49",
+        "components/OurStoryPage.tsx:410",
+        "components/AboutPage.tsx:75",
+        "components/FloatingMascot.tsx:445"
+      ],
+      "bytes": 231798,
+      "format": "WEBP",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai blog.webp",
+      "references": [
+        "components/FloatingMascot.tsx:447"
+      ],
+      "bytes": 196256,
+      "format": "WEBP",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai build your quote.webp",
+      "references": [
+        "assets.ts:71",
+        "components/ConsultationPage.tsx:9151",
+        "components/ConsultationPage.tsx:9303",
+        "components/FloatingMascot.tsx:450"
+      ],
+      "bytes": 182920,
+      "format": "WEBP",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai careers.webp",
+      "references": [
+        "assets.ts:16",
+        "components/FloatingMascot.tsx:452",
+        "components/CareersPage.tsx:1319"
+      ],
+      "bytes": 192982,
+      "format": "WEBP",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai comics.webp",
+      "references": [
+        "assets.ts:15",
+        "assets.ts:28",
+        "assets.ts:36",
+        "components/FloatingMascot.tsx:477"
+      ],
+      "bytes": 154324,
+      "format": "WEBP",
+      "dimensions": [
+        1400,
+        1400
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai health and safety.webp",
+      "references": [
+        "components/FloatingMascot.tsx:454"
+      ],
+      "bytes": 233264,
+      "format": "WEBP",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai privacy.webp",
+      "references": [
+        "components/GDPRPage.tsx:31",
+        "components/FloatingMascot.tsx:457"
+      ],
+      "bytes": 224780,
+      "format": "WEBP",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai reviews.webp",
+      "references": [
+        "components/FloatingMascot.tsx:460",
+        "components/ReviewInvitePage.tsx:447"
+      ],
+      "bytes": 162072,
+      "format": "WEBP",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai schaffhausen.webp",
+      "references": [
+        "assets.ts:45",
+        "components/FloatingMascot.tsx:433"
+      ],
+      "bytes": 205660,
+      "format": "WEBP",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai security.webp",
+      "references": [
+        "components/FloatingMascot.tsx:465"
+      ],
+      "bytes": 200934,
+      "format": "WEBP",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai services.webp",
+      "references": [
+        "assets.ts:17",
+        "components/ChatWidget.tsx:365",
+        "components/FloatingMascot.tsx:469"
+      ],
+      "bytes": 247462,
+      "format": "WEBP",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai sustainability.webp",
+      "references": [
+        "components/FloatingMascot.tsx:471"
+      ],
+      "bytes": 177376,
+      "format": "WEBP",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai terms and condition.webp",
+      "references": [
+        "components/TermsPage.tsx:20",
+        "components/FloatingMascot.tsx:473"
+      ],
+      "bytes": 192746,
+      "format": "WEBP",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai winterthur.webp",
+      "references": [
+        "assets.ts:48",
+        "components/FloatingMascot.tsx:436"
+      ],
+      "bytes": 235788,
+      "format": "WEBP",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai winterthur_opt.webp",
+      "references": [],
+      "bytes": 0,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/kai winterthur_opt.webp'"
+    },
+    {
+      "path": "/kai zurich.webp",
+      "references": [
+        "assets.ts:44",
+        "components/FloatingMascot.tsx:439"
+      ],
+      "bytes": 217150,
+      "format": "WEBP",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-1.webp",
+      "references": [],
+      "bytes": 584541,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/kai-1.webp'"
+    },
+    {
+      "path": "/kai-2.webp",
+      "references": [],
+      "bytes": 371321,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/kai-2.webp'"
+    },
+    {
+      "path": "/kai-3.webp",
+      "references": [],
+      "bytes": 410312,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/kai-3.webp'"
+    },
+    {
+      "path": "/kai-imagen-1.webp",
+      "references": [
+        "components/Section4Umzugsreinigung.tsx:181"
+      ],
+      "bytes": 253402,
+      "format": "WEBP",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-imagen.webp",
+      "references": [],
+      "bytes": 253402,
+      "format": "WEBP",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-jul16-interview.webp",
+      "references": [
+        "components/CareersPage.tsx:1311"
+      ],
+      "bytes": 172270,
+      "format": "WEBP",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-webp-aug17-1.webp",
+      "references": [
+        "components/ValuesSection.tsx:15"
+      ],
+      "bytes": 235214,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-webp-aug17-2.webp",
+      "references": [
+        "components/ValuesSection.tsx:9"
+      ],
+      "bytes": 220938,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-webp-aug17-3.webp",
+      "references": [
+        "components/ValuesSection.tsx:21"
+      ],
+      "bytes": 204432,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kraken-og-1200x630.jpg",
+      "references": [
+        "index.html:55",
+        "index.html:69"
+      ],
+      "bytes": 222964,
+      "format": "JPEG",
+      "dimensions": [
+        1200,
+        630
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kraken-og-1200x630.png",
+      "references": [],
+      "bytes": 2124819,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/kraken-og-1200x630.png'"
+    },
+    {
+      "path": "/kraken-og-1200x630.webp",
+      "references": [],
+      "bytes": 114690,
+      "format": "WEBP",
+      "dimensions": [
+        1200,
+        630
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kraken-og-fallback-600x315.jpg",
+      "references": [],
+      "bytes": 68608,
+      "format": "JPEG",
+      "dimensions": [
+        600,
+        315
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kraken-original-1731x909.png",
+      "references": [],
+      "bytes": 2097844,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/kraken-original-1731x909.png'"
+    },
+    {
+      "path": "/kraken-social-square-1200x1200.jpg",
+      "references": [],
+      "bytes": 239833,
+      "format": "JPEG",
+      "dimensions": [
+        1200,
+        1200
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kraken-x-card-1200x600.jpg",
+      "references": [],
+      "bytes": 215144,
+      "format": "JPEG",
+      "dimensions": [
+        1200,
+        600
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/logo-kraken-azul.webp",
+      "references": [
+        "index.html:133",
+        "index.html:134",
+        "assets.ts:6",
+        "components/Dashboard.tsx:879",
+        "components/PaymentCelebrationPage.tsx:227",
+        "components/BlogPage.tsx:474",
+        "components/BlogPage.tsx:860",
+        "components/SchemaComponents.tsx:69"
+      ],
+      "bytes": 59822,
+      "format": "WEBP",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/logo-kraken-blanco.webp",
+      "references": [
+        "assets.ts:7"
+      ],
+      "bytes": 37490,
+      "format": "WEBP",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/mascota-kraken-homepage-200.webp",
+      "references": [],
+      "bytes": 8780,
+      "format": "WEBP",
+      "dimensions": [
+        200,
+        200
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/mascota-kraken-homepage-500.webp",
+      "references": [
+        "components/FloatingMascot.tsx:479"
+      ],
+      "bytes": 29980,
+      "format": "WEBP",
+      "dimensions": [
+        500,
+        500
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/mascota-kraken-homepage-800.webp",
+      "references": [],
+      "bytes": 53944,
+      "format": "WEBP",
+      "dimensions": [
+        800,
+        800
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/mascota-kraken-homepage.webp",
+      "references": [
+        "assets.ts:9",
+        "assets.ts:11",
+        "assets.ts:31"
+      ],
+      "bytes": 151698,
+      "format": "WEBP",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/mascota-kraken-noche-zurich-home.webp",
+      "references": [
+        "assets.ts:13",
+        "assets.ts:39",
+        "components/ServicesPage.tsx:927"
+      ],
+      "bytes": 253156,
+      "format": "WEBP",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/modern-office-greenery-mascot.webp",
+      "references": [
+        "components/SustainabilityPage.tsx:98"
+      ],
+      "bytes": 82330,
+      "format": "WEBP",
+      "dimensions": [
+        800,
+        600
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/new-200-Aldersgate-Logo.jpg",
+      "references": [
+        "assets.ts:92"
+      ],
+      "bytes": 437367,
+      "format": "JPEG",
+      "dimensions": [
+        3841,
+        2161
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/nuestra-historia-hero.png",
+      "references": [],
+      "bytes": 2236267,
+      "format": "PNG",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/nuestra-historia-hero.webp",
+      "references": [],
+      "bytes": 1505874,
+      "format": "WEBP",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/office-cleaning-schaffhausen.webp",
+      "references": [
+        "assets.ts:63"
+      ],
+      "bytes": 445001,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/office-cleaning-schaffhausen.webp'"
+    },
+    {
+      "path": "/oficina-moderna-homepage.webp",
+      "references": [
+        "assets.ts:46",
+        "components/SegmentationSection.tsx:1020"
+      ],
+      "bytes": 50878,
+      "format": "WEBP",
+      "dimensions": [
+        800,
+        1101
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/oven-after.webp",
+      "references": [
+        "components/SegmentationSection.tsx:1966"
+      ],
+      "bytes": 44148,
+      "format": "WEBP",
+      "dimensions": [
+        800,
+        600
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/oven-before.webp",
+      "references": [
+        "components/SegmentationSection.tsx:1984"
+      ],
+      "bytes": 79274,
+      "format": "WEBP",
+      "dimensions": [
+        800,
+        600
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/payrexx-checkout-banner.png",
+      "references": [
+        "components/TrustIcons.tsx:8",
+        "components/WhyKrakenSection.tsx:48"
+      ],
+      "bytes": 1999578,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/payrexx-checkout-banner.png'"
+    },
+    {
+      "path": "/payrexx-checkout-banner.webp",
+      "references": [],
+      "bytes": 0,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/payrexx-checkout-banner.webp'"
+    },
+    {
+      "path": "/pest-control-schaffhausen.webp",
+      "references": [
+        "assets.ts:64"
+      ],
+      "bytes": 328383,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/pest-control-schaffhausen.webp'"
+    },
+    {
+      "path": "/portada-interior-apartamento.webp",
+      "references": [
+        "components/SegmentationSection.tsx:955"
+      ],
+      "bytes": 315214,
+      "format": "WEBP",
+      "dimensions": [
+        1472,
+        2874
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/retail-cleaning-schaffhausen.webp",
+      "references": [
+        "assets.ts:65"
+      ],
+      "bytes": 390803,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/retail-cleaning-schaffhausen.webp'"
+    },
+    {
+      "path": "/schaffhausen-1.webp",
+      "references": [
+        "components/SchaffhausenDossierSection.tsx:1238",
+        "components/Section2Einsatzgebiete.tsx:147"
+      ],
+      "bytes": 491128,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/schaffhausen.webp",
+      "references": [],
+      "bytes": 491128,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-comercial-limpieza-bar-restaurante.png",
+      "references": [
+        "assets.ts:291"
+      ],
+      "bytes": 2181934,
+      "format": "PNG",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-comercial-limpieza-bar-restaurante.webp",
+      "references": [
+        "components/CommercialServicesPage.tsx:724"
+      ],
+      "bytes": 1601472,
+      "format": "WEBP",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-comercial-limpieza-escaleras.png",
+      "references": [
+        "assets.ts:259"
+      ],
+      "bytes": 2275649,
+      "format": "PNG",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-comercial-limpieza-escaleras.webp",
+      "references": [
+        "assets.ts:251",
+        "components/CommercialServicesPage.tsx:608"
+      ],
+      "bytes": 1644198,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-comercial-limpieza-industrial.png",
+      "references": [
+        "assets.ts:299"
+      ],
+      "bytes": 2253244,
+      "format": "PNG",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-comercial-limpieza-industrial.webp",
+      "references": [
+        "assets.ts:70",
+        "components/CommercialServicesPage.tsx:753"
+      ],
+      "bytes": 1606462,
+      "format": "WEBP",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-comercial-limpieza-retail.png",
+      "references": [
+        "assets.ts:283"
+      ],
+      "bytes": 2148576,
+      "format": "PNG",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-comercial-limpieza-retail.webp",
+      "references": [
+        "components/CommercialServicesPage.tsx:695"
+      ],
+      "bytes": 1558260,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-comercial-limpieza-showroom.png",
+      "references": [
+        "assets.ts:275"
+      ],
+      "bytes": 2174512,
+      "format": "PNG",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-comercial-limpieza-showroom.webp",
+      "references": [
+        "components/CommercialServicesPage.tsx:666"
+      ],
+      "bytes": 1601494,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-privado-canalones.webp",
+      "references": [
+        "assets.ts:83",
+        "assets.ts:211",
+        "components/ServicesPage.tsx:544"
+      ],
+      "bytes": 226958,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-privado-control-plagas.webp",
+      "references": [
+        "assets.ts:76",
+        "assets.ts:195",
+        "components/ServicesPage.tsx:486"
+      ],
+      "bytes": 208042,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-privado-jardineria.webp",
+      "references": [
+        "assets.ts:79",
+        "assets.ts:179"
+      ],
+      "bytes": 161588,
+      "format": "WEBP",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-privado-lavado-coche.webp",
+      "references": [
+        "assets.ts:73",
+        "assets.ts:77",
+        "assets.ts:171"
+      ],
+      "bytes": 109114,
+      "format": "WEBP",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-privado-limpieza-apartamento.webp",
+      "references": [
+        "assets.ts:69",
+        "assets.ts:139"
+      ],
+      "bytes": 96424,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-privado-limpieza-cocina.webp",
+      "references": [
+        "assets.ts:147"
+      ],
+      "bytes": 105670,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-privado-limpieza-exterior.webp",
+      "references": [
+        "assets.ts:82",
+        "assets.ts:187"
+      ],
+      "bytes": 133814,
+      "format": "WEBP",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-privado-limpieza-oficina-casa.webp",
+      "references": [
+        "assets.ts:155"
+      ],
+      "bytes": 95310,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-privado-limpieza-tapiceria-1.webp",
+      "references": [
+        "assets.ts:219"
+      ],
+      "bytes": 233192,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/servicio-privado-limpieza-tapiceria-1.webp'"
+    },
+    {
+      "path": "/servicio-privado-limpieza-ventanas-1.webp",
+      "references": [
+        "assets.ts:227"
+      ],
+      "bytes": 466423,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/servicio-privado-limpieza-ventanas-1.webp'"
+    },
+    {
+      "path": "/servicio-privado-mudanza-cajas-1.webp",
+      "references": [
+        "assets.ts:235"
+      ],
+      "bytes": 417220,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/servicio-privado-mudanza-cajas-1.webp'"
+    },
+    {
+      "path": "/servicio-privado-mudanza-cajas.webp",
+      "references": [
+        "assets.ts:72",
+        "assets.ts:163"
+      ],
+      "bytes": 115100,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/servicio-privado-pulido-suelos-1.webp",
+      "references": [
+        "assets.ts:243"
+      ],
+      "bytes": 273283,
+      "status": "invalid",
+      "error": "could not create decoder object"
+    },
+    {
+      "path": "/servicio-privado-residuos-desalojo.webp",
+      "references": [
+        "assets.ts:78",
+        "assets.ts:203",
+        "components/ServicesPage.tsx:515"
+      ],
+      "bytes": 253768,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sobre-nosotros-bienvenida-familia-equipo.png",
+      "references": [
+        "components/OurStoryPage.tsx:334",
+        "components/OurStoryPage.tsx:377"
+      ],
+      "bytes": 1535139,
+      "format": "PNG",
+      "dimensions": [
+        1200,
+        896
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sobre-nosotros-bienvenida-familia-equipo.webp",
+      "references": [
+        "assets.ts:20"
+      ],
+      "bytes": 1056702,
+      "format": "WEBP",
+      "dimensions": [
+        1200,
+        896
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sobre-nosotros-equipo-con-cliente-en-zurich.webp",
+      "references": [
+        "assets.ts:21",
+        "components/OurStoryPage.tsx:355",
+        "components/AboutPage.tsx:67"
+      ],
+      "bytes": 179736,
+      "format": "WEBP",
+      "dimensions": [
+        1672,
+        941
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sobre-nosotros-equipo-viaje-con-maletas.png",
+      "references": [
+        "components/OurStoryPage.tsx:327",
+        "components/OurStoryPage.tsx:370"
+      ],
+      "bytes": 1705473,
+      "format": "PNG",
+      "dimensions": [
+        1376,
+        768
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sobre-nosotros-equipo-viaje-con-maletas.webp",
+      "references": [
+        "assets.ts:22"
+      ],
+      "bytes": 1146354,
+      "format": "WEBP",
+      "dimensions": [
+        1376,
+        768
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sobre-nosotros-retrato-equipo-uniforme.png",
+      "references": [
+        "components/OurStoryPage.tsx:320",
+        "components/OurStoryPage.tsx:363"
+      ],
+      "bytes": 1509995,
+      "format": "PNG",
+      "dimensions": [
+        1200,
+        896
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sobre-nosotros-retrato-equipo-uniforme.webp",
+      "references": [
+        "assets.ts:23"
+      ],
+      "bytes": 1066810,
+      "format": "WEBP",
+      "dimensions": [
+        1200,
+        896
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sobre-nosotros-reunion-consultoria-propiedad.png",
+      "references": [
+        "components/OurStoryPage.tsx:348",
+        "components/OurStoryPage.tsx:391"
+      ],
+      "bytes": 1513362,
+      "format": "PNG",
+      "dimensions": [
+        1376,
+        768
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sobre-nosotros-reunion-consultoria-propiedad.webp",
+      "references": [],
+      "bytes": 143,
+      "status": "invalid",
+      "error": "could not create decoder object"
+    },
+    {
+      "path": "/sobre-nosotros-reunion-equipo-kraken.png",
+      "references": [
+        "components/OurStoryPage.tsx:341",
+        "components/OurStoryPage.tsx:384"
+      ],
+      "bytes": 1541013,
+      "format": "PNG",
+      "dimensions": [
+        1200,
+        896
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sobre-nosotros-reunion-equipo-kraken.webp",
+      "references": [],
+      "bytes": 143,
+      "status": "invalid",
+      "error": "could not create decoder object"
+    },
+    {
+      "path": "/sustainability-circular.png",
+      "references": [
+        "assets.ts:119"
+      ],
+      "bytes": 2036682,
+      "format": "PNG",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sustainability-circular.webp",
+      "references": [],
+      "bytes": 1513708,
+      "format": "WEBP",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sustainability-diversity.png",
+      "references": [],
+      "bytes": 1910311,
+      "format": "PNG",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sustainability-diversity.webp",
+      "references": [],
+      "bytes": 1399472,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sustainability-hero.png",
+      "references": [
+        "assets.ts:87",
+        "assets.ts:115"
+      ],
+      "bytes": 2673732,
+      "format": "PNG",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sustainability-hero.webp",
+      "references": [],
+      "bytes": 2074094,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sustainability-logistics.png",
+      "references": [
+        "assets.ts:116"
+      ],
+      "bytes": 1856384,
+      "format": "PNG",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sustainability-logistics.webp",
+      "references": [],
+      "bytes": 1410484,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sustainability-ops.png",
+      "references": [
+        "assets.ts:85",
+        "assets.ts:118"
+      ],
+      "bytes": 1899467,
+      "format": "PNG",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sustainability-ops.webp",
+      "references": [],
+      "bytes": 1414624,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sustainability-partner.png",
+      "references": [
+        "assets.ts:86"
+      ],
+      "bytes": 1889804,
+      "format": "PNG",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sustainability-partner.webp",
+      "references": [],
+      "bytes": 1397474,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sustainability-people.png",
+      "references": [
+        "assets.ts:89",
+        "assets.ts:117"
+      ],
+      "bytes": 1774986,
+      "format": "PNG",
+      "dimensions": [
+        992,
+        1586
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/sustainability-people.webp",
+      "references": [],
+      "bytes": 1333854,
+      "format": "WEBP",
+      "dimensions": [
+        992,
+        1586
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/test_fixed.png",
+      "references": [],
+      "bytes": 3626183,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/test_fixed.png'"
+    },
+    {
+      "path": "/test_fixed.webp",
+      "references": [],
+      "bytes": 0,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/test_fixed.webp'"
+    },
+    {
+      "path": "/waste-management-schaffhausen.webp",
+      "references": [
+        "assets.ts:66"
+      ],
+      "bytes": 518885,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/waste-management-schaffhausen.webp'"
+    },
+    {
+      "path": "/winterthur.webp",
+      "references": [
+        "components/Section2Einsatzgebiete.tsx:183"
+      ],
+      "bytes": 164996,
+      "format": "WEBP",
+      "dimensions": [
+        1400,
+        1050
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/zurich.webp",
+      "references": [
+        "components/Section2Einsatzgebiete.tsx:219"
+      ],
+      "bytes": 470164,
+      "format": "WEBP",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "status": "valid"
+    }
+  ],
+  "sourceAssets": [
+    {
+      "path": "src/assets/images/H.png",
+      "bytes": 1145729,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/src/assets/images/H.png'"
+    },
+    {
+      "path": "src/assets/images/SA.png",
+      "bytes": 740352,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/src/assets/images/SA.png'"
+    },
+    {
+      "path": "src/assets/images/antes_limpieza_1787252907784.jpg",
+      "bytes": 889513,
+      "format": "JPEG",
+      "dimensions": [
+        1200,
+        896
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "src/assets/images/bienvenida_familia_1783273279017.jpg",
+      "bytes": 787677,
+      "format": "JPEG",
+      "dimensions": [
+        1200,
+        896
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "src/assets/images/bienvenida_familia_1783273279017.webp",
+      "bytes": 84322,
+      "format": "WEBP",
+      "dimensions": [
+        1200,
+        896
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "src/assets/images/cliente_zurich_1783273249991.jpg",
+      "bytes": 733884,
+      "format": "JPEG",
+      "dimensions": [
+        1376,
+        768
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "src/assets/images/despues_limpieza_1787252894701.jpg",
+      "bytes": 755637,
+      "format": "JPEG",
+      "dimensions": [
+        1200,
+        896
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "src/assets/images/despues_limpieza_1787252894701.webp",
+      "bytes": 0,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/src/assets/images/despues_limpieza_1787252894701.webp'"
+    },
+    {
+      "path": "src/assets/images/kraken_hero_banner_1784580230486.jpg",
+      "bytes": 876173,
+      "format": "JPEG",
+      "dimensions": [
+        1376,
+        768
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "src/assets/images/kraken_hero_banner_1784580230486.webp",
+      "bytes": 114582,
+      "format": "WEBP",
+      "dimensions": [
+        1376,
+        768
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "src/assets/images/retrato_uniforme_1783273262968.jpg",
+      "bytes": 1418435,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/src/assets/images/retrato_uniforme_1783273262968.jpg'"
+    },
+    {
+      "path": "src/assets/images/reunion_consultoria_1783273291515.jpg",
+      "bytes": 1417038,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/src/assets/images/reunion_consultoria_1783273291515.jpg'"
+    },
+    {
+      "path": "src/assets/images/reunion_kraken_1783273305130.jpg",
+      "bytes": 1431897,
+      "status": "invalid",
+      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/src/assets/images/reunion_kraken_1783273305130.jpg'"
+    },
+    {
+      "path": "src/assets/images/schaffhausen_city_1787253468232.jpg",
+      "bytes": 1234468,
+      "format": "JPEG",
+      "dimensions": [
+        1408,
+        768
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "src/assets/images/viaje_maletas_1783273233837.jpg",
+      "bytes": 896973,
+      "format": "JPEG",
+      "dimensions": [
+        1376,
+        768
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "src/assets/images/winterthur_city_1787253482012.jpg",
+      "bytes": 1067118,
+      "format": "JPEG",
+      "dimensions": [
+        1408,
+        768
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "src/assets/images/winterthur_city_1787253482012.webp",
+      "bytes": 1496786,
+      "format": "WEBP",
+      "dimensions": [
+        1600,
+        873
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "src/assets/images/zurich_city_1787253494771.jpg",
+      "bytes": 1017789,
+      "format": "JPEG",
+      "dimensions": [
+        1584,
+        672
+      ],
+      "status": "valid"
+    }
+  ]
+}

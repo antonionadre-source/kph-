@@ -1,11 +1,22 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from '../i18n';
 import { motion } from 'motion/react';
 import { Check, Shield, Calendar, Headphones, ArrowRight, ClipboardCheck } from 'lucide-react';
-import { sendLead } from './leadWebhook';
 
 interface PaymentCelebrationPageProps {
   booking: any;
   onBackHome: () => void;
+}
+
+interface ConfettiPiece {
+  id: number;
+  x: number;
+  y: number;
+  size: number;
+  color: string;
+  duration: number;
+  delay: number;
+  rotate: number;
 }
 
 const translations = {
@@ -136,33 +147,24 @@ const speechBubbles = [
 ];
 
 export const PaymentCelebrationPage: React.FC<PaymentCelebrationPageProps> = ({ booking, onBackHome }) => {
-  const currentLang = (localStorage.getItem('kraken_preferred_lang') || 'en') as keyof typeof translations;
+  const [confetti, setConfetti] = useState<ConfettiPiece[]>([]);
+  const { language } = useTranslation();
+  const currentLang = (language === 'de-CH' ? 'de' : language) as keyof typeof translations;
   const tLocal = translations[currentLang] || translations.en;
 
   // Determine booking type (Express vs Precision Quote)
   const isDirect = booking.bookingMode === 'direct';
 
-  const hasSentLead = useRef(false);
-
-  useEffect(() => {
-    if (!hasSentLead.current) {
-      hasSentLead.current = true;
-      const params = new URLSearchParams(window.location.search);
-      const urlPayment = params.get('payment');
-      const urlRef = params.get('ref') || params.get('transaction_id') || params.get('id');
-
-      sendLead({
-        source: 'payment_success',
-        amount: booking?.depositAmount || booking?.totalPrice || booking?.payment?.amountCharged || params.get('amount') || '',
-        currency: booking?.payment?.currency || 'CHF',
-        reference: booking?.id || urlRef || '',
-        name: booking?.clientName || booking?.client || '',
-        email: booking?.email || '',
-        payment_status: urlPayment || booking?.payment?.status || 'success',
-        bookingMode: booking?.bookingMode || ''
-      });
-    }
-  }, [booking]);
+  // A browser redirect is untrusted; server-side gateway confirmation is pending.
+  const awaitingVerification = booking?.payment?.status !== 'captured';
+  const pendingText = {
+    de: ['Anfrage erhalten', 'Die Zahlungsbestätigung steht noch aus. Unser Team prüft Ihre Anfrage.', 'Zahlung wird geprüft'],
+    en: ['Request received', 'Payment confirmation is pending. Our team will review your request.', 'Payment under review'],
+    fr: ['Demande reçue', 'La confirmation du paiement est en attente. Notre équipe examinera votre demande.', 'Paiement en cours de vérification'],
+    it: ['Richiesta ricevuta', 'La conferma del pagamento è in attesa. Il nostro team esaminerà la richiesta.', 'Pagamento in verifica'],
+    es: ['Solicitud recibida', 'La confirmación del pago está pendiente. Nuestro equipo revisará tu solicitud.', 'Pago en revisión'],
+    pt: ['Pedido recebido', 'A confirmação do pagamento está pendente. A nossa equipa irá analisar o seu pedido.', 'Pagamento em análise'],
+  }[currentLang] || ['Request received', 'Payment confirmation is pending.', 'Payment under review'];
 
   useEffect(() => {
     // Generate 60 colorful confetti pieces
@@ -245,12 +247,12 @@ export const PaymentCelebrationPage: React.FC<PaymentCelebrationPageProps> = ({ 
 
             {/* Success Heading */}
             <h1 className="text-3xl md:text-4xl font-black text-[#002D5B] tracking-tight mb-4 leading-tight uppercase">
-              {isDirect ? tLocal.paymentCompleted : tLocal.thankYouPayment}
+              {awaitingVerification ? pendingText[0] : (isDirect ? tLocal.paymentCompleted : tLocal.thankYouPayment)}
             </h1>
 
             {/* Success Subtitle Description */}
             <p className="text-gray-600 text-sm md:text-base font-semibold mb-6 leading-relaxed">
-              {isDirect ? tLocal.serviceBooked : tLocal.precisionReview}
+              {awaitingVerification ? pendingText[1] : (isDirect ? tLocal.serviceBooked : tLocal.precisionReview)}
             </p>
 
             {/* Lower Badge/Pill */}
@@ -258,7 +260,7 @@ export const PaymentCelebrationPage: React.FC<PaymentCelebrationPageProps> = ({ 
               {isDirect ? (
                 <>
                   <span className="text-sm">✉</span>
-                  <span>{tLocal.confirmationSent}</span>
+                  <span>{awaitingVerification ? pendingText[2] : tLocal.confirmationSent}</span>
                 </>
               ) : (
                 <>
@@ -330,7 +332,7 @@ export const PaymentCelebrationPage: React.FC<PaymentCelebrationPageProps> = ({ 
               </div>
               <div>
                 <h4 className="text-xs font-black text-[#002D5B] uppercase tracking-wide mb-0.5">{tLocal.securePayment}</h4>
-                <p className="text-[10px] text-gray-500 font-bold leading-normal">{tLocal.securePaymentDesc}</p>
+                <p className="text-[10px] text-gray-500 font-bold leading-normal">{awaitingVerification ? pendingText[1] : tLocal.securePaymentDesc}</p>
               </div>
             </div>
 
@@ -341,8 +343,8 @@ export const PaymentCelebrationPage: React.FC<PaymentCelebrationPageProps> = ({ 
                   <Calendar className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-black text-[#002D5B] uppercase tracking-wide mb-0.5">{tLocal.bookingConfirmed}</h4>
-                  <p className="text-[10px] text-gray-500 font-bold leading-normal">{tLocal.bookingConfirmedDesc}</p>
+                  <h4 className="text-xs font-black text-[#002D5B] uppercase tracking-wide mb-0.5">{awaitingVerification ? pendingText[0] : tLocal.bookingConfirmed}</h4>
+                  <p className="text-[10px] text-gray-500 font-bold leading-normal">{awaitingVerification ? pendingText[1] : tLocal.bookingConfirmedDesc}</p>
                 </div>
               </div>
             ) : (

@@ -14,14 +14,11 @@ import {
   ShieldCheckIcon
 } from './icons';
 import { companyLogoWhiteUrl, tentacleImageUrl } from '../assets';
-import emailjs from '@emailjs/browser';
+import emailjs, { EMAIL_SERVICE_ID as SERVICE_ID, EMAIL_TEMPLATE_ID as TEMPLATE_ID, EMAIL_PUBLIC_KEY as PUBLIC_KEY } from './emailClient';
 import { motion, AnimatePresence } from 'motion/react';
 
-import { sendLead } from './leadWebhook';
+import { sendLead, postWebhook, MAKE_WEBHOOK_URL } from './leadWebhook';
 
-const SERVICE_ID = 'service_aiv15bc';
-const TEMPLATE_ID = 'template_aktj7t9';
-const PUBLIC_KEY = 'sH5K84ChHyssJrarm';
 
 interface FooterProps {
   onNavigate: (page: string) => void;
@@ -363,16 +360,27 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     setStepError('');
 
     try {
-      sendLead({
+      await postWebhook(MAKE_WEBHOOK_URL, {
         type: 'STEP_SLIDE_FOOTER_CONTACT',
         ...contactData,
         source: 'Footer Step Slide Contact Form',
+        timestamp: new Date().toISOString(),
+        page: window.location.href,
+        summary: [contactData.name, contactData.phone, contactData.email, contactData.service, contactData.message].filter(Boolean).join(' | ').slice(0, 650),
       });
 
       setContactSubmitted(true);
     } catch (err) {
       console.error(err);
-      setContactSubmitted(true);
+      const messages: Record<string, string> = {
+        de: 'Ihre Anfrage konnte nicht gesendet werden. Bitte versuchen Sie es erneut oder kontaktieren Sie uns unter kai@krakenpfm.ch.',
+        en: 'Your request could not be sent. Please try again or contact kai@krakenpfm.ch.',
+        fr: 'Votre demande n’a pas pu être envoyée. Réessayez ou contactez kai@krakenpfm.ch.',
+        it: 'Non è stato possibile inviare la richiesta. Riprova o contatta kai@krakenpfm.ch.',
+        es: 'No se pudo enviar tu solicitud. Inténtalo de nuevo o escribe a kai@krakenpfm.ch.',
+        pt: 'Não foi possível enviar o seu pedido. Tente novamente ou contacte kai@krakenpfm.ch.',
+      };
+      setStepError(messages[activeLang] || messages.de);
     }
   };
 

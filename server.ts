@@ -6,17 +6,19 @@ import crypto from "crypto";
 import path from "path";
 import compression from "compression";
 import fs from "fs";
+import { createServer } from "node:http";
 import { getMetadataForPath, isRouteValid, VALID_CITIES } from "./seoConfig.ts";
 import { MUNICIPALITIES } from "./src/data/locations.ts";
 // No need to define currentDirname or use import.meta.url as they are unused and cause a parse-time SyntaxError in bundled CommonJS on startup.
 
-dotenv.config();
-if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = "production";
-}
+dotenv.config({ path: [".env.local", ".env"] });
+const isBundled = typeof __filename !== "undefined" && __filename.endsWith("server.cjs");
+process.env.NODE_ENV = isBundled ? "production" : (process.env.NODE_ENV || "development");
+const isDev = process.env.NODE_ENV !== "production";
 
 async function startServer() {
   const app = express();
+  const server = createServer(app);
 
   app.use(compression());
   app.use(cors());
@@ -43,6 +45,9 @@ async function startServer() {
   // name is your Payrexx subdomain (e.g. "krakenpfm").
   // ====================================================================
   const handlePayrexxGateway = async (req: express.Request, res: express.Response) => {
+    if (isDev && process.env.ALLOW_EXTERNAL_INTEGRATIONS !== "true") {
+      return res.status(503).json({ success: false, error: "External payments are disabled in local development." });
+    }
     const {
       amount,
       currency = "CHF",
@@ -58,7 +63,7 @@ async function startServer() {
     // Guard: configuration missing
     if (!PAYREXX_INSTANCE || !PAYREXX_API_SECRET) {
       console.error("[Payrexx] Missing PAYREXX_INSTANCE or PAYREXX_API_SECRET environment variable.");
-      return res.status(500).json({
+      return res.status(503).json({
         success: false,
         error: "Payment gateway is not configured. Please set PAYREXX_INSTANCE and PAYREXX_API_SECRET.",
       });
@@ -66,7 +71,7 @@ async function startServer() {
 
     // Guard: validate amount (Payrexx expects the amount in cents / smallest unit)
     const amountNumber = Number(amount);
-    if (!amountNumber || isNaN(amountNumber) || amountNumber <= 0) {
+    if ((typeof amount !== "number" && typeof amount !== "string") || !Number.isFinite(amountNumber) || amountNumber <= 0 || amountNumber > Number.MAX_SAFE_INTEGER / 100) {
       return res.status(400).json({ success: false, error: "Invalid or missing amount." });
     }
     const amountInCents = Math.round(amountNumber * 100);
@@ -118,6 +123,7 @@ async function startServer() {
         "https://api.payrexx.com/v1.0/Gateway/?instance=" + encodeURIComponent(PAYREXX_INSTANCE);
 
       const response = await axios.post(endpoint, postPayload, {
+        timeout: 15000,
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -157,10 +163,10 @@ async function startServer() {
       maintenance: "Unsere umfassende **Hauswartung** sorgt für den Werterhalt deiner Liegenschaft. Wir kümmern uns um die Haustechnik, kleine Reparaturen, Haustechnik-Kontrollen und die allgemeine Sicherheit.\n\nMöchtest du, dass wir deine Liegenschaft betreuen? Lass es uns wissen!",
       garden: "Unsere **Gartenpflege** hält deine Grünflächen das ganze Jahr über in Top-Zustand. Wir übernehmen Rasenmähen, Heckenschnitt, Unkrautbeseitigung und saisonale Pflege.\n\nMöchtest du ein unverbindliches Angebot für deinen Garten erhalten?",
       quote: "Gerne erstellen wir dir eine massgeschneiderte Offerte! Nutze am besten unseren interaktiven Offertenrechner auf der Seite oder gib mir kurz an, um welche Dienstleistung (z.B. Reinigung) und welche Flächengrösse es geht.",
-      contact: "Du erreichst unser Team telefonisch unter **+41 44 123 45 67** oder per E-Mail unter **info@kraken-properties.ch**.\n\nAlternativ kannst du auch das Kontaktformular unten auf der Seite ausfüllen.",
+      contact: "Du erreichst unser Team telefonisch unter **+41 77 450 57 05** oder per E-Mail unter **info@krakenpfm.ch**.\n\nAlternativ kannst du auch das Kontaktformular unten auf der Seite ausfüllen.",
       booking: "Gerne reservieren wir einen Beratungstermin für dich! Klicke einfach auf 'Termin buchen' oder nutze das Buchungsformular auf unserer Webseite.\n\n```json\n{\n  \"trigger\": \"SUBMIT_BOOKING\",\n  \"action\": \"BOOK_RESERVATION\",\n  \"data\": {\n    \"service\": \"Consultation\",\n    \"notes\": \"Automatisch gebucht über Assistenten-Backup\"\n  }\n}\n```",
       thanks: "Sehr gerne! Wenn du weitere Fragen hast oder Unterstützung benötigst, bin ich jederzeit für dich da. Ich wünsche dir einen erfolgreichen Tag!",
-      default: "Dabei helfe ich dir gerne weiter! Als dein digitaler Assistent Kai bin ich für alle Fragen rund um Gebäubeservice, Hauswartung und Reinigung da.\n\nDa der Live-Modus im Demo-Modus gerade ausgelastet ist, kannst du uns auch direkt unter **info@kraken-properties.ch** kontaktieren."
+      default: "Dabei helfe ich dir gerne weiter! Als dein digitaler Assistent Kai bin ich für alle Fragen rund um Gebäubeservice, Hauswartung und Reinigung da.\n\nDa der Live-Modus im Demo-Modus gerade ausgelastet ist, kannst du uns auch direkt unter **info@krakenpfm.ch** kontaktieren."
     },
     en: {
       greet: "Hello! I'm Kai, your digital assistant for Kraken Properties & Facilities Management. 🐙 How can I assist you today?\n\nYou can ask me about our services (building cleaning, facility maintenance, garden care) or directly request a consultation!",
@@ -168,10 +174,10 @@ async function startServer() {
       maintenance: "Our **facility maintenance** and caretaker services ensure that your property remains in top-tier condition. We cover building systems, minor repairs, inspections, and waste management.\n\nWould you like us to look after your property? Let's discuss!",
       garden: "Our **garden care** keeps your green spaces beautiful all year round. We do lawn mowing, hedge trimming, weeding, and seasonal gardening.\n\nWould you like a free estimate for your garden?",
       quote: "We would be glad to send you a customized quote! You can use our interactive quote generator on the page, or let me know the service you need and the approximate size of the area.",
-      contact: "You can contact our team via phone at **+41 44 123 45 67** or email us at **info@kraken-properties.ch**.\n\nWe look forward to hearing from you!",
+      contact: "You can contact our team via phone at **+41 77 450 57 05** or email us at **info@krakenpfm.ch**.\n\nWe look forward to hearing from you!",
       booking: "I can help you book a free consultation! You can schedule one directly using the 'Book Consultation' form on the site.\n\n```json\n{\n  \"trigger\": \"SUBMIT_BOOKING\",\n  \"action\": \"BOOK_RESERVATION\",\n  \"data\": {\n    \"service\": \"Consultation\",\n    \"notes\": \"Booked automatically via backup chat assistant\"\n  }\n}\n```",
       thanks: "You're very welcome! If you need any more information or assistance, feel free to ask. Have an amazing day!",
-      default: "I would be happy to help with that! As your assistant Kai, I support you with all aspects of facility management, cleaning, and maintenance.\n\nSince the live AI system is in backup mode right now, please feel free to drop us an email at **info@kraken-properties.ch** for a personal response!"
+      default: "I would be happy to help with that! As your assistant Kai, I support you with all aspects of facility management, cleaning, and maintenance.\n\nSince the live AI system is in backup mode right now, please feel free to drop us an email at **info@krakenpfm.ch** for a personal response!"
     },
     fr: {
       greet: "Bonjour ! Je suis Kai, votre assistant virtuel pour Kraken Properties & Facilities Management. 🐙 Comment puis-je vous aider aujourd'hui ?\n\nVous pouvez me poser des questions sur nos services (nettoyage de bâtiment, entretien, jardinage) ou demander directement une consultation !",
@@ -179,10 +185,10 @@ async function startServer() {
       maintenance: "Notre service d'**entretien d'immeubles** et de conciergerie garantit le maintien en parfait état de votre propriété. Nous gérons la technique du bâtiment, les petites réparations et les contrôles.\n\nSouhaitez-vous que nous prenions soin de votre propriété ? Discutons-en !",
       garden: "Notre service d'**entretien de jardin** maintient vos espaces verts magnifiques toute l'année. Nous nous occupons de la tonte de pelouse, de la taille des haies et du désherbage.\n\nSouhaitez-vous une estimation gratuite pour votre jardin ?",
       quote: "Nous serions ravis de vous envoyer un devis personnalisé ! Vous pouvez utiliser notre générateur de devis interactif sur la page, ou m'indiquer le service souhaité et la surface approximative.",
-      contact: "Vous pouvez contacter notre équipe par téléphone au **+41 44 123 45 67** ou par e-mail à **info@kraken-properties.ch**.\n\nNous nous réjouissons de vous entendre !",
+      contact: "Vous pouvez contacter notre équipe par téléphone au **+41 77 450 57 05** ou par e-mail à **info@krakenpfm.ch**.\n\nNous nous réjouissons de vous entendre !",
       booking: "Je peux vous aider à réserver une consultation gratuite ! Vous pouvez planifier cela directement en utilisant le formulaire sur le site.\n\n```json\n{\n  \"trigger\": \"SUBMIT_BOOKING\",\n  \"action\": \"BOOK_RESERVATION\",\n  \"data\": {\n    \"service\": \"Consultation\",\n    \"notes\": \"Réserve automatique par l'assistant de secours\"\n  }\n}\n```",
       thanks: "De rien ! Si vous avez besoin de plus d'informations ou d'aide, n'hésitez pas à demander. Passez une excellente journée !",
-      default: "Je serais ravi de vous aider ! En tant qu'assistant Kai, je vous accompagne pour le nettoyage, l'entretien et la conciergerie.\n\nLe système d'IA étant en mode de secours, n'hésitez pas à nous envoyer un e-mail à **info@kraken-properties.ch** !"
+      default: "Je serais ravi de vous aider ! En tant qu'assistant Kai, je vous accompagne pour le nettoyage, l'entretien et la conciergerie.\n\nLe système d'IA étant en mode de secours, n'hésitez pas à nous envoyer un e-mail à **info@krakenpfm.ch** !"
     },
     es: {
       greet: "¡Hola! Soy Kai, su asistente virtual de Kraken Properties & Facilities Management. 🐙 ¿Cómo le puedo ayudar hoy?\n\n¡Puede preguntarme sobre nuestros servicios (limpieza de edificios, mantenimiento de instalaciones, cuidado de jardines) o solicitar directamente una consulta!",
@@ -190,10 +196,10 @@ async function startServer() {
       maintenance: "Nuestro servicio de **mantenimiento de instalaciones** y conserjería garantiza que su propiedad se mantenga en excelentes condiciones. Cubrimos sistemas del edificio, pequeñas reparaciones e inspecciones.\n\n¿Le gustaría que cuidemos de su propiedad? ¡Hablemos!",
       garden: "Nuestro servicio de **cuidado de jardines** mantiene sus áreas verdes hermosas todo el año. Realizamos corte de césped, poda de setos, deshierbe y jardinería estacional.\n\n¿Le gustaría una estimación gratuita para su jardín?",
       quote: "¡Estaremos encantados de enviarle un presupuesto personalizado! Puede utilizar nuestro generador interactivo de presupuestos en la página, o indicarme el servicio que necesita y el tamaño aproximado de la superficie.",
-      contact: "Puede ponerse en contacto con nuestro equipo por teléfono al **+41 44 123 45 67** o por correo electrónico a **info@kraken-properties.ch**.\n\n¡Esperamos tener noticias suyas!",
+      contact: "Puede ponerse en contacto con nuestro equipo por teléfono al **+41 77 450 57 05** o por correo electrónico a **info@krakenpfm.ch**.\n\n¡Esperamos tener noticias suyas!",
       booking: "¡Puedo ayudarle a reservar una consulta gratuita! Puede programar una directamente utilizando el formulario en el sitio.\n\n```json\n{\n  \"trigger\": \"SUBMIT_BOOKING\",\n  \"action\": \"BOOK_RESERVATION\",\n  \"data\": {\n    \"service\": \"Consultation\",\n    \"notes\": \"Reservado automáticamente a través del asistente de respaldo\"\n  }\n}\n```",
       thanks: "¡De nada! Si necesita más información o ayuda, no dude en preguntar. ¡Que tenga un día excelente!",
-      default: "¡Estaría encantado de ayudarle con eso! Como su asistente Kai, le apoyo con el mantenimiento de instalaciones, limpieza y cuidado.\n\nDado que el sistema de IA está en modo de respaldo, no dude en enviarnos un correo electrónico a **info@kraken-properties.ch**."
+      default: "¡Estaría encantado de ayudarle con eso! Como su asistente Kai, le apoyo con el mantenimiento de instalaciones, limpieza y cuidado.\n\nDado que el sistema de IA está en modo de respaldo, no dude en enviarnos un correo electrónico a **info@krakenpfm.ch**."
     },
     it: {
       greet: "Ciao! Sono Kai, il tuo assistente virtuale per Kraken Properties & Facilities Management. 🐙 Come posso aiutarti oggi?\n\nPuoi chiedermi informazioni sui nostri servizi (pulizia di edifici, manutenzione impianti, cura del giardino) o richiedere direttamente una consulenza!",
@@ -201,10 +207,10 @@ async function startServer() {
       maintenance: "Il nostro servizio di **manutenzione impianti** e portineria garantisce che la tua proprietà rimanga in condizioni eccellenti. Copriamo impianti, piccole riparazioni e ispezioni.\n\nDesideri che ci prendiamo cura della tua proprietà? Parliamone!",
       garden: "Il nostro servizio di **cura del giardino** mantiene i tuoi spazi verdi bellissimi tutto l'anno. Eseguiamo taglio del prato, potatura siepi, diserbo e giardinaggio stagionale.\n\nDesideri un preventivo gratuito per il tuo giardino?",
       quote: "Saremmo lieti di inviarti un preventivo personalizzato! Puoi utilizzare il nostro generatore di preventivi interattivo sulla pagina, o indicarmi il servizio di cui hai bisogno e la dimensione approssimativa dell'area.",
-      contact: "Puoi contattare il nostro team telefonicamente al **+41 44 123 45 67** o via e-mail all'indirizzo **info@kraken-properties.ch**.\n\nNon vediamo l'ora di sentirti!",
+      contact: "Puoi contattare il nostro team telefonicamente al **+41 77 450 57 05** o via e-mail all'indirizzo **info@krakenpfm.ch**.\n\nNon vediamo l'ora di sentirti!",
       booking: "Posso aiutarti a prenotare una consulenza gratuita! Puoi pianificarla direttamente utilizzando il modulo sul sito.\n\n```json\n{\n  \"trigger\": \"SUBMIT_BOOKING\",\n  \"action\": \"BOOK_RESERVATION\",\n  \"data\": {\n    \"service\": \"Consultation\",\n    \"notes\": \"Prenotato automaticamente tramite l'assistente di backup\"\n  }\n}\n```",
       thanks: "Prego! Se hai bisogno di ulteriori informazioni o assistenza, non esitare a chiedere. Buona giornata!",
-      default: "Sarei felice di aiutarti! Come tuo assistente Kai, ti supporto in tutti gli aspetti di gestione impianti, pulizia e manutenzione.\n\nPoiché il sistema di IA è in modalità di backup, non esitare a inviarci un'e-mail a **info@kraken-properties.ch**."
+      default: "Sarei felice di aiutarti! Come tuo assistente Kai, ti supporto in tutti gli aspetti di gestione impianti, pulizia e manutenzione.\n\nPoiché il sistema di IA è in modalità di backup, non esitare a inviarci un'e-mail a **info@krakenpfm.ch**."
     },
     pt: {
       greet: "Olá! Sou o Kai, o seu assistente virtual da Kraken Properties & Facilities Management. 🐙 Como posso ajudar hoje?\n\nPode perguntar-me sobre os nossos serviços (limpeza de edifícios, manutenção de instalações, jardinagem) ou solicitar diretamente uma consulta!",
@@ -212,10 +218,10 @@ async function startServer() {
       maintenance: "O nosso serviço de **manutenção de instalações** e zeladoria garante que a sua propriedade permaneça em excelentes condições. Cobrimos sistemas do edifício, pequenas reparações e inspeções.\n\nGostaria que cuidássemos da sua propriedade? Vamos conversar!",
       garden: "O nosso serviço de **jardinagem** mantém as suas áreas verdes bonitas todo o ano. Realizamos corte de relva, poda de sebes, remoção de ervas daninhas e jardinagem sazonal.\n\nGostaria de uma estimativa gratuita para o seu jardim?",
       quote: "Teremos todo o gosto em enviar-lhe um orçamento personalizado! Pode utilizar o nosso gerador de orçamentos interativo na página, ou indicar-me o serviço que necessita e o tamanho aproximado da área.",
-      contact: "Pode contactar a nossa equipa por telefone através do **+41 44 123 45 67** ou por e-mail para **info@kraken-properties.ch**.\n\nAguardamos o seu contacto!",
+      contact: "Pode contactar a nossa equipa por telefone através do **+41 77 450 57 05** ou por e-mail para **info@krakenpfm.ch**.\n\nAguardamos o seu contacto!",
       booking: "Posso ajudar a reservar uma consulta gratuita! Pode agendar diretamente através do formulário no site.\n\n```json\n{\n  \"trigger\": \"SUBMIT_BOOKING\",\n  \"action\": \"BOOK_RESERVATION\",\n  \"data\": {\n    \"service\": \"Consultation\",\n    \"notes\": \"Agendado automaticamente através do assistente de backup\"\n  }\n}\n```",
       thanks: "De nada! Se precisar de mais informações ou assistência, não hesite em perguntar. Tenha um excelente dia!",
-      default: "Terei todo o gosto em ajudar com isso! Como seu assistente Kai, apoio-o em todos os aspetos de gestão de instalações, limpeza e manutenção.\n\nComo o sistema de IA está em modo de segurança, não hesite em enviar-nos um e-mail para **info@kraken-properties.ch**."
+      default: "Terei todo o gosto em ajudar com isso! Como seu assistente Kai, apoio-o em todos os aspetos de gestão de instalações, limpeza e manutenção.\n\nComo o sistema de IA está em modo de segurança, não hesite em enviar-nos um e-mail para **info@krakenpfm.ch**."
     }
   };
 
@@ -228,7 +234,7 @@ async function startServer() {
     }
 
     const text = (userText || "").toLowerCase();
-    
+
     // German keywords
     if (text.includes("reinigung") || text.includes("haus") || text.includes("garten") || text.includes("offerte") || text.includes("buchen") || text.includes("schweiz") || text.includes("danke")) {
       return 'de';
@@ -371,10 +377,11 @@ async function startServer() {
       const userText = lastMessage ? lastMessage.text : "";
 
       const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        console.warn("GEMINI_API_KEY environment variable is not configured. Using high-fidelity local response generator.");
+      if (!apiKey || (isDev && process.env.ALLOW_EXTERNAL_INTEGRATIONS !== "true")) {
+        console.warn("Gemini is not configured or is disabled for local development. Using local fallback responses.");
         return res.json({
           success: true,
+          source: "fallback",
           text: getFallbackResponse(userText, language)
         });
       }
@@ -402,6 +409,7 @@ async function startServer() {
 
         res.json({
           success: true,
+          source: "gemini",
           text: response.text
         });
       } catch (geminiError: any) {
@@ -409,6 +417,7 @@ async function startServer() {
         // Fallback to local response if spending limit, 429, or quota exceeded
         res.json({
           success: true,
+          source: "fallback",
           text: getFallbackResponse(userText, language)
         });
       }
@@ -480,30 +489,27 @@ async function startServer() {
 
   const handleHtmlRequest = async (req: express.Request, res: express.Response) => {
     try {
-      const isProd = process.env.NODE_ENV === "production" || (typeof __filename !== "undefined" && __filename.endsWith("server.cjs"));
+      const isProd = !isDev;
       const distPath = (typeof __dirname !== "undefined" && path.basename(__dirname) === "dist")
         ? __dirname
         : path.join(process.cwd(), "dist");
 
-      // 1. In production, check if a pre-rendered HTML file exists for this path
+      let preRenderedFilePath: string | undefined;
+      // 1. In production, prefer a pre-rendered page, while still applying request SEO.
       if (isProd) {
         const cleanPath = req.path.replace(/\/$/, ""); // remove trailing slash
-        const preRenderedFilePath = cleanPath === "" 
+        const candidate = cleanPath === ""
           ? path.join(distPath, "index.html")
           : path.join(distPath, `${cleanPath}.html`);
-
-        if (fs.existsSync(preRenderedFilePath)) {
-          res.setHeader("Content-Type", "text/html; charset=utf-8");
-          return res.sendFile(preRenderedFilePath);
-        }
+        if (fs.existsSync(candidate)) preRenderedFilePath = candidate;
       }
 
       // 2. Fallback to SPA template (use index-spa.html backup in prod if exists, otherwise index.html)
-      const indexPath = isProd
+      const indexPath = preRenderedFilePath || (isProd
         ? (fs.existsSync(path.join(distPath, "index-spa.html"))
             ? path.join(distPath, "index-spa.html")
             : path.join(distPath, "index.html"))
-        : path.join(process.cwd(), "index.html");
+        : path.join(process.cwd(), "index.html"));
 
       if (fs.existsSync(indexPath)) {
         let html = fs.readFileSync(indexPath, "utf8");
@@ -539,24 +545,16 @@ async function startServer() {
     res.status(500).send("Internal Server Error - HTML template not found");
   };
 
-  // Vite middleware for development (with graceful fallback if not installed/present)
-  let viteLoaded = false;
+  // Development always uses source files; a previous build must never disable HMR.
   let viteInstance: any = null;
-  const hasBuiltAssets = fs.existsSync(path.join(process.cwd(), "dist", "index.html"));
-  const isDev = process.env.NODE_ENV === "development" && !hasBuiltAssets;
   if (isDev) {
-    try {
       const { createServer: createViteServer } = await (specifier => import(specifier))("vite") as any;
       viteInstance = await createViteServer({
-        server: { middlewareMode: true },
+        server: { middlewareMode: true, hmr: { server } },
         appType: "custom",
       });
       app.use(viteInstance.middlewares);
-      viteLoaded = true;
       console.log("Vite development server middleware loaded.");
-    } catch (e) {
-      console.warn("Could not load Vite middleware in development mode. Falling back to serving built files.", e);
-    }
   }
 
   // Production assets static files serving with aggressive caching
@@ -568,14 +566,16 @@ async function startServer() {
 
   if (fs.existsSync(publicPath)) {
     app.use(express.static(publicPath, {
-      maxAge: "1d",
+      index: false,
+      maxAge: isDev ? 0 : "1d",
       setHeaders: (res) => {
-        res.setHeader("Cache-Control", "public, max-age=604800");
+        res.setHeader("Cache-Control", isDev ? "no-cache" : "public, max-age=604800");
       }
     }));
   }
 
-  app.use(express.static(distPath, {
+  if (!isDev) app.use(express.static(distPath, {
+    index: false,
     maxAge: "1d",
     setHeaders: (res, filePath) => {
       if (filePath.includes("/assets/") || filePath.match(/\.[0-9a-f]{8,}\./)) {
@@ -665,25 +665,25 @@ async function startServer() {
       const citySlug = srvMatch[1].toLowerCase();
       const serviceId = srvMatch[2].toLowerCase();
       const normCity = citySlug === "zuerich" ? "zurich" : citySlug === "neuhausen-am-rheinfall" ? "neuhausen" : citySlug;
-      
+
       if (!VALID_CITIES.includes(normCity)) {
         const mun = MUNICIPALITIES.find(m => m.slug === citySlug || m.slug === normCity);
         const queryStr = req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : "";
         if (mun && mun.tier === 2) {
-          return res.redirect(301, `/reinigung/${mun.slug}#${serviceId}${queryStr}`);
+          return res.redirect(301, `/reinigung/${mun.slug}${queryStr}#${serviceId}`);
         }
         const parentHub = mun?.region === "zuerich" ? "/reinigung/region-zuerich" : mun?.region === "winterthur" ? "/reinigung/region-winterthur" : "/reinigung/kanton-schaffhausen";
-        return res.redirect(301, `${parentHub}#${serviceId}${queryStr}`);
+        return res.redirect(301, `${parentHub}${queryStr}#${serviceId}`);
       }
     }
 
     return handleHtmlRequest(req, res);
   });
-  console.log(`Serving static production assets with caching headers from: ${distPath}`);
+  if (!isDev) console.log(`Serving static production assets with caching headers from: ${distPath}`);
 
   const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
-  const server = app.listen(PORT, "0.0.0.0", () => {
+  server.listen(PORT, process.env.HOST || "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
   });
 
@@ -692,21 +692,16 @@ async function startServer() {
     process.exit(1);
   });
 
-  process.on("SIGTERM", () => {
-    console.log("SIGTERM signal received: closing HTTP server gracefully.");
+  const shutdown = async () => {
+    await viteInstance?.close();
     server.close(() => {
       console.log("HTTP server closed.");
       process.exit(0);
     });
-  });
-
-  process.on("SIGINT", () => {
-    console.log("SIGINT signal received: closing HTTP server gracefully.");
-    server.close(() => {
-      console.log("HTTP server closed.");
-      process.exit(0);
-    });
-  });
+    server.closeAllConnections();
+  };
+  process.on("SIGTERM", shutdown);
+  process.on("SIGINT", shutdown);
 
   process.on("unhandledRejection", (reason, promise) => {
     console.error("Unhandled Rejection at:", promise, "reason:", reason);

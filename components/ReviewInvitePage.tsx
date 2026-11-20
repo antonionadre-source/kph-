@@ -125,6 +125,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
       return;
     }
 
+    setAuthError('');
     setIsSubmitting(true);
     try {
       // Save feedback in Firestore database securely
@@ -141,8 +142,16 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
       setIsSubmitted(true);
     } catch (err: any) {
       console.error('Firestore Error:', err);
-      // Fallback submit behavior so experience is uninterrupted
-      setIsSubmitted(true);
+      const messages: Record<string, string> = {
+        de: 'Ihre Bewertung konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.',
+        'de-CH': 'Ihre Bewertung konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.',
+        en: 'Your review could not be saved. Please try again.',
+        fr: 'Votre avis n’a pas pu être enregistré. Veuillez réessayer.',
+        it: 'Non è stato possibile salvare la recensione. Riprova.',
+        es: 'No se pudo guardar tu valoración. Inténtalo de nuevo.',
+        pt: 'Não foi possível guardar a sua avaliação. Tente novamente.',
+      };
+      setAuthError(messages[activeLang] || messages.en);
     } finally {
       setIsSubmitting(false);
     }

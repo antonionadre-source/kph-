@@ -76,14 +76,6 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
       setUser(loggedInUser);
       return loggedInUser;
     } catch (err: any) {
-      if (email.toLowerCase().trim() === 'kai@krakenpfm.ch') {
-        try {
-          // If login fails, try on-the-fly registration with password for Kai
-          return await register("Kai (Staff Admin)", email, pass);
-        } catch (regErr) {
-          throw err;
-        }
-      }
       throw err;
     }
   };

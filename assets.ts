@@ -66,20 +66,20 @@ export const schaffhausenServiceImages: Record<string, string> = {
                           'waste-management': '/waste-management-schaffhausen.webp',
                           };
 
-export const cardCleaningUrl = 'https://www.dropbox.com/scl/fi/cylyo5ytzkmj4znb6o5xa/servicio-privado-limpieza-apartamento.webp?rlkey=05qwqg9i2v625pu4l8zewc9mo&st=xk7ablnv&raw=1';
+export const cardCleaningUrl = '/servicio-privado-limpieza-apartamento.webp';
 export const cardMaintenanceUrl = '/servicio-comercial-limpieza-industrial.webp';
 export const cardTabletUrl = '/kai build your quote.webp';
-export const cardMovingUrl = 'https://www.dropbox.com/scl/fi/vaw5n8iqx3r42f3co5qir/servicio-privado-mudanza-cajas.webp?rlkey=ogss3ftloq89pknwq5hixihxu&st=7d1jd2im&raw=1';
-export const cardCarDetailingUrl = 'https://www.dropbox.com/scl/fi/5o1s20a1gbnpkweux0yio/servicio-privado-lavado-coche.webp?rlkey=lmlin1t29zbx5fqwte24kpvkt&st=cx497a9l&raw=1';
+export const cardMovingUrl = '/servicio-privado-mudanza-cajas.webp';
+export const cardCarDetailingUrl = '/servicio-privado-lavado-coche.webp';
 
 // Refined Specialization Images (User Mapping)
 export const pestControlImg = '/servicio-privado-control-plagas.webp'; // Fallback to maintenance img
-export const carDetailingImg = 'https://www.dropbox.com/scl/fi/5o1s20a1gbnpkweux0yio/servicio-privado-lavado-coche.webp?rlkey=lmlin1t29zbx5fqwte24kpvkt&st=cx497a9l&raw=1'; // Imagen 2 (from previous Gutter)
+export const carDetailingImg = '/servicio-privado-lavado-coche.webp'; // Imagen 2 (from previous Gutter)
 export const wasteManagementImg = '/servicio-privado-residuos-desalojo.webp'; // Imagen 3
-export const gardeningImg = 'https://www.dropbox.com/scl/fi/xkpuoqlnlukig2tk4dokm/servicio-privado-jardineria.webp?rlkey=ook2125yt3u6p04izvaak8ei2&st=fnadpn2e&raw=1'; // Imagen 4 (from previous Exterior)
+export const gardeningImg = '/servicio-privado-jardineria.webp'; // Imagen 4 (from previous Exterior)
 
 // Exterior Cleaning now uses the "Berna" architecture image
-export const exteriorCleaningImg = 'https://www.dropbox.com/scl/fi/s584iq3w3ton5cpfoz92s/servicio-privado-limpieza-exterior.webp?rlkey=4uzfn7m99h3os1gl8sbnxiqg2&st=67943x7s&raw=1';
+export const exteriorCleaningImg = '/servicio-privado-limpieza-exterior.webp';
 export const gutterCleaningImg = '/servicio-privado-canalones.webp';
 
 export const sustainabilityImage1Url = '/sustainability-ops.png';
@@ -136,7 +136,7 @@ export const services: Service[] = [
     titleKey: 'services.endOfTenancy.title',
     descriptionKey: 'services.endOfTenancy.description',
     marketingDescKey: 'services.endOfTenancy.marketingDesc',
-    imageUrl: 'https://www.dropbox.com/scl/fi/cylyo5ytzkmj4znb6o5xa/servicio-privado-limpieza-apartamento.webp?rlkey=05qwqg9i2v625pu4l8zewc9mo&st=xk7ablnv&raw=1',
+    imageUrl: '/servicio-privado-limpieza-apartamento.webp',
   },
   {
     id: 'deep-cleaning',
@@ -144,7 +144,7 @@ export const services: Service[] = [
     titleKey: 'services.deepCleaning.title',
     descriptionKey: 'services.deepCleaning.description',
     marketingDescKey: 'services.deepCleaning.marketingDesc',
-    imageUrl: 'https://www.dropbox.com/scl/fi/59bzz6p4e7r2eiy83bzin/servicio-privado-limpieza-cocina.webp?rlkey=2fwi4lpzcuopld7js0kdadgok&st=bu3p7in6&raw=1',
+    imageUrl: '/servicio-privado-limpieza-cocina.webp',
   },
   {
     id: 'daily-cleaning',
@@ -152,7 +152,7 @@ export const services: Service[] = [
     titleKey: 'services.dailyCleaning.title',
     descriptionKey: 'services.dailyCleaning.description',
     marketingDescKey: 'services.dailyCleaning.marketingDesc',
-    imageUrl: 'https://www.dropbox.com/scl/fi/h0mvnnlclm631kn5zxqnh/servicio-privado-limpieza-oficina-casa.webp?rlkey=9b3nvjjm1syt3d9r86qt6jtx4&st=4nt8efqc&raw=1',
+    imageUrl: '/servicio-privado-limpieza-oficina-casa.webp',
   },
   {
     id: 'moving-furniture',
@@ -160,7 +160,7 @@ export const services: Service[] = [
     titleKey: 'services.movingFurniture.title',
     descriptionKey: 'services.movingFurniture.description',
     marketingDescKey: 'services.movingFurniture.marketingDesc',
-    imageUrl: 'https://www.dropbox.com/scl/fi/vaw5n8iqx3r42f3co5qir/servicio-privado-mudanza-cajas.webp?rlkey=ogss3ftloq89pknwq5hixihxu&st=7d1jd2im&raw=1',
+    imageUrl: '/servicio-privado-mudanza-cajas.webp',
   },
   {
     id: 'car-detailing',
@@ -168,7 +168,7 @@ export const services: Service[] = [
     titleKey: 'services.car.title',
     descriptionKey: 'services.car.subtitle',
     marketingDescKey: 'services.car.marketingDesc',
-    imageUrl: 'https://www.dropbox.com/scl/fi/5o1s20a1gbnpkweux0yio/servicio-privado-lavado-coche.webp?rlkey=lmlin1t29zbx5fqwte24kpvkt&st=cx497a9l&raw=1',
+    imageUrl: '/servicio-privado-lavado-coche.webp',
   },
   {
     id: 'gardening',
@@ -176,7 +176,7 @@ export const services: Service[] = [
     titleKey: 'services.gardening.title',
     descriptionKey: 'services.gardening.desc',
     marketingDescKey: 'services.gardening.marketingDesc',
-    imageUrl: 'https://www.dropbox.com/scl/fi/xkpuoqlnlukig2tk4dokm/servicio-privado-jardineria.webp?rlkey=ook2125yt3u6p04izvaak8ei2&st=fnadpn2e&raw=1',
+    imageUrl: '/servicio-privado-jardineria.webp',
   },
   {
     id: 'exterior-cleaning',
@@ -184,7 +184,7 @@ export const services: Service[] = [
     titleKey: 'services.exterior.title',
     descriptionKey: 'services.exterior.desc',
     marketingDescKey: 'services.exterior.marketingDesc',
-    imageUrl: 'https://www.dropbox.com/scl/fi/s584iq3w3ton5cpfoz92s/servicio-privado-limpieza-exterior.webp?rlkey=4uzfn7m99h3os1gl8sbnxiqg2&st=67943x7s&raw=1',
+    imageUrl: '/servicio-privado-limpieza-exterior.webp',
   },
   {
     id: 'pest-control',
