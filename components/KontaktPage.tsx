@@ -1,7 +1,7 @@
 import React, { useState, FormEvent } from 'react';
-import { motion } from 'motion/react';
 import { useTranslation } from '../i18n';
-import { salesCopy } from '../src/content/salesCopy';
+import { CONTACT_SERVICE_IDS, serviceName } from '../src/content/serviceCatalog';
+import { transitCopy, type TransitScene } from '../src/content/transitCopy';
 import { MapPinIcon, PhoneIcon, MailIcon, ClockIcon, CheckIcon } from './icons';
 import emailjs, { EMAIL_SERVICE_ID as SERVICE_ID, EMAIL_TEMPLATE_ID as TEMPLATE_ID, EMAIL_PUBLIC_KEY as PUBLIC_KEY } from './emailClient';
 import { db } from './firebase';
@@ -244,22 +244,25 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
   const d = kontaktTranslations[language] || kontaktTranslations['de'];
 
   const [formData, setFormData] = useState(() => {
-    const selectedServices = typeof window === 'undefined'
-      ? []
-      : new URLSearchParams(window.location.search).getAll('service');
+    const parameters = typeof window === 'undefined' ? null : new URLSearchParams(window.location.search);
+    const selectedServices = parameters?.getAll('service') || [];
     const requestedService = selectedServices.length === 1 ? selectedServices[0] : null;
-    const serviceSubject = requestedService === 'window-cleaning'
-      ? salesCopy(language).serviceNames[3]
-      : requestedService === 'gardening'
-        ? salesCopy(language).serviceNames[5]
-        : '';
+    const serviceSubject = requestedService && CONTACT_SERVICE_IDS.includes(requestedService)
+      ? serviceName(language, requestedService) || ''
+      : '';
+    const inventory = parameters?.getAll('inventory') || [];
+    const scene = requestedService === 'moving-furniture' && inventory.length === 1 && ['furniture', 'room', 'studio'].includes(inventory[0])
+      ? transitCopy(language).scenes[inventory[0] as TransitScene]
+      : null;
+    const variants = parameters?.getAll('variant') || [];
+    const variant = variants.length === 1 && ['L3H2', 'L3H3'].includes(variants[0]) ? variants[0] : '';
     // Initialize once from the same six-language label as the Home card. Editing
     // the subject remains under the user's control on subsequent renders.
     return {
       name: '',
       email: '',
       subject: serviceSubject,
-      message: ''
+      message: scene ? `${variant ? `Ford Transit ${variant}\n` : ''}${transitCopy(language).inventory}: ${scene.tab}\n${scene.items.map(item => `- ${item.label}`).join('\n')}` : ''
     };
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -323,261 +326,64 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
   };
 
   if (isSubmitted) {
-    return (
-      <main className="bg-slate-50 min-h-screen pt-32 pb-20 px-6 flex items-center justify-center">
-        <div className="max-w-xl w-full bg-white p-10 md:p-14 rounded-[2.5rem] shadow-xl text-center">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-            <CheckIcon className="w-10 h-10 text-green-600" />
-          </div>
-          <h1 className="text-3xl font-black text-[#002D5B] mb-4 uppercase tracking-tight">{d.thankYouTitle}</h1>
-          <p className="text-gray-600 font-medium mb-8">
-            {d.successDesc}
-          </p>
-          <button
-            onClick={() => onNavigate('home')}
-            className="bg-[#002D5B] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#00254A] transition-all cursor-pointer shadow-lg"
-          >
-            {d.backToHome}
-          </button>
-        </div>
-      </main>
-    );
+    return <main className="kraken-page kraken-workflow bg-[#f4f8f8] py-16 sm:py-24">
+      <section className="mx-auto max-w-xl rounded-2xl border border-[#dce6e8] bg-white p-7 text-center sm:p-12" role="status">
+        <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#e8f4f1] text-[#087f73]"><CheckIcon className="h-7 w-7" /></div>
+        <h1 className="kraken-heading">{d.thankYouTitle}</h1>
+        <p className="kraken-description mb-8">{d.successDesc}</p>
+        <button onClick={() => onNavigate('home')} className="kraken-button kraken-primary">{d.backToHome}</button>
+      </section>
+    </main>;
   }
 
   return (
-    <main className="bg-white selection:bg-blue-500/30 text-[#020617]">
-      {/* --- HERO SECTION --- */}
-      <section data-header-theme="dark" className="relative md:min-h-[40vh] flex items-center pt-32 pb-24 md:py-32 overflow-hidden bg-[#001A3D]">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-[#001A3D] opacity-90" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#001A3D] via-[#002D5B]/30 to-[#001A3D]" />
+    <main className="kraken-page kraken-workflow bg-[#f4f8f8] text-[#082b45]">
+      <header className="kraken-page-intro border-b border-[#dce6e8] bg-white py-12 sm:py-20">
+        <div className="kraken-container max-w-6xl">
+          <p className="kraken-eyebrow">Kraken PFM</p>
+          <h1 className="kraken-heading mt-3">{d.heroTitle}</h1>
+          <p className="kraken-description max-w-2xl">{d.heroDesc}</p>
         </div>
-
-        <div className="container mx-auto px-6 relative z-10 text-center">
-          <div className="max-w-3xl mx-auto">
-            <motion.p 
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-blue-400 font-black text-xs uppercase tracking-[0.4em] mb-4"
-            >
-              {d.heroBadge}
-            </motion.p>
-            <motion.h1 
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-4xl md:text-6xl font-black text-white leading-tight mb-4 tracking-tighter"
-            >
-              {d.heroTitle}
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-white/70 text-lg font-medium max-w-2xl mx-auto"
-            >
-              {d.heroDesc}
-            </motion.p>
-          </div>
-        </div>
-      </section>
-
-      {/* --- CONTENT SECTION --- */}
-      <section className="py-20 bg-slate-50">
-        <div className="container mx-auto px-6 max-w-6xl">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            
-            {/* CONTACT INFORMATION COLUMN */}
-            <div className="lg:col-span-5 space-y-8">
-              <div className="bg-white p-8 md:p-10 rounded-[2rem] shadow-sm border border-slate-100 space-y-8">
-                <div>
-                  <h2 className="text-2xl font-extrabold text-[#002D5B] tracking-tight mb-6">
-                    {d.contactInfoTitle}
-                  </h2>
-                  <p className="text-gray-500 text-sm font-medium">
-                    {d.contactInfoDesc}
-                  </p>
-                </div>
-
-                <div className="space-y-6">
-                  {/* Address */}
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center shrink-0">
-                      <MapPinIcon className="w-6 h-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider mb-1">{d.labelAddress}</h4>
-                      <p className="text-slate-800 font-bold text-base leading-relaxed">
-                        Seewadelstrasse 3<br />
-                        8203 Schaffhausen
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Phone */}
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center shrink-0">
-                      <PhoneIcon className="w-6 h-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider mb-1">{d.labelPhone}</h4>
-                      <p className="text-slate-800 font-bold text-base">
-                        <a href="tel:+41774505705" className="hover:text-blue-600 transition-colors">
-                          +41 77 450 57 05
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Email */}
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center shrink-0">
-                      <MailIcon className="w-6 h-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider mb-1">{d.labelEmail}</h4>
-                      <p className="text-slate-800 font-bold text-base">
-                        <a href="mailto:kai@krakenpfm.ch" className="hover:text-blue-600 transition-colors">
-                          kai@krakenpfm.ch
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Opening Hours */}
-                  <div className="flex gap-4">
-                    <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center shrink-0">
-                      <ClockIcon className="w-6 h-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider mb-1">{d.labelHours}</h4>
-                      <p className="text-slate-800 font-bold text-base leading-relaxed">
-                        {d.valHoursDays}<br />
-                        {d.valHoursTime}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+      </header>
+      <div className="kraken-container grid max-w-6xl gap-8 py-10 sm:py-14 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:gap-12">
+        <section className="min-w-0 rounded-2xl border border-[#dce6e8] bg-white p-6 sm:p-9" aria-labelledby="contact-form-heading">
+          <h2 id="contact-form-heading" className="text-2xl font-semibold tracking-tight">{d.formTitle}</h2>
+          {error && <p role="alert" id="contact-form-error" className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-base text-red-800">{error}</p>}
+          <form onSubmit={handleSubmit} className="mt-7 space-y-6" aria-describedby={error ? 'contact-form-error' : undefined}>
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div className="space-y-2">
+                <label htmlFor="contact-name" className="block text-sm font-medium">{d.labelName} <span aria-hidden="true">*</span></label>
+                <input type="text" id="contact-name" name="name" autoComplete="name" required value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} placeholder={d.placeholderName} className="min-h-12 w-full rounded-xl border border-[#c4d4d8] bg-white px-4 py-3 text-base text-[#082b45] placeholder:text-[#71828c] focus:border-[#087f73] focus:ring-2 focus:ring-[#087f73]/15" />
               </div>
-
-              {/* Map/Location Card */}
-              <div className="bg-[#002D5B] text-white p-8 md:p-10 rounded-[2rem] shadow-lg relative overflow-hidden">
-                <div className="relative z-10 space-y-4">
-                  <h3 className="text-xl font-extrabold tracking-tight">{d.locationTitle}</h3>
-                  <p className="text-white/80 text-sm leading-relaxed font-medium">
-                    {d.locationDesc}
-                  </p>
-                </div>
-                {/* Background Pattern */}
-                <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none">
-                  <svg className="w-48 h-48" viewBox="0 0 100 100" fill="none">
-                    <circle cx="50" cy="50" r="40" stroke="currentColor" strokeWidth="8" />
-                  </svg>
-                </div>
+              <div className="space-y-2">
+                <label htmlFor="contact-email" className="block text-sm font-medium">{d.labelEmailForm} <span aria-hidden="true">*</span></label>
+                <input type="email" id="contact-email" name="email" autoComplete="email" required value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} placeholder={d.placeholderEmail} className="min-h-12 w-full rounded-xl border border-[#c4d4d8] bg-white px-4 py-3 text-base text-[#082b45] placeholder:text-[#71828c] focus:border-[#087f73] focus:ring-2 focus:ring-[#087f73]/15" />
               </div>
             </div>
-
-            {/* CONTACT FORM COLUMN */}
-            <div className="lg:col-span-7">
-              <div className="bg-white p-8 md:p-12 rounded-[2rem] shadow-sm border border-slate-100">
-                <h2 className="text-2xl font-extrabold text-[#002D5B] tracking-tight mb-8">
-                  {d.formTitle}
-                </h2>
-
-                {error && (
-                  <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 text-sm font-semibold rounded-2xl">
-                    {error}
-                  </div>
-                )}
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Name */}
-                    <div className="space-y-2">
-                      <label htmlFor="name" className="block text-xs font-black uppercase text-slate-400 tracking-wider">
-                        {d.labelName} <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        required
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        placeholder={d.placeholderName}
-                        className="w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-slate-800 font-medium placeholder-slate-400"
-                      />
-                    </div>
-
-                    {/* Email */}
-                    <div className="space-y-2">
-                      <label htmlFor="email" className="block text-xs font-black uppercase text-slate-400 tracking-wider">
-                        {d.labelEmailForm} <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        required
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        placeholder={d.placeholderEmail}
-                        className="w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-slate-800 font-medium placeholder-slate-400"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Subject */}
-                  <div className="space-y-2">
-                    <label htmlFor="subject" className="block text-xs font-black uppercase text-slate-400 tracking-wider">
-                      {d.labelSubject}
-                    </label>
-                    <input
-                      type="text"
-                      id="subject"
-                      value={formData.subject}
-                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                      placeholder={d.placeholderSubject}
-                      className="w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-slate-800 font-medium placeholder-slate-400"
-                    />
-                  </div>
-
-                  {/* Message */}
-                  <div className="space-y-2">
-                    <label htmlFor="message" className="block text-xs font-black uppercase text-slate-400 tracking-wider">
-                      {d.labelMessage} <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                      id="message"
-                      required
-                      rows={6}
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      placeholder={d.placeholderMessage}
-                      className="w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-slate-800 font-medium placeholder-slate-400 resize-none"
-                    />
-                  </div>
-
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="w-full bg-[#002D5B] text-white py-4 rounded-xl font-bold hover:bg-[#00254A] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    {isLoading ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        {d.btnSending}
-                      </>
-                    ) : (
-                      d.btnSend
-                    )}
-                  </button>
-                </form>
-              </div>
+            <div className="space-y-2">
+              <label htmlFor="contact-subject" className="block text-sm font-medium">{d.labelSubject}</label>
+              <input type="text" id="contact-subject" name="subject" value={formData.subject} onChange={e => setFormData({ ...formData, subject: e.target.value })} placeholder={d.placeholderSubject} className="min-h-12 w-full rounded-xl border border-[#c4d4d8] bg-white px-4 py-3 text-base text-[#082b45] placeholder:text-[#71828c] focus:border-[#087f73] focus:ring-2 focus:ring-[#087f73]/15" />
             </div>
-
+            <div className="space-y-2">
+              <label htmlFor="contact-message" className="block text-sm font-medium">{d.labelMessage} <span aria-hidden="true">*</span></label>
+              <textarea id="contact-message" name="message" required rows={6} value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })} placeholder={d.placeholderMessage} className="w-full resize-y rounded-xl border border-[#c4d4d8] bg-white px-4 py-3 text-base leading-relaxed text-[#082b45] placeholder:text-[#71828c] focus:border-[#087f73] focus:ring-2 focus:ring-[#087f73]/15" />
+            </div>
+            <button type="submit" disabled={isLoading} className="kraken-button kraken-primary w-full sm:w-auto">{isLoading ? d.btnSending : d.btnSend}</button>
+          </form>
+        </section>
+        <aside className="min-w-0 space-y-8 lg:pt-3" aria-labelledby="contact-details-heading">
+          <div>
+            <h2 id="contact-details-heading" className="text-2xl font-semibold tracking-tight">{d.contactInfoTitle}</h2>
+            <p className="kraken-description">{d.contactInfoDesc}</p>
           </div>
-        </div>
-      </section>
+          <dl className="space-y-6">
+            <div className="flex gap-4"><PhoneIcon className="mt-1 h-5 w-5 shrink-0 text-[#087f73]" /><div><dt className="text-sm text-[#526574]">{d.labelPhone}</dt><dd><a href="tel:+41774505705" className="inline-flex min-h-11 items-center text-lg font-medium hover:underline">+41 77 450 57 05</a></dd></div></div>
+            <div className="flex gap-4"><MailIcon className="mt-1 h-5 w-5 shrink-0 text-[#087f73]" /><div className="min-w-0"><dt className="text-sm text-[#526574]">{d.labelEmail}</dt><dd><a href="mailto:kai@krakenpfm.ch" className="inline-flex min-h-11 items-center break-all text-lg font-medium hover:underline">kai@krakenpfm.ch</a></dd></div></div>
+            <div className="flex gap-4"><MapPinIcon className="mt-1 h-5 w-5 shrink-0 text-[#087f73]" /><div><dt className="text-sm text-[#526574]">{d.labelAddress}</dt><dd className="mt-2 text-base leading-relaxed">Seewadelstrasse 3<br />8203 Schaffhausen</dd></div></div>
+            <div className="flex gap-4"><ClockIcon className="mt-1 h-5 w-5 shrink-0 text-[#087f73]" /><div><dt className="text-sm text-[#526574]">{d.labelHours}</dt><dd className="mt-2 text-base leading-relaxed">{d.valHoursDays}<br />{d.valHoursTime}</dd></div></div>
+          </dl>
+        </aside>
+      </div>
     </main>
   );
 };

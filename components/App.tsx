@@ -118,10 +118,10 @@ const App: React.FC = () => {
     return parsePath(currentPath).serviceId;
   });
   const { user, loading: authLoading } = useAuth();
-  
+
   const [mounted, setMounted] = useState(false);
   const cartLoadedRef = useRef(false);
-  
+
   // Persistent Cart State
   const [cart, setCart] = useState<any[]>([]);
 
@@ -332,16 +332,16 @@ const App: React.FC = () => {
   const isReviewPage = page === 'review-invite';
 
   return (
-    <div className="bg-slate-50 text-gray-800 relative">
+    <div className="kraken-app relative">
       {mounted && !isReviewPage && (
         <Suspense fallback={null}>
           <FloatingMascot currentPage={page} cart={cart} onNavigate={handleNavigate} seoCityId={seoCityId} />
           <FloatingCTA onNavigate={handleNavigate} currentPage={page} />
         </Suspense>
       )}
-      
+
       {!isReviewPage && <Header onNavigate={handleNavigate} currentPage={page as any} />}
-      <div id="main-content" tabIndex={-1}>{renderPage()}</div>
+      <div id="main-content" className={'kraken-route kraken-route--' + page} data-page={page} tabIndex={-1}>{renderPage()}</div>
       {!isReviewPage && (
         <Suspense fallback={null}>
           <Footer onNavigate={handleNavigate} />
@@ -352,16 +352,8 @@ const App: React.FC = () => {
           <CookieConsent onNavigate={handleNavigate} />
         </Suspense>
       )}
-      
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
-        .animate-float {
-          animation: float 4s ease-in-out infinite;
-        }
-      `}</style>
+
+
     </div>
   );
 };

@@ -75,7 +75,7 @@ async function checkRoutes(base: string, dev: boolean) {
 test('development uses Vite in a clean copy and after a build, even with NODE_ENV=production inherited', { timeout: 90000 }, async () => {
   const scratch = mkdtempSync(path.join(tmpdir(), 'kraken-dev-test-'));
   try {
-    cpSync(root, scratch, { recursive: true, filter: src => !['node_modules', '.git', 'dist', 'public'].includes(path.relative(root, src).split(path.sep)[0]) && !path.basename(src).startsWith('.env') });
+    cpSync(root, scratch, { recursive: true, filter: src => !['node_modules', '.git', '.cache', 'dist', 'public'].includes(path.relative(root, src).split(path.sep)[0]) && !path.basename(src).startsWith('.env') });
     // Inline CSS exercises Vite's virtual HTML proxy IDs even if the app moves
     // its own styles to a stylesheet. A locale query must never become a path.
     const templatePath = path.join(scratch, 'index.html');

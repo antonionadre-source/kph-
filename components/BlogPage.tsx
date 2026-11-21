@@ -452,7 +452,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
   const currentArticleObj = selectedArticle !== null ? articles.find(a => a.id === selectedArticle) : null;
 
   return (
-    <main className="bg-[#FAF9F6] min-h-screen text-slate-800" itemScope itemType="https://schema.org/Blog">
+    <main className="kraken-page kraken-editorial bg-[#FAF9F6] min-h-screen text-slate-800" itemScope itemType="https://schema.org/Blog">
       {currentArticleObj && (
         <script
           type="application/ld+json"
@@ -483,70 +483,39 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
           }}
         />
       )}
-      {/* Hero Banner Section */}
-      <section data-header-theme="dark" className="relative pt-32 pb-24 bg-[#001D3D] text-white overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:20px_20px]"></div>
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-3xl">
-            <motion.p 
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-amber-400 font-extrabold text-xs uppercase tracking-[0.3em] mb-4"
-            >
-              KRAKEN FM INSIGHTS
-            </motion.p>
-            <motion.h1 
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-4xl md:text-6xl font-black tracking-tight mb-4 text-white"
-              itemProp="name"
-            >
-              {t('blog.title')}
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-slate-300 text-lg md:text-xl font-normal leading-relaxed max-w-2xl"
-            >
-              {t('blog.subtitle')}
-            </motion.p>
-          </div>
-        </div>
-      </section>
+      <header className="kraken-page-intro border-b border-[#dce6e8] bg-white py-12 sm:py-20"><div className="kraken-container"><p className="kraken-eyebrow">Kraken PFM</p><h1 className="kraken-heading mt-3" itemProp="name">{t('blog.title')}</h1><p className="kraken-description max-w-2xl">{t('blog.subtitle')}</p></div></header>
 
       {/* Main Content Area */}
       <section className="container mx-auto px-6 py-16">
         {selectedArticle === null ? (
           /* Blog Grid View & Search Sidebar */
           <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-10 items-start">
-            
+
             {/* Filtering bento box sidebar left pane */}
-            <motion.aside 
+            <motion.aside
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="space-y-6 lg:sticky lg:top-28 bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm"
+              className="space-y-6 lg:sticky lg:top-28 bg-white p-6 rounded-2xl border border-[#dce6e8] shadow-sm"
               id="blog-sidebar"
             >
               {/* Search bar */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                <label className="text-sm font-semibold normal-case tracking-normal text-[#526574]">
                   {currentLang === 'es' ? 'Buscar' : currentLang === 'de' ? 'Suchen' : 'Search'}
                 </label>
                 <div className="relative">
-                  <input 
+                  <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={filterTrans.searchPlaceholder}
-                    className="w-full text-xs font-semibold bg-slate-50 border border-slate-250 hover:bg-slate-100/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#002D5B]/25 rounded-2xl py-3.5 pl-10 pr-4 transition-all"
+                    className="w-full text-sm font-semibold bg-slate-50 border border-slate-250 hover:bg-slate-100/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#002D5B]/25 rounded-2xl py-3.5 pl-10 pr-4 transition-all"
                   />
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+                  <Search className="w-4 h-4 text-[#526574] absolute left-3.5 top-3.5" />
                   {searchQuery && (
-                    <button 
+                    <button
                       onClick={() => setSearchQuery('')}
-                      className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600"
+                      className="absolute right-3.5 top-3.5 text-[#526574] hover:text-slate-600"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -558,7 +527,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
 
               {/* Categories selection list */}
               <div className="space-y-3">
-                <h3 className="text-xs font-black uppercase tracking-wider text-slate-400">
+                <h3 className="text-sm font-semibold normal-case tracking-normal text-[#526574]">
                   {filterTrans.categoriesTitle}
                 </h3>
                 <div className="flex flex-col gap-1">
@@ -568,15 +537,15 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                       setSelectedCategory('all');
                       setActiveTag(null);
                     }}
-                    className={`w-full flex justify-between items-center px-4 py-3 rounded-xl font-bold text-xs transition-all text-left ${
+                    className={`w-full flex justify-between items-center px-4 py-3 rounded-xl font-bold text-sm transition-all text-left ${
                       selectedCategory === 'all'
-                        ? 'bg-[#002D5B] text-white shadow-xs'
+                        ? 'bg-[#082b45] text-white shadow-xs'
                         : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                     }`}
                   >
                     <span>{selectedCategoryTrans.all}</span>
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-black ${
-                      selectedCategory === 'all' ? 'bg-[#001D3D] text-amber-400' : 'bg-slate-100 text-slate-500'
+                    <span className={`text-sm px-2 py-0.5 rounded-full font-semibold ${
+                      selectedCategory === 'all' ? 'bg-[#082b45] text-amber-400' : 'bg-slate-100 text-[#526574]'
                     }`}>
                       {articles.length}
                     </span>
@@ -592,15 +561,15 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                           setSelectedCategory(catKey);
                           setActiveTag(null); // Clear tag when main category switches for better consistency
                         }}
-                        className={`w-full flex justify-between items-center px-4 py-3 rounded-xl font-bold text-xs transition-all text-left ${
+                        className={`w-full flex justify-between items-center px-4 py-3 rounded-xl font-bold text-sm transition-all text-left ${
                           selectedCategory === catKey
-                            ? 'bg-[#002D5B] text-white shadow-xs'
+                            ? 'bg-[#082b45] text-white shadow-xs'
                             : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                         }`}
                       >
                         <span className="truncate max-w-[170px]">{selectedCategoryTrans[catKey]}</span>
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-black ${
-                          selectedCategory === catKey ? 'bg-[#001D3D] text-amber-400' : 'bg-slate-100 text-slate-500'
+                        <span className={`text-sm px-2 py-0.5 rounded-full font-semibold ${
+                          selectedCategory === catKey ? 'bg-[#082b45] text-amber-400' : 'bg-slate-100 text-[#526574]'
                         }`}>
                           {count}
                         </span>
@@ -615,13 +584,13 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
               {/* Tag Cloud */}
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-xs font-black uppercase tracking-wider text-slate-400">
+                  <h3 className="text-sm font-semibold normal-case tracking-normal text-[#526574]">
                     {filterTrans.tagsTitle}
                   </h3>
                   {activeTag && (
-                    <button 
+                    <button
                       onClick={() => setActiveTag(null)}
-                      className="text-[10px] font-bold text-amber-600 hover:text-amber-700 flex items-center gap-0.5 transition-all"
+                      className="text-sm font-bold text-amber-600 hover:text-amber-700 flex items-center gap-0.5 transition-all"
                     >
                       <X className="w-2.5 h-2.5" />
                       {currentLang === 'es' ? 'quitar' : 'clear'}
@@ -636,7 +605,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                       <button
                         key={tagKey}
                         onClick={() => setActiveTag(isSelected ? null : tagKey)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-wide transition-all ${
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-bold text-sm normal-case tracking-wide transition-all ${
                           isSelected
                             ? 'bg-amber-100 text-amber-800 border border-amber-300'
                             : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 border border-transparent'
@@ -656,7 +625,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                 <div className="pt-2">
                   <button
                     onClick={handleClearFilters}
-                    className="w-full py-3 bg-red-50 hover:bg-red-100 border border-red-200/50 text-red-600 hover:text-red-700 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all"
+                    className="w-full py-3 bg-red-50 hover:bg-red-100 border border-red-200/50 text-red-600 hover:text-red-700 rounded-2xl font-bold text-sm normal-case tracking-normal transition-all"
                   >
                     {filterTrans.clearFilters}
                   </button>
@@ -667,10 +636,10 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
             {/* Right Pane: dynamic list of filtered blog posts */}
             <div className="space-y-8">
               {/* Filter feedback chips */}
-              <div className="flex flex-wrap items-center justify-between gap-3 text-xs bg-white p-4 rounded-2xl border border-slate-100 shadow-2xs">
-                <div className="flex items-center gap-2 font-bold text-slate-500">
+              <div className="flex flex-wrap items-center justify-between gap-3 text-sm bg-white p-4 rounded-2xl border border-[#dce6e8] shadow-2xs">
+                <div className="flex items-center gap-2 font-bold text-[#526574]">
                   <span>{filterTrans.showingAll}</span>
-                  <span className="bg-[#002D5B]/5 text-[#002D5B] px-3 py-1 rounded-full text-xs font-black">
+                  <span className="bg-[#082b45]/5 text-[#082b45] px-3 py-1 rounded-full text-sm font-semibold">
                     {filteredArticles.length}
                   </span>
                 </div>
@@ -678,7 +647,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                 {/* Feedback flags */}
                 <div className="flex flex-wrap gap-2">
                   {selectedCategory !== 'all' && (
-                    <span className="bg-blue-50 text-blue-700 border border-blue-105 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wide flex items-center gap-1.5 animate-fade-in">
+                    <span className="bg-blue-50 text-blue-700 border border-blue-105 px-2.5 py-1 rounded-lg text-sm font-semibold normal-case tracking-wide flex items-center gap-1.5 animate-fade-in">
                       {selectedCategoryTrans[selectedCategory]}
                       <button onClick={() => setSelectedCategory('all')} className="hover:text-red-600">
                         <X className="w-3 h-3" />
@@ -686,7 +655,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                     </span>
                   )}
                   {activeTag && (
-                    <span className="bg-amber-50 text-amber-700 border border-amber-105 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wide flex items-center gap-1.5 animate-fade-in">
+                    <span className="bg-amber-50 text-amber-700 border border-amber-105 px-2.5 py-1 rounded-lg text-sm font-semibold normal-case tracking-wide flex items-center gap-1.5 animate-fade-in">
                       {filterTrans.matchingTag}: {tagsTrans[activeTag] || activeTag}
                       <button onClick={() => setActiveTag(null)} className="hover:text-red-600">
                         <X className="w-3 h-3" />
@@ -699,26 +668,26 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
               <AnimatePresence mode="popLayout">
                 {filteredArticles.length === 0 ? (
                   /* No results empty feedback widget */
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="bg-white rounded-3xl p-12 text-center border border-slate-100 shadow-xs max-w-xl mx-auto space-y-6"
+                    className="bg-white rounded-3xl p-12 text-center border border-[#dce6e8] shadow-xs max-w-xl mx-auto space-y-6"
                   >
-                    <div className="w-16 h-16 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center text-3xl mx-auto border border-dashed border-slate-200">
+                    <div className="w-16 h-16 bg-slate-50 text-[#526574] rounded-full flex items-center justify-center text-3xl mx-auto border border-dashed border-slate-200">
                       🔍
                     </div>
                     <div className="space-y-2">
-                      <h3 className="text-lg font-black text-slate-800">
+                      <h3 className="text-lg font-semibold text-slate-800">
                         {filterTrans.noResultsTitle}
                       </h3>
-                      <p className="text-xs text-slate-400 leading-relaxed font-bold px-4">
+                      <p className="text-sm text-[#526574] leading-relaxed font-bold px-4">
                         {filterTrans.noResultsDesc}
                       </p>
                     </div>
                     <button
                       onClick={handleClearFilters}
-                      className="px-6 py-3.5 bg-[#002D5B] hover:bg-slate-800 text-white rounded-2xl font-bold text-xs uppercase tracking-widest transition-all shadow-sm"
+                      className="px-6 py-3.5 bg-[#082b45] hover:bg-slate-800 text-white rounded-2xl font-bold text-sm normal-case tracking-normal transition-all shadow-sm"
                     >
                       {filterTrans.resetBtn}
                     </button>
@@ -734,7 +703,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ delay: index * 0.05, duration: 0.4 }}
                         whileHover={{ y: -6 }}
-                        className="bg-white rounded-3xl overflow-hidden shadow-xs hover:shadow-lg border border-slate-100 transition-all duration-300 flex flex-col justify-between"
+                        className="bg-white rounded-3xl overflow-hidden shadow-xs hover:shadow-sm border border-[#dce6e8] transition-all duration-300 flex flex-col justify-between"
                         id={`article-card-${article.id}`}
                         itemScope
                         itemType="https://schema.org/BlogPosting"
@@ -743,17 +712,17 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                         <div>
                           {/* Header Image */}
                           <div className="relative h-56 overflow-hidden bg-slate-200">
-                            <img 
-                              src={article.image} 
+                            <img
+                              src={article.image}
                               alt={article.title}
                               className="w-full h-full object-cover transform hover:scale-105 transition-all duration-700"
                               loading="lazy"
                               referrerPolicy="no-referrer"
                               itemProp="image"
                             />
-                            <button 
+                            <button
                               onClick={() => setSelectedCategory(article.categoryKey)}
-                              className="absolute top-4 left-4 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[9px] uppercase tracking-wider px-3 py-1.5 rounded-full shadow-xs transition-colors"
+                              className="absolute top-4 left-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm normal-case tracking-normal px-3 py-1.5 rounded-full shadow-xs transition-colors"
                             >
                               {article.category}
                             </button>
@@ -761,7 +730,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
 
                           {/* Meta & Info */}
                           <div className="p-6 pb-4">
-                            <div className="flex items-center gap-4 text-[11px] text-slate-400 font-bold mb-3">
+                            <div className="flex items-center gap-4 text-sm text-[#526574] font-bold mb-3">
                               <span className="flex items-center gap-1">
                                 <Calendar className="w-3.5 h-3.5" />
                                 <time itemProp="datePublished" dateTime="2026-06-02">{article.date}</time>
@@ -772,14 +741,14 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                               </span>
                             </div>
 
-                            <h2 
-                              className="text-lg font-black text-slate-900 leading-snug mb-2 hover:text-blue-600 transition-colors line-clamp-2"
+                            <h2
+                              className="text-lg font-semibold text-slate-900 leading-snug mb-2 hover:text-[#087f73] transition-colors line-clamp-2"
                               itemProp="headline"
                             >
                               {article.title}
                             </h2>
-                            
-                            <p className="text-slate-500 text-xs font-bold leading-relaxed line-clamp-3 mb-4" itemProp="description">
+
+                            <p className="text-[#526574] text-sm font-bold leading-relaxed line-clamp-3 mb-4" itemProp="description">
                               {article.excerpt}
                             </p>
 
@@ -794,10 +763,10 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                                       e.stopPropagation();
                                       setActiveTag(isTagActive ? null : tagKey);
                                     }}
-                                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wide transition-all ${
-                                      isTagActive 
-                                        ? 'bg-amber-100 text-amber-800' 
-                                        : 'bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-800'
+                                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-sm font-semibold normal-case tracking-wide transition-all ${
+                                      isTagActive
+                                        ? 'bg-amber-100 text-amber-800'
+                                        : 'bg-slate-50 text-[#526574] hover:bg-slate-100 hover:text-slate-800'
                                     }`}
                                     title={`${filterTrans.tagTitle}: ${tagsTrans[tagKey] || tagKey}`}
                                   >
@@ -813,7 +782,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                         <div className="p-6 pt-0 border-t border-slate-50 mt-2">
                           <button
                             onClick={() => handleArticleClick(article.id)}
-                            className="w-full mt-4 flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white font-extrabold text-xs uppercase tracking-wider transition-all duration-300 group"
+                            className="w-full mt-4 flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-blue-50 hover:bg-[#087f73] text-[#087f73] hover:text-white font-semibold text-sm normal-case tracking-normal transition-all duration-300 group"
                             id={`article-btn-${article.id}`}
                           >
                             <BookOpen className="w-4 h-4 transition-transform group-hover:scale-110" />
@@ -832,7 +801,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
           (() => {
             const article = articles.find(a => a.id === selectedArticle);
             if (!article) return null;
-            
+
             const formattedDate = article.date === "02.06.2026" ? "2026-06-02" : "2026-05-15";
             const slug = article.id === 1 ? 'wohnungsabgabe-zurich-perfekte-uebergabe' : 'iot-smart-facility-management-schweizer-bueros';
             const canonicalUrl = `https://krakenpfm.ch/blog/${slug}`;
@@ -863,10 +832,10 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
             };
 
             return (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="max-w-4xl mx-auto bg-white rounded-3xl border border-slate-100 shadow-xl overflow-hidden p-6 md:p-12 relative"
+                className="max-w-4xl mx-auto bg-white rounded-3xl border border-[#dce6e8] shadow-sm overflow-hidden p-6 md:p-12 relative"
                 id="article-detail-view"
                 itemScope
                 itemType="https://schema.org/BlogPosting"
@@ -880,7 +849,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                 {/* Back Button */}
                 <button
                   onClick={handleBackToList}
-                  className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-slate-400 hover:text-blue-600 transition-colors mb-8 cursor-pointer uppercase bg-slate-50 hover:bg-slate-100 px-4 py-2.5 rounded-xl border border-slate-100"
+                  className="inline-flex items-center gap-2 text-sm font-semibold normal-case tracking-normal text-[#526574] hover:text-[#087f73] transition-colors mb-8 cursor-pointer normal-case bg-slate-50 hover:bg-slate-100 px-4 py-2.5 rounded-xl border border-[#dce6e8]"
                   id="back-to-blog-btn"
                 >
                   <ArrowLeft className="w-4 h-4" />
@@ -889,21 +858,21 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
 
                 {/* Article Header Details */}
                 <div className="mb-6">
-                  <span className="inline-block bg-blue-50 text-blue-600 font-extrabold text-[10px] uppercase tracking-widest px-3.5 py-1.5 rounded-full mb-4">
+                  <span className="inline-block bg-blue-50 text-[#087f73] font-semibold text-sm normal-case tracking-normal px-3.5 py-1.5 rounded-full mb-4">
                     {article.category}
                   </span>
-                  <h1 className="text-3xl md:text-5xl font-black text-slate-900 leading-tight mb-6" itemProp="headline">
+                  <h1 className="text-3xl md:text-5xl font-semibold text-slate-900 leading-tight mb-6" itemProp="headline">
                     {article.title}
                   </h1>
 
                   {/* Author & Info Meta row */}
-                  <div className="flex flex-wrap items-center gap-6 py-4 border-y border-slate-100 text-xs md:text-sm text-slate-500 mb-8">
+                  <div className="flex flex-wrap items-center gap-6 py-4 border-y border-[#dce6e8] text-sm md:text-sm text-[#526574] mb-8">
                     <span className="flex items-center gap-2" itemProp="author" itemScope itemType="https://schema.org/Person">
-                      <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold flex items-center justify-center text-xs">
+                      <div className="w-8 h-8 rounded-full bg-blue-100 text-[#087f73] font-bold flex items-center justify-center text-sm">
                         {article.author.slice(0, 1)}
                       </div>
                       <div>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('blog.author')}</p>
+                        <p className="text-sm font-bold text-[#526574] normal-case tracking-normal">{t('blog.author')}</p>
                         <p className="font-bold text-slate-800" itemProp="name">{article.author}</p>
                       </div>
                     </span>
@@ -912,7 +881,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                         <Calendar className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('blog.published')}</p>
+                        <p className="text-sm font-bold text-[#526574] normal-case tracking-normal">{t('blog.published')}</p>
                         <p className="font-bold text-slate-800">
                           <time itemProp="datePublished" dateTime="2026-06-02">{article.date}</time>
                         </p>
@@ -923,7 +892,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                         <Clock className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('blog.readTime')}</p>
+                        <p className="text-sm font-bold text-[#526574] normal-case tracking-normal">{t('blog.readTime')}</p>
                         <p className="font-bold text-slate-800">{article.readTime}</p>
                       </div>
                     </span>
@@ -932,8 +901,8 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
 
                 {/* Cover Image of specific post */}
                 <div className="rounded-2xl overflow-hidden h-72 md:h-[450px] mb-8 bg-slate-150">
-                  <img 
-                    src={article.image} 
+                  <img
+                    src={article.image}
                     alt={article.title}
                     className="w-full h-full object-cover"
                     referrerPolicy="no-referrer"
@@ -942,13 +911,13 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
 
                 {/* Keywords list */}
                 <div className="flex flex-wrap gap-2 mb-8">
-                  <span className="text-[10px] font-black uppercase text-slate-450 self-center tracking-wider mr-1">
+                  <span className="text-sm font-semibold normal-case text-slate-450 self-center tracking-normal mr-1">
                     {filterTrans.tagsTitle}:
                   </span>
                   {article.tagKeys.map(tagKey => (
                     <span
                       key={tagKey}
-                      className="bg-amber-50 text-amber-800 font-bold rounded-lg border border-amber-100 px-3 py-1.5 text-[10px] uppercase tracking-wide"
+                      className="bg-amber-50 text-amber-800 font-bold rounded-lg border border-amber-100 px-3 py-1.5 text-sm normal-case tracking-wide"
                     >
                       #{tagsTrans[tagKey] || tagKey}
                     </span>
@@ -958,24 +927,24 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                 {/* Text Paragraph Paragraph Grid */}
                 <div className="prose max-w-none text-slate-600 text-base md:text-lg leading-relaxed space-y-6" itemProp="articleBody">
                   {article.paragraphs.map((p, pIndex) => (
-                    <p key={pIndex} className="first-letter:text-2xl first-letter:font-bold first-letter:text-blue-600">
+                    <p key={pIndex} className="first-letter:text-2xl first-letter:font-bold first-letter:text-[#087f73]">
                       {p}
                     </p>
                   ))}
                 </div>
 
                 {/* Footer Handback navigation inside detail card */}
-                <div className="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between">
+                <div className="mt-12 pt-8 border-t border-[#dce6e8] flex items-center justify-between">
                   <button
                     onClick={handleBackToList}
-                    className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-slate-500 hover:text-blue-600 transition-colors"
+                    className="inline-flex items-center gap-2 text-sm font-semibold normal-case tracking-normal text-[#526574] hover:text-[#087f73] transition-colors"
                   >
                     <ArrowLeft className="w-4 h-4" />
                     {t('blog.backToBlog')}
                   </button>
-                  <button 
+                  <button
                     onClick={() => onNavigate('consultation')}
-                    className="px-6 py-3 bg-[#002B56] hover:bg-amber-400 hover:text-[#001D3D] text-white rounded-xl font-bold text-xs uppercase tracking-widest transition-all"
+                    className="px-6 py-3 bg-[#002B56] hover:bg-amber-400 hover:text-[#001D3D] text-white rounded-xl font-bold text-sm normal-case tracking-normal transition-all"
                   >
                     Book Consultation
                   </button>

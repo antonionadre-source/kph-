@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from 'motion/react';
 import { FilePreviewModal } from './FilePreviewModal';
 import { downloadFileSafely } from './fileUtils';
 import { scheduleCalendarEventForKai } from './calendarUtils';
-import { 
-  CurrencyDollarIcon, 
-  DocumentTextIcon, 
-  UserGroupIcon, 
+import {
+  CurrencyDollarIcon,
+  DocumentTextIcon,
+  UserGroupIcon,
   CogIcon,
   PlusIcon,
   TrashIcon,
@@ -18,18 +18,18 @@ import {
   ChartBarIcon,
   ShieldCheckIcon
 } from './icons';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  FileText, 
-  ExternalLink, 
-  X, 
-  AlertTriangle, 
-  Briefcase, 
-  Clipboard, 
-  Info, 
-  DollarSign, 
+import {
+  Mail,
+  Phone,
+  MapPin,
+  FileText,
+  ExternalLink,
+  X,
+  AlertTriangle,
+  Briefcase,
+  Clipboard,
+  Info,
+  DollarSign,
   Image as ImageIcon,
   ArrowLeft,
   Edit,
@@ -49,6 +49,7 @@ import {
 import { useAuth } from './Auth';
 import { db, sanitizeFirestoreData } from './firebase';
 import { portalText } from './portalText';
+import { portalActionText, portalOptionLabel } from './portalPresentation';
 import { portalQueryPlan, portalAmount, mergePortalRecords, PORTAL_PAGE_SIZE, type PortalCollection } from './portalRecords';
 import { withPortalTimeout } from './portalIdentity';
 import { openInvoiceSummary, escapeHtml } from './invoiceDocument';
@@ -56,15 +57,15 @@ import { detectZone } from '../src/domain/pricing';
 import { DetailInspectorModal } from './DetailInspectorModal';
 import { getDashboardTranslation } from './dashboardTranslations';
 import { companyLogoUrl } from '../assets';
-import { 
-  collection, 
-  query, 
-  where, 
-  getDocs, 
+import {
+  collection,
+  query,
+  where,
+  getDocs,
   setDoc,
-  doc, 
-  updateDoc, 
-  deleteDoc, 
+  doc,
+  updateDoc,
+  deleteDoc,
   serverTimestamp, orderBy, limit, startAfter, type QueryDocumentSnapshot, type QueryConstraint
 } from 'firebase/firestore';
 
@@ -178,7 +179,7 @@ const Dashboard: React.FC = () => {
   const { user, resendVerification, refreshUser, logout } = useAuth();
   const pt = (key: Parameters<typeof portalText>[1]) => portalText(language, key);
   const heading = portalHeadings[language.split('-')[0]] || portalHeadings.de;
-  
+
   const [loggingOut, setLoggingOut] = useState(false);
   const [logoutError, setLogoutError] = useState(false);
   const logoutPending = useRef(false);
@@ -225,7 +226,7 @@ const Dashboard: React.FC = () => {
       setAdminNotesText('');
     }
   }, [selectedRequest]);
-  
+
   // Custom richer Request input
   const [newRequest, setNewRequest] = useState({
       client: '',
@@ -339,7 +340,7 @@ const Dashboard: React.FC = () => {
   const handleDelete = async (id: string, e?: React.MouseEvent) => {
       if (e) e.stopPropagation();
       if (!user) return;
-      
+
       const targetRequest = requests.find(r => r.id === id);
       if (targetRequest && !isStaff && (targetRequest.checkout || !['Draft', 'Pending'].includes(targetRequest.status))) {
         alert("Locked for Operations Security: Requests that are already 'In Progress' or 'Completed' cannot be cancelled or deleted online. Please contact our operational staff at kai@krakenpfm.ch for immediate assistance.");
@@ -364,7 +365,7 @@ const Dashboard: React.FC = () => {
   const handleStatusChange = async (id: string, currentStatus: 'Pending' | 'In Progress' | 'Completed', e?: React.MouseEvent) => {
       if (e) e.stopPropagation();
       if (!user) return;
-      
+
       // Client cannot transition status tiers at all, this is a staff supervisor operation
       if (!isStaff) {
         alert("Notice: State transitions are managed securely by the specialist crews assigned to your premises. You will see live state updates as task execution progresses.");
@@ -379,7 +380,7 @@ const Dashboard: React.FC = () => {
       } else {
           nextStatus = 'Pending';
       }
-      
+
       try {
           await updateDoc(doc(db, 'maintenance_requests', id), {
               status: nextStatus,
@@ -536,7 +537,7 @@ const Dashboard: React.FC = () => {
 
       try {
           await setDoc(requestRef, sanitizeFirestoreData(payload));
-          
+
           const localRequest: MaintenanceRequest = {
               id: newDocId,
               client: payload.client,
@@ -554,19 +555,19 @@ const Dashboard: React.FC = () => {
           };
 
           setRequests([localRequest, ...requests]);
-          
+
           // Clear form
-          setNewRequest({ 
-              client: '', 
-              email: '', 
-              phone: '', 
-              address: '', 
-              service: '', 
-              date: '', 
-              priority: 'Medium', 
-              amount: '', 
-              notes: '', 
-              mediaUrlString: '' 
+          setNewRequest({
+              client: '',
+              email: '',
+              phone: '',
+              address: '',
+              service: '',
+              date: '',
+              priority: 'Medium',
+              amount: '',
+              notes: '',
+              mediaUrlString: ''
           });
           setIsFormOpen(false);
       } catch (error) {
@@ -583,9 +584,9 @@ const Dashboard: React.FC = () => {
   // Filter and search
   const filteredRequests = requests.filter(r => {
       const matchStatus = filterStatus === 'all' || r.status.toLowerCase() === filterStatus.toLowerCase();
-      
+
       const queryLower = searchQuery.toLowerCase().trim();
-      const matchSearch = !queryLower || 
+      const matchSearch = !queryLower ||
           r.client.toLowerCase().includes(queryLower) ||
           r.service.toLowerCase().includes(queryLower) ||
           r.id.toLowerCase().includes(queryLower) ||
@@ -660,57 +661,60 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <main className="min-h-screen pt-6 sm:pt-10 pb-12 font-sans text-slate-800 relative bg-slate-50">
+    <main className="kraken-portal min-h-screen pt-6 sm:pt-10 pb-12 font-sans text-[#082b45] relative bg-[#f4f8f8]">
       {/* Main Container */}
-      <div className="container mx-auto px-4 sm:px-6 relative z-10 min-w-0 [overflow-wrap:anywhere]">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 relative min-w-0 [overflow-wrap:anywhere]">
 
         {/* Portal heading and loaded-record summaries */}
-        <section className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm" aria-labelledby="portal-heading">
+        <section className="kraken-panel kraken-portal-header mb-6 rounded-2xl border border-[#dce6e8] bg-white p-4 sm:p-6 shadow-sm" aria-labelledby="portal-heading">
           <div className="mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 min-w-0">
             <div className="min-w-0">
-            <p className="mb-1 text-sm font-semibold text-blue-700">{isStaff ? dt.staffConsole.replace(/^[^\p{L}]+/u, '') : heading.subtitle}</p>
-            <h1 id="portal-heading" className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 break-words">{isStaff ? dt.activeTasks : heading.title}</h1>
-            <p className="mt-2 text-sm text-slate-600 break-words">{dt.welcomeBack} {user?.name || ''}</p>
+            <p className="mb-1 text-base font-semibold text-[#087f73]">{isStaff ? dt.staffConsole.replace(/^[^\p{L}]+/u, '') : heading.subtitle}</p>
+            <h1 id="portal-heading" className="text-2xl sm:text-3xl font-semibold text-[#082b45] break-words">{isStaff ? dt.activeTasks : heading.title}</h1>
+            <p className="mt-2 text-base text-[#526574] break-words">{dt.welcomeBack} {user?.name || ''}</p>
             </div>
-            <button type="button" onClick={handleLogout} disabled={loggingOut} aria-busy={loggingOut} className="min-h-11 px-4 py-2 self-start sm:self-center shrink-0 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-100 disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-blue-600">{loggingOut ? heading.loggingOut : heading.logout}</button>
+            <button type="button" onClick={handleLogout} disabled={loggingOut} aria-busy={loggingOut} className="kraken-control min-h-11 min-w-11 min-h-11 px-4 py-2 self-start sm:self-center shrink-0 rounded-xl border border-[#dce6e8] bg-white text-base font-semibold text-[#526574] hover:bg-[#f4f8f8] disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-blue-600">{loggingOut ? heading.loggingOut : heading.logout}</button>
           </div>
-          {logoutError && <p role="alert" className="mb-4 text-sm font-semibold text-red-700">{heading.logoutError}</p>}
-          <dl className="grid grid-cols-1 md:grid-cols-3 gap-3 min-w-0">
-            <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
-              <dt className="min-w-0 text-sm font-medium leading-5 text-slate-600 [overflow-wrap:normal]">{isStaff ? dt.activeTasks : dt.activeServices}</dt>
-              <dd className="shrink-0 text-xl font-bold tabular-nums text-slate-900">{activeJobs}</dd>
+          {logoutError && <p role="alert" className="mb-4 text-base font-semibold text-red-700">{heading.logoutError}</p>}
+          <dl className="kraken-metrics grid grid-cols-1 md:grid-cols-3 gap-3 min-w-0">
+            <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-[#dce6e8] bg-[#f4f8f8] p-3 sm:p-4">
+              <dt className="min-w-0 text-sm font-medium leading-5 text-[#526574] [overflow-wrap:normal]">{isStaff ? dt.activeTasks : dt.activeServices}</dt>
+              <dd className="shrink-0 text-xl font-semibold tabular-nums text-[#082b45]">{activeJobs}</dd>
             </div>
-            <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
-              <dt className="min-w-0 text-sm font-medium leading-5 text-slate-600 [overflow-wrap:normal]">{dt.highPriority}</dt>
-              <dd className="shrink-0 text-xl font-bold tabular-nums text-slate-900">{highPriorityCount}</dd>
+            <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-[#dce6e8] bg-[#f4f8f8] p-3 sm:p-4">
+              <dt className="min-w-0 text-sm font-medium leading-5 text-[#526574] [overflow-wrap:normal]">{dt.highPriority}</dt>
+              <dd className="shrink-0 text-xl font-semibold tabular-nums text-[#082b45]">{highPriorityCount}</dd>
             </div>
-            <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
-              <dt className="min-w-0 text-sm font-medium leading-5 text-slate-600 [overflow-wrap:normal]">{isStaff ? dt.estRevenue : dt.estBudget}</dt>
-              <dd className="min-w-0 max-w-[65%] text-right text-base sm:text-lg font-bold tabular-nums text-emerald-700 [overflow-wrap:normal]">CHF {totalRevenue.toLocaleString()}</dd>
+            <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-[#dce6e8] bg-[#f4f8f8] p-3 sm:p-4">
+              <dt className="min-w-0 text-sm font-medium leading-5 text-[#526574] [overflow-wrap:normal]">{isStaff ? dt.estRevenue : dt.estBudget}</dt>
+              <dd className="min-w-0 max-w-[65%] text-right text-base sm:text-lg font-semibold tabular-nums text-emerald-700 [overflow-wrap:normal]">CHF {totalRevenue.toLocaleString()}</dd>
             </div>
           </dl>
         </section>
 
-        {!user?.emailVerified && <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5 mb-6 text-sm">
-          <p>{pt('verifyHint')}</p><div className="flex flex-wrap gap-4 mt-3 font-bold text-blue-800">
+        {actionAlert && <div role="alert" className="sticky top-24 z-30 mb-5 flex items-start justify-between gap-3 rounded-2xl border border-[#b9d9d2] bg-white p-4 shadow-md"><p className="min-w-0 text-base font-medium text-[#082b45]">{actionAlert}</p><button type="button" onClick={() => setActionAlert(null)} aria-label={portalActionText(language, 'close')} className="kraken-control inline-flex h-11 w-11 min-h-11 min-w-11 shrink-0 items-center justify-center rounded-xl text-[#526574] hover:bg-[#f4f8f8]"><X aria-hidden="true" className="h-5 w-5" /></button></div>}
+
+        {!user?.emailVerified && <div className="bg-[#eef7f5] border border-[#c8dedb] rounded-2xl p-5 mb-6 text-sm">
+          <p>{pt('verifyHint')}</p><div className="flex flex-wrap gap-4 mt-3 font-semibold text-[#087f73]">
             <button type="button" onClick={async () => { try { await resendVerification(); setActionAlert(pt('verificationSent')); } catch { setActionAlert(pt('saveError')); } }}>{pt('verify')}</button>
             <button type="button" onClick={async () => { try { await refreshUser(); } catch { setActionAlert(pt('loadError')); } }}>{pt('refresh')}</button>
           </div></div>}
-        <div className="flex flex-wrap items-center justify-between gap-3 bg-white border border-slate-200 rounded-2xl p-4 mb-5">
-          <p className="text-xs text-slate-600">{pt('loadedOnly')}</p>
-          <button type="button" className="font-bold text-blue-700" onClick={() => fetchPortalPage(activeTab)}>{heading.refresh}</button>
+        <div className="flex flex-wrap items-center justify-between gap-3 bg-white border border-[#dce6e8] rounded-2xl p-4 mb-5">
+          <p className="text-base text-[#526574]">{pt('loadedOnly')}</p>
+          <button type="button" className="kraken-control min-h-11 min-w-11 font-semibold text-[#087f73]" onClick={() => fetchPortalPage(activeTab)}>{heading.refresh}</button>
         </div>
         {loadErrors[activeTab] && <div role="alert" className="bg-red-50 text-red-800 rounded-2xl p-4 mb-5">
-          <p>{pt('loadError')}</p><button type="button" className="font-bold underline mt-2" onClick={() => fetchPortalPage(activeTab)}>{pt('retry')}</button>
+          <p>{pt('loadError')}</p><button type="button" className="kraken-control min-h-11 min-w-11 font-semibold underline mt-2" onClick={() => fetchPortalPage(activeTab)}>{pt('retry')}</button>
         </div>}
         {/* Section Navigation Tabs */}
-        <div className="flex items-center gap-3 mb-8 border-b border-slate-200 pb-4 overflow-x-auto">
+        <nav aria-label={heading.subtitle} className="kraken-tabs mb-6 flex items-center gap-2 overflow-x-auto border-b border-[#dce6e8] pb-3">
           <button
+            aria-pressed={activeTab === 'requests'}
             onClick={() => setActiveTab('requests')}
-            className={`px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center gap-2 cursor-pointer ${
+            className={`kraken-control min-h-11 min-w-11 px-6 py-3 rounded-2xl font-semibold text-base transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'requests'
-                ? 'bg-[#002D5B] text-white shadow-lg shadow-blue-900/20'
-                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                ? 'bg-[#082b45] text-white shadow-sm '
+                : 'bg-white text-[#526574] hover:bg-[#f4f8f8] border border-[#dce6e8]'
             }`}
           >
             <Clipboard className="w-4 h-4" />
@@ -718,11 +722,12 @@ const Dashboard: React.FC = () => {
           </button>
 
           <button
+            aria-pressed={activeTab === 'careers'}
             onClick={() => setActiveTab('careers')}
-            className={`px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center gap-2 cursor-pointer ${
+            className={`kraken-control min-h-11 min-w-11 px-6 py-3 rounded-2xl font-semibold text-base transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'careers'
-                ? 'bg-[#002D5B] text-white shadow-lg shadow-blue-900/20'
-                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                ? 'bg-[#082b45] text-white shadow-sm '
+                : 'bg-white text-[#526574] hover:bg-[#f4f8f8] border border-[#dce6e8]'
             }`}
           >
             <FileText className="w-4 h-4" />
@@ -730,33 +735,34 @@ const Dashboard: React.FC = () => {
           </button>
 
           {isStaff && <button
+            aria-pressed={activeTab === 'messages'}
             onClick={() => setActiveTab('messages')}
-            className={`px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center gap-2 cursor-pointer ${
+            className={`kraken-control min-h-11 min-w-11 px-6 py-3 rounded-2xl font-semibold text-base transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'messages'
-                ? 'bg-[#002D5B] text-white shadow-lg shadow-blue-900/20'
-                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                ? 'bg-[#082b45] text-white shadow-sm '
+                : 'bg-white text-[#526574] hover:bg-[#f4f8f8] border border-[#dce6e8]'
             }`}
           >
             <Mail className="w-4 h-4" />
             <span>{pt('messages')} ({contactMessages.length})</span>
           </button>}
-        </div>
+        </nav>
 
         {activeTab === 'messages' ? (
           /* ================= MENSAJES DE CONTACTO VIEW ================= */
           <div className="space-y-8 animate-fade-in mb-12">
             {/* Search & Filter Bar */}
-            <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm">
-              <div className="relative flex-1 max-w-md">
+            <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 bg-white p-6 rounded-3xl border border-[#dce6e8] shadow-sm">
+              <div className="relative min-w-0 flex-1">
                 <input
                   type="text"
                   value={messageSearchQuery}
                   onChange={(e) => setMessageSearchQuery(e.target.value)}
                   placeholder="Buscar por nombre, email o asunto..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-4 pr-10 text-sm font-bold text-slate-800 outline-none focus:border-blue-500 focus:bg-white transition-all shadow-sm"
+                  className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3 pl-4 pr-10 text-base font-semibold text-[#082b45] outline-none focus:border-[#087f73] focus:bg-white transition-all shadow-sm"
                 />
                 {messageSearchQuery && (
-                  <button onClick={() => setMessageSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">
+                  <button onClick={() => setMessageSearchQuery('')} className="kraken-control min-h-11 min-w-11 absolute right-3 top-1/2 -translate-y-1/2 text-[#526574] hover:text-[#526574]">
                     <X className="w-4 h-4" />
                   </button>
                 )}
@@ -767,10 +773,10 @@ const Dashboard: React.FC = () => {
                   <button
                     key={st}
                     onClick={() => setMessageFilterStatus(st)}
-                    className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+                    className={`kraken-control min-h-11 min-w-11 px-4 py-2 rounded-xl text-base font-semibold transition-all cursor-pointer ${
                       messageFilterStatus === st
-                        ? 'bg-blue-600 text-white shadow-md'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        ? 'bg-[#087f73] text-white shadow-md'
+                        : 'bg-[#f4f8f8] text-[#526574] hover:bg-slate-200'
                     }`}
                   >
                     {st === 'all' ? 'Todos' : st === 'new' ? 'Nuevos' : 'Atendidos'}
@@ -780,15 +786,15 @@ const Dashboard: React.FC = () => {
             </div>
 
             {loadingMessages ? (
-              <div className="text-center py-12 bg-white rounded-3xl border border-slate-200 shadow-sm">
-                <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-sm font-bold text-slate-500">Cargando mensajes de contacto...</p>
+              <div className="text-center py-12 bg-white rounded-3xl border border-[#dce6e8] shadow-sm">
+                <div className="w-8 h-8 border-4 border-[#087f73] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-base font-semibold text-[#526574]">Cargando mensajes de contacto...</p>
               </div>
             ) : contactMessages.length === 0 ? (
-              <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 shadow-sm p-8">
-                <Mail className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                <h3 className="text-lg font-black text-slate-800">{loadErrors.messages ? pt('loadError') : pt('messages')}</h3>
-                <p className="text-sm text-slate-500 mt-1">Los mensajes enviados desde el formulario de contacto aparecerán aquí.</p>
+              <div className="text-center py-16 bg-white rounded-3xl border border-[#dce6e8] shadow-sm p-8">
+                <Mail className="w-12 h-12 text-[#526574] mx-auto mb-3" />
+                <h3 className="text-lg font-semibold text-[#082b45]">{loadErrors.messages ? pt('loadError') : pt('messages')}</h3>
+                <p className="text-base text-[#526574] mt-1">Los mensajes enviados desde el formulario de contacto aparecerán aquí.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-4">
@@ -803,39 +809,39 @@ const Dashboard: React.FC = () => {
                     <div
                       key={msg.id}
                       className={`p-6 rounded-3xl border transition-all bg-white shadow-sm hover:shadow-md ${
-                        msg.status === 'new' ? 'border-amber-300 bg-amber-50/20' : 'border-slate-200'
+                        msg.status === 'new' ? 'border-amber-300 bg-amber-50/20' : 'border-[#dce6e8]'
                       }`}
                     >
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-100">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-[#dce6e8]">
                         <div className="flex items-center gap-3">
-                          <div className={`p-3 rounded-2xl ${msg.status === 'new' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600'}`}>
+                          <div className={`p-3 rounded-2xl ${msg.status === 'new' ? 'bg-amber-100 text-amber-700' : 'bg-[#f4f8f8] text-[#526574]'}`}>
                             <Mail className="w-5 h-5" />
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <h4 className="font-black text-slate-900 text-base">{msg.name}</h4>
-                              <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full ${
+                              <h4 className="font-semibold text-[#082b45] text-base">{msg.name}</h4>
+                              <span className={`text-sm font-semibold px-2.5 py-0.5 rounded-full ${
                                 msg.status === 'new' ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                               }`}>
                                 {msg.status === 'new' ? 'Nuevo' : 'Atendido'}
                               </span>
                               {msg.language && (
-                                <span className="text-[10px] font-mono font-bold text-slate-400 uppercase bg-slate-100 px-2 py-0.5 rounded-md">
+                                <span className="text-sm font-mono font-semibold text-[#526574] bg-[#f4f8f8] px-2 py-0.5 rounded-md">
                                   {msg.language}
                                 </span>
                               )}
                             </div>
-                            <p className="text-xs text-slate-500 font-medium">{msg.email}</p>
+                            <p className="text-base text-[#526574] font-medium">{msg.email}</p>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-3 self-end md:self-auto">
                           <button
                             onClick={() => handleMessageStatusToggle(msg.id, msg.status)}
-                            className={`px-4 py-2 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer ${
+                            className={`kraken-control min-h-11 min-w-11 px-4 py-2 rounded-xl font-semibold text-base transition-all flex items-center gap-2 cursor-pointer ${
                               msg.status === 'new'
                                 ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm'
-                                : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                                : 'bg-[#f4f8f8] hover:bg-slate-200 text-[#526574]'
                             }`}
                           >
                             <CheckCircle className="w-4 h-4" />
@@ -845,8 +851,8 @@ const Dashboard: React.FC = () => {
                       </div>
 
                       <div className="space-y-2">
-                        <p className="text-xs font-black text-slate-700 uppercase tracking-wider">Asunto: {msg.subject}</p>
-                        <p className="text-sm text-slate-600 whitespace-pre-wrap leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <p className="text-base font-semibold text-[#526574] ">Asunto: {msg.subject}</p>
+                        <p className="text-base text-[#526574] whitespace-pre-wrap leading-relaxed bg-[#f4f8f8] p-4 rounded-2xl border border-[#dce6e8]">
                           {msg.message}
                         </p>
                       </div>
@@ -859,17 +865,17 @@ const Dashboard: React.FC = () => {
           /* ================= MI CARRERA & CVs VIEW ================= */
           <div className="space-y-8 animate-fade-in mb-12">
             {/* Careers Search & Status Filter Bar */}
-            <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm">
-              <div className="relative flex-1 max-w-md">
+            <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 bg-white p-6 rounded-3xl border border-[#dce6e8] shadow-sm">
+              <div className="relative min-w-0 flex-1">
                 <input
                   type="text"
                   value={careerSearchQuery}
                   onChange={(e) => setCareerSearchQuery(e.target.value)}
                   placeholder={dt.searchCareersPlaceholder}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-4 pr-10 text-sm font-bold text-slate-800 outline-none focus:border-blue-500 focus:bg-white transition-all shadow-sm"
+                  className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3 pl-4 pr-10 text-base font-semibold text-[#082b45] outline-none focus:border-[#087f73] focus:bg-white transition-all shadow-sm"
                 />
                 {careerSearchQuery && (
-                  <button onClick={() => setCareerSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">
+                  <button onClick={() => setCareerSearchQuery('')} className="kraken-control min-h-11 min-w-11 absolute right-3 top-1/2 -translate-y-1/2 text-[#526574] hover:text-[#526574]">
                     <X className="w-4 h-4" />
                   </button>
                 )}
@@ -890,10 +896,10 @@ const Dashboard: React.FC = () => {
                     <button
                       key={statusKey}
                       onClick={() => setCareerFilterStatus(statusKey)}
-                      className={`px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all border shrink-0 cursor-pointer ${
+                      className={`kraken-control min-h-11 min-w-11 px-4 py-2.5 rounded-xl text-base font-semibold transition-all border shrink-0 cursor-pointer ${
                         isActive
-                          ? 'bg-[#002D5B] text-white border-blue-900 shadow-md'
-                          : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                          ? 'bg-[#082b45] text-white border-blue-900 shadow-md'
+                          : 'bg-white text-[#526574] border-[#dce6e8] hover:bg-[#f4f8f8]'
                       }`}
                     >
                       {labelMap[statusKey] || statusKey}
@@ -904,15 +910,15 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Candidates Table */}
-            <div className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-sm">
-              <div className="p-6 bg-slate-50/80 border-b border-slate-100 flex items-center justify-between">
+            <div className="kraken-panel bg-white rounded-3xl border border-[#dce6e8] overflow-hidden shadow-sm">
+              <div className="p-6 bg-[#f4f8f8] border-b border-[#dce6e8] flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <span className="p-2.5 bg-blue-100 text-blue-800 rounded-xl">
+                  <span className="p-2.5 bg-blue-100 text-[#087f73] rounded-xl">
                     <FileText className="w-5 h-5" />
                   </span>
                   <div>
-                    <h3 className="font-black text-lg text-slate-900 uppercase tracking-tight">{dt.careersTitle}</h3>
-                    <p className="text-xs text-slate-500 font-bold">
+                    <h3 className="font-semibold text-lg text-[#082b45] ">{dt.careersTitle}</h3>
+                    <p className="text-base text-[#526574] font-semibold">
                       {jobApplications.length} {dt.applicationsReceived}
                     </p>
                   </div>
@@ -921,7 +927,7 @@ const Dashboard: React.FC = () => {
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
-                  <thead className="bg-slate-100/70 text-slate-500 uppercase text-[9px] font-black tracking-[0.2em] border-b border-slate-200">
+                  <thead className="bg-[#f4f8f8] text-[#526574] text-sm font-semibold border-b border-[#dce6e8]">
                     <tr>
                       <th className="px-6 py-4 pl-8">{dt.tableCandidate}</th>
                       <th className="px-6 py-4">{dt.tablePosition}</th>
@@ -935,8 +941,8 @@ const Dashboard: React.FC = () => {
                   <tbody className="text-sm">
                     {loadingCareers ? (
                       <tr>
-                        <td colSpan={7} className="px-8 py-16 text-center text-slate-400 font-bold italic">
-                          <span className="inline-block animate-spin w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full mr-2 align-middle"></span>
+                        <td colSpan={7} className="px-8 py-16 text-center text-[#526574] font-semibold italic">
+                          <span className="inline-block animate-spin w-4 h-4 border-2 border-[#087f73] border-t-transparent rounded-full mr-2 align-middle"></span>
                           {dt.loadingCareers}
                         </td>
                       </tr>
@@ -951,7 +957,7 @@ const Dashboard: React.FC = () => {
                         return matchStatus && matchSearch;
                       }).length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="px-8 py-16 text-center text-slate-400 font-bold">
+                        <td colSpan={7} className="px-8 py-16 text-center text-[#526574] font-semibold">
                           {loadErrors.careers ? pt('loadError') : dt.noCandidatesFound}
                         </td>
                       </tr>
@@ -969,13 +975,13 @@ const Dashboard: React.FC = () => {
                         <tr
                           key={app.id}
                           onClick={() => setSelectedJobApp(app)}
-                          className="border-b border-slate-100 hover:bg-blue-50/40 transition-colors cursor-pointer group"
+                          className="border-b border-[#dce6e8] hover:bg-[#eef7f5] transition-colors cursor-pointer group"
                         >
                           <td className="px-6 py-4 pl-8">
-                            <div className="font-black text-slate-900 group-hover:text-blue-600 transition-colors text-base">
+                            <div className="font-semibold text-[#082b45] group-hover:text-[#087f73] transition-colors text-base">
                               {app.name}
                             </div>
-                            <div className="text-xs text-slate-500 font-mono flex items-center gap-2 mt-0.5">
+                            <div className="text-sm text-[#526574] font-mono flex items-center gap-2 mt-0.5">
                               <span>{app.phone}</span>
                               {app.phone && (
                                 <a
@@ -983,7 +989,7 @@ const Dashboard: React.FC = () => {
                                   target="_blank"
                                   rel="noreferrer"
                                   onClick={(e) => e.stopPropagation()}
-                                  className="text-emerald-600 hover:underline font-bold text-[10px]"
+                                  className="text-emerald-600 hover:underline font-semibold text-sm"
                                 >
                                   WhatsApp
                                 </a>
@@ -991,18 +997,18 @@ const Dashboard: React.FC = () => {
                             </div>
                           </td>
 
-                          <td className="px-6 py-4 font-bold text-slate-800 text-xs">
+                          <td className="px-6 py-4 font-semibold text-[#082b45] text-base">
                             {app.position || 'Solicitud General'}
                           </td>
 
-                          <td className="px-6 py-4 text-xs font-medium text-slate-600">
+                          <td className="px-6 py-4 text-base font-medium text-[#526574]">
                             <div>{app.region || 'Suiza'}</div>
-                            <div className="text-[10px] text-slate-400 font-mono">Permiso: {app.permit || 'No especificado'}</div>
+                            <div className="text-sm text-[#526574] font-mono">Permiso: {app.permit || 'No especificado'}</div>
                           </td>
 
-                          <td className="px-6 py-4 text-xs text-slate-600 font-medium">
+                          <td className="px-6 py-4 text-base text-[#526574] font-medium">
                             <div>{app.startDate || 'Inmediata'}</div>
-                            <div className="text-[10px] text-slate-400">Jornada: {app.pensum || '100%'}</div>
+                            <div className="text-sm text-[#526574]">Jornada: {app.pensum || '100%'}</div>
                           </td>
 
                           <td className="px-6 py-4">
@@ -1015,16 +1021,16 @@ const Dashboard: React.FC = () => {
                                     name: app.cvName || `${app.name.replace(/\s+/g, '_')}_CV.pdf`,
                                     title: `Currículum • ${app.name}`
                                   })}
-                                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 rounded-xl text-xs font-black transition-all shadow-sm cursor-pointer"
+                                  className="kraken-control min-h-11 min-w-11 inline-flex items-center gap-1 px-3 py-1.5 bg-[#eef7f5] hover:bg-blue-100 text-[#087f73] border border-[#c8dedb] rounded-xl text-base font-semibold transition-all shadow-sm cursor-pointer"
                                   title="Visualizar CV en pantalla"
                                 >
-                                  <Eye className="w-3.5 h-3.5 text-blue-600" />
+                                  <Eye className="w-3.5 h-3.5 text-[#087f73]" />
                                   <span>{dt.actionView}</span>
                                 </button>
                                 <button
                                   type="button"
                                   onClick={() => downloadFileSafely(app.cvData!, app.cvName || `${app.name.replace(/\s+/g, '_')}_CV.pdf`)}
-                                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-black transition-all shadow-sm cursor-pointer"
+                                  className="kraken-control min-h-11 min-w-11 inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-base font-semibold transition-all shadow-sm cursor-pointer"
                                   title="Descargar CV seguro"
                                 >
                                   <Download className="w-3.5 h-3.5 text-emerald-600" />
@@ -1032,7 +1038,7 @@ const Dashboard: React.FC = () => {
                                 </button>
                               </div>
                             ) : (
-                              <span className="text-slate-400 text-xs italic">{dt.noFile}</span>
+                              <span className="text-[#526574] text-sm italic">{dt.noFile}</span>
                             )}
                           </td>
 
@@ -1041,9 +1047,9 @@ const Dashboard: React.FC = () => {
                               value={app.status}
                               onClick={(e) => e.stopPropagation()}
                               disabled={!isStaff} onChange={(e) => handleJobAppStatusChange(app.id, e.target.value as any)}
-                              className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border cursor-pointer ${
+                              className={`kraken-field px-3 py-1 rounded-full text-base font-semibold border cursor-pointer ${
                                 app.status === 'Hired' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' :
-                                app.status === 'Contacted' ? 'bg-blue-100 text-blue-800 border-blue-300' :
+                                app.status === 'Contacted' ? 'bg-blue-100 text-[#087f73] border-[#087f73]' :
                                 app.status === 'Reviewed' ? 'bg-purple-100 text-purple-800 border-purple-300' :
                                 app.status === 'Rejected' ? 'bg-rose-100 text-rose-800 border-rose-300' :
                                 'bg-amber-100 text-amber-800 border-amber-300'
@@ -1060,7 +1066,7 @@ const Dashboard: React.FC = () => {
                           <td className="px-6 py-4 text-right pr-8">
                             <button
                               onClick={(e) => { e.stopPropagation(); setSelectedJobApp(app); }}
-                              className="px-3.5 py-1.5 bg-slate-100 hover:bg-blue-600 text-slate-700 hover:text-white rounded-xl text-[10px] font-black uppercase transition-all border border-slate-200"
+                              className="kraken-control min-h-11 min-w-11 px-3.5 py-1.5 bg-[#f4f8f8] hover:bg-[#087f73] text-[#526574] hover:text-white rounded-xl text-base font-semibold transition-all border border-[#dce6e8]"
                             >
                               {dt.viewRecord}
                             </button>
@@ -1077,21 +1083,21 @@ const Dashboard: React.FC = () => {
         /* ================= SERVICE REQUESTS & BORRADORES VIEW ================= */
         <>
         {/* Search, Filter, and Request Trigger bar */}
-        <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center mb-10 gap-4">
-            
+        <div className="kraken-toolbar mb-6 grid gap-3 rounded-2xl border border-[#dce6e8] bg-white p-4 md:grid-cols-[minmax(12rem,1fr)_auto]">
+
             {/* Search Input */}
-            <div className="relative flex-1 max-w-md">
+            <div className="relative min-w-0 flex-1">
                 <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={dt.searchRequestsPlaceholder}
-                    className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 pl-5 pr-12 text-sm text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400 shadow-sm"
+                    className="kraken-field w-full bg-white border border-[#dce6e8] rounded-2xl py-3.5 pl-5 pr-12 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574] shadow-sm"
                 />
                 {searchQuery && (
-                    <button 
+                    <button
                         onClick={() => setSearchQuery('')}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors"
+                        className="kraken-control min-h-11 min-w-11 absolute right-4 top-1/2 -translate-y-1/2 text-[#526574] hover:text-[#526574] transition-colors"
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -1099,26 +1105,27 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Status Filters */}
-            <div className="flex gap-2 self-start md:self-auto overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+            <div className="kraken-filter-options flex gap-2 overflow-x-auto pb-1 md:col-span-2 md:row-start-2 md:flex-wrap">
                 {['all', 'Pending', 'In Progress', 'Completed', 'Draft'].map((status) => {
                     const isActive = (status === 'all' && filterStatus === 'all') || filterStatus === status;
                     const statusColorMap = {
-                        all: 'from-blue-600 to-indigo-600 border-indigo-500/50 text-white shadow-[0_10px_20px_rgba(79,70,229,0.25)]',
-                        Pending: 'from-amber-500 to-orange-500 border-orange-500/50 text-slate-950 shadow-[0_10px_20px_rgba(245,158,11,0.25)]',
-                        'In Progress': 'from-blue-500 to-sky-600 border-sky-500/50 text-white shadow-[0_10px_20px_rgba(14,165,233,0.25)]',
-                        Completed: 'from-emerald-500 to-teal-600 border-teal-500/50 text-white shadow-[0_10px_20px_rgba(16,185,129,0.25)]',
-                        Draft: 'from-purple-600 to-fuchsia-600 border-purple-500/50 text-white shadow-[0_10px_20px_rgba(168,85,247,0.25)]'
+                        all: 'bg-[#082b45] border-[#082b45] text-white',
+                        Pending: 'bg-[#fff7e6] border-[#edd3a3] text-[#7c5c21]',
+                        'In Progress': 'bg-[#eef7f5] border-[#b9d9d2] text-[#07685e]',
+                        Completed: 'bg-[#eaf5ee] border-[#b9d9c4] text-[#26633e]',
+                        Draft: 'bg-[#f4f8f8] border-[#dce6e8] text-[#526574]'
                     };
                     const activeStyle = statusColorMap[status as keyof typeof statusColorMap] || statusColorMap.all;
 
                     return (
                         <button
                             key={status}
+                            aria-pressed={isActive}
                             onClick={() => setFilterStatus(status)}
-                            className={`px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shrink-0 border ${
-                                isActive 
-                                    ? `bg-gradient-to-r ${activeStyle}` 
-                                    : 'bg-white text-slate-500 border-slate-200 hover:text-slate-800 hover:bg-slate-50 hover:border-slate-300 shadow-sm'
+                            className={`kraken-control min-h-11 min-w-11 px-5 py-3 rounded-2xl text-base font-semibold transition-all shrink-0 border ${
+                                isActive
+                                    ? `${activeStyle}`
+                                    : 'bg-white text-[#526574] border-[#dce6e8] hover:text-[#082b45] hover:bg-[#f4f8f8] hover:border-[#dce6e8] shadow-sm'
                             }`}
                         >
                             {status === 'all' ? dt.allRequests : status === 'Draft' ? dt.draftsFilter : status === 'Pending' ? dt.statusPending : status === 'In Progress' ? dt.statusInProgress : status === 'Completed' ? dt.statusCompleted : status}
@@ -1128,11 +1135,11 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Action Trigger */}
-            <motion.button 
+            <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setIsFormOpen(!isFormOpen)}
-                className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3.5 rounded-2xl shadow-[0_20px_40px_rgba(37,99,235,0.15)] flex items-center justify-center gap-3 transition-all font-black text-[11px] uppercase tracking-[0.2em] shrink-0 cursor-pointer"
+                className="kraken-control min-h-11 min-w-11 bg-[#087f73] hover:bg-[#087f73] text-white px-8 py-3.5 rounded-2xl shadow-sm flex items-center justify-center gap-3 transition-all font-semibold text-base shrink-0 cursor-pointer"
             >
                 <PlusIcon className="w-5 h-5" />
                 {isFormOpen ? dt.hidePortal : isStaff ? dt.enterCustomService : dt.addNewRequest}
@@ -1140,37 +1147,37 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Main Work Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
             {/* Left Column: Form Intake (Animate Slot) */}
             <AnimatePresence>
               {isFormOpen && (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, x: -30 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -30 }}
                     className="lg:col-span-1"
                   >
-                      <div className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-sm">
-                          <div className="p-8 bg-slate-50/80 border-b border-slate-100">
-                              <h3 className="font-black text-xl uppercase tracking-tight text-slate-800">
+                      <div className="kraken-panel bg-white rounded-3xl border border-[#dce6e8] overflow-hidden shadow-sm">
+                          <div className="p-8 bg-[#f4f8f8] border-b border-[#dce6e8]">
+                              <h3 className="font-semibold text-xl text-[#082b45]">
                                   {isStaff ? dt.directStaffEntry : dt.newServiceRequest}
                               </h3>
-                              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">
+                              <p className="text-base font-semibold text-[#526574] mt-1">
                                   {isStaff ? dt.recordB2BAppointments : dt.enterPropertyDetails}
                               </p>
                           </div>
-                          
-                          <form onSubmit={handleSubmit} className="p-8 space-y-5">
+
+                          <form onSubmit={handleSubmit} className="kraken-form p-8 space-y-5">
                               {isStaff ? (
                                   <>
                                       {/* Client Name */}
                                       <div className="space-y-1.5">
-                                          <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.clientName}</label>
-                                          <input 
-                                              type="text" 
+                                          <label htmlFor="dashboard-field-1" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.clientName}</label>
+                                          <input id="dashboard-field-1"
+                                              type="text"
                                               required
-                                              className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400" 
+                                              className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574]"
                                               placeholder={dt.clientNamePlaceholder}
                                               value={newRequest.client}
                                               onChange={e => setNewRequest({...newRequest, client: e.target.value})}
@@ -1180,22 +1187,22 @@ const Dashboard: React.FC = () => {
                                       {/* Contact Email & Phone */}
                                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                           <div className="space-y-1.5">
-                                              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-3">{dt.clientEmail}</label>
-                                              <input 
-                                                  type="email" 
+                                              <label htmlFor="dashboard-field-2" className="kraken-label block text-sm font-semibold text-[#526574] ml-3">{dt.clientEmail}</label>
+                                              <input id="dashboard-field-2"
+                                                  type="email"
                                                   required={isStaff}
-                                                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-xs text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400" 
+                                                  className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-4 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574]"
                                                   placeholder="name@mail.com"
                                                   value={newRequest.email}
                                                   onChange={e => setNewRequest({...newRequest, email: e.target.value})}
                                               />
                                           </div>
                                           <div className="space-y-1.5">
-                                              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-3">{dt.telephone}</label>
-                                              <input 
-                                                  type="text" 
+                                              <label htmlFor="dashboard-field-3" className="kraken-label block text-sm font-semibold text-[#526574] ml-3">{dt.telephone}</label>
+                                              <input id="dashboard-field-3"
+                                                  type="text"
                                                   required
-                                                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-xs text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400" 
+                                                  className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-4 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574]"
                                                   placeholder="+41 79..."
                                                   value={newRequest.phone}
                                                   onChange={e => setNewRequest({...newRequest, phone: e.target.value})}
@@ -1206,11 +1213,11 @@ const Dashboard: React.FC = () => {
                               ) : (
                                   /* Clean, streamlined layout for Clients */
                                   <div className="space-y-1.5">
-                                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.telephone}</label>
-                                      <input 
-                                          type="text" 
+                                      <label htmlFor="dashboard-field-4" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.telephone}</label>
+                                      <input id="dashboard-field-4"
+                                          type="text"
                                           required
-                                          className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400" 
+                                          className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574]"
                                           placeholder="+41 79..."
                                           value={newRequest.phone}
                                           onChange={e => setNewRequest({...newRequest, phone: e.target.value})}
@@ -1220,10 +1227,10 @@ const Dashboard: React.FC = () => {
 
                               {/* Physical Address */}
                               <div className="space-y-1.5">
-                                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.serviceAddress}</label>
-                                  <input 
-                                      type="text" 
-                                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400" 
+                                  <label htmlFor="dashboard-field-5" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.serviceAddress}</label>
+                                  <input id="dashboard-field-5"
+                                      type="text"
+                                      className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574]"
                                       placeholder={dt.serviceAddressPlaceholder}
                                       value={newRequest.address}
                                       onChange={e => setNewRequest({...newRequest, address: e.target.value})}
@@ -1232,55 +1239,55 @@ const Dashboard: React.FC = () => {
 
                               {/* Service Selection */}
                               <div className="space-y-1.5">
-                                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.serviceClassification}</label>
-                                  <select 
-                                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all appearance-none"
+                                  <label htmlFor="dashboard-field-6" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.serviceClassification}</label>
+                                  <select id="dashboard-field-6"
+                                      className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all appearance-none"
                                       value={newRequest.service}
                                       onChange={e => setNewRequest({...newRequest, service: e.target.value})}
                                       required
                                   >
                                       <option value="">{dt.selectLineOfWork}</option>
-                                      <option value="End of Tenancy Deluxe">End of Tenancy Deluxe (+ Handover Guarantee)</option>
-                                      <option value="B2B Commercial Cleaning">B2B Commercial Cleaning (Office/Enterprise)</option>
-                                      <option value="Regular Deep Cleaning">Regular Deep Cleaning (Residential)</option>
-                                      <option value="Professional Car Detailing">Professional Car Detailing (Mobile Dry-Soap)</option>
-                                      <option value="Facade & Glass Restoration">Facade & Glass Restoration (Facility)</option>
-                                      <option value="Emergency Rapid Cleanup">Emergency Rapid Cleanup</option>
+                                      <option value="End of Tenancy Deluxe">{portalOptionLabel(language, 'End of Tenancy Deluxe')}</option>
+                                      <option value="B2B Commercial Cleaning">{portalOptionLabel(language, 'B2B Commercial Cleaning')}</option>
+                                      <option value="Regular Deep Cleaning">{portalOptionLabel(language, 'Regular Deep Cleaning')}</option>
+                                      <option value="Professional Car Detailing">{portalOptionLabel(language, 'Professional Car Detailing')}</option>
+                                      <option value="Facade & Glass Restoration">{portalOptionLabel(language, 'Facade & Glass Restoration')}</option>
+                                      <option value="Emergency Rapid Cleanup">{portalOptionLabel(language, 'Emergency Rapid Cleanup')}</option>
                                   </select>
                               </div>
 
                               {/* Date & Priority */}
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                   <div className="space-y-1.5">
-                                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.executionDate}</label>
-                                      <input 
-                                          type="date" 
+                                      <label htmlFor="dashboard-field-7" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.executionDate}</label>
+                                      <input id="dashboard-field-7"
+                                          type="date"
                                           required
-                                          className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-xs text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-slate-700" 
+                                          className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-4 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all text-[#526574]"
                                           value={newRequest.date}
                                           onChange={e => setNewRequest({...newRequest, date: e.target.value})}
                                       />
                                   </div>
                                   <div className="space-y-1.5">
-                                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.priority}</label>
-                                      <select 
-                                          className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-xs text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all appearance-none"
+                                      <label htmlFor="dashboard-field-8" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.priority}</label>
+                                      <select id="dashboard-field-8"
+                                          className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-4 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all appearance-none"
                                           disabled={!isStaff} value={newRequest.priority}
                                           onChange={e => setNewRequest({...newRequest, priority: e.target.value as any})}
                                       >
-                                          <option value="Low">Low</option>
-                                          <option value="Medium">Medium</option>
-                                          <option value="High">High</option>
+                                          <option value="Low">{portalOptionLabel(language, 'Low')}</option>
+                                          <option value="Medium">{portalOptionLabel(language, 'Medium')}</option>
+                                          <option value="High">{portalOptionLabel(language, 'High')}</option>
                                       </select>
                                   </div>
                               </div>
 
                               {/* Staff estimates do not establish payment. */}
                               <div hidden={!isStaff} className="space-y-1.5">
-                                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.budgetQuotedPrice}</label>
-                                  <input 
-                                      type="number" 
-                                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400" 
+                                  <label htmlFor="dashboard-field-9" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.budgetQuotedPrice}</label>
+                                  <input id="dashboard-field-9"
+                                      type="number"
+                                      className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574]"
                                       placeholder={dt.budgetPlaceholder}
                                       min={0} max={1000000} step="0.01" value={newRequest.amount}
                                       onChange={e => setNewRequest({...newRequest, amount: e.target.value})}
@@ -1289,10 +1296,10 @@ const Dashboard: React.FC = () => {
 
                               {/* Notes */}
                               <div className="space-y-1.5">
-                                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.operationalNotes}</label>
-                                  <textarea 
+                                  <label htmlFor="dashboard-field-10" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.operationalNotes}</label>
+                                  <textarea id="dashboard-field-10"
                                       rows={2}
-                                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 px-5 text-xs text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400"
+                                      className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574]"
                                       placeholder={dt.notesPlaceholder}
                                       value={newRequest.notes}
                                       onChange={e => setNewRequest({...newRequest, notes: e.target.value})}
@@ -1301,21 +1308,21 @@ const Dashboard: React.FC = () => {
 
                               {/* Custom Media Attachment URL */}
                               <div className="space-y-1.5">
-                                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.externalImageLinks}</label>
-                                  <input 
-                                      type="text" 
-                                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-xs text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400" 
+                                  <label htmlFor="dashboard-field-11" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.externalImageLinks}</label>
+                                  <input id="dashboard-field-11"
+                                      type="text"
+                                      className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574]"
                                       placeholder="https://example.com/photo1.jpg, https://example.com/photo2.png"
                                       value={newRequest.mediaUrlString}
                                       onChange={e => setNewRequest({...newRequest, mediaUrlString: e.target.value})}
                                   />
                               </div>
 
-                              <motion.button 
+                              <motion.button
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
-                                type="submit" 
-                                className="w-full py-4.5 bg-blue-600 text-white rounded-2xl font-black text-[11px] uppercase tracking-[0.25em] shadow-[0_20px_40px_rgba(37,99,235,0.15)] transition-all mt-3"
+                                type="submit"
+                                className="kraken-control min-h-11 w-full py-4.5 bg-[#087f73] text-white rounded-2xl font-semibold text-base shadow-sm transition-all mt-3"
                               >
                                 {dt.submitRequestRecord}
                               </motion.button>
@@ -1326,34 +1333,34 @@ const Dashboard: React.FC = () => {
             </AnimatePresence>
 
             {/* Right Column: Central Submissions Grid and Queue */}
-            <div className={`${isFormOpen ? 'lg:col-span-2' : 'lg:col-span-3'} transition-all duration-700`}>
-                
+            <div className={`${isFormOpen ? 'lg:col-span-2' : 'lg:col-span-3'} transition-all duration-200`}>
+
                 {/* Visual Header describing Queue Scope */}
-                <div className="bg-white p-5 rounded-[2.5rem] border border-slate-200 mb-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-black uppercase tracking-wider text-slate-500 shadow-sm">
+                <div className="bg-white p-5 rounded-3xl border border-[#dce6e8] mb-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm font-semibold text-[#526574] shadow-sm">
                     <div className="flex items-center gap-3">
-                        <span className="p-2.5 bg-blue-50 text-blue-600 rounded-2xl border border-blue-100">
+                        <span className="p-2.5 bg-[#eef7f5] text-[#087f73] rounded-2xl border border-[#c8dedb]">
                             <Clipboard className="w-4 h-4" />
                         </span>
                         <span>{dt.showingIncidents.replace('{filtered}', String(filteredRequests.length)).replace('{total}', String(totalSubmissions))}</span>
                     </div>
                     <div className="flex flex-wrap gap-4">
-                        <span className="flex items-center gap-2 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200/60 text-[9px] text-amber-700 font-bold"><span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span> {dt.statusPending}</span>
-                        <span className="flex items-center gap-2 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-200/60 text-[9px] text-blue-700 font-bold"><span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping"></span> {dt.statusInProgress}</span>
-                        <span className="flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200/60 text-[9px] text-emerald-700 font-bold"><span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> {dt.statusCompleted}</span>
+                        <span className="flex items-center gap-2 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200/60 text-sm text-amber-700 font-semibold"><span className="w-1.5 h-1.5 bg-amber-500 rounded-full "></span> {dt.statusPending}</span>
+                        <span className="flex items-center gap-2 bg-[#eef7f5] px-3 py-1.5 rounded-xl border border-[#c8dedb] text-sm text-[#087f73] font-semibold"><span className="w-1.5 h-1.5 bg-[#087f73] rounded-full "></span> {dt.statusInProgress}</span>
+                        <span className="flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200/60 text-sm text-emerald-700 font-semibold"><span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> {dt.statusCompleted}</span>
                     </div>
                 </div>
 
-                <div className="md:hidden space-y-4 mb-5">
-                  {loading ? <p role="status" className="p-6 bg-white rounded-2xl">{pt('loading')}</p> : filteredRequests.length === 0 ? <p className="p-6 bg-white rounded-2xl">{loadErrors.requests ? pt('loadError') : dt.noRequestsFound}</p> : filteredRequests.map(request => <article key={request.id} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
-                    <div className="flex justify-between gap-3"><h3 className="font-black text-[#032b59] min-w-0 [overflow-wrap:anywhere]">{request.service}</h3><span className="text-xs text-slate-600 shrink-0">{request.status === 'Pending' ? dt.statusPending : request.status === 'In Progress' ? dt.statusInProgress : request.status === 'Completed' ? dt.statusCompleted : dt.draftLabel}</span></div>
-                    <p className="text-sm break-words">{request.client}</p><p className="text-sm text-slate-600">{request.date || '—'} · {amountText(request)}</p>
-                    <button type="button" onClick={() => setSelectedRequest(request)} className="w-full bg-blue-700 text-white rounded-xl px-4 py-3 font-bold">{dt.actions}</button>
+                <div className="lg:hidden space-y-4 mb-5">
+                  {loading ? <p role="status" className="p-6 bg-white rounded-2xl">{pt('loading')}</p> : filteredRequests.length === 0 ? <p className="p-6 bg-white rounded-2xl">{loadErrors.requests ? pt('loadError') : dt.noRequestsFound}</p> : filteredRequests.map(request => <article key={request.id} className="bg-white border border-[#dce6e8] rounded-2xl p-5 shadow-sm space-y-3">
+                    <div className="flex justify-between gap-3"><h3 className="font-semibold text-[#082b45] min-w-0 [overflow-wrap:anywhere]">{request.service}</h3><span className="text-sm text-[#526574] shrink-0">{request.status === 'Pending' ? dt.statusPending : request.status === 'In Progress' ? dt.statusInProgress : request.status === 'Completed' ? dt.statusCompleted : dt.draftLabel}</span></div>
+                    <p className="text-base break-words">{request.client}</p><p className="text-base text-[#526574]">{request.date || '—'} · {amountText(request)}</p>
+                    <button type="button" onClick={() => setSelectedRequest(request)} className="kraken-control min-h-11 w-full bg-[#087f73] text-white rounded-xl px-4 py-3 font-semibold">{dt.actions}</button>
                   </article>)}
                 </div>
-                <div className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-sm">
-                    <div className="hidden md:block overflow-x-auto">
+                <div className="kraken-panel bg-white rounded-3xl border border-[#dce6e8] overflow-hidden shadow-sm">
+                    <div className="hidden lg:block overflow-x-auto">
                         <table className="w-full text-left border-collapse">
-                            <thead className="bg-slate-50 text-slate-500 uppercase text-[9px] font-black tracking-[0.3em] border-b border-slate-100">
+                            <thead className="bg-[#f4f8f8] text-[#526574] text-sm font-semibold border-b border-[#dce6e8]">
                                 <tr>
                                     <th className="px-6 py-5 pl-8">{dt.tableServiceID}</th>
                                     <th className="px-6 py-5">{dt.tableClientContact}</th>
@@ -1367,14 +1374,14 @@ const Dashboard: React.FC = () => {
                             <tbody className="text-sm">
                                 {loading ? (
                                     <tr>
-                                        <td colSpan={7} className="px-8 py-20 text-center text-slate-400 italic font-bold">
-                                            <span className="inline-block animate-spin w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full mr-3 align-middle"></span>
+                                        <td colSpan={7} className="px-8 py-20 text-center text-[#526574] italic font-semibold">
+                                            <span className="inline-block animate-spin w-5 h-5 border-2 border-[#087f73] border-t-transparent rounded-full mr-3 align-middle"></span>
                                             {dt.loadingRequests}
                                         </td>
                                     </tr>
                                 ) : filteredRequests.length === 0 ? (
                                     <tr>
-                                        <td colSpan={7} className="px-8 py-20 text-center text-slate-400 font-bold">
+                                        <td colSpan={7} className="px-8 py-20 text-center text-[#526574] font-semibold">
                                             {loadErrors.requests ? pt('loadError') : dt.noRequestsFound}
                                         </td>
                                     </tr>
@@ -1382,118 +1389,115 @@ const Dashboard: React.FC = () => {
                                     filteredRequests.map((req, idx) => {
                                         const hasMedia = req.mediaUrls && req.mediaUrls.length > 0;
                                         return (
-                                            <motion.tr 
-                                              key={req.id} 
+                                            <motion.tr
+                                              key={req.id}
                                               initial={{ opacity: 0, y: 8 }}
                                               animate={{ opacity: 1, y: 0 }}
                                               transition={{ delay: idx * 0.03 }}
                                               onClick={() => setSelectedRequest(req)}
-                                              className={`border-b border-slate-100 hover:bg-slate-50/50 transition-all cursor-pointer group ${
-                                                  selectedRequest?.id === req.id ? 'bg-blue-50' : ''
+                                              className={`border-b border-[#dce6e8] hover:bg-[#f4f8f8] transition-all cursor-pointer group ${
+                                                  selectedRequest?.id === req.id ? 'bg-[#eef7f5]' : ''
                                               }`}
                                             >
                                                 {/* ID */}
-                                                <td className="px-6 py-5 pl-8 font-mono text-[9px] text-slate-400 whitespace-nowrap">
+                                                <td className="px-6 py-5 pl-8 font-mono text-base text-[#526574] whitespace-nowrap">
                                                     #{req.id.substring(0, 8).toUpperCase()}
                                                 </td>
-                                                
+
                                                 {/* Client Name */}
-                                                <td className="px-6 py-5 font-black text-slate-800 group-hover:text-blue-600 transition-colors uppercase tracking-tight">
+                                                <td className="px-6 py-5 font-semibold text-[#082b45] group-hover:text-[#087f73] transition-colors ">
                                                     <div className="flex flex-col">
-                                                        <span className="text-slate-800 group-hover:text-blue-600 transition-colors">{req.client}</span>
+                                                        <span className="text-[#082b45] group-hover:text-[#087f73] transition-colors">{req.client}</span>
                                                         {isStaff && req.email && (
-                                                            <span className="text-[10px] text-slate-500 normal-case font-medium mt-0.5 lowercase truncate max-w-[150px]">{req.email}</span>
+                                                            <span className="text-sm text-[#526574] normal-case font-medium mt-0.5 lowercase truncate max-w-[150px]">{req.email}</span>
                                                         )}
                                                     </div>
                                                 </td>
-                                                
+
                                                 {/* Service Name */}
                                                 <td className="px-6 py-5">
                                                     <div className="flex flex-col gap-1">
-                                                        <span className="font-bold text-slate-700 text-xs">{req.service}</span>
-                                                        <span className="text-[10px] text-emerald-600 font-mono font-black mt-0.5">{amountText(req)}</span>
+                                                        <span className="font-semibold text-[#526574] text-sm">{req.service}</span>
+                                                        <span className="text-sm text-emerald-600 font-mono font-semibold mt-0.5">{amountText(req)}</span>
                                                     </div>
                                                 </td>
-                                                
+
                                                 {/* Date */}
-                                                <td className="px-6 py-5 text-slate-500 font-mono text-xs whitespace-nowrap">
+                                                <td className="px-6 py-5 text-[#526574] font-mono text-base whitespace-nowrap">
                                                     <div className="flex items-center gap-1.5">
-                                                        <ClockIcon className="w-3.5 h-3.5 text-slate-300" />
+                                                        <ClockIcon className="w-3.5 h-3.5 text-[#526574]" />
                                                         <span>{req.date}</span>
                                                     </div>
                                                 </td>
- 
+
                                                 {/* Media uploads indicator */}
                                                 <td className="px-6 py-5">
                                                     {hasMedia ? (
-                                                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider bg-blue-50 text-blue-600 border border-blue-100">
+                                                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold bg-[#eef7f5] text-[#087f73] border border-[#c8dedb]">
                                                             <ImageIcon className="w-3.5 h-3.5" />
                                                             {req.mediaUrls?.length} {req.mediaUrls && req.mediaUrls.length > 1 ? dt.attachments : dt.attachment}
                                                         </span>
                                                     ) : (
-                                                        <span className="text-slate-350 text-xs">—</span>
+                                                        <span className="text-slate-350 text-sm">—</span>
                                                     )}
                                                 </td>
-                                                
+
                                                 {/* Status pill with click to next step */}
                                                 <td className="px-6 py-5">
-                                                    <span 
+                                                    <span
                                                         onClick={(e) => handleStatusChange(req.id, req.status, e)}
-                                                        className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest cursor-pointer select-none transition-all border whitespace-nowrap ${
+                                                        className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-semibold cursor-pointer select-none transition-all border whitespace-nowrap ${
                                                             req.status === 'Completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-sm' :
-                                                            req.status === 'In Progress' ? 'bg-blue-50 text-blue-700 border-blue-200 shadow-sm' :
+                                                            req.status === 'In Progress' ? 'bg-[#eef7f5] text-[#087f73] border-[#c8dedb] shadow-sm' :
                                                             req.status === 'Draft' ? 'bg-purple-50 text-purple-800 border-purple-200 shadow-sm' :
                                                             'bg-amber-50 text-amber-700 border-amber-200 shadow-sm'
                                                         }`}
                                                     >
-                                                        {req.status === 'In Progress' && <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping"></span>}
-                                                        {req.status === 'Pending' && <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></span>}
+                                                        {req.status === 'In Progress' && <span className="w-1.5 h-1.5 bg-[#087f73] rounded-full "></span>}
+                                                        {req.status === 'Pending' && <span className="w-1.5 h-1.5 bg-amber-500 rounded-full "></span>}
                                                         {req.status === 'Completed' && <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>}
-                                                        {req.status === 'Draft' && <span className="w-1.5 h-1.5 bg-purple-500 rounded-full animate-bounce"></span>}
+                                                        {req.status === 'Draft' && <span className="w-1.5 h-1.5 bg-purple-500 rounded-full "></span>}
                                                         {req.status === 'Draft' ? dt.draftLabel : req.status === 'Pending' ? dt.statusPending : req.status === 'In Progress' ? dt.statusInProgress : req.status === 'Completed' ? dt.statusCompleted : req.status}
                                                     </span>
                                                 </td>
-                                                
+
                                                 {/* actions */}
-                                                <td className="px-6 py-5 text-right pr-8 w-20">
-                                                    <div className="flex items-center justify-end gap-1.5" >
+                                                <td className="min-w-[220px] w-[220px] px-3 py-4 text-right">
+                                                    <div className="flex flex-nowrap items-center justify-end gap-1 [overflow-wrap:normal]" >
                                                          <motion.button
                                                            whileHover={{ scale: 1.08 }}
                                                            whileTap={{ scale: 0.95 }}
                                                            onClick={(e) => { e.stopPropagation(); setSelectedRequest(req); }}
-                                                           className="px-3.5 py-1.5 bg-slate-100 hover:bg-blue-600 rounded-xl text-slate-500 hover:text-white transition-all text-[10px] font-black uppercase tracking-wider cursor-pointer border border-slate-200/45"
-                                                           title="Open full inspector details"
+                                                           className="kraken-control h-11 w-11 min-h-11 min-w-11 shrink-0 p-0 inline-flex items-center justify-center bg-[#f4f8f8] hover:bg-[#087f73] rounded-xl text-[#526574] hover:text-white transition-colors border border-[#dce6e8]"
+                                                           aria-label={portalActionText(language, 'details')} title={portalActionText(language, 'details')}
                                                          >
-                                                             Info
+                                                             <Eye aria-hidden="true" className="h-5 w-5" />
                                                          </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={(e) => { e.stopPropagation(); handleSendEmail(req); }}
-                    className="px-3.5 py-1.5 bg-blue-50 hover:bg-[#0f1b2d] rounded-xl text-blue-500 hover:text-[#00d4ff] text-[9px] font-black uppercase tracking-wider transition-all duration-150 flex items-center gap-1"
-                    hidden={!isStaff} title="Send Cost Confirmation Email"
+                    className="kraken-control h-11 w-11 min-h-11 min-w-11 shrink-0 p-0 inline-flex items-center justify-center bg-[#eef7f5] hover:bg-[#dceee9] rounded-xl text-[#087f73] transition-colors"
+                    hidden={!isStaff} aria-label={dt.sendCostConfirmation} title={dt.sendCostConfirmation}
                   >
-                    <Mail size={11} /> Email
+                    <Mail aria-hidden="true" size={20} />
                   </motion.button>
-                  {confirmationStatuses[req.id] === 'confirmed' && (
-                    <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-[8px] font-black">{pt('localNote')}</span>
-                  )}
                   <motion.button
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={(e) => { e.stopPropagation(); markConfirmed(req.id, confirmationStatuses[req.id] === 'confirmed' ? 'none' : 'confirmed'); }}
-                    className={`px-3.5 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all flex items-center gap-1 ${confirmationStatuses[req.id] === 'confirmed' ? 'bg-green-100 text-green-700' : 'bg-slate-100 hover:bg-green-50 text-slate-400 hover:text-green-600'}`}
-                    hidden={!isStaff} title={pt('localNote')}
+                    className={`kraken-control h-11 w-11 min-h-11 min-w-11 shrink-0 p-0 inline-flex items-center justify-center rounded-xl transition-colors ${confirmationStatuses[req.id] === 'confirmed' ? 'bg-green-100 text-green-700' : 'bg-[#f4f8f8] hover:bg-green-50 text-[#526574] hover:text-green-600'}`}
+                    hidden={!isStaff} aria-label={pt('localNote')} aria-pressed={confirmationStatuses[req.id] === 'confirmed'} title={pt('localNote')}
                   >
-                    <Check size={11} /> {pt('localNote')}
+                    <Check aria-hidden="true" size={20} />
                   </motion.button>
                                                          {((isStaff && !req.payment) || (!isStaff && !req.checkout && ['Draft', 'Pending'].includes(req.status))) && (
-                                                             <motion.button 
+                                                             <motion.button
                                                                  whileHover={{ scale: 1.15, color: "#f43f5e" }}
                                                                  whileTap={{ scale: 0.8 }}
                                                                  onClick={(e) => handleDelete(req.id, e)}
-                                                                 className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all cursor-pointer"
-                                                                 title="Delete Quote Record"
+                                                                 className="kraken-control min-h-11 min-w-11 p-2 text-[#526574] hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all cursor-pointer"
+                                                                 aria-label={dt.deleteRequestLedger} title={dt.deleteRequestLedger}
                                                              >
                                                                  <TrashIcon className="w-4 h-4" />
                                                              </motion.button>
@@ -1513,11 +1517,11 @@ const Dashboard: React.FC = () => {
         </>
         )}
 
-        {hasMore[activeTab] && <div className="flex justify-center my-8"><button type="button" disabled={isPageLoading} onClick={() => fetchPortalPage(activeTab, true)} className="px-6 py-3 rounded-2xl bg-blue-700 text-white font-bold disabled:opacity-50">{isPageLoading ? pt('loading') : pt('more')}</button></div>}
+        {hasMore[activeTab] && <div className="flex justify-center my-8"><button type="button" disabled={isPageLoading} onClick={() => fetchPortalPage(activeTab, true)} className="kraken-control min-h-11 min-w-11 px-6 py-3 rounded-2xl bg-[#087f73] text-white font-semibold disabled:opacity-50">{isPageLoading ? pt('loading') : pt('more')}</button></div>}
         {/* Dynamic Detail-Inspector Overlay Modal for Service Requests */}
         <AnimatePresence>
             {selectedRequest && (
-                <DetailInspectorModal 
+                <DetailInspectorModal
                     selectedRequest={selectedRequest}
                     setSelectedRequest={setSelectedRequest}
                     isStaff={isStaff}
@@ -1532,72 +1536,72 @@ const Dashboard: React.FC = () => {
         {/* Dynamic Candidate Inspector Modal for Mi Carrera / Job Applications */}
         <AnimatePresence>
             {selectedJobApp && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-white w-full max-w-2xl rounded-[2.5rem] border border-slate-200 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
-                        <div className="p-6 bg-[#002D5B] text-white flex items-center justify-between">
+                <div className="kraken-portal kraken-overlay fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-white w-full max-w-2xl rounded-3xl border border-[#dce6e8] shadow-sm overflow-hidden max-h-[90vh] flex flex-col">
+                        <div className="kraken-dialog-header p-5 bg-[#eef7f5] text-[#082b45] flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="p-3 bg-white/10 rounded-2xl">
-                                    <User className="w-6 h-6 text-blue-300" />
+                                    <User className="w-6 h-6 text-[#087f73]" />
                                 </div>
                                 <div>
-                                    <h3 className="font-black text-xl">{selectedJobApp.name}</h3>
-                                    <p className="text-xs text-blue-200 font-bold">{selectedJobApp.position || dt.tablePosition}</p>
+                                    <h3 className="font-semibold text-xl">{selectedJobApp.name}</h3>
+                                    <p className="text-base text-[#526574] font-semibold">{selectedJobApp.position || dt.tablePosition}</p>
                                 </div>
                             </div>
-                            <button
+                            <button type="button" aria-label={portalActionText(language, 'close')}
                                 onClick={() => setSelectedJobApp(null)}
-                                className="p-2 hover:bg-white/10 rounded-full transition-colors text-white cursor-pointer"
+                                className="kraken-control min-h-11 min-w-11 p-2 hover:bg-white/10 rounded-full transition-colors text-[#082b45] cursor-pointer"
                             >
                                 <X className="w-6 h-6" />
                             </button>
                         </div>
 
-                        <div className="p-8 overflow-y-auto space-y-6 text-slate-800 text-sm">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-5 rounded-2xl border border-slate-200">
+                        <div className="p-8 overflow-y-auto space-y-6 text-[#082b45] text-sm">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#f4f8f8] p-5 rounded-2xl border border-[#dce6e8]">
                                 <div>
-                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">{dt.phoneContact}</span>
-                                    <span className="font-black text-slate-900 text-base">{selectedJobApp.phone}</span>
+                                    <span className="text-sm font-semibold text-[#526574] block ">{dt.phoneContact}</span>
+                                    <span className="font-semibold text-[#082b45] text-base">{selectedJobApp.phone}</span>
                                 </div>
                                 <div>
-                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">{dt.workPermit}</span>
-                                    <span className="font-bold text-slate-800">{selectedJobApp.permit || dt.noRecordsFound}</span>
+                                    <span className="text-sm font-semibold text-[#526574] block ">{dt.workPermit}</span>
+                                    <span className="font-semibold text-[#082b45]">{selectedJobApp.permit || dt.noRecordsFound}</span>
                                 </div>
                                 <div>
-                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">{dt.regionCanton}</span>
-                                    <span className="font-bold text-slate-800">{selectedJobApp.region || 'Schweiz'}</span>
+                                    <span className="text-sm font-semibold text-[#526574] block ">{dt.regionCanton}</span>
+                                    <span className="font-semibold text-[#082b45]">{selectedJobApp.region || 'Schweiz'}</span>
                                 </div>
                                 <div>
-                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">{dt.incorporation}</span>
-                                    <span className="font-bold text-slate-800">{selectedJobApp.startDate || dt.tableIncorporation}</span>
+                                    <span className="text-sm font-semibold text-[#526574] block ">{dt.incorporation}</span>
+                                    <span className="font-semibold text-[#082b45]">{selectedJobApp.startDate || dt.tableIncorporation}</span>
                                 </div>
                                 <div>
-                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">{dt.desiredWorkload}</span>
-                                    <span className="font-bold text-slate-800">{selectedJobApp.pensum || '100%'}</span>
+                                    <span className="text-sm font-semibold text-[#526574] block ">{dt.desiredWorkload}</span>
+                                    <span className="font-semibold text-[#082b45]">{selectedJobApp.pensum || '100%'}</span>
                                 </div>
                                 <div>
-                                    <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">{dt.certificatesDriving}</span>
-                                    <span className="font-bold text-slate-800">{selectedJobApp.certificates || '-'}</span>
+                                    <span className="text-sm font-semibold text-[#526574] block ">{dt.certificatesDriving}</span>
+                                    <span className="font-semibold text-[#082b45]">{selectedJobApp.certificates || '-'}</span>
                                 </div>
                             </div>
 
                             {selectedJobApp.languages && (
                                 <div>
-                                    <span className="text-xs font-black uppercase text-slate-400 block tracking-wider mb-1">{dt.languages}</span>
-                                    <p className="p-3 bg-slate-50 rounded-xl text-slate-700 font-medium border border-slate-200">{selectedJobApp.languages}</p>
+                                    <span className="text-sm font-semibold text-[#526574] block mb-1">{dt.languages}</span>
+                                    <p className="p-3 bg-[#f4f8f8] rounded-xl text-[#526574] font-medium border border-[#dce6e8]">{selectedJobApp.languages}</p>
                                 </div>
                             )}
 
                             {selectedJobApp.message && (
                                 <div>
-                                    <span className="text-xs font-black uppercase text-slate-400 block tracking-wider mb-1">{dt.presentation}</span>
-                                    <p className="p-4 bg-slate-50 rounded-xl text-slate-700 italic border border-slate-200 whitespace-pre-wrap">{selectedJobApp.message}</p>
+                                    <span className="text-sm font-semibold text-[#526574] block mb-1">{dt.presentation}</span>
+                                    <p className="p-4 bg-[#f4f8f8] rounded-xl text-[#526574] italic border border-[#dce6e8] whitespace-pre-wrap">{selectedJobApp.message}</p>
                                 </div>
                             )}
 
-                            <div className="p-5 bg-blue-50/60 rounded-2xl border border-blue-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div className="p-5 bg-[#eef7f5] rounded-2xl border border-[#c8dedb] flex flex-col sm:flex-row items-center justify-between gap-4">
                                 <div>
-                                    <span className="text-xs font-black text-blue-900 uppercase block">{dt.cvDocument}</span>
-                                    <span className="text-xs text-blue-700 font-mono font-bold">{selectedJobApp.cvName || dt.tableCV}</span>
+                                    <span className="text-sm font-semibold text-[#087f73] block">{dt.cvDocument}</span>
+                                    <span className="text-sm text-[#087f73] font-mono font-semibold">{selectedJobApp.cvName || dt.tableCV}</span>
                                 </div>
                                 {selectedJobApp.cvData ? (
                                     <div className="flex items-center gap-2">
@@ -1608,7 +1612,7 @@ const Dashboard: React.FC = () => {
                                                 name: selectedJobApp.cvName || `${selectedJobApp.name.replace(/\s+/g, '_')}_CV.pdf`,
                                                 title: `${dt.tableCV} • ${selectedJobApp.name}`
                                             })}
-                                            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-md transition-all cursor-pointer"
+                                            className="kraken-control min-h-11 min-w-11 px-4 py-2.5 bg-[#087f73] hover:bg-[#087f73] text-white rounded-xl font-semibold text-base flex items-center gap-2 shadow-md transition-all cursor-pointer"
                                         >
                                             <Eye className="w-4 h-4" />
                                             <span>{dt.preview}</span>
@@ -1616,19 +1620,19 @@ const Dashboard: React.FC = () => {
                                         <button
                                             type="button"
                                             onClick={() => downloadFileSafely(selectedJobApp.cvData!, selectedJobApp.cvName || `${selectedJobApp.name.replace(/\s+/g, '_')}_CV.pdf`)}
-                                            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-emerald-600/20 transition-all cursor-pointer"
+                                            className="kraken-control min-h-11 min-w-11 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-[#082b45] rounded-xl font-semibold text-base flex items-center gap-2 shadow-sm transition-all cursor-pointer"
                                         >
                                             <Download className="w-4 h-4" />
                                             <span>{dt.downloadCV}</span>
                                         </button>
                                     </div>
                                 ) : (
-                                    <span className="text-xs text-slate-400 font-bold italic">{dt.noFile}</span>
+                                    <span className="text-sm text-[#526574] font-semibold italic">{dt.noFile}</span>
                                 )}
                             </div>
 
                             <div>
-                                <span className="text-xs font-black uppercase text-slate-400 block tracking-wider mb-2">{dt.changeStatus}</span>
+                                <span className="text-sm font-semibold text-[#526574] block mb-2">{dt.changeStatus}</span>
                                 <div className="flex flex-wrap gap-2">
                                     {[
                                         { key: 'Pending', label: dt.filterPendingCareer },
@@ -1640,10 +1644,10 @@ const Dashboard: React.FC = () => {
                                         <button
                                             key={st.key}
                                             disabled={!isStaff} onClick={() => handleJobAppStatusChange(selectedJobApp.id, st.key as any)}
-                                            className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border cursor-pointer transition-all ${
+                                            className={`kraken-control min-h-11 min-w-11 px-4 py-2 rounded-xl text-base font-semibold border cursor-pointer transition-all ${
                                                 selectedJobApp.status === st.key
-                                                    ? 'bg-[#002D5B] text-white border-blue-900 shadow-md'
-                                                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                                                    ? 'bg-[#082b45] text-white border-blue-900 shadow-md'
+                                                    : 'bg-white text-[#526574] border-[#dce6e8] hover:bg-[#f4f8f8]'
                                             }`}
                                         >
                                             {st.label}
@@ -1659,16 +1663,16 @@ const Dashboard: React.FC = () => {
 
       </div>
         {/* ===== EMAIL CONFIRMATION CENTER ===== */}
-        <div hidden={!isStaff} className="mt-6 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mx-4 mb-4">
-          <div className="bg-[#0f1b2d] px-6 py-4 flex items-center justify-between cursor-pointer select-none" onClick={() => setShowEmailHistory(v => !v)}>
+        <div hidden={!isStaff} className="mt-6 bg-white rounded-2xl shadow-sm border border-[#dce6e8] overflow-hidden mx-4 mb-4">
+          <div className="bg-[#eef7f5] px-5 py-4 flex items-center justify-between cursor-pointer select-none" onClick={() => setShowEmailHistory(v => !v)}>
             <div className="flex items-center gap-3">
-              <Mail size={18} className="text-[#00d4ff]" />
-              <h3 className="text-white font-black text-sm uppercase tracking-widest">{dt.emailCenterTitle}</h3>
-              <span className="bg-[#00d4ff] text-[#0f1b2d] text-[10px] font-black px-2 py-0.5 rounded-full">{emailHistory.length}</span>
+              <Mail size={18} className="text-[#087f73]" />
+              <h3 className="text-[#082b45] font-semibold text-lg ">{dt.emailCenterTitle}</h3>
+              <span className="bg-[#087f73] text-[#082b45] text-sm font-semibold px-2 py-0.5 rounded-full">{emailHistory.length}</span>
             </div>
-            <ArrowLeft size={16} className={`text-slate-400 transition-transform duration-300 ${showEmailHistory ? 'rotate-90' : '-rotate-90'}`} />
+            <ArrowLeft size={16} className={`text-[#526574] transition-transform duration-300 ${showEmailHistory ? 'rotate-90' : '-rotate-90'}`} />
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-5 divide-x divide-slate-100 border-b border-slate-100">
+          <div className="grid grid-cols-2 sm:grid-cols-5 divide-x divide-slate-100 border-b border-[#dce6e8]">
             {([
               { label: dt.total, value: emailStats.total, color: 'text-slate-700', bg: 'bg-white', icon: '📨' },
               { label: dt.delivered, value: emailStats.sent, color: 'text-green-600', bg: 'bg-green-50', icon: '✅' },
@@ -1678,8 +1682,8 @@ const Dashboard: React.FC = () => {
             ] as const).map((stat, i) => (
               <div key={i} className={`${stat.bg} px-3 py-3 text-center`}>
                 <div className="text-base">{stat.icon}</div>
-                <div className={`text-xl font-black ${stat.color}`}>{stat.value}</div>
-                <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{stat.label}</div>
+                <div className={`text-xl font-semibold ${stat.color}`}>{stat.value}</div>
+                <div className="text-sm font-semibold text-[#526574] ">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -1687,50 +1691,50 @@ const Dashboard: React.FC = () => {
             <div className="p-5">
               <div className="flex flex-wrap gap-2 mb-4">
                 {(['all','sent','pending','error'] as const).map(f => (
-                  <button key={f} onClick={() => setEmailHistoryFilter(f)} className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all ${emailHistoryFilter === f ? 'bg-[#0f1b2d] text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
+                  <button key={f} onClick={() => setEmailHistoryFilter(f)} className={`kraken-control min-h-11 min-w-11 px-3 py-1 rounded-full text-base font-semibold transition-all ${emailHistoryFilter === f ? 'bg-[#082b45] text-white' : 'bg-[#f4f8f8] text-[#526574] hover:bg-slate-200'}`}>
                     {f === 'all' ? dt.filterAll : f === 'sent' ? dt.delivered : f === 'pending' ? dt.filterPending : dt.failed}
                   </button>
                 ))}
-                <input type="text" value={emailHistoryClientFilter} onChange={e => setEmailHistoryClientFilter(e.target.value)} placeholder={dt.filterClientPlaceholder} className="border border-slate-200 rounded-full px-3 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-[#00d4ff] flex-1 min-w-0 max-w-xs" />
+                <input type="text" value={emailHistoryClientFilter} onChange={e => setEmailHistoryClientFilter(e.target.value)} placeholder={dt.filterClientPlaceholder} className="kraken-field border border-[#dce6e8] rounded-full px-3 py-1 text-base focus:outline-none focus:ring-1 focus:ring-[#087f73] flex-1 min-w-0 max-w-xs" />
               </div>
               {filteredEmailHistory.length === 0 ? (
-                <div className="text-center py-8 text-slate-400">
+                <div className="text-center py-8 text-[#526574]">
                   <Mail size={28} className="mx-auto mb-2 opacity-30" />
-                  <p className="text-sm font-medium">{dt.noEmailsSent}</p>
+                  <p className="text-base font-medium">{dt.noEmailsSent}</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto rounded-xl border border-slate-100">
-                  <table className="w-full text-xs">
-                    <thead><tr className="bg-[#0f1b2d] text-[#00d4ff]">
-                      <th className="px-3 py-2.5 text-left font-black uppercase tracking-wider">{dt.thDate}</th>
-                      <th className="px-3 py-2.5 text-left font-black uppercase tracking-wider">{dt.thClient}</th>
-                      <th className="px-3 py-2.5 text-left font-black uppercase tracking-wider">{dt.thTo}</th>
-                      <th className="px-3 py-2.5 text-right font-black uppercase tracking-wider">{dt.thCHF}</th>
-                      <th className="px-3 py-2.5 text-center font-black uppercase tracking-wider">{dt.thStatus}</th>
-                      <th className="px-3 py-2.5 text-center font-black uppercase tracking-wider">{dt.thConfirmed}</th>
-                      <th className="px-3 py-2.5 text-center font-black uppercase tracking-wider">{dt.thAction}</th>
+                <div className="overflow-x-auto rounded-xl border border-[#dce6e8]">
+                  <table className="w-full text-sm">
+                    <thead><tr className="bg-[#eef7f5] text-[#082b45]">
+                      <th className="px-3 py-2.5 text-left font-semibold ">{dt.thDate}</th>
+                      <th className="px-3 py-2.5 text-left font-semibold ">{dt.thClient}</th>
+                      <th className="px-3 py-2.5 text-left font-semibold ">{dt.thTo}</th>
+                      <th className="px-3 py-2.5 text-right font-semibold ">{dt.thCHF}</th>
+                      <th className="px-3 py-2.5 text-center font-semibold ">{dt.thStatus}</th>
+                      <th className="px-3 py-2.5 text-center font-semibold ">{dt.thConfirmed}</th>
+                      <th className="px-3 py-2.5 text-center font-semibold ">{dt.thAction}</th>
                     </tr></thead>
                     <tbody>
                       {filteredEmailHistory.map((entry, idx) => (
-                        <tr key={entry.id} className={`border-t border-slate-100 ${idx%2===0?'bg-white':'bg-slate-50'} hover:bg-blue-50 transition-colors`}>
-                          <td className="px-3 py-2.5 text-slate-400 whitespace-nowrap">{new Date(entry.sentAt).toLocaleDateString('de-CH')} {new Date(entry.sentAt).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'})}</td>
-                          <td className="px-3 py-2.5 font-bold text-slate-800">{entry.clientName}</td>
-                          <td className="px-3 py-2.5 text-slate-500 truncate max-w-[120px]">{entry.clientEmail}</td>
-                          <td className="px-3 py-2.5 text-right font-black text-[#0f1b2d]">{entry.amount}</td>
+                        <tr key={entry.id} className={`border-t border-[#dce6e8] ${idx%2===0?'bg-white':'bg-[#f4f8f8]'} hover:bg-[#eef7f5] transition-colors`}>
+                          <td className="px-3 py-2.5 text-[#526574] whitespace-nowrap">{new Date(entry.sentAt).toLocaleDateString('de-CH')} {new Date(entry.sentAt).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'})}</td>
+                          <td className="px-3 py-2.5 font-semibold text-[#082b45]">{entry.clientName}</td>
+                          <td className="px-3 py-2.5 text-[#526574] truncate max-w-[120px]">{entry.clientEmail}</td>
+                          <td className="px-3 py-2.5 text-right font-semibold text-[#082b45]">{entry.amount}</td>
                           <td className="px-3 py-2.5 text-center">
-                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold ${entry.status==='sent'?'bg-green-100 text-green-700':entry.status==='pending'?'bg-yellow-100 text-yellow-600':'bg-red-100 text-red-600'}`}>
+                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-sm font-semibold ${entry.status==='sent'?'bg-green-100 text-green-700':entry.status==='pending'?'bg-yellow-100 text-yellow-600':'bg-red-100 text-red-600'}`}>
                               {entry.status==='sent'?dt.delivered:entry.status==='pending'?dt.filterPending:dt.failed}
                             </span>
                           </td>
                           <td className="px-3 py-2.5 text-center">
-                            <select value={confirmationStatuses[entry.requestId]||'none'} onChange={e => markConfirmed(entry.requestId, e.target.value as 'confirmed'|'pending'|'none')} className="text-[10px] border border-slate-200 rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-[#00d4ff] bg-white">
+                            <select value={confirmationStatuses[entry.requestId]||'none'} onChange={e => markConfirmed(entry.requestId, e.target.value as 'confirmed'|'pending'|'none')} className="kraken-field text-base border border-[#dce6e8] rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-[#087f73] bg-white">
                               <option value="none">— {dt.filterAll} —</option>
                               <option value="pending">{dt.filterPending}</option>
                               <option value="confirmed">{dt.confirmed}</option>
                             </select>
                           </td>
                           <td className="px-3 py-2.5 text-center">
-                            <button onClick={() => doResendEmail(entry)} className="px-2 py-1 rounded-md bg-[#0f1b2d] text-white text-[9px] font-bold hover:bg-slate-700 transition-colors">{dt.resend}</button>
+                            <button onClick={() => doResendEmail(entry)} className="kraken-control min-h-11 min-w-11 px-2 py-1 rounded-md bg-[#082b45] text-white text-base font-semibold hover:bg-slate-700 transition-colors">{dt.resend}</button>
                           </td>
                         </tr>
                       ))}
@@ -1741,58 +1745,58 @@ const Dashboard: React.FC = () => {
             </div>
           )}
         </div>
-    
+
         {/* ===== EMAIL COMPOSITION MODAL ===== */}
         {emailModalOpen && selectedEmailRequest && (
-          <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={e => { if (e.target === e.currentTarget) setEmailModalOpen(false); }}>
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
-              <div className="bg-[#0f1b2d] px-6 py-4 flex items-center justify-between flex-shrink-0">
+          <div className="kraken-portal kraken-overlay fixed inset-0 z-[300] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={e => { if (e.target === e.currentTarget) setEmailModalOpen(false); }}>
+            <div className="kraken-dialog bg-white rounded-2xl shadow-sm w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden border border-[#dce6e8]">
+              <div className="kraken-dialog-header bg-[#eef7f5] px-5 py-4 flex items-center justify-between flex-shrink-0">
                 <div>
-                  <h2 className="text-[#00d4ff] font-black text-base uppercase tracking-widest flex items-center gap-2"><Mail size={16}/> {dt.sendCostConfirmation}</h2>
-                  <p className="text-slate-400 text-xs mt-0.5">{dt.thClient}: {selectedEmailRequest.client} · {amountText(selectedEmailRequest)}</p>
+                  <h2 className="text-[#087f73] font-semibold text-base flex items-center gap-2"><Mail size={16}/> {dt.sendCostConfirmation}</h2>
+                  <p className="text-[#526574] text-base mt-0.5">{dt.thClient}: {selectedEmailRequest.client} · {amountText(selectedEmailRequest)}</p>
                 </div>
-                <button onClick={() => setEmailModalOpen(false)} className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"><X size={18}/></button>
+                <button onClick={() => setEmailModalOpen(false)} className="kraken-control min-h-11 min-w-11 text-[#526574] hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"><X size={18}/></button>
               </div>
-              <div className="bg-slate-100 px-6 pt-3 flex gap-2 flex-shrink-0 border-b border-slate-200">
-                <button onClick={() => setEmailPreviewMode(false)} className={`px-4 py-2 rounded-t-lg text-xs font-bold uppercase tracking-wider transition-all ${!emailPreviewMode ? 'bg-white text-[#0f1b2d] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>{dt.compose}</button>
-                <button onClick={() => setEmailPreviewMode(true)} className={`px-4 py-2 rounded-t-lg text-xs font-bold uppercase tracking-wider transition-all ${emailPreviewMode ? 'bg-white text-[#0f1b2d] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>{dt.preview}</button>
+              <div className="bg-[#f4f8f8] px-6 pt-3 flex gap-2 flex-shrink-0 border-b border-[#dce6e8]">
+                <button onClick={() => setEmailPreviewMode(false)} className={`kraken-control min-h-11 min-w-11 px-4 py-2 rounded-t-lg text-base font-semibold transition-all ${!emailPreviewMode ? 'bg-white text-[#082b45] shadow-sm' : 'text-[#526574] hover:text-[#526574]'}`}>{dt.compose}</button>
+                <button onClick={() => setEmailPreviewMode(true)} className={`kraken-control min-h-11 min-w-11 px-4 py-2 rounded-t-lg text-base font-semibold transition-all ${emailPreviewMode ? 'bg-white text-[#082b45] shadow-sm' : 'text-[#526574] hover:text-[#526574]'}`}>{dt.preview}</button>
               </div>
               <div className="flex-1 overflow-y-auto p-6">
                 {!emailPreviewMode ? (
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{dt.to} *</label>
-                        <input type="email" value={emailTo} onChange={e => setEmailTo(e.target.value)} className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d4ff] focus:border-transparent" placeholder="client@example.com"/>
+                        <label htmlFor="dashboard-field-12" className="kraken-label block text-sm font-semibold text-[#526574] mb-1">{dt.to} *</label>
+                        <input id="dashboard-field-12" type="email" value={emailTo} onChange={e => setEmailTo(e.target.value)} className="kraken-field w-full border border-[#dce6e8] rounded-lg px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-[#087f73] focus:border-transparent" placeholder="client@example.com"/>
                       </div>
                       <div>
-                        <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{dt.cc}</label>
-                        <input type="email" value={emailCC} onChange={e => setEmailCC(e.target.value)} className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d4ff] focus:border-transparent" placeholder="cc@example.com"/>
+                        <label htmlFor="dashboard-field-13" className="kraken-label block text-sm font-semibold text-[#526574] mb-1">{dt.cc}</label>
+                        <input id="dashboard-field-13" type="email" value={emailCC} onChange={e => setEmailCC(e.target.value)} className="kraken-field w-full border border-[#dce6e8] rounded-lg px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-[#087f73] focus:border-transparent" placeholder="cc@example.com"/>
                       </div>
                     </div>
                     <div>
-                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{dt.subject}</label>
-                      <input type="text" value={emailSubject} onChange={e => setEmailSubject(e.target.value)} className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d4ff] focus:border-transparent"/>
+                      <label htmlFor="dashboard-field-14" className="kraken-label block text-sm font-semibold text-[#526574] mb-1">{dt.subject}</label>
+                      <input id="dashboard-field-14" type="text" value={emailSubject} onChange={e => setEmailSubject(e.target.value)} className="kraken-field w-full border border-[#dce6e8] rounded-lg px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-[#087f73] focus:border-transparent"/>
                     </div>
                     <div>
-                      <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{dt.emailBody}</label>
-                      <textarea value={emailBody} onChange={e => setEmailBody(e.target.value)} rows={14} className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-[#00d4ff] focus:border-transparent resize-none"/>
+                      <label htmlFor="dashboard-field-15" className="kraken-label block text-sm font-semibold text-[#526574] mb-1">{dt.emailBody}</label>
+                      <textarea id="dashboard-field-15" value={emailBody} onChange={e => setEmailBody(e.target.value)} rows={14} className="kraken-field w-full border border-[#dce6e8] rounded-lg px-3 py-2 text-base font-mono focus:outline-none focus:ring-2 focus:ring-[#087f73] focus:border-transparent resize-none"/>
                     </div>
                   </div>
                 ) : (
-                  <div className="border border-slate-200 rounded-xl overflow-hidden">
-                    <div className="bg-slate-100 px-4 py-2 text-xs text-slate-500 font-medium border-b border-slate-200">{dt.preview}</div>
+                  <div className="border border-[#dce6e8] rounded-xl overflow-hidden">
+                    <div className="bg-[#f4f8f8] px-4 py-2 text-sm text-[#526574] font-medium border-b border-[#dce6e8]">{dt.preview}</div>
                     <iframe srcDoc={emailBody} className="w-full" style={{height:'420px',border:'none'}} title="Email Preview" sandbox=""/>
                   </div>
                 )}
               </div>
-              <div className="border-t border-slate-100 px-6 py-4 flex items-center justify-between bg-slate-50 flex-shrink-0">
-                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+              <div className="border-t border-[#dce6e8] px-6 py-4 flex items-center justify-between bg-[#f4f8f8] flex-shrink-0">
+                <div className="flex flex-wrap items-center gap-2 text-sm text-[#526574]">
                   <CheckCircle size={12} className="text-green-400"/> Via Kraken PFM Dispatch
                 </div>
                 <div className="flex gap-3">
-                  <button onClick={() => setEmailModalOpen(false)} className="px-4 py-2 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors">{dt.cancel}</button>
-                  <button onClick={doSendEmail} disabled={emailSending || !emailTo} className="px-5 py-2 rounded-lg bg-[#0f1b2d] text-white text-sm font-bold uppercase tracking-wider hover:bg-slate-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                  <button onClick={() => setEmailModalOpen(false)} className="kraken-control min-h-11 min-w-11 px-4 py-2 rounded-lg border border-[#dce6e8] text-base font-medium text-[#526574] hover:bg-[#f4f8f8] transition-colors">{dt.cancel}</button>
+                  <button onClick={doSendEmail} disabled={emailSending || !emailTo} className="kraken-control min-h-11 min-w-11 px-5 py-2 rounded-lg bg-[#082b45] text-white text-base font-semibold hover:bg-[#082b45] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                     {emailSending ? <><Clock size={13} className="animate-spin"/> {dt.sending}</> : <><Send size={13}/> {dt.sendEmail}</>}
                   </button>
                 </div>

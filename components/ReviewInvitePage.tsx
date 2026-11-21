@@ -20,13 +20,13 @@ interface Particle {
 const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ onNavigate }) => {
   const { user, loginWithGoogle } = useAuth();
   const { language } = useTranslation();
-  
+
   // Set initial language from context if one of the supported 6 languages
   const initialLang: Language = ['en', 'de-CH', 'de', 'fr', 'it', 'es', 'pt'].includes(language)
     ? (language as Language)
     : 'en';
   const [activeLang, setActiveLang] = useState<Language>(initialLang);
-  
+
   const [rating, setRating] = useState<number>(0);
   const [hoveredRating, setHoveredRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
@@ -59,7 +59,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
   }, [isSubmitted, rating]);
 
   const toggleTag = (tag: string) => {
-    setSelectedTags(prev => 
+    setSelectedTags(prev =>
       prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
     );
   };
@@ -160,10 +160,10 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
   // 100% Comprehensive Translations for All 6 Languages Supported (EN, ES, DE, FR, IT, PT)
   const tTexts: Record<string, any> = {
     es: {
-      badge: "INVITACIÓN VIP",
+      badge: "Tu valoración",
       title: "Tu opinión hace la diferencia",
       subtitle: "Ayúdanos a seguir mejorando y comparte tu experiencia con nosotros.",
-      loginPrompt: "Para garantizar opiniones 100% reales de nuestros clientes, por favor inicia sesión de forma segura con tu cuenta de Google.",
+      loginPrompt: "Inicia sesión con Google para enviar tu valoración.",
       loginBtn: "Iniciar sesión con Google",
       starsLabel: "¿Cómo calificarías tu experiencia con Kraken?",
       excellent: "¡Excelente! Sobresaliente en todo.",
@@ -178,19 +178,19 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
       submitting: "Transmitiendo...",
       successTitle: "¡Muchísimas gracias por tu tiempo!",
       positiveHeader: "¡Nos alegra muchísimo que tu experiencia fuera excelente!",
-      positiveBody: "Dado que has tenido una experiencia tan satisfactoria, te invitamos a publicarla en nuestro perfil público de Google para que otros usuarios nos conozcan. ¡Solo te tomará 15 segundos!",
+      positiveBody: "Tu valoración se ha guardado. Si lo deseas, también puedes compartir tu experiencia en Google.",
       googleCta: "⭐️ Publicar en Google Reviews",
-      negativeHeader: "Gracias por ayudarnos a mejorar personalmente",
-      negativeBody: "Lamentamos que el servicio no haya cumplido el 100% de tus expectativas. Tu valoración ha sido enviada con máxima prioridad directamente al Gerente de Operaciones de Schaffhausen, quien la revisará en detalle y se pondrá en contacto contigo para resolver cualquier incidencia.",
+      negativeHeader: "Gracias por compartir tu experiencia.",
+      negativeBody: "Tu valoración se ha guardado. Gracias por contarnos qué podemos mejorar.",
       backHome: "Volver a Inicio",
-      footerNote: "Tus comentarios se procesan bajo nuestra estricta política de privacidad de datos.",
+      footerNote: "Consulta nuestra política de privacidad para saber cómo tratamos tus datos.",
       welcomeBack: "Sesión iniciada como"
     },
     en: {
-      badge: "VIP INVITATION",
+      badge: "Your feedback",
       title: "Your Opinion Makes a Difference",
       subtitle: "Help us keep improving and share your experience with us.",
-      loginPrompt: "To guarantee 100% authentic ratings from our clients, please sign in quickly and securely with your Google account.",
+      loginPrompt: "Sign in with Google to send your review.",
       loginBtn: "Sign in with Google",
       starsLabel: "How would you rate your experience with Kraken?",
       excellent: "Excellent! Outstanding in every way.",
@@ -205,19 +205,19 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
       submitting: "Transmitting...",
       successTitle: "Thank you very much for your time!",
       positiveHeader: "We're thrilled that you had an excellent experience!",
-      positiveBody: "Since you had such a satisfactory experience, we invite you to publish it directly on our public Google Review page so others can find us. It will only take 15 seconds!",
+      positiveBody: "Your review was saved. If you wish, you can also share your experience on Google.",
       googleCta: "⭐️ Publish on Google Reviews",
-      negativeHeader: "Thank you for helping us improve privately",
-      negativeBody: "We are deeply sorry that our service did not meet 100% of your expectations. Your feedback has been forwarded with high operational priority straight to our Operations Manager in Schaffhausen, who will review it closely and reach out to make things right.",
+      negativeHeader: "Thank you for sharing your experience.",
+      negativeBody: "Your review was saved. Thank you for letting us know what we can improve.",
       backHome: "Return Home",
-      footerNote: "Your reviews are processed under our strict data privacy standards.",
+      footerNote: "See our privacy policy for information about how we handle your data.",
       welcomeBack: "Signed in as"
     },
     de: {
-      badge: "VIP-EINLADUNG",
+      badge: "Ihre Bewertung",
       title: "Ihre Meinung macht den Unterschied",
       subtitle: "Helfen Sie uns, uns weiter zu verbessern, und teilen Sie Ihre Erfahrungen mit uns.",
-      loginPrompt: "Um 100% authentische Bewertungen unserer Kunden zu garantieren, melden Sie sich bitte sicher mit Ihrem Google-Konto an.",
+      loginPrompt: "Melden Sie sich mit Google an, um Ihre Bewertung zu senden.",
       loginBtn: "Mit Google anmelden",
       starsLabel: "Wie würden Sie Ihre Erfahrung mit Kraken bewerten?",
       excellent: "Ausgezeichnet! In jeder Hinsicht hervorragend.",
@@ -232,19 +232,19 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
       submitting: "Wird gesendet...",
       successTitle: "Vielen Dank für Ihre Zeit!",
       positiveHeader: "Wir freuen uns sehr, dass Sie eine so gute Erfahrung gemacht haben!",
-      positiveBody: "Da Sie so zufrieden waren, laden wir Sie ein, Ihre Bewertung direkt auf unserem öffentlichen Google-Profil zu veröffentlichen, damit andere uns finden können. Es dauert nur 15 Sekunden!",
+      positiveBody: "Ihre Bewertung wurde gespeichert. Wenn Sie möchten, können Sie Ihre Erfahrung auch auf Google teilen.",
       googleCta: "⭐️ Auf Google Reviews veröffentlichen",
-      negativeHeader: "Vielen Dank, dass Sie uns helfen, uns persönlich zu verbessern",
-      negativeBody: "Es tut uns aufrichtig leid, dass unser Service Ihre Erwartungen nicht zu 100% erfüllt hat. Ihr Feedback wurde mit höchster Priorität direkt an unseren Betriebsleiter in Schaffhausen weitergeleitet, der es sorgfältig prüfen und sich mit Ihnen in Verbindung setzen wird, um eine Lösung zu finden.",
+      negativeHeader: "Vielen Dank für Ihre Rückmeldung.",
+      negativeBody: "Ihre Bewertung wurde gespeichert. Danke, dass Sie uns zeigen, was wir verbessern können.",
       backHome: "Zur Startseite",
-      footerNote: "Ihre Bewertungen werden unter Einhaltung strenger Datenschutzrichtlinien verarbeitet.",
+      footerNote: "Informationen zum Umgang mit Ihren Daten finden Sie in unserer Datenschutzerklärung.",
       welcomeBack: "Angemeldet als"
     },
     'de-CH': {
-      badge: "VIP-EINLADUNG",
+      badge: "Ihre Bewertung",
       title: "Ihre Meinung macht den Unterschied",
       subtitle: "Helfen Sie uns, uns weiter zu verbessern, und teilen Sie Ihre Erfahrungen mit uns.",
-      loginPrompt: "Um 100% authentische Bewertungen unserer Kunden zu garantieren, melden Sie sich bitte sicher mit Ihrem Google-Konto an.",
+      loginPrompt: "Melden Sie sich mit Google an, um Ihre Bewertung zu senden.",
       loginBtn: "Mit Google anmelden",
       starsLabel: "Wie würden Sie Ihre Erfahrung mit Kraken bewerten?",
       excellent: "Ausgezeichnet! In jeder Hinsicht hervorragend.",
@@ -259,19 +259,19 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
       submitting: "Wird gesendet...",
       successTitle: "Vielen Dank für Ihre Zeit!",
       positiveHeader: "Wir freuen uns sehr, dass Sie eine so gute Erfahrung gemacht haben!",
-      positiveBody: "Da Sie so zufrieden waren, laden wir Sie ein, Ihre Bewertung direkt auf unserem öffentlichen Google-Profil zu veröffentlichen, damit andere uns finden können. Es dauert nur 15 Sekunden!",
+      positiveBody: "Ihre Bewertung wurde gespeichert. Wenn Sie möchten, können Sie Ihre Erfahrung auch auf Google teilen.",
       googleCta: "⭐️ Auf Google Reviews veröffentlichen",
-      negativeHeader: "Vielen Dank, dass Sie uns helfen, uns persönlich zu verbessern",
-      negativeBody: "Es tut uns aufrichtig leid, dass unser Service Ihre Erwartungen nicht zu 100% erfüllt hat. Ihr Feedback wurde mit höchster Priorität direkt an unseren Betriebsleiter in Schaffhausen weitergeleitet, der es sorgfältig prüfen und sich mit Ihnen in Verbindung setzen wird, um eine Lösung zu finden.",
+      negativeHeader: "Vielen Dank für Ihre Rückmeldung.",
+      negativeBody: "Ihre Bewertung wurde gespeichert. Danke, dass Sie uns zeigen, was wir verbessern können.",
       backHome: "Zur Startseite",
-      footerNote: "Ihre Bewertungen werden unter Einhaltung strenger Datenschutzrichtlinien verarbeitet.",
+      footerNote: "Informationen zum Umgang mit Ihren Daten finden Sie in unserer Datenschutzerklärung.",
       welcomeBack: "Angemeldet als"
     },
     fr: {
-      badge: "INVITATION VIP",
+      badge: "Votre avis",
       title: "Votre avis fait toute la différence",
       subtitle: "Aidez-nous à nous améliorer et partagez votre expérience avec nous.",
-      loginPrompt: "Pour garantir des avis 100% authentiques de nos clients, veuillez vous connecter en toute sécurité avec votre compte Google.",
+      loginPrompt: "Connectez-vous avec Google pour envoyer votre avis.",
       loginBtn: "Se connecter avec Google",
       starsLabel: "Comment évalueriez-vous votre expérience avec Kraken ?",
       excellent: "Excellent ! Exceptionnel à tous points de vue.",
@@ -286,19 +286,19 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
       submitting: "Envoi en cours...",
       successTitle: "Merci beaucoup pour votre temps !",
       positiveHeader: "Nous sommes ravis que votre expérience ait été excellente !",
-      positiveBody: "Comme vous avez eu une expérience si satisfaisante, nous vous invitons à la publier directement sur Google Reviews afin que d'autres puissent nous découvrir. Cela ne prend que 15 secondes !",
+      positiveBody: "Votre avis a été enregistré. Si vous le souhaitez, vous pouvez aussi partager votre expérience sur Google.",
       googleCta: "⭐️ Publier sur Google Reviews",
-      negativeHeader: "Merci de nous aider à nous améliorer personnellement",
-      negativeBody: "La qualité n'ayant pas répondu à 100% de vos attentes, nous en sommes profondément désolés. Votre avis a été envoyé en priorité absolue à notre responsable des opérations à Schaffhouse, qui l'analysera de près et vous contactera pour résoudre tout problème.",
+      negativeHeader: "Merci pour votre retour.",
+      negativeBody: "Votre avis a été enregistré. Merci de nous indiquer ce que nous pouvons améliorer.",
       backHome: "Retour à l'accueil",
-      footerNote: "Vos avis sont traités conformément à nos normes strictes de confidentialité des données.",
+      footerNote: "Consultez notre politique de confidentialité pour connaître le traitement de vos données.",
       welcomeBack: "Connecté en tant que"
     },
     it: {
-      badge: "INVITO VIP",
+      badge: "La tua opinione",
       title: "La tua opinione fa la differenza",
       subtitle: "Aiutaci a continuare a migliorare e condividi la tua esperienza con noi.",
-      loginPrompt: "Per garantire recensioni autentiche al 100% dai nostri clienti, ti preghiamo di accedere in modo sicuro con il tuo account Google.",
+      loginPrompt: "Accedi con Google per inviare la tua recensione.",
       loginBtn: "Accedi con Google",
       starsLabel: "Come valuteresti la tua esperienza con Kraken?",
       excellent: "Eccellente! Eccezionale sotto ogni aspetto.",
@@ -313,19 +313,19 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
       submitting: "Invio in corso...",
       successTitle: "Grazie mille per il tuo tempo!",
       positiveHeader: "Siamo felici che tu abbia avuto un'esperienza eccellente!",
-      positiveBody: "Visto que ti sei trovato così bene, ti invitiamo a pubblicare la tua recensione sul nostro profilo pubblico di Google Reviews. Richiede solo 15 secondi!",
+      positiveBody: "La recensione è stata salvata. Se vuoi, puoi condividere la tua esperienza anche su Google.",
       googleCta: "⭐️ Pubblica su Google Reviews",
-      negativeHeader: "Grazie per averci aiutato a migliorare privatamente",
-      negativeBody: "Ci dispiace che il nostro servizio non abbia soddisfatto al 100% le tue aspettative. La tua segnalazione è stata inoltrata con massima priorità direttamente al nostro Responsabile delle Operazioni di Sciaffusa, che la esaminerà e ti contatterà per risolvere ogni criticità.",
+      negativeHeader: "Grazie per aver condiviso la tua esperienza.",
+      negativeBody: "La recensione è stata salvata. Grazie per averci indicato cosa possiamo migliorare.",
       backHome: "Torna alla Home",
-      footerNote: "I tuoi commenti sono trattati in conformità con le nostre rigorose norme sulla privacy.",
+      footerNote: "Consulta l’informativa sulla privacy per sapere come trattiamo i tuoi dati.",
       welcomeBack: "Accesso effettuato come"
     },
     pt: {
-      badge: "CONVITE VIP",
+      badge: "A sua opinião",
       title: "Sua opinião faz a diferença",
       subtitle: "Ajude-nos a continuar melhorando e compartilhe sua experiência conosco.",
-      loginPrompt: "Para garantir avaliações 100% reais de nossos clientes, por favor inicie sessão de forma segura com sua conta Google.",
+      loginPrompt: "Inicie sessão com o Google para enviar a sua avaliação.",
       loginBtn: "Entrar com Google",
       starsLabel: "Como você classificaria sua experiência com a Kraken?",
       excellent: "Excelente! Sobressaliente em todos os aspetos.",
@@ -340,12 +340,12 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
       submitting: "Enviando...",
       successTitle: "Muito obrigado pelo seu tempo!",
       positiveHeader: "Ficamos muito contentes que sua experiência tenha sido excelente!",
-      positiveBody: "Como você teve uma experiência tão satisfatória, convidamos você a publicá-la diretamente em nosso perfil do Google Reviews para que outros nos conheçam. Leva apenas 15 segundos!",
+      positiveBody: "A sua avaliação foi guardada. Se desejar, pode também partilhar a sua experiência no Google.",
       googleCta: "⭐️ Publicar no Google Reviews",
-      negativeHeader: "Obrigado por nos ajudar a melhorar pessoalmente",
-      negativeBody: "Lamentamos profundamente que o nosso serviço não tenha correspondido a 100% das suas expectativas. O seu feedback foi enviado com prioridade operacional máxima ao nosso Diretor de Operações em Schaffhausen, que irá analisá-lo e contactá-lo diretamente.",
+      negativeHeader: "Obrigado por partilhar a sua experiência.",
+      negativeBody: "A sua avaliação foi guardada. Obrigado por nos indicar o que podemos melhorar.",
       backHome: "Voltar para o Início",
-      footerNote: "As suas avaliações são processadas de acordo com as nossas rigorosas normas de privacidade.",
+      footerNote: "Consulte a nossa política de privacidade para saber como tratamos os seus dados.",
       welcomeBack: "Sessão iniciada como"
     }
   };
@@ -373,11 +373,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
   ];
 
   return (
-    <div id="review-invite-page" className="min-h-screen bg-slate-50 text-slate-800 flex flex-col items-center justify-center relative overflow-hidden py-16 px-4">
-      {/* Soft elegant radial decorations suitable for a premium white theme */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-sky-200/40 rounded-full blur-3xl z-0 pointer-events-none"></div>
-      <div className="absolute bottom-10 left-10 w-[300px] h-[300px] bg-emerald-100/30 rounded-full blur-3xl z-0 pointer-events-none"></div>
-
+    <div id="review-invite-page" className="kraken-feedback min-h-screen bg-[#f4f8f8] text-[#082b45] flex flex-col items-center py-8 sm:py-12 px-4">
       {/* Confetti Animation Layer */}
       {isSubmitted && rating >= 4 && (
         <div className="absolute inset-0 z-50 pointer-events-none overflow-hidden">
@@ -403,66 +399,69 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
       )}
 
       {/* Language Switcher at the top left/right */}
-      <div className="absolute top-6 right-6 flex items-center gap-4 z-50">
-        <div className="bg-white/80 border border-slate-200/80 shadow-sm rounded-2xl p-1.5 flex flex-wrap gap-1 max-w-[280px] md:max-w-none">
+      <div className="mb-8 flex w-full max-w-2xl items-center justify-between gap-3">
+        <div className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto rounded-xl border border-[#dce6e8] bg-white p-1">
           {languageOptions.map((opt) => (
-            <button 
+            <button
               key={opt.code}
+              aria-pressed={activeLang === opt.code}
               onClick={() => setActiveLang(opt.code)}
-              className={`px-2 md:px-3 py-1 text-[10px] font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
-                activeLang === opt.code 
-                  ? 'bg-sky-500 text-slate-950 font-black shadow-sm' 
-                  : 'text-slate-600 hover:text-slate-900 bg-transparent hover:bg-slate-100'
+              className={`kraken-control min-h-11 min-w-11 shrink-0 px-3 py-2 text-sm font-semibold rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
+                activeLang === opt.code
+                  ? 'bg-[#087f73] text-white font-semibold'
+                  : 'text-[#526574] hover:text-[#082b45] bg-transparent hover:bg-[#f4f8f8]'
               }`}
               title={opt.label}
             >
-              <span>{opt.flag}</span>
-              <span className="hidden sm:inline">{opt.label.substring(0, 3).toUpperCase()}</span>
+              <span aria-hidden="true">{opt.flag}</span>
+              <span>{opt.label}</span>
             </button>
           ))}
         </div>
-        
-        <button 
-          onClick={() => onNavigate('home')} 
-          className="w-10 h-10 rounded-full bg-white border border-slate-200 shadow-sm flex items-center justify-center text-slate-400 hover:text-slate-700 hover:border-slate-300 transition-all text-xs cursor-pointer shrink-0"
+
+        <button
+          aria-label={texts.backHome}
+          onClick={() => onNavigate('home')}
+          className="kraken-control min-h-11 min-w-11 w-10 h-10 rounded-full bg-white border border-[#dce6e8] shadow-sm flex items-center justify-center text-[#526574] hover:text-[#526574] hover:border-[#dce6e8] transition-all text-base cursor-pointer shrink-0"
         >
           ✕
         </button>
       </div>
 
-      <div className="w-full max-w-xl relative z-10 text-center mt-12 md:mt-0">
+      <div className="w-full max-w-2xl relative z-10 text-center">
         {/* Animated Brand Header */}
         <div className="mb-6 flex flex-col items-center">
-          <motion.div 
+          <motion.div
             initial={{ scale: 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.6, type: 'spring' }}
-            className="relative w-20 h-20 rounded-2xl bg-white border border-slate-200/50 shadow-[0_12px_28px_rgba(0,0,0,0.06)] mb-6 flex items-center justify-center"
+            className="mb-5 h-32 w-32"
           >
             {/* Soft inner glow gradient backing */}
-            <div className="absolute inset-1.5 bg-gradient-to-tr from-sky-100/60 to-emerald-100/60 rounded-[12px] opacity-80 blur-[1px]"></div>
-            
+
+
             {/* Mascot Image popping out of the card in 3D */}
-            <img 
-              src="/kai reviews.webp" 
-              alt="Kraken Mascot" 
-              className="absolute -top-7 w-[135%] h-[135%] object-cover rounded-2xl select-none filter drop-shadow-[0_10px_14px_rgba(0,0,0,0.16)] hover:scale-110 transition-transform duration-300"
+            <img
+              src="/kai-calendar/optimized/kai/kai-reviews-320.webp"
+              width="160" height="160" decoding="async"
+              alt=""
+              className="h-full w-full object-contain"
               referrerPolicy="no-referrer"
             />
           </motion.div>
-          <span className="bg-sky-50 text-sky-700 border border-sky-100 text-[10px] font-black tracking-[0.25em] px-3 py-1 rounded-full uppercase mb-2">
+          <span className="bg-[#eef7f5] text-[#087f73] border border-[#c8dedb] text-sm font-semibold  px-3 py-1 rounded-full  mb-2">
             {texts.badge}
           </span>
-          <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight leading-tight">
+          <h2 className="text-2xl md:text-3xl font-semibold text-[#082b45]  leading-tight">
             {texts.title}
           </h2>
-          <p className="text-xs md:text-sm text-slate-500 mt-2 max-w-sm font-semibold">
+          <p className="mt-3 max-w-lg text-base leading-relaxed text-[#526574]">
             {texts.subtitle}
           </p>
         </div>
 
         {/* Main interactive container - white themed, professional shadow */}
-        <div id="review-card-interactive" className="bg-white border border-slate-200/65 rounded-3xl p-6 md:p-8 shadow-xl text-left">
+        <div id="review-card-interactive" className="kraken-panel bg-white border border-[#dce6e8] rounded-3xl p-5 sm:p-8 shadow-sm text-left">
           <AnimatePresence mode="wait">
             {!isSubmitted ? (
               // STEP 1: RATING AND COMMENTS
@@ -476,13 +475,13 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
               >
                 {/* Authorization Barrier */}
                 {!user ? (
-                  <div className="border border-slate-200/85 bg-slate-50 rounded-2xl p-5 text-center space-y-4">
-                    <p className="text-xs text-slate-600 leading-relaxed font-semibold">
+                  <div className="border border-[#dce6e8] bg-[#f4f8f8] rounded-2xl p-5 text-center space-y-4">
+                    <p className="text-base text-[#526574] leading-relaxed font-semibold">
                       {texts.loginPrompt}
                     </p>
                     <button
                       onClick={handleGoogleLogin}
-                      className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-700 font-bold py-2.5 px-4 rounded-xl transition-all shadow-sm border border-slate-200 hover:border-slate-300 transform active:scale-98 text-xs cursor-pointer"
+                      className="kraken-control min-h-11 min-w-11 w-full flex items-center justify-center gap-3 bg-white hover:bg-[#f4f8f8] text-[#526574] font-semibold py-2.5 px-4 rounded-xl transition-all shadow-sm border border-[#dce6e8] hover:border-[#dce6e8]  text-base cursor-pointer"
                     >
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -494,7 +493,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                     </button>
                     {authError === 'POPUP_BLOCKED_ERROR' ? (
                       <div className="border border-red-200 bg-red-50/50 rounded-2xl p-4 text-center space-y-3">
-                        <p className="text-xs text-red-600 font-extrabold">
+                        <p className="text-base text-red-600 font-semibold">
                           {activeLang === 'es' ? '🚨 Ventana Emergente Bloqueada' :
                            activeLang === 'pt' ? '🚨 Janela Pop-up Bloqueada' :
                            activeLang === 'fr' ? '🚨 Fenêtre Pop-up Bloquée' :
@@ -502,7 +501,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                            activeLang === 'de' || activeLang === 'de-CH' ? '🚨 Popup blockiert' :
                            '🚨 Popup Blocked'}
                         </p>
-                        <p className="text-[11px] text-slate-600 font-semibold leading-relaxed">
+                        <p className="text-sm text-[#526574] font-semibold leading-relaxed">
                           {activeLang === 'es' ? 'Tu navegador bloqueó la ventana de Google por estar dentro de un marco de vista previa (iframe). Permite las ventanas emergentes en tu navegador, o simplemente haz clic en el botón de abajo para abrir la aplicación directamente en una pestaña nueva.' :
                            activeLang === 'pt' ? 'O seu navegador bloqueou a janela do Google por estar dentro de uma moldura de visualização (iframe). Permita pop-ups no seu navegador, ou simplesmente clique no botão abaixo para abrir a aplicação diretamente num novo separador.' :
                            activeLang === 'fr' ? 'Votre navigateur a bloqué la fenêtre Google car elle se trouve dans un cadre d\'aperçu (iframe). Autorisez les fenêtres pop-up dans votre navigateur, ou cliquez simplement sur le bouton ci-dessous pour ouvrir l\'application directement dans un nouvel onglet.' :
@@ -514,7 +513,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                           href={window.location.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex w-full items-center justify-center gap-1.5 bg-sky-500 hover:bg-sky-600 text-slate-950 font-black py-2.5 px-3 rounded-xl transition-all shadow-sm text-[11px] cursor-pointer"
+                          className="inline-flex w-full items-center justify-center gap-1.5 bg-[#087f73] hover:bg-sky-600 text-[#082b45] font-semibold py-2.5 px-3 rounded-xl transition-all shadow-sm text-sm cursor-pointer"
                         >
                           🌐 {activeLang === 'es' ? 'Abrir en Nueva Pestaña' :
                                activeLang === 'pt' ? 'Abrir num Novo Separador' :
@@ -525,22 +524,22 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                         </a>
                       </div>
                     ) : authError && (
-                      <p className="text-[10px] text-red-500 font-extrabold">{authError}</p>
+                      <p className="text-sm text-red-500 font-semibold">{authError}</p>
                     )}
                   </div>
                 ) : (
                   // User logged in header
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <div className="flex items-center justify-between border-b border-[#dce6e8] pb-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-sky-400 to-emerald-400 flex items-center justify-center font-black text-xs text-slate-950">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-sky-400 to-emerald-400 flex items-center justify-center font-semibold text-sm text-[#082b45]">
                         {user.name.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">{texts.welcomeBack}</p>
-                        <p className="text-xs font-extrabold text-slate-900">{user.name}</p>
+                        <p className="text-sm text-[#526574] font-semibold  ">{texts.welcomeBack}</p>
+                        <p className="text-base font-semibold text-[#082b45]">{user.name}</p>
                       </div>
                     </div>
-                    <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-full">
+                    <span className="text-sm text-emerald-600 font-semibold bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-full">
                       ✓ Cliente Verificado
                     </span>
                   </div>
@@ -548,27 +547,29 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
 
                 {/* Rating Stars Selection */}
                 <div className="space-y-3">
-                  <label className="block text-xs font-extrabold text-slate-500 uppercase tracking-wider">
+                  <label className="block text-sm font-semibold text-[#526574]  ">
                     {texts.starsLabel}
                   </label>
                   <div className="flex flex-col items-center md:items-start gap-2">
-                    <div className="flex items-center gap-1.5">
+                    <div role="group" aria-label={texts.starsLabel} className="flex items-center gap-1.5">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           key={star}
                           type="button"
+                          aria-label={`${star}/5`}
+                          aria-pressed={rating === star}
                           onMouseEnter={() => setHoveredRating(star)}
                           onMouseLeave={() => setHoveredRating(0)}
                           onClick={() => {
                             setRating(star);
                             setAuthError('');
                           }}
-                          className="text-4xl transition-transform hover:scale-125 duration-100 select-none cursor-pointer"
+                          className="kraken-control min-h-11 min-w-11 text-4xl transition- duration-100 select-none cursor-pointer"
                         >
-                          <span 
+                          <span
                             className={`transition-colors duration-200 ${
-                              star <= (hoveredRating || rating) 
-                                ? 'text-amber-400' 
+                              star <= (hoveredRating || rating)
+                                ? 'text-amber-400'
                                 : 'text-slate-200'
                             }`}
                           >
@@ -584,7 +585,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                           initial={{ opacity: 0, x: -5 }}
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: 5 }}
-                          className="text-xs font-black text-sky-600"
+                          className="text-sm font-semibold text-[#087f73]"
                         >
                           {getStarLabel(hoveredRating || rating)}
                         </motion.p>
@@ -595,7 +596,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
 
                 {/* TagBadges */}
                 <div className="space-y-2">
-                  <label className="block text-xs font-extrabold text-slate-500 uppercase tracking-wider">
+                  <label className="block text-sm font-semibold text-[#526574]  ">
                     {texts.tagsLabel}
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -608,18 +609,18 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                           onClick={() => {
                             if (!user) {
                               setAuthError(
-                                activeLang === 'es' 
-                                  ? 'Inicia sesión primero para poder seleccionar cualidades.' 
+                                activeLang === 'es'
+                                  ? 'Inicia sesión primero para poder seleccionar cualidades.'
                                   : 'Sign in first to select tags.'
                               );
                               return;
                             }
                             toggleTag(tag);
                           }}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all transform cursor-pointer border ${
-                            isSelected 
-                              ? 'bg-sky-50 text-sky-700 border-sky-200 font-extrabold' 
-                              : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300 hover:bg-slate-100'
+                          className={`kraken-control min-h-11 min-w-11 px-3 py-1.5 rounded-xl text-base font-semibold transition-all cursor-pointer border ${
+                            isSelected
+                              ? 'bg-[#eef7f5] text-[#087f73] border-[#c8dedb] font-semibold'
+                              : 'bg-[#f4f8f8] text-[#526574] border-[#dce6e8] hover:border-[#dce6e8] hover:bg-[#f4f8f8]'
                           }`}
                         >
                           {tag} {isSelected && '✓'}
@@ -632,28 +633,29 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                 {/* Plain comment input */}
                 <div className="space-y-2">
                   <textarea
+                    aria-label={texts.commentPlaceholder}
                     rows={3}
                     placeholder={texts.commentPlaceholder}
                     value={comment}
                     disabled={!user}
                     onChange={(e) => setComment(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs md:text-sm text-slate-800 focus:outline-none focus:border-sky-500 focus:bg-white placeholder:text-slate-400 disabled:opacity-50 transition-all font-medium"
+                    className="kraken-field w-full bg-white border border-[#dce6e8] rounded-2xl px-4 py-3 text-base text-[#082b45] focus:outline-none focus:border-sky-500 focus:bg-white placeholder:text-[#526574] disabled:opacity-50 transition-all font-medium"
                   />
                 </div>
 
                 {/* Submitting Feedback Action */}
                 <div className="pt-2">
                   {authError && (
-                    <p className="text-[11px] text-red-500 font-extrabold mb-3 text-center">{authError}</p>
+                    <p role="alert" className="text-base text-red-700 mb-3">{authError}</p>
                   )}
                   <button
                     type="button"
                     onClick={handleSubmitReview}
                     disabled={isSubmitting || !user || rating === 0}
-                    className={`w-full font-black py-3 px-6 rounded-2xl transition-all shadow-md text-xs select-none uppercase tracking-wider ${
+                    className={`kraken-control min-h-11 min-w-11 w-full font-semibold py-3 px-6 rounded-2xl transition-all shadow-md text-base select-none   ${
                       isSubmitting || !user || rating === 0
-                        ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
-                        : 'bg-gradient-to-r from-sky-500 to-emerald-500 text-slate-950 font-extrabold hover:shadow-cyan-500/10 cursor-pointer hover:scale-[1.01]'
+                        ? 'bg-[#f4f8f8] text-[#526574] cursor-not-allowed border border-[#dce6e8]'
+                        : 'bg-[#087f73] text-white font-semibold  cursor-pointer hover:scale-[1.01]'
                     }`}
                   >
                     {isSubmitting ? texts.submitting : texts.submitBtn}
@@ -674,17 +676,17 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="text-xl font-black text-emerald-600">
+                  <h3 className="text-xl font-semibold text-emerald-600">
                     {texts.successTitle}
                   </h3>
-                  <p className="text-xs text-slate-600 font-semibold">
+                  <p className="text-base text-[#526574] font-semibold">
                     {rating >= 4 ? texts.positiveHeader : texts.negativeHeader}
                   </p>
                 </div>
 
-                <div className={`rounded-2xl p-4 text-xs font-semibold leading-relaxed max-w-md mx-auto ${
-                  rating >= 4 
-                    ? 'bg-emerald-50/50 border border-emerald-100 text-emerald-800' 
+                <div className={`rounded-2xl p-4 text-base leading-relaxed max-w-md mx-auto ${
+                  rating >= 4
+                    ? 'bg-emerald-50/50 border border-emerald-100 text-emerald-800'
                     : 'bg-amber-50/60 border border-amber-100 text-amber-800'
                 }`}>
                   {rating >= 4 ? texts.positiveBody : texts.negativeBody}
@@ -696,7 +698,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                       href={OFFICIAL_GOOGLE_REVIEW_LINK}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black py-3.5 px-6 rounded-2xl transition-all shadow-md text-xs uppercase tracking-wider transform hover:scale-[1.02]"
+                      className="w-full inline-flex items-center justify-center gap-2 bg-[#087f73] hover:bg-[#06695f] text-white font-semibold py-3.5 px-6 rounded-2xl transition-colors text-base   hover:scale-[1.02]"
                     >
                       {texts.googleCta}
                     </a>
@@ -704,7 +706,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
 
                   <button
                     onClick={() => onNavigate('home')}
-                    className="w-full bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-700 font-black py-2.5 px-6 rounded-xl transition-all text-xs uppercase tracking-wider cursor-pointer"
+                    className="kraken-control min-h-11 min-w-11 w-full bg-white border border-[#dce6e8] hover:bg-[#f4f8f8] hover:border-[#dce6e8] text-[#526574] font-semibold py-2.5 px-6 rounded-xl transition-all text-base   cursor-pointer"
                   >
                     {texts.backHome}
                   </button>
@@ -714,7 +716,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
           </AnimatePresence>
         </div>
 
-        <p className="text-[10px] text-slate-400 font-semibold mt-6">
+        <p className="text-sm text-[#526574] font-semibold mt-6">
           {texts.footerNote}
         </p>
       </div>

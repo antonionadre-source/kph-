@@ -1,6 +1,7 @@
 .git
 .vercel
 node_modules
+.cache
 dist
 .env
 .env.*

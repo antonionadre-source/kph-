@@ -1,7 +1,6 @@
 import React from 'react';
 import { useTranslation } from '../i18n';
-import { teamPhotoUrl, companyLogoWhiteUrl, aboutHeroImageUrl, aboutOriginImages } from '../assets';
-import { motion } from 'motion/react';
+import { aboutHeroImageUrl, aboutOriginImages } from '../assets';
 import { ChevronRightIcon } from './icons';
 
 interface AboutPageProps {
@@ -13,7 +12,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
 
   const originPanels = [
     {
-      img: "https://www.dropbox.com/scl/fi/x2o9qcbil57umdw0ox57m/sobre-nosotros-equipo-viaje-con-maletas.webp?rlkey=kxzdzeifvw1gylcf51ju18go2&st=x8ujwcmg&raw=1",
+      img: aboutOriginImages.panel3,
       text: t('about.origin.panel1'),
     },
     {
@@ -21,11 +20,11 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
       text: t('about.origin.panel2'),
     },
     {
-      img: "https://www.dropbox.com/scl/fi/meeddv0hk1cbddd61app5/sobre-nosotros-bienvenida-familia-equipo.webp?rlkey=6smp7u9cky5lwptst9i6d1a24&st=fxapd4up&raw=1",
+      img: aboutOriginImages.panel1,
       text: t('about.origin.panel3'),
     },
     {
-      img: "https://www.dropbox.com/scl/fi/revw1yk0vsdi8qi3s3er1/sobre-nosotros-retrato-equipo-uniforme.webp?rlkey=c6n5n101s2295bsrxle1wg1hj&st=id6i1un2&raw=1",
+      img: aboutOriginImages.panel4,
       text: t('about.origin.panel4'),
     },
   ];
@@ -58,279 +57,37 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
   ];
 
   return (
-    <main className="bg-white selection:bg-blue-500/30 text-[#020617]">
-      
-      {/* --- HERO SECTION --- */}
-      <section data-header-theme="dark" className="relative md:min-h-[85vh] flex items-center pt-32 pb-40 md:py-40 overflow-hidden bg-[#001A3D]">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="/sobre-nosotros-equipo-con-cliente-en-zurich.webp" 
-            alt="Kraken About Us" 
-            className="w-full h-full object-cover object-right"
-            referrerPolicy="no-referrer"
-            onError={(e) => {
-              const target = e.currentTarget;
-              if (!target.dataset.fallback) {
-                target.dataset.fallback = 'true';
-                target.src = '/kai about us.webp';
-              }
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#001A3D] via-[#001A3D]/40 to-transparent" />
+    <main className="kraken-page kraken-editorial bg-white text-[#082b45]">
+      <header className="kraken-page-intro kraken-container grid gap-10 py-12 sm:py-20 lg:grid-cols-2 lg:items-center lg:gap-16">
+        <div>
+          <p className="kraken-eyebrow">Kraken PFM</p>
+          <h1 className="kraken-heading mt-3">{t('about.hero.title')}</h1>
+          <p className="kraken-description max-w-xl">{t('about.hero.subtitle')}</p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <button onClick={() => onNavigate('our-story')} className="kraken-button kraken-primary">{t('about.hero.ctaStory')} <ChevronRightIcon className="h-4 w-4" /></button>
+            <button onClick={() => onNavigate('comic-page')} className="kraken-button kraken-secondary">{t('aboutPage.viewComics')}</button>
+          </div>
         </div>
-
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-3xl">
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-blue-400 font-black text-[10px] uppercase tracking-[0.5em] mb-6"
-            >
-              {t('about.hero.badge')}
-            </motion.p>
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-5xl md:text-[90px] font-black text-white leading-tight mb-6 tracking-tighter"
-            >
-              {t('about.hero.title').split('.').map((part, i) => (
-                <span key={i} className={i === 1 ? "block text-blue-400" : ""}>
-                  {part}{i === 0 ? '.' : ''}
-                </span>
-              ))}
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-white/70 text-xl md:text-[20px] font-medium leading-relaxed mb-10 max-w-xl"
-            >
-              {t('about.hero.subtitle')}
-            </motion.p>
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="flex flex-wrap gap-4"
-            >
-              <button 
-                onClick={() => onNavigate('our-story')}
-                className="bg-blue-600 text-white px-8 py-4 rounded-xl font-black text-xs uppercase tracking-widest flex items-center gap-2 hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20"
-              >
-                {t('about.hero.ctaStory')} <ChevronRightIcon className="w-4 h-4" />
-              </button>
-              <button 
-                onClick={() => onNavigate('comic-page')}
-                className="bg-white/5 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-colors flex items-center gap-2"
-              >
-                {t('aboutPage.viewComics')} <ChevronRightIcon className="w-4 h-4" />
-              </button>
-            </motion.div>
+        <img src={aboutHeroImageUrl} alt="Kai — Kraken PFM" className="aspect-[4/3] w-full rounded-2xl border border-[#dce6e8] object-cover" />
+      </header>
+      <section className="border-y border-[#dce6e8] bg-[#f4f8f8] py-12 sm:py-20" id="origin">
+        <div className="kraken-container">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-16">
+            <div><p className="kraken-eyebrow">{t('about.origin.badge')}</p><h2 className="kraken-heading mt-3">{t('about.origin.title')}</h2><p className="kraken-description">{t('about.origin.text')}</p><button onClick={() => onNavigate('our-story')} className="kraken-button kraken-secondary mt-7">{t('about.origin.readStory')} →</button></div>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">{originPanels.map((panel, index) => <figure key={index} className="overflow-hidden rounded-2xl border border-[#dce6e8] bg-white"><img src={panel.img} alt="" loading="lazy" className="aspect-[4/3] w-full object-cover" /><figcaption className="p-5 text-base leading-relaxed text-[#526574]">{panel.text}</figcaption></figure>)}</div>
           </div>
         </div>
       </section>
-
-      {/* --- OUR ORIGIN SECTION --- */}
-      <section id="origin" data-header-theme="light" className="pt-0 pb-12 bg-white relative z-20">
-        <div className="container mx-auto px-6 -mt-10 md:-mt-20">
-          <div className="bg-gray-50 rounded-[2rem] md:rounded-[3rem] pt-4 pb-8 md:pt-6 md:pb-12 lg:pt-8 lg:pb-16 px-6 md:px-12 lg:px-16 shadow-sm border border-gray-100">
-            <div className="grid lg:grid-cols-12 gap-12 items-center">
-              {/* Left Side: Text Content */}
-              <div className="lg:col-span-4">
-                <p className="text-blue-600 font-black text-[10px] uppercase tracking-[0.5em] mb-6">{t('about.origin.badge')}</p>
-                <h2 className="text-4xl md:text-5xl font-black leading-tight tracking-tighter mb-8 text-[#020617]">
-                  {t('about.origin.title').split('partner').map((part, i) => (
-                    <span key={i} className={i === 1 ? "text-blue-600" : ""}>
-                      {i === 1 ? 'partner' : ''}{part}
-                    </span>
-                  ))}
-                </h2>
-                <p className="text-gray-500 text-sm leading-relaxed mb-8 max-w-sm">
-                  {t('about.origin.text')}
-                </p>
-                <button 
-                  onClick={() => onNavigate('our-story')}
-                  className="text-blue-600 font-black text-[10px] uppercase tracking-widest flex items-center gap-2 group"
-                >
-                  {t('about.origin.readStory')} <span className="group-hover:translate-x-1 transition-transform">→</span>
-                </button>
-              </div>
-
-              {/* Right Side: Panels Grid */}
-              <div className="lg:col-span-8">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {originPanels.map((panel, i) => (
-                    <motion.div 
-                      key={i}
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
-                      className="group relative h-64 rounded-2xl overflow-hidden shadow-md bg-[#001A3D] flex items-center justify-center"
-                    >
-                      <img 
-                        src={panel.img} 
-                        alt="" 
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                        referrerPolicy="no-referrer"
-                        loading="lazy"
-                      />
-                      {/* Dark gradient overlay for text readability at the bottom */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#001A3D]/80 via-transparent to-transparent opacity-90" />
-                      
-                      {/* Text content overlayed at the bottom */}
-                      <div className="absolute bottom-0 left-0 right-0 p-4">
-                        <p className="text-white font-bold text-[10px] leading-tight">{panel.text}</p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+      <section className="kraken-container py-12 sm:py-20" id="values">
+        <div className="max-w-2xl"><p className="kraken-eyebrow">{t('about.values.badge')}</p><h2 className="kraken-heading mt-3">{t('about.values.title')}</h2><p className="kraken-description">{t('about.values.text')}</p></div>
+        <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{coreValues.map((value, index) => <article key={index} className="rounded-2xl border border-[#dce6e8] p-6"><span aria-hidden="true" className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-[#e8f4f1] text-xl">{value.icon}</span><h3 className="text-lg font-semibold">{value.title}</h3><p className="mt-3 text-base leading-relaxed text-[#526574]">{value.text}</p></article>)}</div>
+      </section>
+      <section className="border-t border-[#dce6e8] bg-[#f4f8f8] py-12 sm:py-20">
+        <div className="kraken-container grid gap-8 lg:grid-cols-2">
+          <article className="overflow-hidden rounded-2xl border border-[#dce6e8] bg-white"><img src="/kai-calendar/optimized/about/team-768.webp" alt="Kai — Kraken PFM" loading="lazy" className="aspect-[16/9] w-full object-cover" /><div className="p-7 sm:p-9"><p className="kraken-eyebrow">{t('about.people.badge')}</p><h2 className="kraken-heading mt-3">{t('about.people.title')}</h2><p className="kraken-description">{t('about.people.text')}</p></div></article>
+          <article className="flex flex-col justify-center rounded-2xl border border-[#dce6e8] bg-white p-7 sm:p-10"><p className="kraken-eyebrow">{t('about.commitment.badge')}</p><h2 className="kraken-heading mt-3">{t('about.commitment.title')}</h2><p className="kraken-description">{t('about.commitment.text')}</p><button onClick={() => onNavigate('sustainability-page')} className="kraken-button kraken-secondary mt-7 self-start">{t('about.commitment.cta')} →</button></article>
         </div>
       </section>
-
-      {/* --- CORE VALUES SECTION --- */}
-      <section id="values" data-header-theme="dark" className="py-16 bg-[#001A3D] text-white -mt-8 relative z-20">
-        <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-12 gap-16 items-start">
-            <div className="lg:col-span-4">
-              <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.5em] mb-4">{t('about.values.badge')}</p>
-              <h2 className="text-4xl md:text-5xl font-black leading-none tracking-tighter mb-6">
-                {t('about.values.title')}
-              </h2>
-              <p className="text-white/50 text-lg leading-relaxed">
-                {t('about.values.text')}
-              </p>
-            </div>
-
-            <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {coreValues.map((value, i) => (
-                <motion.div 
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-[2rem] hover:bg-white/10 transition-all duration-300 flex flex-col group"
-                >
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 ${value.color}`}>
-                    <span className="text-xl">{value.icon}</span>
-                  </div>
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] mb-3 text-blue-400">{value.title}</h3>
-                  <p className="text-white/60 text-[11px] font-medium leading-relaxed">{value.text}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* --- PEOPLE & COMMITMENT SECTION --- */}
-      <section className="py-24 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-8">
-            
-            {/* Our People */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 flex flex-col"
-            >
-              <p className="text-blue-600 font-black text-[10px] uppercase tracking-[0.5em] mb-6">{t('about.people.badge')}</p>
-              
-              <div className="grid md:grid-cols-2 gap-8 mb-10 flex-1">
-                <div className="flex flex-col justify-center">
-                  <h2 className="text-4xl font-black tracking-tighter mb-6 leading-tight">{t('about.people.title')}</h2>
-                  <p className="text-gray-500 text-sm leading-relaxed">{t('about.people.text')}</p>
-                </div>
-                <div className="rounded-2xl overflow-hidden h-64">
-                  <img src="/kai-calendar/optimized/about/team-768.webp" alt="Kraken Team" className="w-full h-full object-cover" loading="lazy" referrerPolicy="no-referrer" />
-                </div>
-              </div>
-
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 flex items-center gap-4 group hover:bg-white hover:shadow-md transition-all duration-300">
-                  <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                    <span className="text-2xl">⚖️</span>
-                  </div>
-                  <div>
-                    <h4 className="font-black text-[10px] uppercase tracking-widest mb-1">{t('about.people.pay.title')}</h4>
-                    <p className="text-[10px] text-gray-400 font-medium leading-tight">{t('about.people.pay.text')}</p>
-                  </div>
-                </div>
-                <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 flex items-center gap-4 group hover:bg-white hover:shadow-md transition-all duration-300">
-                  <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                    <span className="text-2xl">🛡️</span>
-                  </div>
-                  <div>
-                    <h4 className="font-black text-[10px] uppercase tracking-widest mb-1">{t('about.people.social.title')}</h4>
-                    <p className="text-[10px] text-gray-400 font-medium leading-tight">{t('about.people.social.text')}</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Our Commitment */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 flex flex-col"
-            >
-              <p className="text-blue-600 font-black text-[10px] uppercase tracking-[0.5em] mb-6">{t('about.commitment.badge')}</p>
-              
-              <div className="grid md:grid-cols-2 gap-12 flex-1">
-                <div className="flex flex-col justify-center">
-                  <h2 className="text-4xl font-black tracking-tighter mb-6 leading-tight">{t('about.commitment.title')}</h2>
-                  <p className="text-gray-500 text-sm leading-relaxed mb-8">{t('about.commitment.text')}</p>
-                  <button 
-                    onClick={() => onNavigate('sustainability-page')}
-                    className="bg-[#001A3D] text-white px-8 py-4 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#002d5b] transition-all duration-300 self-start"
-                  >
-                    {t('about.commitment.cta')} →
-                  </button>
-                </div>
-
-                <div className="flex flex-col justify-center space-y-8">
-                  <div className="flex items-center gap-5 group">
-                    <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                      <span className="text-2xl">🌿</span>
-                    </div>
-                    <div>
-                      <h4 className="font-black text-[10px] uppercase tracking-widest text-emerald-600 mb-1">{t('about.commitment.env.title')}</h4>
-                      <p className="text-[11px] text-gray-400 font-medium leading-tight">{t('about.commitment.env.text')}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-5 group">
-                    <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                      <span className="text-2xl">👥</span>
-                    </div>
-                    <div>
-                      <h4 className="font-black text-[10px] uppercase tracking-widest text-indigo-600 mb-1">{t('about.commitment.social.title')}</h4>
-                      <p className="text-[11px] text-gray-400 font-medium leading-tight">{t('about.commitment.social.text')}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-5 group">
-                    <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
-                      <span className="text-2xl">🏢</span>
-                    </div>
-                    <div>
-                      <h4 className="font-black text-[10px] uppercase tracking-widest text-blue-600 mb-1">{t('about.commitment.corp.title')}</h4>
-                      <p className="text-[11px] text-gray-400 font-medium leading-tight">{t('about.commitment.corp.text')}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-          </div>
-        </div>
-      </section>
-
     </main>
   );
 };

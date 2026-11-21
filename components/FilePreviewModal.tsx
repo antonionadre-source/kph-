@@ -1,6 +1,63 @@
-import React, { useState } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 import { X, Download, ExternalLink, FileText, Image as ImageIcon, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { downloadFileSafely, getFileTypeInfo } from './fileUtils';
+import { useTranslation } from '../i18n';
+import { detailText } from './detailPresentation';
+
+// Shared by the portal and quote dialogs; only the topmost dialog handles focus or keys.
+let scrollLocks = 0;
+let unlockedOverflow = '';
+const dialogStack: HTMLElement[] = [];
+export function useDialogFocus(
+  isOpen: boolean,
+  dialogRef: React.RefObject<HTMLElement>,
+  initialFocusRef: React.RefObject<HTMLElement>,
+  onClose: () => void,
+  suspended = false,
+) {
+  const closeRef = useRef(onClose);
+  const suspendedRef = useRef(suspended);
+  closeRef.current = onClose;
+  suspendedRef.current = suspended;
+  useEffect(() => {
+    if (!isOpen || !dialogRef.current) return;
+    const dialog: HTMLElement = dialogRef.current;
+    const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const nestedIndex = dialogStack.findIndex(openDialog => dialog.contains(openDialog));
+    if (nestedIndex < 0) dialogStack.push(dialog); else dialogStack.splice(nestedIndex, 0, dialog);
+    const isTopmost = () => dialogStack[dialogStack.length - 1] === dialog;
+    if (scrollLocks++ === 0) { unlockedOverflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; }
+    const focusInitial = () => (initialFocusRef.current || dialogRef.current)?.focus({ preventScroll: true });
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!isTopmost() || suspendedRef.current || event.defaultPrevented) return;
+      if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); closeRef.current(); return; }
+      if (event.key !== 'Tab') return;
+      const dialog: HTMLElement | null = dialogRef.current;
+      if (!dialog) return;
+      const controls = Array.from(dialog.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [contenteditable="true"], [tabindex]:not([tabindex="-1"])')).filter(node => node.tabIndex >= 0 && node.getClientRects().length > 0 && !node.closest('[hidden], [inert], [aria-hidden="true"]'));
+      event.preventDefault(); event.stopPropagation();
+      if (!controls.length) { dialog.focus({ preventScroll: true }); return; }
+      const current = controls.indexOf(document.activeElement as HTMLElement);
+      const next = current < 0 ? (event.shiftKey ? controls.length - 1 : 0) : (current + (event.shiftKey ? -1 : 1) + controls.length) % controls.length;
+      controls[next].focus({ preventScroll: true });
+    };
+    const onFocusIn = (event: FocusEvent) => {
+      if (isTopmost() && !suspendedRef.current && event.target instanceof Node && !dialogRef.current?.contains(event.target)) focusInitial();
+    };
+    document.addEventListener('keydown', onKeyDown, true);
+    document.addEventListener('focusin', onFocusIn, true);
+    if (isTopmost()) focusInitial();
+    return () => {
+      document.removeEventListener('keydown', onKeyDown, true);
+      document.removeEventListener('focusin', onFocusIn, true);
+      const wasTopmost = isTopmost();
+      const stackIndex = dialogStack.indexOf(dialog);
+      if (stackIndex >= 0) dialogStack.splice(stackIndex, 1);
+      if (--scrollLocks === 0) document.body.style.overflow = unlockedOverflow;
+      if (wasTopmost && trigger?.isConnected) trigger.focus({ preventScroll: true });
+    };
+  }, [isOpen]);
+}
 
 interface FilePreviewModalProps {
   isOpen: boolean;
@@ -20,6 +77,11 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
   const [isDownloading, setIsDownloading] = useState(false);
   const [downloadSuccess, setDownloadSuccess] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const { language } = useTranslation();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const headingId = useId();
+  useDialogFocus(isOpen && Boolean(fileUrl), dialogRef, closeRef, onClose);
 
   if (!isOpen || !fileUrl) return null;
 
@@ -45,7 +107,13 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
     : '';
 
   return (
-    <div 
+    <div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={headingId}
+      data-file-preview-dialog
+      tabIndex={-1}
       className="fixed inset-0 z-[300] bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-3 md:p-6 animate-fade-in"
       onClick={onClose}
     >
@@ -63,7 +131,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
               <span className="text-[10px] font-black uppercase text-blue-400 tracking-wider block">
                 {title} • {isPdf ? 'PDF' : isImage ? 'IMAGEN' : 'DOCUMENTO'}
               </span>
-              <h3 className="font-extrabold text-sm md:text-base text-white truncate" title={fileName}>
+              <h3 id={headingId} className="font-extrabold text-sm md:text-base text-white truncate" title={fileName}>
                 {fileName || 'Archivo Adjunto'}
               </h3>
             </div>
@@ -111,11 +179,14 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
             )}
 
             <button
+              ref={closeRef}
+              type="button"
               onClick={onClose}
+              aria-label={detailText(language, 'close')}
               className="p-2.5 bg-slate-800 hover:bg-red-600/80 text-slate-300 hover:text-white rounded-xl transition-all cursor-pointer"
-              title="Cerrar"
+              title={detailText(language, 'close')}
             >
-              <X className="w-5 h-5" />
+              <X aria-hidden="true" className="w-5 h-5" />
             </button>
           </div>
         </div>

@@ -3,8 +3,8 @@ import React from 'react';
 // This file centralizes URLs for static image assets, making them easier to manage.
 // Optimized local derivatives retain originals and provenance in docs/KAI_MEDIA*.json.
 
-export const companyLogoUrl = '/logo-kraken-azul.webp';
-export const companyLogoWhiteUrl = '/logo-kraken-blanco.webp';
+export const companyLogoUrl = '/kai-calendar/optimized/brand/logo-blue-480.webp';
+export const companyLogoWhiteUrl = '/kai-calendar/optimized/brand/logo-white-480.webp';
 export const teamPhotoUrl = '/ChatGPT Image Jun 29, 2026, 02_32_15 AM.png';
 export const mascotImageUrl = '/kai-calendar/optimized/kai/mascota-kraken-homepage-320.webp';
 export const mascotVideoUrl = '';

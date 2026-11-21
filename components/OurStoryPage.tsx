@@ -1,23 +1,23 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { useTranslation } from '../i18n';
-import { 
-  Building2, 
-  Target, 
-  Users, 
-  History, 
-  ArrowRight, 
-  Quote, 
-  CheckCircle2, 
-  MapPin, 
+import {
+  Building2,
+  Target,
+  Users,
+  History,
+  ArrowRight,
+  Quote,
+  CheckCircle2,
+  MapPin,
   ShieldCheck,
   Globe,
   Heart,
   Sparkles
 } from 'lucide-react';
-import { 
-  aboutHeroImageUrl, 
-  aboutOriginImages, 
+import {
+  aboutHeroImageUrl,
+  aboutOriginImages,
   teamPhotoUrl,
   mascotImageUrl
 } from '../assets';
@@ -32,8 +32,8 @@ const STORY_T: Record<string, Record<string, string>> = {
     'hero_title1': 'The Story',
     'hero_title2': 'Behind Kraken',
     'hero_desc': 'How a simple commitment to precision became a new standard for facility management in Switzerland.',
-    'btn_timeline': 'EXPLORE TIMELINE',
-    'btn_kai': 'THE LEGEND OF KAI',
+    'btn_timeline': "Explore the timeline",
+    'btn_kai': "The legend of Kai",
     'origin_title': 'Our Story',
     'origin_desc': 'From a mop bucket in London to redefining Facility Management in Switzerland.',
     'timeline_p1_year': '2015',
@@ -51,7 +51,7 @@ const STORY_T: Record<string, Record<string, string>> = {
     'timeline_p5_year': 'Onwards',
     'timeline_p5_title': 'Our Vision: All of Switzerland',
     'timeline_p5_desc': 'We are starting in German-speaking Switzerland, but that is only the beginning. Our goal is to expand across the entire country, broadening our range of services and bringing the same promise to every new client: Swiss precision, real innovation, and a sustainable commitment.',
-    'aspirations_badge': 'OUR ASPIRATIONS',
+    'aspirations_badge': "Our aspirations",
     'aspirations_title1': 'The standard',
     'aspirations_title2': 'we strive to define.',
     'asp_point1_title': 'Swiss Quality',
@@ -77,8 +77,8 @@ const STORY_T: Record<string, Record<string, string>> = {
     'hero_title1': 'Die Geschichte',
     'hero_title2': 'Hinter Kraken',
     'hero_desc': 'Wie aus einer einfachen Verpflichtung zur Präzision ein neuer Standard für das Gebäudemanagement in der Schweiz wurde.',
-    'btn_timeline': 'ZEITACHSE ERKUNDEN',
-    'btn_kai': 'DIE LEGENDE VON KAI',
+    'btn_timeline': "Zeitachse erkunden",
+    'btn_kai': "Die Legende von Kai",
     'origin_title': 'Unsere Geschichte',
     'origin_desc': 'Von einem Wischeimer in London zur Neudefinition des Facility Managements in der Schweiz.',
     'timeline_p1_year': '2015',
@@ -96,7 +96,7 @@ const STORY_T: Record<string, Record<string, string>> = {
     'timeline_p5_year': 'Zukunft',
     'timeline_p5_title': 'Unsere Vision: Die ganze Schweiz',
     'timeline_p5_desc': 'Wir fangen in der Deutschschweiz an, aber das ist erst der Anfang. Unser Ziel ist es, in das ganze Land zu expandieren, unser Dienstleistungsangebot zu erweitern und jedem neuen Kunden das gleiche Versprechen zu bringen: Schweizer Präzision, echte Innovation und nachhaltiges Engagement.',
-    'aspirations_badge': 'UNSERE BESTREBUNGEN',
+    'aspirations_badge': "Unsere Ziele",
     'aspirations_title1': 'Der Standard,',
     'aspirations_title2': 'den wir zu definieren versuchen.',
     'asp_point1_title': 'Schweizer Qualität',
@@ -122,8 +122,8 @@ const STORY_T: Record<string, Record<string, string>> = {
     'hero_title1': 'La Historia',
     'hero_title2': 'Detrás de Kraken',
     'hero_desc': 'Cómo un simple compromiso con la precisión se convirtió en un nuevo estándar para la gestión de instalaciones en Suiza.',
-    'btn_timeline': 'EXPLORAR CRONOLOGÍA',
-    'btn_kai': 'LA LEYENDA DE KAI',
+    'btn_timeline': "Explorar la historia",
+    'btn_kai': "La leyenda de Kai",
     'origin_title': 'Nuestra Historia',
     'origin_desc': 'El Facility Management suele pasar desapercibido, hasta que algo falla. Kraken nace para cambiar eso: para traer claridad, nuevos estándares nunca antes vistos y un trato cálido y humano a un sector que demasiadas veces se da por sentado. Detrás hay 11 años de experiencia internacional, vividos peldaño a peldaño.',
     'timeline_p1_year': '2015 • Londres',
@@ -144,7 +144,7 @@ const STORY_T: Record<string, Record<string, string>> = {
     'timeline_p6_year': 'Adelante',
     'timeline_p6_title': 'Nuestra visión: toda Suiza',
     'timeline_p6_desc': 'Empezamos en la Suiza alemana, pero es solo el principio. Nuestro objetivo es crecer por todo el país con la misma promesa para cada cliente: precisión suiza, innovación real, compromiso sostenible y, siempre, un trato cercano y humano.',
-    'aspirations_badge': 'NUESTRAS ASPIRACIONES',
+    'aspirations_badge': "Nuestras aspiraciones",
     'aspirations_title1': 'El estándar',
     'aspirations_title2': 'que nos esforzamos por definir.',
     'asp_point1_title': 'Calidad Suiza',
@@ -170,8 +170,8 @@ const STORY_T: Record<string, Record<string, string>> = {
     'hero_title1': 'L\'Histoire',
     'hero_title2': 'Derrière Kraken',
     'hero_desc': 'Comment un simple engagement envers la précision est devenu une nouvelle norme pour la gestion des bâtiments en Suisse.',
-    'btn_timeline': 'EXPLORER LA CHRONOLOGIE',
-    'btn_kai': 'LA LÉGENDE DE KAI',
+    'btn_timeline': "Découvrir la chronologie",
+    'btn_kai': "La légende de Kai",
     'origin_title': 'Notre Histoire',
     'origin_desc': 'D’un seau à franges à Londres à la redéfinition du Facility Management en Suisse.',
     'timeline_p1_year': '2015',
@@ -189,7 +189,7 @@ const STORY_T: Record<string, Record<string, string>> = {
     'timeline_p5_year': 'En avant',
     'timeline_p5_title': 'Notre Vision : Toute la Suisse',
     'timeline_p5_desc': 'Nous commençons par la Suisse alémanique, mais ce n\'est qu\'un début. Notre objectif est de nous étendre à tout le pays, en élargissant notre offre de services et en apportant la même promesse à chaque nouveau client : précision suisse, innovation réelle et engagement durable.',
-    'aspirations_badge': 'NOS ASPIRATIONS',
+    'aspirations_badge': "Nos aspirations",
     'aspirations_title1': 'La norme',
     'aspirations_title2': 'que nous nous efforçons d\'illustrer.',
     'asp_point1_title': 'Qualité Suisse',
@@ -215,8 +215,8 @@ const STORY_T: Record<string, Record<string, string>> = {
     'hero_title1': 'La Storia',
     'hero_title2': 'Dietro Kraken',
     'hero_desc': 'Come un piccolo, fermo impegno alla precisione è divenuto il nuovo standard svizzero per il facility management.',
-    'btn_timeline': 'SCOPRI LA CRONOLOGIA',
-    'btn_kai': 'LA LEGGENDA DI KAI',
+    'btn_timeline': "Esplora la storia",
+    'btn_kai': "La leggenda di Kai",
     'origin_title': 'La Nostra Storia',
     'origin_desc': 'Da un secchio per lavare a Londra alla ridefinizione del Facility Management in Svizzera.',
     'timeline_p1_year': '2015',
@@ -234,7 +234,7 @@ const STORY_T: Record<string, Record<string, string>> = {
     'timeline_p5_year': 'In futuro',
     'timeline_p5_title': 'La Nostra Visione: Tutta la Svizzera',
     'timeline_p5_desc': 'Iniziamo nella Svizzera tedesca, ma è solo l\'inizio. Il nostro obiettivo è espanderci in tutto il paese, ampliando la nostra gamma di servizi e portando la stessa promessa a ogni nuovo cliente: precisione svizzera, vera innovazione e impegno sostenibile.',
-    'aspirations_badge': 'LE NOSTRE ASPIRAZIONI',
+    'aspirations_badge': "Le nostre aspirazioni",
     'aspirations_title1': 'Lo standard',
     'aspirations_title2': 'che puntiamo a consolidare.',
     'asp_point1_title': 'Qualità Svizzera',
@@ -260,8 +260,8 @@ const STORY_T: Record<string, Record<string, string>> = {
     'hero_title1': 'A História',
     'hero_title2': 'Por Trás da Kraken',
     'hero_desc': 'Como um simples compromisso com a precisão se tornou um novo padrão para a gestão de instalações na Suíça.',
-    'btn_timeline': 'EXPLORAR CRONOLOGIA',
-    'btn_kai': 'A LENDA DE KAI',
+    'btn_timeline': "Explorar a história",
+    'btn_kai': "A lenda de Kai",
     'origin_title': 'Nossa História',
     'origin_desc': 'De um balde de esfregona em Londres a redefinir o Facility Management na Suíça.',
     'timeline_p1_year': '2015',
@@ -279,7 +279,7 @@ const STORY_T: Record<string, Record<string, string>> = {
     'timeline_p5_year': 'Em diante',
     'timeline_p5_title': 'A Nossa Visão: Toda a Suíça',
     'timeline_p5_desc': 'Começamos na Suíça alemã, mas é apenas o início. O nosso objetivo é expandirmo-nos por todo o país, ampliando a nossa gama de serviços e levando a mesma promessa a cada novo cliente: precisão suíça, inovação real e compromisso sustentável.',
-    'aspirations_badge': 'AS NOSSAS ASPIRAÇÕES',
+    'aspirations_badge': "As nossas aspirações",
     'aspirations_title1': 'O padrão',
     'aspirations_title2': 'que desejamos imprimir.',
     'asp_point1_title': 'Qualidade Suíça',
@@ -393,250 +393,18 @@ const OurStoryPage: React.FC<OurStoryPageProps> = ({ onNavigate }) => {
   ];
 
   return (
-    <main className="bg-white min-h-screen selection:bg-blue-500/30 text-[#001A3D]">
-      
-      {/* Hero Section */}
-      <section className="relative min-h-[50vh] md:h-[80vh] flex items-center overflow-hidden bg-[#001A3D] py-20 md:py-0">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="/cinematic-design-workspace.webp" 
-            alt="Kraken Story" 
-            className="w-full h-full object-cover"
-            referrerPolicy="no-referrer"
-            onError={(e) => {
-              const target = e.currentTarget;
-              if (!target.dataset.fallback) {
-                target.dataset.fallback = 'true';
-                target.src = '/kai about us.webp';
-              }
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#001A3D] via-[#001A3D]/70 to-transparent" />
-        </div>
-
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-3xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-400/20 text-blue-400 text-[10px] font-black uppercase tracking-widest mb-6"
-            >
-              <History className="w-4 h-4" />
-              {getS('hero_badge')}
-            </motion.div>
-            
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-4xl md:text-[84px] font-black leading-[0.9] tracking-tighter text-white mb-6 uppercase"
-            >
-              {getS('hero_title1')} <br />
-              <span className="text-blue-500">{getS('hero_title2')}</span>
-            </motion.h1>
-
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-xl text-white/70 font-medium leading-relaxed mb-10 max-w-xl"
-            >
-              {getS('hero_desc')}
-            </motion.p>
-
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="flex flex-wrap gap-4"
-            >
-              <button 
-                onClick={() => document.getElementById('timeline')?.scrollIntoView({ behavior: 'smooth' })}
-                className="bg-blue-600 text-white px-8 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-900/40"
-              >
-                {getS('btn_timeline')}
-              </button>
-              <button 
-                onClick={() => onNavigate('comic-page')}
-                className="bg-white/5 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all"
-              >
-                {getS('btn_kai')}
-              </button>
-            </motion.div>
-          </div>
+    <main className="kraken-page kraken-editorial bg-white text-[#082b45]">
+      <header className="kraken-page-intro kraken-container grid gap-10 py-12 sm:py-20 lg:grid-cols-2 lg:items-center lg:gap-16">
+        <div><p className="kraken-eyebrow">Kraken PFM</p><h1 className="kraken-heading mt-3">{getS('hero_title1')} {getS('hero_title2')}</h1><p className="kraken-description">{getS('hero_desc')}</p><div className="mt-7 flex flex-wrap gap-3"><button onClick={() => document.getElementById('timeline')?.scrollIntoView({ behavior: 'smooth' })} className="kraken-button kraken-primary">{getS('btn_timeline')}</button><button onClick={() => onNavigate('comic-page')} className="kraken-button kraken-secondary">{getS('btn_kai')}</button></div></div>
+        <img src={aboutHeroImageUrl} alt="Kai — Kraken PFM" className="aspect-[4/3] w-full rounded-2xl border border-[#dce6e8] object-cover" />
+      </header>
+      <section id="timeline" className="scroll-mt-28 border-y border-[#dce6e8] bg-[#f4f8f8] py-12 sm:py-20">
+        <div className="kraken-container max-w-6xl"><div className="max-w-2xl"><h2 className="kraken-heading">{getS('origin_title')}</h2><p className="kraken-description">{getS('origin_desc')}</p></div>
+          <ol className="mt-10 space-y-8">{timeline.map((item,index) => <li key={index} className="grid overflow-hidden rounded-2xl border border-[#dce6e8] bg-white md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]"><img src={item.img} alt="" loading="lazy" className="aspect-[4/3] h-full w-full object-cover" /><div className="p-7 sm:p-10"><p className="kraken-eyebrow">{item.year}</p><h3 className="mt-3 text-2xl font-semibold tracking-tight">{item.title}</h3><p className="mt-4 text-base leading-relaxed text-[#526574]">{item.desc}</p></div></li>)}</ol>
         </div>
       </section>
-
-      {/* The Origins */}
-      <section id="timeline" className="py-24 bg-gray-50 overflow-hidden">
-        <div className="container mx-auto px-6">
-          <div className="max-w-2xl mb-20 text-center mx-auto">
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-4 text-[#001A3D]">{getS('origin_title')}</h2>
-            <p className="text-gray-500 font-medium">{getS('origin_desc')}</p>
-          </div>
-
-          <div className="relative">
-            {/* Timeline Line */}
-            <div className="absolute left-1/2 top-0 bottom-0 w-px bg-blue-100 hidden lg:block" />
-
-            <div className="space-y-24">
-              {timeline.map((item, idx) => (
-                <div key={idx} className={`flex flex-col lg:flex-row items-center gap-12 ${idx % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`}>
-                  {/* Content */}
-                  <motion.div 
-                    initial={{ opacity: 0, x: idx % 2 === 0 ? -40 : 40 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    className="flex-1 lg:text-left"
-                  >
-                    <div className={`p-8 bg-white rounded-[2.5rem] shadow-sm border border-gray-100 relative ${idx % 2 !== 0 ? 'lg:text-right' : ''}`}>
-                      <div className={`text-4xl font-black text-blue-600 mb-2 ${idx % 2 !== 0 ? 'lg:justify-end' : ''} flex items-center gap-4`}>
-                        {idx % 2 !== 0 && item.icon}
-                        {item.year}
-                        {idx % 2 === 0 && item.icon}
-                      </div>
-                      <h3 className="text-2xl font-black text-[#001A3D] mb-4 uppercase">{item.title}</h3>
-                      <p className="text-gray-500 font-medium leading-relaxed italic">{item.desc}</p>
-                    </div>
-                  </motion.div>
-
-                  {/* Spacer/Dot */}
-                  <div className="hidden lg:flex w-12 h-12 bg-white rounded-full border-4 border-blue-600 z-10 shrink-0 items-center justify-center shadow-lg">
-                    <div className="w-3 h-3 bg-blue-600 rounded-full" />
-                  </div>
-
-                  {/* Spacer for alternating layout instead of Image */}
-                  <div className="flex-1 hidden lg:block" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Values & Philosophy */}
-      <section className="py-24 bg-[#001A3D] text-white">
-        <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
-            <div>
-              <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.5em] mb-6">{getS('aspirations_badge')}</p>
-              <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-8 leading-none">
-                {getS('aspirations_title1')} <br />
-                <span className="text-blue-400">{getS('aspirations_title2')}</span>
-              </h2>
-              <div className="space-y-6">
-                {[
-                  { title: getS('asp_point1_title'), text: getS('asp_point1_desc') },
-                  { title: getS('asp_point2_title'), text: getS('asp_point2_desc') },
-                  { title: getS('asp_point3_title'), text: getS('asp_point3_desc') }
-                ].map((point, i) => (
-                  <div key={i} className="flex gap-4 group">
-                    <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:border-blue-600 transition-all">
-                      <CheckCircle2 className="w-5 h-5 text-blue-400 group-hover:text-white" />
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-black">{point.title}</h4>
-                      <p className="text-white/50 text-sm">{point.text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="relative">
-              <div className="aspect-square bg-gradient-to-tr from-blue-600/20 to-[#001A3D] rounded-[4rem] border border-white/10 flex items-center justify-center relative overflow-hidden group">
-                <Quote className="absolute top-12 left-12 w-20 h-20 text-white/5" />
-                <div className="max-w-md text-center px-12 z-10">
-                  <p className="text-2xl md:text-3xl font-black italic mb-8 leading-tight">
-                    {getS('quote_text')}
-                  </p>
-                  <p className="text-blue-400 font-black text-sm uppercase tracking-widest">{getS('quote_author')}</p>
-                </div>
-                
-                {/* Decorative Kai Image Floating */}
-                <motion.img 
-                  animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                  src={mascotImageUrl}
-                  className="absolute -bottom-10 -right-10 w-48 opacity-30 pointer-events-none grayscale"
-                  alt=""
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Sustainable Future Section */}
-      <section className="py-24 bg-white relative overflow-hidden">
-        <div className="container mx-auto px-6">
-          <div className="bg-[#F1F5F9] rounded-[4rem] p-12 md:p-20 relative overflow-hidden">
-            <div className="grid lg:grid-cols-12 gap-12 items-center">
-              <div className="lg:col-span-1">
-                <div className="lg:-rotate-90 whitespace-nowrap text-[10px] font-black text-blue-400 uppercase tracking-[1em] opacity-50 mb-8 lg:mb-0">
-                  {getS('future_badge')}
-                </div>
-              </div>
-              <div className="lg:col-span-6">
-                <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-6 text-[#001A3D]">{getS('future_title')} <span className="text-emerald-600 uppercase">B-Corp</span></h2>
-                <p className="text-xl text-[#001A3D] font-bold leading-relaxed mb-8 border-l-4 border-blue-600 pl-8 bg-white/40 py-4 rounded-r-3xl">
-                  {useTranslation().t('sustainability.results.desc')}
-                </p>
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="flex items-start gap-3">
-                    <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
-                    <p className="text-xs font-bold text-gray-500 uppercase">{getS('future_pt1')}</p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Heart className="w-5 h-5 text-blue-600 shrink-0" />
-                    <p className="text-xs font-bold text-gray-500 uppercase">{getS('future_pt2')}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="lg:col-span-5 relative">
-                <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                  <img 
-                    src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1200" 
-                    alt="Sustainable Future" 
-                    className="w-full h-full object-cover"
-                    referrerPolicy="no-referrer"
-                  />
-                  <div className="absolute inset-0 bg-blue-600/10 mix-blend-multiply" />
-                </div>
-                {/* Floating Badge */}
-                <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-xl shadow-blue-900/10 border border-gray-100 flex items-center gap-4">
-                  <div className="w-12 h-12 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600">
-                    <Target className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{getS('future_target')}</p>
-                    <p className="text-sm font-black text-[#001A3D]">{getS('future_netzero')}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer CTA */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-6 text-center">
-            <h2 className="text-4xl md:text-6xl font-black text-[#001A3D] tracking-tighter mb-8 uppercase leading-none">
-                {getS('footer_title1')} <br />
-                <span className="text-blue-600">{getS('footer_title2')}</span>
-            </h2>
-            <div className="flex flex-wrap justify-center gap-4">
-                <button 
-                  onClick={() => onNavigate('consultation')}
-                  className="bg-[#001A3D] text-white px-10 py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-black transition-all shadow-xl shadow-blue-900/20"
-                >
-                    {getS('footer_btn')}
-                </button>
-            </div>
-        </div>
-      </section>
-
+      <section className="kraken-container py-12 sm:py-20"><div className="max-w-2xl"><p className="kraken-eyebrow">{getS('aspirations_badge')}</p><h2 className="kraken-heading mt-3">{getS('aspirations_title1')} {getS('aspirations_title2')}</h2></div><div className="mt-9 grid gap-6 md:grid-cols-3">{[1,2,3].map(index => <article key={index} className="rounded-2xl border border-[#dce6e8] p-7"><h3 className="text-xl font-semibold">{getS(`asp_point${index}_title`)}</h3><p className="mt-3 text-base leading-relaxed text-[#526574]">{getS(`asp_point${index}_desc`)}</p></article>)}</div></section>
+      <section className="border-t border-[#dce6e8] bg-[#f4f8f8] py-12 sm:py-20"><div className="kraken-container flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between"><h2 className="kraken-heading max-w-2xl">{getS('footer_title1')} {getS('footer_title2')}</h2><button onClick={() => onNavigate('consultation')} className="kraken-button kraken-primary self-start lg:shrink-0">{getS('footer_btn')}</button></div></section>
     </main>
   );
 };

@@ -1,69 +1,65 @@
-# Renovar ventas, portal y reservas de Kraken PFM con permisos y pagos verificados
+# Renovar Kraken PFM: limpieza y mudanzas, portal y reservas seguras
 
-El cliente podía aportar importes/estados financieros, el dominio de email otorgaba
-privilegios y varios formularios aparentaban éxito tras fallar. La entrega separa
-estimación, persistencia y pago, y facilita pedir presupuesto con una portada
-comercial compacta, header/footer móviles y Kai de ventas en seis idiomas.
+La web mezclaba presentaciones extensas, formularios poco legibles y un área de
+clientes con errores de identidad, permisos y persistencia. Esta entrega convierte
+la portada en una entrada directa a limpieza y mudanzas, unifica el diseño en
+seis idiomas y conserva la arquitectura React/Vite/Express y las rutas existentes.
+
+La Ford Transit tiene una recreación SVG con tres inventarios seleccionables:
+mueble suelto, habitación y estudio. Cambian los objetos y la lista; el botón de
+mudanza abre el configurador correcto y Contacto conserva el inventario elegido.
+Se comparan L3H2 y L3H3: el techo y los rangos de dimensiones/volumen máximo
+cambian con la variante. La fuente es la ficha Ford de 2017, identificada como
+referencia de gama; no se presenta como medición del vehículo concreto ni se
+promete transportar un estudio en un solo viaje.
+
+El catálogo reúne 23 servicios con búsqueda, categoría y localidad. Registro,
+acceso, dashboard, detalles, presupuestos, contacto, empleo, blog, páginas legales,
+reseñas y tienda comparten tipografía, contraste, espaciado y controles. El portal
+usa tarjetas en móvil y tabla en escritorio; los errores de acción son visibles.
+Los diálogos gestionan altura, scroll, foco, teclado y visores anidados. Se retiran
+estrellas, garantías de depósito, disponibilidad en tiempo real y otros reclamos
+sin respaldo. Kai mantiene el chat y su calendario Europe/Zurich.
+
+La entrega incluye 20 escenas Kai y sus derivados, archivo íntegro de imágenes
+históricas dañadas y diez nuevos WebP del catálogo privado: 61,1 % menos peso que
+sus fuentes. El JS inicial de entrada/modulepreloads ronda 752 kB (209 kB gzip),
+frente a 2,57 MB (731 kB gzip) de la versión original; quedan chunks diferidos de
+Firebase mayores de 500 kB. Estas medidas no son una puntuación Lighthouse.
 
 Registro y login conservan la identidad anónima mediante enlace o transferencia
 servidor de borradores con dos tokens verificados. Sólo se transfieren Draft sin
-pago/checkout/cotización/transacción ni adjuntos; los casos protegidos necesitan
-asistencia. Un fallo de transferencia conserva el login y ofrece retry con la prueba
-sólo en memoria. El panel pagina por propietario; staff exige claim y correo
-verificado. Notas internas privadas, documentos escapados y calendario ICS como
-borrador sustituyen privilegios implícitos y afirmaciones de factura/sincronización.
+pago, checkout, cotización, transacción ni adjuntos; el fallo conserva el login y
+permite reintentar con la prueba en memoria. Las consultas se restringen al
+propietario; staff exige claim y correo verificado. Notas internas privadas,
+documentos escapados y calendarios ICS como borrador sustituyen privilegios y
+confirmaciones implícitas.
 
-Los borradores preservan createdAt y deben guardarse antes de avanzar o abrir
-checkout. Express calcula la cotización desde servicios guardados, asocia el
-Gateway a la reserva propia y confirma pagos mediante webhook HMAC verificado e
-idempotente. Sin configuración Payrexx devuelve 503 antes de bloquear el pedido.
-El retorno del navegador no confirma captura. Contacto, candidaturas y B2B esperan
-su recibo Firestore primario y los adjuntos seleccionados deben subirse; los
-reintentos reutilizan ID. Reglas e índices están versionados, sin deploy productivo.
+Express recalcula presupuestos, asocia checkout a una reserva propia y verifica
+webhooks HMAC de forma idempotente. Un retorno del navegador no confirma captura.
+Contacto, candidaturas y B2B requieren su recibo Firestore primario; los adjuntos
+seleccionados deben subirse y los reintentos conservan ID. Se versionan reglas,
+índices y configuración para la base original nombrada; no se despliegan a producción.
 
-Se añaden 20 escenas Kai (15 calendario Europe/Zurich y cinco servicios/Thurgau) y
-151 derivados. El inventario tiene 285 imágenes públicas válidas, cero dañadas y
-cero rutas faltantes. Los 41 archivos dañados se archivan preservando bytes/hashes;
-los 22 originales históricos siguen identificados, sin presentar ilustraciones
-nuevas como recuperación de originales. Las cargas diferidas y WebP reducen el JS
-inicial de entrada/modulepreloads de 2.570.402 a 722.451 B (730.521 a 201.858 B gzip),
-71,9% menos sin comprimir. Queda el aviso de Firebase diferido de unos 570 kB;
-estas medidas no son una puntuación Lighthouse.
+Validación del 21 de noviembre de 2026:
 
-La arquitectura React/Vite/Express conserva rutas, API y SEO por idioma. Vercel usa
-Express y assets CDN. Preview fuerza Firebase demo y bloquea proveedores reales
-aunque herede claves; no aloja emuladores remotos. La Preview 10fbb52 es anterior
-a estos cambios. La [nueva Preview](https://kpfm-c9yyqi0ak-antonionadre2-5701s-projects.vercel.app) está **READY** sobre `9a8c783`;
-el acceso está protegido por Vercel. Registro en `docs/VERCEL_SETUP.md`.
-La producción se conserva.
+- Node 24: typecheck, build:vercel y npm test correctos; 46 unidades, 16 escenarios
+  de formularios, 12 de subidas, servidor 2/2 y adaptador Vercel 5/5.
+- Navegador: portada de 320 a 1920 px; nueve familias de página en 320/768/1440 px;
+  seis idiomas y 144 combinaciones de inventario/idioma/variante/ancho de la Transit.
+- Registro y perfil reales en Emulator Suite; nueva solicitud guardada y visible,
+  acceso de cliente y staff con claim, detalle y chat fallback. Inventario del
+  estudio trasladado al formulario y CTA de mudanza comprobado.
+- Las suites de permisos reales Auth/Firestore/Storage se ejecutan en CI con
+  Node 24 y Java 21. Dependencias sin cambios respecto a la auditoría de cero
+  vulnerabilidades documentada en la entrega anterior.
 
-Validación local del 21 de noviembre de 2026:
+Vercel mantiene Express, assets CDN y la protección SSO. Preview bloquea los
+proveedores reales y por defecto usa emuladores; admite un opt-in de Firebase
+staging separado con configuración web completa y Admin privado coincidente.
+La conexión remota sigue pendiente del acceso del propietario: Vercel no aloja los
+emuladores locales. La producción en krakenpfm.ch no se sustituye, el PR sigue en
+borrador y no se crean usuarios, datos, mensajes ni pagos productivos.
 
-- `npm ci`: 436 paquetes, salida 0; typecheck, build:vercel y npm test: salida 0.
-- 44 unidades (portal 18, backend 8 y PDF 6 incluidas), 16 formularios, 12 subidas,
-  servidor 2/2, Vercel 5/5 y reglas/Auth/Firestore/Storage reales en emuladores 7/7.
-- `npm audit`: cero hallazgos de todas las severidades tras corregir los dos
-  críticos iniciales, retirar Jimp sin uso y fijar dependencias transitivas.
-- Navegador: portada sin overflow en nueve anchos de 320 a 1920 px, seis idiomas,
-  chat fallback, registro/perfil reales demo, datos propios/tercero oculto,
-  staff con claim real, paginación 25→46 y mensajes.
-
-[CI Node 24/Java 21/emuladores](https://github.com/antonionadre2-dev/kph-/actions/runs/44908677518): **success** sobre `9a8c783`.
-Quedan acceso Firebase del propietario, configuración Auth/Admin/claims,
-migración de notas, reglas/índices en la **base nombrada** y Storage, además de
-sandbox Payrexx y cuentas/destinos Gemini/EmailJS/Make. `firebase.production.example.json`
-explicita la base original, que debe verificarse contra cliente/Admin y proyecto
-antes de desplegar. No se crearon datos, mensajes, usuarios o pagos productivos,
-no se desplegaron reglas reales, no se fusionó el PR y no se sustituyó producción.
-
-Guías: `docs/CODEX_SETUP.md`, `docs/INTEGRATIONS.md`, `docs/BACKEND_SECURITY.md`,
-`docs/VERCEL_SETUP.md`, `docs/ASSET_AUDIT.md` y `docs/KAI_MEDIA.md`.
-
-La Preview admite ahora un opt-in de Firebase staging con proyecto separado,
-configuración web completa y base explícita. Auth, Firestore y Storage comparten
-el destino; Admin exige un secreto coincidente de staging y rechaza credenciales
-productivas heredadas/ADC. Sin opt-in conserva emuladores y los demás proveedores
-continúan bloqueados. La conexión remota está pendiente de autorización del
-propietario: no se han creado recursos ni configurado secretos. Typecheck, build
-y suites completas pasan en una copia aislada (44 unidades, backend 8, Vercel 5),
-preservando abierta la Preview local del usuario.
+Guías: docs/DESIGN_2026-11-21.md, docs/CODEX_SETUP.md, docs/INTEGRATIONS.md,
+docs/BACKEND_SECURITY.md, docs/VERCEL_SETUP.md, docs/CATALOG_MEDIA.json, docs/TRANSIT_REFERENCE.md y docs/KAI_MEDIA.md.

@@ -1,17 +1,17 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { useTranslation } from '../i18n';
-import { 
-  Building2, 
-  MapPin, 
-  Mail, 
-  Phone, 
-  User, 
-  FileCheck, 
-  ShieldCheck, 
-  ArrowLeft, 
-  Globe, 
-  FileText 
+import {
+  Building2,
+  MapPin,
+  Mail,
+  Phone,
+  User,
+  FileCheck,
+  ShieldCheck,
+  ArrowLeft,
+  Globe,
+  FileText
 } from 'lucide-react';
 
 interface ImpressumPageProps {
@@ -204,72 +204,62 @@ const impressumTranslations: Record<string, {
 
 const ImpressumPage: React.FC<ImpressumPageProps> = ({ onNavigate }) => {
   const { language } = useTranslation();
-  
+
   // Map internal Swiss German "de-CH" to "de" keys if needed, fallback to "en"
   const resolvedLang = language.startsWith('de') ? 'de' : (impressumTranslations[language] ? language : 'en');
   const tLocal = impressumTranslations[resolvedLang];
 
   return (
-    <main className="bg-slate-50 pt-48 pb-24 min-h-screen">
+    <main className="kraken-page kraken-editorial bg-slate-50 pt-12 sm:pt-16 pb-24 min-h-screen">
       <div className="container mx-auto px-6 max-w-4xl">
-        
+
         {/* Navigation Action */}
-        <button 
+        <button
           onClick={() => onNavigate('home')}
-          className="inline-flex items-center gap-2 text-xs font-black uppercase text-blue-600 hover:text-blue-500 transition-colors mb-12 group cursor-pointer"
+          className="inline-flex items-center gap-2 text-sm font-semibold normal-case text-[#087f73] hover:text-blue-500 transition-colors mb-12 group cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           {tLocal.backHome}
         </button>
 
-        {/* Header Section */}
-        <div className="text-center mb-16 animate-fade-in-up">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50/70 text-blue-700 text-[10px] font-black uppercase tracking-widest mb-6 shadow-sm border border-blue-100/50">
-             <ShieldCheck className="w-3.5 h-3.5" />
-             {tLocal.badge}
-          </div>
-          <h1 className="text-4xl lg:text-5xl font-black text-[#002D5B] mb-4 uppercase tracking-tighter">
-            {tLocal.title}
-          </h1>
-          <p className="text-base text-gray-500 font-medium max-w-2xl mx-auto leading-relaxed">{tLocal.subtitle}</p>
-        </div>
+        <header className="kraken-page-intro mb-12 border-b border-[#dce6e8] pb-9"><p className="kraken-eyebrow">Kraken PFM</p><h1 className="kraken-heading mt-3">{tLocal.title}</h1><p className="kraken-description">{tLocal.subtitle}</p></header>
 
         {/* Legal Grid Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-          
+
           {/* Company Details Card */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex flex-col justify-between"
+            className="bg-white p-8 rounded-3xl border border-[#dce6e8] shadow-sm flex flex-col justify-between"
           >
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="bg-blue-50 p-2.5 rounded-xl text-[#002D5B]">
+                <div className="bg-blue-50 p-2.5 rounded-xl text-[#082b45]">
                   <Building2 className="w-5 h-5" />
                 </div>
-                <h2 className="text-lg font-black text-[#002D5B] uppercase tracking-tight">{tLocal.badgeLegal}</h2>
+                <h2 className="text-lg font-semibold text-[#082b45] normal-case tracking-tight">{tLocal.badgeLegal}</h2>
               </div>
 
               <div className="space-y-5">
                 <div>
-                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">{tLocal.companyName}</span>
+                  <span className="text-sm font-semibold text-[#526574] normal-case tracking-normal block mb-1">{tLocal.companyName}</span>
                   <p className="text-sm font-bold text-gray-800 leading-snug">Kraken Properties and Facilities Management Gomes Mendes</p>
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">{tLocal.legalRepresentative}</span>
+                  <span className="text-sm font-semibold text-[#526574] normal-case tracking-normal block mb-1">{tLocal.legalRepresentative}</span>
                   <p className="text-sm font-semibold text-gray-700">Einzelunternehmen / Sole Proprietorship (Swiss Registered)</p>
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">{tLocal.owner}</span>
+                  <span className="text-sm font-semibold text-[#526574] normal-case tracking-normal block mb-1">{tLocal.owner}</span>
                   <p className="text-sm font-semibold text-gray-700">Antonio Nadre Gomes Mendes</p>
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">{tLocal.secAddress}</span>
+                  <span className="text-sm font-semibold text-[#526574] normal-case tracking-normal block mb-1">{tLocal.secAddress}</span>
                   <div className="flex items-start gap-2 mt-1">
                     <MapPin className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
                     <p className="text-sm font-bold text-gray-800">
@@ -284,42 +274,42 @@ const ImpressumPage: React.FC<ImpressumPageProps> = ({ onNavigate }) => {
           </motion.div>
 
           {/* Registration & Registry Details Card */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex flex-col justify-between"
+            className="bg-white p-8 rounded-3xl border border-[#dce6e8] shadow-sm flex flex-col justify-between"
           >
             <div>
               <div className="flex items-center gap-3 mb-6">
                 <div className="bg-emerald-50 p-2.5 rounded-xl text-emerald-700">
                   <FileCheck className="w-5 h-5" />
                 </div>
-                <h2 className="text-lg font-black text-emerald-900 uppercase tracking-tight">Registry & Tax</h2>
+                <h2 className="text-lg font-semibold text-emerald-900 normal-case tracking-tight">Registry & Tax</h2>
               </div>
 
               <div className="space-y-5">
                 <div>
-                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">{tLocal.uidNumber}</span>
-                  <p className="text-sm font-black text-emerald-700 bg-emerald-50/50 border border-emerald-100 px-3 py-1.5 rounded-xl inline-block font-mono tracking-tight">
+                  <span className="text-sm font-semibold text-[#526574] normal-case tracking-normal block mb-1">{tLocal.uidNumber}</span>
+                  <p className="text-sm font-semibold text-emerald-700 bg-emerald-50/50 border border-emerald-100 px-3 py-1.5 rounded-xl inline-block font-medium tracking-tight">
                     CHE-435.882.969
                   </p>
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">{tLocal.commercialRegistry}</span>
+                  <span className="text-sm font-semibold text-[#526574] normal-case tracking-normal block mb-1">{tLocal.commercialRegistry}</span>
                   <p className="text-sm font-semibold text-gray-700">{tLocal.registryOffice} des Kantons Schaffhausen</p>
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">{tLocal.vatNumber}</span>
+                  <span className="text-sm font-semibold text-[#526574] normal-case tracking-normal block mb-1">{tLocal.vatNumber}</span>
                   <p className="text-sm font-semibold text-gray-700">{tLocal.vatText}</p>
                 </div>
               </div>
             </div>
-            
-            <div className="border-t border-gray-100/70 pt-4 mt-6">
-              <span className="text-[9px] font-black text-[#002D5B] uppercase tracking-widest flex items-center gap-1.5">
+
+            <div className="border-t border-[#dce6e8]/70 pt-4 mt-6">
+              <span className="text-sm font-semibold text-[#082b45] normal-case tracking-normal flex items-center gap-1.5">
                 <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 Fully Verified Swiss Registry Holder
               </span>
@@ -329,36 +319,35 @@ const ImpressumPage: React.FC<ImpressumPageProps> = ({ onNavigate }) => {
         </div>
 
         {/* Contact Information Banner */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-gradient-to-r from-[#002D5B] to-[#001A3D] text-white p-8 md:p-10 rounded-[2.5rem] shadow-xl relative overflow-hidden mb-12"
+          className="bg-white border border-[#dce6e8] text-[#082b45] p-8 md:p-10 rounded-2xl shadow-sm relative overflow-hidden mb-12"
         >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#f4f8f8] rounded-full -mr-16 -mt-16 blur-3xl"></div>
           <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="md:col-span-1 border-b md:border-b-0 md:border-r border-white/10 pb-6 md:pb-0 pr-0 md:pr-8 flex flex-col justify-center">
-              <h3 className="text-lg font-black uppercase tracking-widest mb-1.5 text-blue-300">{tLocal.contactHeader}</h3>
-              <p className="text-xs text-blue-100/70 font-medium">Reach out directly for authorized legal inquiries or billing clarifications.</p>
+            <div className="md:col-span-1 border-b md:border-b-0 md:border-r border-[#dce6e8] pb-6 md:pb-0 pr-0 md:pr-8 flex flex-col justify-center">
+              <h3 className="text-lg font-semibold normal-case tracking-normal mb-1.5 text-[#087f73]">{tLocal.contactHeader}</h3>
             </div>
             <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
-              <a href="mailto:kai@krakenpfm.ch" className="flex items-center gap-4 bg-white/5 hover:bg-white/10 p-4 rounded-2xl border border-white/10 transition-all group">
-                <div className="bg-blue-600/50 p-3 rounded-xl group-hover:scale-110 transition-transform">
-                  <Mail className="w-5 h-5 text-white" />
+              <a href="mailto:kai@krakenpfm.ch" className="flex items-center gap-4 bg-[#f4f8f8] hover:bg-[#e8f4f1] p-4 rounded-2xl border border-[#dce6e8] transition-all group">
+                <div className="bg-[#e8f4f1] p-3 rounded-xl group-hover:scale-110 transition-transform">
+                  <Mail className="w-5 h-5 text-[#082b45]" />
                 </div>
                 <div>
-                  <span className="text-[10px] font-black text-blue-300 uppercase tracking-widest block mb-0.5">{tLocal.email}</span>
-                  <span className="text-sm font-bold text-white block truncate">kai@krakenpfm.ch</span>
+                  <span className="text-sm font-semibold text-[#087f73] normal-case tracking-normal block mb-0.5">{tLocal.email}</span>
+                  <span className="text-sm font-bold text-[#082b45] block truncate">kai@krakenpfm.ch</span>
                 </div>
               </a>
 
-              <a href="tel:+41774505705" className="flex items-center gap-4 bg-white/5 hover:bg-white/10 p-4 rounded-2xl border border-white/10 transition-all group">
-                <div className="bg-emerald-600/50 p-3 rounded-xl group-hover:scale-110 transition-transform">
-                  <Phone className="w-5 h-5 text-white" />
+              <a href="tel:+41774505705" className="flex items-center gap-4 bg-[#f4f8f8] hover:bg-[#e8f4f1] p-4 rounded-2xl border border-[#dce6e8] transition-all group">
+                <div className="bg-[#e8f4f1] p-3 rounded-xl group-hover:scale-110 transition-transform">
+                  <Phone className="w-5 h-5 text-[#082b45]" />
                 </div>
                 <div>
-                  <span className="text-[10px] font-black text-blue-300 uppercase tracking-widest block mb-0.5">{tLocal.phone}</span>
-                  <span className="text-sm font-bold text-white block">+41 77 450 57 05</span>
+                  <span className="text-sm font-semibold text-[#087f73] normal-case tracking-normal block mb-0.5">{tLocal.phone}</span>
+                  <span className="text-sm font-bold text-[#082b45] block">+41 77 450 57 05</span>
                 </div>
               </a>
             </div>
@@ -367,24 +356,24 @@ const ImpressumPage: React.FC<ImpressumPageProps> = ({ onNavigate }) => {
 
         {/* Legal Disclaimers (Liability, External Links, Copyright) */}
         <div className="space-y-8 animate-fade-in-up">
-          <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
-            <h3 className="text-sm font-black text-[#002D5B] uppercase tracking-wider mb-3 flex items-center gap-2">
+          <div className="bg-white p-8 rounded-3xl border border-[#dce6e8] shadow-sm">
+            <h3 className="text-sm font-semibold text-[#082b45] normal-case tracking-normal mb-3 flex items-center gap-2">
               <span className="text-lg">⚖️</span>
               {tLocal.disclaimerTitle}
             </h3>
             <p className="text-gray-600 text-sm leading-relaxed font-semibold">{tLocal.disclaimerText}</p>
           </div>
 
-          <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
-            <h3 className="text-sm font-black text-[#002D5B] uppercase tracking-wider mb-3 flex items-center gap-2">
+          <div className="bg-white p-8 rounded-3xl border border-[#dce6e8] shadow-sm">
+            <h3 className="text-sm font-semibold text-[#082b45] normal-case tracking-normal mb-3 flex items-center gap-2">
               <span className="text-lg">🔗</span>
               {tLocal.disclaimerLinksTitle}
             </h3>
             <p className="text-gray-600 text-sm leading-relaxed font-semibold">{tLocal.disclaimerLinksText}</p>
           </div>
 
-          <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
-            <h3 className="text-sm font-black text-[#002D5B] uppercase tracking-wider mb-3 flex items-center gap-2">
+          <div className="bg-white p-8 rounded-3xl border border-[#dce6e8] shadow-sm">
+            <h3 className="text-sm font-semibold text-[#082b45] normal-case tracking-normal mb-3 flex items-center gap-2">
               <span className="text-lg">📝</span>
               {tLocal.copyrightTitle}
             </h3>
@@ -394,8 +383,8 @@ const ImpressumPage: React.FC<ImpressumPageProps> = ({ onNavigate }) => {
 
         {/* Footer Authority Info Badge */}
         <div className="text-center mt-16 p-8 border border-dashed border-gray-200 rounded-3xl bg-gray-50/50">
-           <p className="text-gray-400 font-extrabold text-[10px] uppercase tracking-[0.3em] mb-2">Government Compliance Regulatory Status</p>
-           <p className="text-gray-500 font-bold text-xs">
+           <p className="text-[#526574] font-semibold text-sm normal-case tracking-normal mb-2">Government Compliance Regulatory Status</p>
+           <p className="text-[#526574] font-bold text-sm">
              UID: CHE-435.882.969 | Active Single Proprietorship Registered in Schaffhausen
            </p>
         </div>

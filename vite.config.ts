@@ -10,12 +10,14 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig(() => {
     return {
+      // Isolated checkouts may share node_modules; optimizer state must not.
+      cacheDir: path.join(__dirname, '.cache/vite'),
       server: {
         port: 3000,
         host: '0.0.0.0',
       },
       plugins: [
-        react(), 
+        react(),
         tailwindcss(),
         visualizer({
           filename: './dist/stats.html',

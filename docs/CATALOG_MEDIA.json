@@ -1,0 +1,166 @@
+{
+  "date": "2026-11-21",
+  "method": "Existing validated originals resized with Pillow LANCZOS, WebP quality83. No AI generation, no crop, no identity changes. Original files retained. Full decoder load verified before and after.",
+  "assets": [
+    {
+      "source": "/servicio-privado-canalones.webp",
+      "sourceSha256": "d1626319e9e0e422cfb9429d591351c4736f78d0cb17261dc618fa1851574b38",
+      "sourceBytes": 226958,
+      "sourceDimensions": [
+        1448,
+        1086
+      ],
+      "derivative": "/kai-calendar/optimized/private/servicio-privado-canalones.webp",
+      "derivativeSha256": "6b33db3c340a64cfe480c803ef3d680fcd76421fc0b370660f2b9d4194c9a45e",
+      "derivativeBytes": 63032,
+      "dimensions": [
+        768,
+        576
+      ]
+    },
+    {
+      "source": "/servicio-privado-control-plagas.webp",
+      "sourceSha256": "deb077107df2a64a61b1a9f33564161794ddab43e1d9eeb5410df1f2c689ab1c",
+      "sourceBytes": 208042,
+      "sourceDimensions": [
+        1448,
+        1086
+      ],
+      "derivative": "/kai-calendar/optimized/private/servicio-privado-control-plagas.webp",
+      "derivativeSha256": "8c9b302ce05b11818dfd681a0e76ddd166015004cc357b27b94f9f0d5a9a868f",
+      "derivativeBytes": 54728,
+      "dimensions": [
+        768,
+        576
+      ]
+    },
+    {
+      "source": "/servicio-privado-jardineria.webp",
+      "sourceSha256": "4801f68824ed68abdbf1810bdcd2391590ee31f23f2c1fff5435ed5018096bc7",
+      "sourceBytes": 161588,
+      "sourceDimensions": [
+        1122,
+        1402
+      ],
+      "derivative": "/kai-calendar/optimized/private/servicio-privado-jardineria.webp",
+      "derivativeSha256": "196cea300aec73eb41615258c186836388dbf09144cad164936216e1dd75069d",
+      "derivativeBytes": 85610,
+      "dimensions": [
+        615,
+        768
+      ]
+    },
+    {
+      "source": "/servicio-privado-lavado-coche.webp",
+      "sourceSha256": "5599e8d0aee72cbd5e80143ba9f82a48d2ee7944f436c8b85f6e60ecd6843089",
+      "sourceBytes": 109114,
+      "sourceDimensions": [
+        1122,
+        1402
+      ],
+      "derivative": "/kai-calendar/optimized/private/servicio-privado-lavado-coche.webp",
+      "derivativeSha256": "c5014200f4826e27a5a463b1624f5cc9b66904e5558c0603e26ccdc33eaca2c6",
+      "derivativeBytes": 52692,
+      "dimensions": [
+        615,
+        768
+      ]
+    },
+    {
+      "source": "/servicio-privado-limpieza-apartamento.webp",
+      "sourceSha256": "034e3f89e3d2da38f1ddfb6ad1cc2c9620fb05ab51a3cbf6863a4aa92a55e40d",
+      "sourceBytes": 96424,
+      "sourceDimensions": [
+        1448,
+        1086
+      ],
+      "derivative": "/kai-calendar/optimized/private/servicio-privado-limpieza-apartamento.webp",
+      "derivativeSha256": "3e89aa1667709eeac2f74571faa44d080bc84fc02af8d024a7c8c31cf86df422",
+      "derivativeBytes": 47854,
+      "dimensions": [
+        768,
+        576
+      ]
+    },
+    {
+      "source": "/servicio-privado-limpieza-cocina.webp",
+      "sourceSha256": "7375ac7633cc2dd6c4dc2934d4e6cab46bd1888fcc08fddc269fc9062e896dd6",
+      "sourceBytes": 105670,
+      "sourceDimensions": [
+        1448,
+        1086
+      ],
+      "derivative": "/kai-calendar/optimized/private/servicio-privado-limpieza-cocina.webp",
+      "derivativeSha256": "73d461a7f1e85557600d386aaf1f9c5e41bf74dac3348536273390a809e47ce2",
+      "derivativeBytes": 53240,
+      "dimensions": [
+        768,
+        576
+      ]
+    },
+    {
+      "source": "/servicio-privado-limpieza-exterior.webp",
+      "sourceSha256": "a2a4015a2c114328c4b98c7d1aab781b102d6503c18abc85693993ad2485f8c7",
+      "sourceBytes": 133814,
+      "sourceDimensions": [
+        1122,
+        1402
+      ],
+      "derivative": "/kai-calendar/optimized/private/servicio-privado-limpieza-exterior.webp",
+      "derivativeSha256": "efb178233a5da1239bd1a38de0cd41d3f84ccd3ab478d532018ada7a302fa2d9",
+      "derivativeBytes": 63058,
+      "dimensions": [
+        615,
+        768
+      ]
+    },
+    {
+      "source": "/servicio-privado-limpieza-oficina-casa.webp",
+      "sourceSha256": "8f3797a426c87d276782e7391301f3b1e30a56bef3399c870e2d42b4d2527d7e",
+      "sourceBytes": 95310,
+      "sourceDimensions": [
+        1448,
+        1086
+      ],
+      "derivative": "/kai-calendar/optimized/private/servicio-privado-limpieza-oficina-casa.webp",
+      "derivativeSha256": "0fe4abcb4b4a05a06fc9a1862d4ad4860d6a77ac7e8714a40a3aa06fa551512d",
+      "derivativeBytes": 48614,
+      "dimensions": [
+        768,
+        576
+      ]
+    },
+    {
+      "source": "/servicio-privado-mudanza-cajas.webp",
+      "sourceSha256": "4458283fe1410de0c0bb909e7a84c7e76b12b002e5e1a34fec4ee4a199d68b58",
+      "sourceBytes": 115100,
+      "sourceDimensions": [
+        1448,
+        1086
+      ],
+      "derivative": "/kai-calendar/optimized/private/servicio-privado-mudanza-cajas.webp",
+      "derivativeSha256": "8dca6baa27c6fd43d7302b683acc5320b2d2163ff044b6a48afd2b1b440e950d",
+      "derivativeBytes": 54756,
+      "dimensions": [
+        768,
+        576
+      ]
+    },
+    {
+      "source": "/servicio-privado-residuos-desalojo.webp",
+      "sourceSha256": "cfdf2639c7534acccdef622aa3a6db1bbca71742a338052a890fbe3525467f99",
+      "sourceBytes": 253768,
+      "sourceDimensions": [
+        1448,
+        1086
+      ],
+      "derivative": "/kai-calendar/optimized/private/servicio-privado-residuos-desalojo.webp",
+      "derivativeSha256": "eb5d799096da8b6c4204940e627ff4c9d6280eda375e613721e222b0fe233d89",
+      "derivativeBytes": 61710,
+      "dimensions": [
+        768,
+        576
+      ]
+    }
+  ]
+}

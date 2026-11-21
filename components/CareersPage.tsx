@@ -66,25 +66,25 @@ const CurriculumsConfetti: React.FC = () => {
           }}
         >
           {item.variant === 0 && (
-            <div className="bg-white border-2 border-blue-500 rounded-lg p-1.5 shadow-xl flex flex-col items-center justify-center w-9 h-12 border-t-4 border-t-[#002D5B] bg-gradient-to-b from-white to-slate-50">
-              <div className="w-6 h-1 bg-[#002D5B] rounded mb-1"></div>
+            <div className="bg-white border-2 border-blue-500 rounded-lg p-1.5 shadow-sm flex flex-col items-center justify-center w-9 h-12 border-t-4 border-t-[#002D5B] bg-gradient-to-b from-white to-slate-50">
+              <div className="w-6 h-1 bg-[#082b45] rounded mb-1"></div>
               <div className="w-5 h-0.5 bg-slate-400 rounded mb-0.5"></div>
               <div className="w-4 h-0.5 bg-slate-300 rounded mb-0.5"></div>
               <div className="w-5 h-0.5 bg-slate-300 rounded"></div>
-              <span className="text-[7px] font-black text-blue-800 mt-1 uppercase tracking-tighter">CV</span>
+              <span className="text-sm font-semibold text-blue-800 mt-1 normal-case tracking-normal">CV</span>
             </div>
           )}
           {item.variant === 1 && <span className="filter drop-shadow-md">📄</span>}
           {item.variant === 2 && <span className="filter drop-shadow-md">📋</span>}
           {item.variant === 3 && (
-            <div className="bg-emerald-500 text-white rounded-lg p-1.5 shadow-xl flex flex-col items-center justify-center w-8 h-10 border border-emerald-400">
-              <span className="text-[10px] font-black tracking-tight">CURRÍCULUM</span>
+            <div className="bg-emerald-500 text-white rounded-lg p-1.5 shadow-sm flex flex-col items-center justify-center w-8 h-10 border border-emerald-400">
+              <span className="text-sm font-semibold tracking-tight">CURRÍCULUM</span>
               <div className="w-4 h-0.5 bg-white/80 rounded mt-0.5"></div>
             </div>
           )}
           {item.variant === 4 && <span className="filter drop-shadow-md">📑</span>}
           {item.variant === 5 && (
-            <div className="bg-amber-50 border border-amber-300 rounded-md px-1.5 py-1 shadow-md flex items-center gap-1 text-[9px] font-black text-amber-900">
+            <div className="bg-amber-50 border border-amber-300 rounded-md px-1.5 py-1 shadow-md flex items-center gap-1 text-sm font-semibold text-amber-900">
               <span>📜</span>
               <span>CV</span>
             </div>
@@ -1184,18 +1184,18 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 pt-40 pb-24 text-center px-4 relative overflow-hidden">
         <CurriculumsConfetti />
-        <div className="max-w-xl w-full bg-white p-10 md:p-14 rounded-[3rem] shadow-2xl animate-fade-in-up border border-slate-100 z-10 relative">
+        <div className="max-w-xl w-full bg-white p-10 md:p-14 rounded-2xl shadow-sm animate-fade-in-up border border-[#dce6e8] z-10 relative">
           <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
             <Check className="w-12 h-12 text-green-600" />
           </div>
-          <h2 className="text-3xl font-black text-[#002D5B] mb-4 uppercase tracking-tight">{t.successTitle}</h2>
-          <p className="text-gray-500 font-medium mb-10 leading-relaxed">
+          <h2 className="text-3xl font-semibold text-[#082b45] mb-4 normal-case tracking-tight">{t.successTitle}</h2>
+          <p className="text-[#526574] font-medium mb-10 leading-relaxed">
             {attachmentText(language, 'stored')}
           </p>
           {deliveryNotice && <p role="status" className="text-sm text-amber-800 mb-5">{deliveryNotice}</p>}
           <button
             onClick={() => onNavigate('home')}
-            className="bg-[#002D5B] text-white px-12 py-4 rounded-full font-black text-xs uppercase tracking-widest hover:bg-[#001D3D] transition-all shadow-xl hover:shadow-2xl active:scale-95"
+            className="min-h-11 bg-[#082b45] text-white px-12 py-4 rounded-full font-semibold text-sm normal-case tracking-normal hover:bg-[#082b45] transition-all shadow-sm hover:shadow-sm active:scale-95"
           >
             {t.successBtnHome}
           </button>
@@ -1205,260 +1205,151 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
   }
 
   return (
-    <main className="bg-slate-50 selection:bg-blue-500/30 text-[#020617] pt-28 pb-24">
+    <main className="kraken-page kraken-workflow bg-slate-50 selection:bg-blue-500/30 text-[#020617] pt-12 sm:pt-16 pb-24">
       <div className="container mx-auto px-4 md:px-6 max-w-6xl">
 
-        {/* --- 1. HERO PRINCIPAL --- */}
-        <div id="careers-hero-container" className="relative rounded-[3rem] overflow-hidden bg-[#001D3D] text-white p-8 md:p-16 shadow-2xl mb-12 animate-fade-in min-h-[480px] flex items-center">
-          {/* Static Background Image occupying the DIV completely */}
-          <div id="careers-hero-bg-wrapper" className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-[#001D3D]">
-            <img
-              id="careers-hero-bg-image"
-              src="/kai-jul16-interview.webp"
-              alt="Kraken Careers Background"
-              className="absolute right-0 top-0 w-full md:w-[50%] h-full object-cover z-0"
-              referrerPolicy="no-referrer"
-              onError={(e) => {
-                const target = e.currentTarget;
-                if (!target.dataset.fallback) {
-                  target.dataset.fallback = 'true';
-                  target.src = '/kai careers.webp';
-                }
-              }}
-            />
-            {/* Desktop: Smooth transition from solid blue behind the text to transparency over the image */}
-            {/* The overlay is restricted to the left 65%, fading to 100% transparency so the right portion of the image is completely unfiltered and sharp */}
-            <div className="absolute inset-y-0 left-0 w-full md:w-[65%] bg-gradient-to-r from-[#001D3D] via-[#001D3D] to-transparent z-10 md:block hidden pointer-events-none" />
+        <header id="careers-hero-container" className="kraken-page-intro mb-12 grid gap-8 rounded-2xl border border-[#dce6e8] bg-white p-6 sm:p-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-center lg:gap-12">
+          <div><p className="kraken-eyebrow">Kraken PFM</p><h1 className="kraken-heading mt-3">{t.heroTitle}</h1><p className="mt-4 text-xl font-medium text-[#082b45]">{t.heroSubtitle}</p><p className="kraken-description">{t.heroIntro}</p><div className="mt-7 flex flex-wrap gap-3"><button onClick={() => scrollToSection('open-positions')} className="min-h-11 kraken-button kraken-primary">{t.btnViewPositions}</button><button onClick={() => scrollToSection('application-form')} className="min-h-11 kraken-button kraken-secondary">{t.btnSendSpontaneous}</button></div></div>
+          <img src="/kai-jul16-interview.webp" alt="Kai — Kraken PFM" className="aspect-[4/3] w-full rounded-xl object-cover" />
+        </header>
 
-            {/* Mobile: Clean overlay to guarantee legibility of the white text over the background image, with absolutely NO blur or dulling filters */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#001D3D] via-[#001D3D]/75 to-transparent z-10 md:hidden block pointer-events-none" />
-          </div>
-
-          {/* Subtle glowing orbs */}
-          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none z-0" />
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none z-0" />
-
-          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12 w-full">
-            <div className="max-w-2xl text-left">
-              <span className="inline-block bg-[#007AFF]/20 text-blue-300 font-black text-[10px] uppercase tracking-[0.3em] px-4 py-2 rounded-full mb-6">
-                {t.heroBadge}
-              </span>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tighter leading-none mb-4">
-                {t.heroTitle}
-              </h1>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-blue-300 tracking-tight mb-8">
-                {t.heroSubtitle}
-              </h2>
-              <p className="text-sm md:text-base text-slate-300 font-medium leading-relaxed mb-10 max-w-xl">
-                {t.heroIntro}
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button
-                  onClick={() => scrollToSection('open-positions')}
-                  className="bg-[#007AFF] text-white hover:bg-[#005bb7] px-8 py-4 rounded-full font-black text-xs uppercase tracking-widest shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
-                >
-                  <Briefcase className="w-4 h-4" /> {t.btnViewPositions}
-                </button>
-                <button
-                  onClick={() => scrollToSection('application-form')}
-                  className="border-2 border-white/30 hover:border-white text-white hover:bg-white/10 px-8 py-4 rounded-full font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
-                >
-                  <Sparkles className="w-4 h-4" /> {t.btnSendSpontaneous}
-                </button>
-              </div>
-            </div>
-
-            {/* Spacer so content matches the background image layout beautifully */}
-            <div className="hidden lg:block w-80 h-80 shrink-0" />
-          </div>
-        </div>
-
-        {/* --- FRANJA DE CONFIANZA --- */}
-        <div className="bg-white border border-slate-100 rounded-3xl p-6 md:p-8 shadow-sm grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-16">
-          <div className="flex flex-col items-center text-center p-3">
-            <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-[#007AFF] mb-3 shadow-inner">
-              <Coins className="w-6 h-6" />
-            </div>
-            <span className="text-xs font-black text-slate-800 uppercase tracking-tight mb-1">{t.trustFairPayTitle}</span>
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{t.trustFairPaySubtitle}</span>
-          </div>
-
-          <div className="flex flex-col items-center text-center p-3">
-            <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-[#007AFF] mb-3 shadow-inner">
-              <CreditCard className="w-6 h-6" />
-            </div>
-            <span className="text-xs font-black text-slate-800 uppercase tracking-tight mb-1">{t.trustPaidTrialTitle}</span>
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{t.trustPaidTrialSubtitle}</span>
-          </div>
-
-          <div className="flex flex-col items-center text-center p-3">
-            <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-[#007AFF] mb-3 shadow-inner">
-              <PhoneCall className="w-6 h-6" />
-            </div>
-            <span className="text-xs font-black text-slate-800 uppercase tracking-tight mb-1">{t.trustDirectLineTitle}</span>
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{t.trustDirectLineSubtitle}</span>
-          </div>
-
-          <div className="flex flex-col items-center text-center p-3">
-            <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-[#007AFF] mb-3 shadow-inner">
-              <MapPin className="w-6 h-6" />
-            </div>
-            <span className="text-xs font-black text-slate-800 uppercase tracking-tight mb-1">{t.trustLocalTitle}</span>
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{t.trustLocalSubtitle}</span>
-          </div>
-
-          <div className="flex flex-col items-center text-center p-3">
-            <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-[#007AFF] mb-3 shadow-inner">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <span className="text-xs font-black text-slate-800 uppercase tracking-tight mb-1">{t.trustEquipmentTitle}</span>
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{t.trustEquipmentSubtitle}</span>
-          </div>
-
-          <div className="flex flex-col items-center text-center p-3">
-            <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-[#007AFF] mb-3 shadow-inner">
-              <Languages className="w-6 h-6" />
-            </div>
-            <span className="text-xs font-black text-slate-800 uppercase tracking-tight mb-1">{t.trustInternationalTitle}</span>
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{t.trustInternationalSubtitle}</span>
-          </div>
-        </div>
-
-
-        {/* --- 2. WARUM KRAKEN PFM? --- */}
-        <div className="mb-20 text-left">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className="text-xs font-black text-[#007AFF] uppercase tracking-[0.25em] mb-3 block">{t.whyBadge}</span>
-            <h2 className="text-3xl md:text-4xl font-black text-[#002D5B] uppercase tracking-tight">{t.whyTitle}</h2>
-            <p className="text-slate-500 font-medium mt-4 leading-relaxed">
-              {t.whyIntro}
+        {/* --- 4. VACANTES (OFFENE STELLEN) --- */}
+        <div id="open-positions" className="mb-20 text-left scroll-mt-24">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <span className="text-sm font-semibold text-[#087f73] normal-case tracking-normal block mb-2">{t.positionsBadge}</span>
+            <h2 className="text-3xl font-semibold text-[#082b45] normal-case tracking-tight">{t.positionsTitle}</h2>
+            <p className="text-[#526574] font-medium text-sm mt-3">
+              {t.positionsSubtitle}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
-            {/* Left: Antonio's Personal Story */}
-            <div className="lg:col-span-5 bg-gradient-to-b from-white to-slate-100 p-8 md:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col justify-between relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full -mr-16 -mt-16 group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-              <div className="relative z-10">
-                <span className="bg-[#002D5B] text-white text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full mb-6 inline-block">
-                  {t.storyBadge}
+            {/* Card 1: Offene Stelle (ACTIVA) */}
+            <div className="bg-white border-2 border-[#007AFF] rounded-2xl p-8 shadow-md relative flex flex-col justify-between hover:shadow-sm transition-all group">
+              <div className="absolute top-6 right-6 flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 " />
+                <span className="bg-emerald-100 text-emerald-800 text-sm font-semibold normal-case tracking-normal px-2.5 py-1 rounded-full">
+                  {t.jobActiveBadge}
                 </span>
-                <h3 className="text-2xl font-black text-[#002D5B] uppercase tracking-tight mb-6">
-                  {t.storyTitle}
+              </div>
+
+              <div>
+                <span className="text-sm text-[#526574] font-semibold normal-case tracking-normal block mb-1">{t.job1Category}</span>
+                <h3 className="text-xl font-semibold text-[#082b45] mb-4 leading-tight">
+                  {t.job1Title}
                 </h3>
-                <div className="space-y-4 text-slate-600 text-sm font-medium leading-relaxed">
-                  <p>{t.storyP1}</p>
-                  <p>{t.storyP2}</p>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  <span className="bg-slate-100 text-slate-600 text-sm font-bold px-3 py-1 rounded-full">{t.job1Locations}</span>
+                  <span className="bg-slate-100 text-slate-600 text-sm font-bold px-3 py-1 rounded-full">{t.job1Pensum}</span>
+                  <span className="bg-blue-100 text-blue-800 text-sm font-bold px-3 py-1 rounded-full">{t.job1Start}</span>
                 </div>
-              </div>
-
-              <div className="mt-8 pt-8 border-t border-slate-200/60 relative z-10">
-                <p className="text-base font-black text-[#002D5B] italic leading-snug">
-                  "{t.storyQuote}"
+                <p className="text-[#526574] text-sm leading-relaxed font-medium mb-8">
+                  {t.job1Desc}
                 </p>
-                <p className="text-xs text-slate-400 font-bold mt-2 uppercase tracking-wider">— {t.storyQuoteAuthor}</p>
               </div>
+
+              <button
+                onClick={() => handleSelectJob(t.job1Title)}
+                className="min-h-11 w-full bg-[#082b45] hover:bg-[#087f73] text-white font-semibold py-4 rounded-xl text-sm normal-case tracking-normal transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                {t.job1Btn} <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
 
-            {/* Right: What it means specifically */}
-            <div className="lg:col-span-7 flex flex-col justify-between">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                {/* Promise 1 */}
-                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-                  <div className="w-10 h-10 bg-blue-50 text-[#007AFF] rounded-2xl flex items-center justify-center mb-4 shadow-inner">
-                    <Check className="w-5 h-5" />
-                  </div>
-                  <h4 className="font-extrabold text-base text-[#002D5B] mb-2">{t.promise1Title}</h4>
-                  <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                    {t.promise1Desc}
-                  </p>
+            {/* Card 2: Talentpool */}
+            <div className="bg-white border border-[#dce6e8] rounded-2xl p-8 shadow-sm flex flex-col justify-between hover:shadow-sm transition-all">
+              <div>
+                <span className="bg-slate-100 text-[#526574] text-sm font-semibold normal-case tracking-normal px-2.5 py-1 rounded-full mb-4 inline-block">
+                  {t.jobPoolBadge}
+                </span>
+                <span className="text-sm text-[#526574] font-semibold normal-case tracking-normal block mb-1">{t.job2Category}</span>
+                <h3 className="text-xl font-semibold text-[#082b45] mb-4 leading-tight">
+                  {t.job2Title}
+                </h3>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  <span className="bg-slate-100 text-slate-600 text-sm font-bold px-3 py-1 rounded-full">{t.job2Pensum}</span>
+                  <span className="bg-slate-100 text-slate-600 text-sm font-bold px-3 py-1 rounded-full">{t.job2Start}</span>
                 </div>
-
-                {/* Promise 2 */}
-                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-                  <div className="w-10 h-10 bg-blue-50 text-[#007AFF] rounded-2xl flex items-center justify-center mb-4 shadow-inner">
-                    <CreditCard className="w-5 h-5" />
-                  </div>
-                  <h4 className="font-extrabold text-base text-[#002D5B] mb-2">{t.promise2Title}</h4>
-                  <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                    {t.promise2Desc}
-                  </p>
-                </div>
-
-                {/* Promise 3 */}
-                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-                  <div className="w-10 h-10 bg-blue-50 text-[#007AFF] rounded-2xl flex items-center justify-center mb-4 shadow-inner">
-                    <Coins className="w-5 h-5" />
-                  </div>
-                  <h4 className="font-extrabold text-base text-[#002D5B] mb-2">{t.promise3Title}</h4>
-                  <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                    {t.promise3Desc}
-                  </p>
-                </div>
-
-                {/* Promise 4 */}
-                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-                  <div className="w-10 h-10 bg-blue-50 text-[#007AFF] rounded-2xl flex items-center justify-center mb-4 shadow-inner">
-                    <MapPin className="w-5 h-5" />
-                  </div>
-                  <h4 className="font-extrabold text-base text-[#002D5B] mb-2">{t.promise4Title}</h4>
-                  <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                    {t.promise4Desc_fr && language === 'fr' ? t.promise4Desc_fr : t.promise4Desc}
-                  </p>
-                </div>
-
-                {/* Promise 5 */}
-                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-                  <div className="w-10 h-10 bg-blue-50 text-[#007AFF] rounded-2xl flex items-center justify-center mb-4 shadow-inner">
-                    <PhoneCall className="w-5 h-5" />
-                  </div>
-                  <h4 className="font-extrabold text-base text-[#002D5B] mb-2">{t.promise5Title}</h4>
-                  <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                    {t.promise5Desc}
-                  </p>
-                </div>
-
-                {/* Promise 6 */}
-                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-                  <div className="w-10 h-10 bg-blue-50 text-[#007AFF] rounded-2xl flex items-center justify-center mb-4 shadow-inner">
-                    <ShieldCheck className="w-5 h-5" />
-                  </div>
-                  <h4 className="font-extrabold text-base text-[#002D5B] mb-2">{t.promise6Title}</h4>
-                  <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                    {t.promise6Desc}
-                  </p>
-                </div>
-
+                <p className="text-[#526574] text-sm leading-relaxed font-medium mb-8">
+                  {t.job2Desc}
+                </p>
               </div>
-            </div>
-          </div>
 
-          {/* Und die Zukunft Section */}
-          <div className="bg-[#002D5B] text-white p-8 md:p-12 rounded-[2.5rem] shadow-xl mt-8 relative overflow-hidden group">
-            <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none translate-x-12 translate-y-12">
-              <Award className="w-80 h-80" />
+              <button
+                onClick={() => handleSelectJob(`${t.job2Title} (${t.jobPoolBadge})`)}
+                className="min-h-11 w-full border-2 border-[#002D5B] hover:bg-[#082b45] text-[#082b45] hover:text-white font-semibold py-4 rounded-xl text-sm normal-case tracking-normal transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                {t.job2Btn} <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
-            <div className="relative z-10 max-w-3xl">
-              <h4 className="text-xl md:text-2xl font-black uppercase tracking-tight mb-4">{t.futureTitle}</h4>
-              <p className="text-slate-200 text-sm md:text-base leading-relaxed font-medium">
-                {t.futureDesc}
-              </p>
+
+            {/* Card 3: Talentpool Hauswart */}
+            <div className="bg-white border border-[#dce6e8] rounded-2xl p-8 shadow-sm flex flex-col justify-between hover:shadow-sm transition-all">
+              <div>
+                <span className="bg-slate-100 text-[#526574] text-sm font-semibold normal-case tracking-normal px-2.5 py-1 rounded-full mb-4 inline-block">
+                  {t.jobPoolBadge}
+                </span>
+                <span className="text-sm text-[#526574] font-semibold normal-case tracking-normal block mb-1">{t.job3Category}</span>
+                <h3 className="text-xl font-semibold text-[#082b45] mb-4 leading-tight">
+                  {t.job3Title}
+                </h3>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  <span className="bg-slate-100 text-slate-600 text-sm font-bold px-3 py-1 rounded-full">{t.job3Pensum}</span>
+                  <span className="bg-slate-100 text-slate-600 text-sm font-bold px-3 py-1 rounded-full">{t.job3Start}</span>
+                </div>
+                <p className="text-[#526574] text-sm leading-relaxed font-medium mb-8">
+                  {t.job3Desc}
+                </p>
+              </div>
+
+              <button
+                onClick={() => handleSelectJob(`${t.job3Title} (${t.jobPoolBadge})`)}
+                className="min-h-11 w-full border-2 border-[#002D5B] hover:bg-[#082b45] text-[#082b45] hover:text-white font-semibold py-4 rounded-xl text-sm normal-case tracking-normal transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                {t.job3Btn} <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
+
+            {/* Card 4: Initiativbewerbung */}
+            <div className="bg-white border border-[#dce6e8] rounded-2xl p-8 shadow-sm flex flex-col justify-between hover:shadow-sm transition-all">
+              <div>
+                <span className="bg-slate-100 text-[#526574] text-sm font-semibold normal-case tracking-normal px-2.5 py-1 rounded-full mb-4 inline-block">
+                  {t.jobSpontaneousBadge}
+                </span>
+                <span className="text-sm text-[#526574] font-semibold normal-case tracking-normal block mb-1">{t.job4Category}</span>
+                <h3 className="text-xl font-semibold text-[#082b45] mb-4 leading-tight">
+                  {t.job4Title}
+                </h3>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  <span className="bg-slate-100 text-slate-600 text-sm font-bold px-3 py-1 rounded-full">{t.job4Pensum}</span>
+                  <span className="bg-slate-100 text-slate-600 text-sm font-bold px-3 py-1 rounded-full">{t.job4Start}</span>
+                </div>
+                <p className="text-[#526574] text-sm leading-relaxed font-medium mb-8">
+                  {t.job4Desc}
+                </p>
+              </div>
+
+              <button
+                onClick={() => handleSelectJob(`${t.job4Title} (${t.jobSpontaneousBadge})`)}
+                className="min-h-11 w-full border-2 border-dashed border-[#002D5B] hover:bg-[#082b45] text-[#082b45] hover:text-white font-semibold py-4 rounded-xl text-sm normal-case tracking-normal transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                {t.job4Btn} <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
           </div>
         </div>
 
 
         {/* --- 3. LO QUE BUSCAMOS --- */}
-        <div className="bg-white border border-slate-100 rounded-[3rem] p-8 md:p-14 shadow-sm mb-20 text-left">
+        <div className="bg-white border border-[#dce6e8] rounded-2xl p-8 md:p-14 shadow-sm mb-20 text-left">
           <div className="max-w-3xl mb-12">
-            <span className="text-xs font-black text-[#007AFF] uppercase tracking-wider block mb-2">{t.importantBadge}</span>
-            <h2 className="text-2xl md:text-3xl font-black text-[#002D5B] uppercase tracking-tight">
+            <span className="text-sm font-semibold text-[#087f73] normal-case tracking-normal block mb-2">{t.importantBadge}</span>
+            <h2 className="text-2xl md:text-3xl font-semibold text-[#082b45] normal-case tracking-tight">
               {t.importantTitle}
             </h2>
-            <p className="text-slate-500 font-medium text-sm md:text-base leading-relaxed mt-4">
+            <p className="text-[#526574] font-medium text-sm md:text-base leading-relaxed mt-4">
               {t.importantIntro}
             </p>
           </div>
@@ -1469,8 +1360,8 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
                 <Check className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="font-extrabold text-base text-[#002D5B] mb-1">{t.req1Title}</h4>
-                <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                <h4 className="font-semibold text-base text-[#082b45] mb-1">{t.req1Title}</h4>
+                <p className="text-sm text-[#526574] font-medium leading-relaxed">
                   {t.req1Desc}
                 </p>
               </div>
@@ -1481,8 +1372,8 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
                 <Check className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="font-extrabold text-base text-[#002D5B] mb-1">{t.req2Title}</h4>
-                <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                <h4 className="font-semibold text-base text-[#082b45] mb-1">{t.req2Title}</h4>
+                <p className="text-sm text-[#526574] font-medium leading-relaxed">
                   {t.req2Desc}
                 </p>
               </div>
@@ -1493,8 +1384,8 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
                 <Check className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="font-extrabold text-base text-[#002D5B] mb-1">{t.req3Title}</h4>
-                <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                <h4 className="font-semibold text-base text-[#082b45] mb-1">{t.req3Title}</h4>
+                <p className="text-sm text-[#526574] font-medium leading-relaxed">
                   {t.req3Desc}
                 </p>
               </div>
@@ -1505,8 +1396,8 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
                 <Check className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="font-extrabold text-base text-[#002D5B] mb-1">{t.req4Title}</h4>
-                <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                <h4 className="font-semibold text-base text-[#082b45] mb-1">{t.req4Title}</h4>
+                <p className="text-sm text-[#526574] font-medium leading-relaxed">
                   {t.req4Desc}
                 </p>
               </div>
@@ -1517,8 +1408,8 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
                 <Check className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="font-extrabold text-base text-[#002D5B] mb-1">{t.req5Title}</h4>
-                <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                <h4 className="font-semibold text-base text-[#082b45] mb-1">{t.req5Title}</h4>
+                <p className="text-sm text-[#526574] font-medium leading-relaxed">
                   {t.req5Desc}
                 </p>
               </div>
@@ -1529,16 +1420,16 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
                 <Check className="w-4 h-4" />
               </div>
               <div>
-                <h4 className="font-extrabold text-base text-[#002D5B] mb-1">{t.req6Title}</h4>
-                <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                <h4 className="font-semibold text-base text-[#082b45] mb-1">{t.req6Title}</h4>
+                <p className="text-sm text-[#526574] font-medium leading-relaxed">
                   {t.req6Desc}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 mt-10 text-slate-700 font-bold text-xs flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 text-[#007AFF] shrink-0" />
+          <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 mt-10 text-slate-700 font-bold text-sm flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-[#087f73] shrink-0" />
             <span>
               {t.smartphoneAlert}
             </span>
@@ -1546,141 +1437,12 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
         </div>
 
 
-        {/* --- 4. VACANTES (OFFENE STELLEN) --- */}
-        <div id="open-positions" className="mb-20 text-left scroll-mt-24">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <span className="text-xs font-black text-[#007AFF] uppercase tracking-wider block mb-2">{t.positionsBadge}</span>
-            <h2 className="text-3xl font-black text-[#002D5B] uppercase tracking-tight">{t.positionsTitle}</h2>
-            <p className="text-slate-500 font-medium text-sm mt-3">
-              {t.positionsSubtitle}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-            {/* Card 1: Offene Stelle (ACTIVA) */}
-            <div className="bg-white border-2 border-[#007AFF] rounded-[2.5rem] p-8 shadow-md relative flex flex-col justify-between hover:shadow-xl transition-all group">
-              <div className="absolute top-6 right-6 flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-                <span className="bg-emerald-100 text-emerald-800 text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full">
-                  {t.jobActiveBadge}
-                </span>
-              </div>
-
-              <div>
-                <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest block mb-1">{t.job1Category}</span>
-                <h3 className="text-xl font-black text-[#002D5B] mb-4 leading-tight">
-                  {t.job1Title}
-                </h3>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  <span className="bg-slate-100 text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full">{t.job1Locations}</span>
-                  <span className="bg-slate-100 text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full">{t.job1Pensum}</span>
-                  <span className="bg-blue-100 text-blue-800 text-[10px] font-bold px-3 py-1 rounded-full">{t.job1Start}</span>
-                </div>
-                <p className="text-slate-500 text-xs leading-relaxed font-medium mb-8">
-                  {t.job1Desc}
-                </p>
-              </div>
-
-              <button
-                onClick={() => handleSelectJob(t.job1Title)}
-                className="w-full bg-[#002D5B] hover:bg-[#007AFF] text-white font-black py-4 rounded-xl text-xs uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2"
-              >
-                {t.job1Btn} <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Card 2: Talentpool */}
-            <div className="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm flex flex-col justify-between hover:shadow-lg transition-all">
-              <div>
-                <span className="bg-slate-100 text-slate-500 text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full mb-4 inline-block">
-                  {t.jobPoolBadge}
-                </span>
-                <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest block mb-1">{t.job2Category}</span>
-                <h3 className="text-xl font-black text-[#002D5B] mb-4 leading-tight">
-                  {t.job2Title}
-                </h3>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  <span className="bg-slate-100 text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full">{t.job2Pensum}</span>
-                  <span className="bg-slate-100 text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full">{t.job2Start}</span>
-                </div>
-                <p className="text-slate-500 text-xs leading-relaxed font-medium mb-8">
-                  {t.job2Desc}
-                </p>
-              </div>
-
-              <button
-                onClick={() => handleSelectJob(`${t.job2Title} (${t.jobPoolBadge})`)}
-                className="w-full border-2 border-[#002D5B] hover:bg-[#002D5B] text-[#002D5B] hover:text-white font-black py-4 rounded-xl text-xs uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2"
-              >
-                {t.job2Btn} <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Card 3: Talentpool Hauswart */}
-            <div className="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm flex flex-col justify-between hover:shadow-lg transition-all">
-              <div>
-                <span className="bg-slate-100 text-slate-500 text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full mb-4 inline-block">
-                  {t.jobPoolBadge}
-                </span>
-                <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest block mb-1">{t.job3Category}</span>
-                <h3 className="text-xl font-black text-[#002D5B] mb-4 leading-tight">
-                  {t.job3Title}
-                </h3>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  <span className="bg-slate-100 text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full">{t.job3Pensum}</span>
-                  <span className="bg-slate-100 text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full">{t.job3Start}</span>
-                </div>
-                <p className="text-slate-500 text-xs leading-relaxed font-medium mb-8">
-                  {t.job3Desc}
-                </p>
-              </div>
-
-              <button
-                onClick={() => handleSelectJob(`${t.job3Title} (${t.jobPoolBadge})`)}
-                className="w-full border-2 border-[#002D5B] hover:bg-[#002D5B] text-[#002D5B] hover:text-white font-black py-4 rounded-xl text-xs uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2"
-              >
-                {t.job3Btn} <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Card 4: Initiativbewerbung */}
-            <div className="bg-white border border-slate-100 rounded-[2.5rem] p-8 shadow-sm flex flex-col justify-between hover:shadow-lg transition-all">
-              <div>
-                <span className="bg-slate-100 text-slate-500 text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full mb-4 inline-block">
-                  {t.jobSpontaneousBadge}
-                </span>
-                <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest block mb-1">{t.job4Category}</span>
-                <h3 className="text-xl font-black text-[#002D5B] mb-4 leading-tight">
-                  {t.job4Title}
-                </h3>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  <span className="bg-slate-100 text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full">{t.job4Pensum}</span>
-                  <span className="bg-slate-100 text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full">{t.job4Start}</span>
-                </div>
-                <p className="text-slate-500 text-xs leading-relaxed font-medium mb-8">
-                  {t.job4Desc}
-                </p>
-              </div>
-
-              <button
-                onClick={() => handleSelectJob(`${t.job4Title} (${t.jobSpontaneousBadge})`)}
-                className="w-full border-2 border-dashed border-[#002D5B] hover:bg-[#002D5B] text-[#002D5B] hover:text-white font-black py-4 rounded-xl text-xs uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2"
-              >
-                {t.job4Btn} <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-
-          </div>
-        </div>
-
-
         {/* --- 5. SELECTION PROCESS --- */}
-        <div className="bg-white border border-slate-100 rounded-[3rem] p-8 md:p-14 shadow-sm mb-20 text-left">
+        <div className="bg-white border border-[#dce6e8] rounded-2xl p-8 md:p-14 shadow-sm mb-20 text-left">
           <div className="max-w-3xl mb-12">
-            <span className="text-xs font-black text-[#007AFF] uppercase tracking-wider block mb-2">{t.processBadge}</span>
-            <h2 className="text-2xl md:text-3xl font-black text-[#002D5B] uppercase tracking-tight">{t.processTitle}</h2>
-            <p className="text-slate-500 font-medium text-sm md:text-base leading-relaxed mt-4">
+            <span className="text-sm font-semibold text-[#087f73] normal-case tracking-normal block mb-2">{t.processBadge}</span>
+            <h2 className="text-2xl md:text-3xl font-semibold text-[#082b45] normal-case tracking-tight">{t.processTitle}</h2>
+            <p className="text-[#526574] font-medium text-sm md:text-base leading-relaxed mt-4">
               {t.processIntro}
             </p>
           </div>
@@ -1689,36 +1451,36 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
 
             {/* Step 1 */}
             <div className="relative">
-              <div className="text-5xl font-black text-[#007AFF]/20 mb-4">01</div>
-              <h4 className="font-extrabold text-lg text-[#002D5B] mb-2">{t.step1Title}</h4>
-              <p className="text-xs text-slate-500 font-medium leading-relaxed">
+              <div className="text-5xl font-semibold text-[#087f73]/20 mb-4">01</div>
+              <h4 className="font-semibold text-lg text-[#082b45] mb-2">{t.step1Title}</h4>
+              <p className="text-sm text-[#526574] font-medium leading-relaxed">
                 {t.step1Desc}
               </p>
             </div>
 
             {/* Step 2 */}
             <div className="relative">
-              <div className="text-5xl font-black text-[#007AFF]/20 mb-4">02</div>
-              <h4 className="font-extrabold text-lg text-[#002D5B] mb-2">{t.step2Title}</h4>
-              <p className="text-xs text-slate-500 font-medium leading-relaxed">
+              <div className="text-5xl font-semibold text-[#087f73]/20 mb-4">02</div>
+              <h4 className="font-semibold text-lg text-[#082b45] mb-2">{t.step2Title}</h4>
+              <p className="text-sm text-[#526574] font-medium leading-relaxed">
                 {t.step2Desc}
               </p>
             </div>
 
             {/* Step 3 */}
             <div className="relative">
-              <div className="text-5xl font-black text-[#007AFF]/20 mb-4">03</div>
-              <h4 className="font-extrabold text-lg text-[#002D5B] mb-2">{t.step3Title}</h4>
-              <p className="text-xs text-slate-500 font-medium leading-relaxed">
+              <div className="text-5xl font-semibold text-[#087f73]/20 mb-4">03</div>
+              <h4 className="font-semibold text-lg text-[#082b45] mb-2">{t.step3Title}</h4>
+              <p className="text-sm text-[#526574] font-medium leading-relaxed">
                 {t.step3Desc}
               </p>
             </div>
 
             {/* Step 4 */}
             <div className="relative">
-              <div className="text-5xl font-black text-[#007AFF]/20 mb-4">04</div>
-              <h4 className="font-extrabold text-lg text-[#002D5B] mb-2">{t.step4Title}</h4>
-              <p className="text-xs text-slate-500 font-medium leading-relaxed">
+              <div className="text-5xl font-semibold text-[#087f73]/20 mb-4">04</div>
+              <h4 className="font-semibold text-lg text-[#082b45] mb-2">{t.step4Title}</h4>
+              <p className="text-sm text-[#526574] font-medium leading-relaxed">
                 {t.step4Desc}
               </p>
             </div>
@@ -1732,14 +1494,14 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
 
           {/* Left Block: WhatsApp and Info */}
           <div className="lg:col-span-5 space-y-8">
-            <div className="bg-gradient-to-b from-white to-slate-100 p-8 md:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
-              <span className="inline-block bg-[#25D366]/20 text-[#1ebd59] text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
+            <div className="bg-gradient-to-b from-white to-slate-100 p-8 md:p-10 rounded-2xl border border-[#dce6e8] shadow-sm space-y-6">
+              <span className="inline-block bg-[#25D366]/20 text-[#087f73] text-sm font-semibold normal-case tracking-normal px-3 py-1.5 rounded-full">
                 {t.fastestWayBadge}
               </span>
-              <h3 className="text-2xl font-black text-[#002D5B] uppercase tracking-tight">
+              <h3 className="text-2xl font-semibold text-[#082b45] normal-case tracking-tight">
                 {t.ctaTitle}
               </h3>
-              <p className="text-slate-600 text-xs md:text-sm font-medium leading-relaxed">
+              <p className="text-slate-600 text-sm md:text-sm font-medium leading-relaxed">
                 {t.ctaDesc}
               </p>
 
@@ -1748,53 +1510,53 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
                 href={`https://wa.me/41774505705?text=Hallo%20Antonio%2C%20ich%20interessiere%20mich%20f%C3%BCr%20eine%20Stelle%20bei%20Kraken%20PFM%20und%20m%C3%B6chte%20mich%20gerne%20bewerben.%20(Sprache%3A%20${language})`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-[#25D366] text-white hover:bg-[#1ebd59] active:scale-95 transition-all w-full py-5 rounded-2xl shadow-lg hover:shadow-xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 cursor-pointer"
+                className="bg-[#25D366] text-white hover:bg-[#1ebd59] active:scale-95 transition-all w-full py-5 rounded-2xl shadow-sm hover:shadow-sm font-semibold text-sm normal-case tracking-normal flex items-center justify-center gap-3 cursor-pointer"
               >
                 <Phone className="w-5 h-5 fill-white text-[#25D366]" /> {t.btnWhatsApp}
               </a>
 
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider text-center">
+              <p className="text-sm text-[#526574] font-bold normal-case tracking-normal text-center">
                 {t.directContact}
               </p>
             </div>
 
-            <div className="bg-blue-50 border border-blue-100 text-slate-700 p-6 rounded-[2rem] space-y-3">
-              <h5 className="font-extrabold text-xs text-[#002D5B] uppercase tracking-wider">{t.languageBadge}</h5>
-              <p className="text-[11px] leading-relaxed font-bold">
+            <div className="bg-blue-50 border border-blue-100 text-slate-700 p-6 rounded-2xl space-y-3">
+              <h5 className="font-semibold text-sm text-[#082b45] normal-case tracking-normal">{t.languageBadge}</h5>
+              <p className="text-sm leading-relaxed font-bold">
                 {t.languageText}
               </p>
             </div>
           </div>
 
           {/* Right Block: Application Form */}
-          <div className="lg:col-span-7 bg-white p-8 md:p-12 rounded-[3rem] border border-slate-100 shadow-xl relative overflow-hidden group">
+          <div className="lg:col-span-7 bg-white p-8 md:p-12 rounded-2xl border border-[#dce6e8] shadow-sm relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
 
             <div className="relative z-10">
-              <h3 className="text-2xl md:text-3xl font-black text-[#002D5B] mb-8 uppercase tracking-tight">
+              <h3 className="text-2xl md:text-3xl font-semibold text-[#082b45] mb-8 normal-case tracking-tight">
                 {t.formTitle}
               </h3>
 
               {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl mb-8 text-xs font-bold uppercase tracking-tight">
+                <div role="alert" className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl mb-8 text-sm font-bold normal-case tracking-tight">
                   {error}
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6 text-xs md:text-sm">
+              <form onSubmit={handleSubmit} className="space-y-6 text-sm md:text-sm">
                 <fieldset disabled={isLoading} className="contents">
 
                 {/* Name */}
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  <label htmlFor="careers-field-1" className="block text-sm font-semibold text-[#526574] normal-case tracking-normal">
                     {t.lblFullName} <span className="text-red-500">*</span>
                   </label>
-                  <input
+                  <input id="careers-field-1"
                     name="name"
                     required
                     type="text"
                     placeholder={t.placeholderFullName}
-                    className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all"
+                    className="min-h-11 w-full p-4 bg-slate-50 border border-[#dce6e8] rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-base transition-all"
                     onChange={handleInputChange}
                     maxLength={150} value={formData.name}
                   />
@@ -1802,15 +1564,15 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
 
                 {/* Telefon / WhatsApp */}
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  <label htmlFor="careers-field-2" className="block text-sm font-semibold text-[#526574] normal-case tracking-normal">
                     {t.lblPhone} <span className="text-red-500">*</span>
                   </label>
-                  <input
+                  <input id="careers-field-2"
                     name="phone"
                     required
                     type="tel"
                     placeholder={t.placeholderPhone}
-                    className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all"
+                    className="min-h-11 w-full p-4 bg-slate-50 border border-[#dce6e8] rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-base transition-all"
                     onChange={handleInputChange}
                     maxLength={50} value={formData.phone}
                   />
@@ -1819,13 +1581,13 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Gewünschte Stelle */}
                   <div className="space-y-2">
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <label htmlFor="careers-field-3" className="block text-sm font-semibold text-[#526574] normal-case tracking-normal">
                       {t.lblDesiredPosition} <span className="text-red-500">*</span>
                     </label>
-                    <select
+                    <select id="careers-field-3"
                       name="position"
                       required
-                      className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-xs md:text-sm transition-all cursor-pointer"
+                      className="min-h-11 w-full p-4 bg-slate-50 border border-[#dce6e8] rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-base md:text-sm transition-all cursor-pointer"
                       value={formData.position}
                       onChange={handleInputChange}
                     >
@@ -1838,13 +1600,13 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
 
                   {/* Region */}
                   <div className="space-y-2">
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <label htmlFor="careers-field-4" className="block text-sm font-semibold text-[#526574] normal-case tracking-normal">
                       {t.lblRegion} <span className="text-red-500">*</span>
                     </label>
-                    <select
+                    <select id="careers-field-4"
                       name="region"
                       required
-                      className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-xs md:text-sm transition-all cursor-pointer"
+                      className="min-h-11 w-full p-4 bg-slate-50 border border-[#dce6e8] rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-base md:text-sm transition-all cursor-pointer"
                       value={formData.region}
                       onChange={handleInputChange}
                     >
@@ -1859,13 +1621,13 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Arbeitsbewilligung */}
                   <div className="space-y-2">
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <label htmlFor="careers-field-5" className="block text-sm font-semibold text-[#526574] normal-case tracking-normal">
                       {t.lblWorkPermit} <span className="text-red-500">*</span>
                     </label>
-                    <select
+                    <select id="careers-field-5"
                       name="permit"
                       required
-                      className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-xs md:text-sm transition-all cursor-pointer"
+                      className="min-h-11 w-full p-4 bg-slate-50 border border-[#dce6e8] rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-base md:text-sm transition-all cursor-pointer"
                       value={formData.permit}
                       onChange={handleInputChange}
                     >
@@ -1877,15 +1639,15 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
 
                   {/* Frühestmöglicher Start */}
                   <div className="space-y-2">
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <label htmlFor="careers-field-6" className="block text-sm font-semibold text-[#526574] normal-case tracking-normal">
                       {t.lblStart} <span className="text-red-500">*</span>
                     </label>
-                    <input
+                    <input id="careers-field-6"
                       name="startDate"
                       required
                       type="text"
                       placeholder={t.placeholderStart}
-                      className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all"
+                      className="min-h-11 w-full p-4 bg-slate-50 border border-[#dce6e8] rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-base transition-all"
                       onChange={handleInputChange}
                       value={formData.startDate}
                     />
@@ -1895,12 +1657,12 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Gewünschtes Pensum */}
                   <div className="space-y-2">
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <label htmlFor="careers-field-7" className="block text-sm font-semibold text-[#526574] normal-case tracking-normal">
                       {t.lblPensum} <span className="text-slate-300 font-bold">({t.optionalField})</span>
                     </label>
-                    <select
+                    <select id="careers-field-7"
                       name="pensum"
-                      className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-xs md:text-sm transition-all cursor-pointer"
+                      className="min-h-11 w-full p-4 bg-slate-50 border border-[#dce6e8] rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-base md:text-sm transition-all cursor-pointer"
                       value={formData.pensum}
                       onChange={handleInputChange}
                     >
@@ -1914,14 +1676,14 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
 
                   {/* Führerausweis / Zertifikate */}
                   <div className="space-y-2">
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <label htmlFor="careers-field-8" className="block text-sm font-semibold text-[#526574] normal-case tracking-normal">
                       {t.lblCertificates} <span className="text-slate-300 font-bold">({t.optionalField})</span>
                     </label>
-                    <input
+                    <input id="careers-field-8"
                       name="certificates"
                       type="text"
                       placeholder={t.placeholderCertificates}
-                      className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all"
+                      className="min-h-11 w-full p-4 bg-slate-50 border border-[#dce6e8] rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-base transition-all"
                       onChange={handleInputChange}
                       value={formData.certificates}
                     />
@@ -1930,14 +1692,14 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
 
                 {/* Sprachen */}
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  <label htmlFor="careers-field-9" className="block text-sm font-semibold text-[#526574] normal-case tracking-normal">
                     {t.lblLanguages} <span className="text-slate-300 font-bold">({t.optionalField})</span>
                   </label>
-                  <input
+                  <input id="careers-field-9"
                     name="languages"
                     type="text"
                     placeholder={t.placeholderLanguages}
-                    className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all"
+                    className="min-h-11 w-full p-4 bg-slate-50 border border-[#dce6e8] rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-base transition-all"
                     onChange={handleInputChange}
                     value={formData.languages}
                   />
@@ -1945,44 +1707,44 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
 
                 {/* CV Uploader */}
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  <label htmlFor="careers-field-10" className="block text-sm font-semibold text-[#526574] normal-case tracking-normal">
                     {t.lblCV} <span className="text-slate-300 font-bold">({t.optionalField})</span>
                   </label>
                   <div className="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:bg-slate-50 hover:border-[#007AFF] transition-all relative group/upload cursor-pointer">
-                    <input
+                    <input id="careers-field-10"
                       type="file"
                       accept=".pdf,.docx"
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      className="min-h-11 absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       onChange={handleFileChange}
                     />
                     <div className="flex flex-col items-center justify-center gap-2">
-                      <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-[#007AFF] group-hover/upload:scale-110 transition-transform">
+                      <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-[#087f73] group-hover/upload:scale-110 transition-transform">
                         <Upload className="w-6 h-6" />
                       </div>
                       {formData.cvName ? (
-                        <span className="font-extrabold text-[#002D5B] text-xs">{formData.cvName}</span>
+                        <span className="font-semibold text-[#082b45] text-sm">{formData.cvName}</span>
                       ) : (
                         <>
-                          <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">{t.cvPlaceholder}</span>
-                          <span className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">PDF / DOCX · 20 MiB</span>
+                          <span className="text-sm font-semibold normal-case tracking-normal text-[#526574]">{t.cvPlaceholder}</span>
+                          <span className="text-sm font-bold text-slate-300 normal-case tracking-normal">PDF / DOCX · 20 MiB</span>
                         </>
                       )}
                     </div>
                   </div>
                 </div>
 
-                {cvFile && <button type="button" className="text-blue-700 underline font-bold" onClick={() => { setCvFile(null); setFormData(previous => ({ ...previous, cvName: '' })); setError(null); }}>{attachmentText(language, 'remove')}</button>}
+                {cvFile && <button type="button" className="min-h-11 text-blue-700 underline font-bold" onClick={() => { setCvFile(null); setFormData(previous => ({ ...previous, cvName: '' })); setError(null); }}>{attachmentText(language, 'remove')}</button>}
 
                 {/* Message / Erzähl uns kurz von dir */}
                 <div className="space-y-2">
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  <label htmlFor="careers-field-11" className="block text-sm font-semibold text-[#526574] normal-case tracking-normal">
                     {t.lblAboutYou} <span className="text-slate-300 font-bold">({t.optionalField})</span>
                   </label>
-                  <textarea
+                  <textarea id="careers-field-11"
                     name="message"
                     rows={4}
                     placeholder={t.placeholderAboutYou}
-                    className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all"
+                    className="min-h-11 w-full p-4 bg-slate-50 border border-[#dce6e8] rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-base transition-all"
                     onChange={handleInputChange}
                     maxLength={10000} value={formData.message}
                   />
@@ -1992,7 +1754,7 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-[#002D5B] text-white font-black py-5 rounded-2xl shadow-xl hover:bg-black transition-all disabled:opacity-70 mt-4 uppercase tracking-widest text-xs cursor-pointer active:scale-98"
+                  className="min-h-11 kraken-button kraken-primary w-full mt-4"
                 >
                   {isLoading ? t.btnSubmitting : t.btnSubmit}
                 </button>
