@@ -1,18 +1,27 @@
-# Preparar desarrollo local y recuperación de Kraken PFM
+# Corregir desarrollo local y preparar la migración de Kraken PFM
 
-`npm run dev` podía servir producción o dejar de cargar Vite tras compilar, y el
-lock remoto impedía instalar con `npm ci`. Esta continuación hace explícito el
-modo, mantiene el servidor de producción y el SEO, repara el lock y corrige los
-errores TypeScript y la persistencia del idioma en URL.
+`npm run dev` podía servir producción o dejar de cargar Vite después de compilar,
+y el lock impedía instalar con `npm ci`. El cambio selecciona desarrollo
+explícitamente, mantiene `npm run build` y `npm start`, repara el lock y corrige
+tres errores TypeScript y la persistencia del idioma en la URL.
 
-Recupera 74 recursos con procedencia/SHA256, conserva los válidos y documenta los
-22 originales todavía pendientes en componentes activos. Aísla Firebase local,
-configura EmailJS/Make por variables, mantiene Gemini en servidor y elimina
-fallos de login, envío y retorno de pagos que podían afirmar resultados inexistentes.
-No se han ejecutado operaciones comerciales reales ni desplegado reglas.
+Conserva el diseño, Kai, contenidos, idiomas, rutas y SEO. Recupera 74 recursos
+con procedencia y SHA256, conserva los originales válidos y documenta 22 rutas
+de imágenes todavía pendientes en componentes activos. Firebase local y SSR usan
+un proyecto demo; EmailJS y Make requieren configuración y habilitación explícitas;
+Gemini permanece en el servidor. Corrige el registro automático tras login
+fallido y las confirmaciones falsas de formularios y retornos de pago.
 
-Validación: npm ci, npm run typecheck, npm run build, npm test; revisión Chrome en
-escritorio/móvil y seis idiomas; inventario de imágenes mediante decodificación.
-Persisten dos avisos de tamaño de chunks, integraciones reales sin certificar y
-conciliación Payrexx en servidor pendiente. Ver docs/CODEX_SETUP.md,
-docs/INTEGRATIONS.md y docs/ASSET_AUDIT.md.
+Validación realizada: `npm ci`, `npm run typecheck`, `npm run build` y `npm test`;
+revisión Chrome en escritorio, móvil y seis idiomas; inventario de imágenes con
+decodificación. Las pruebas usan SDKs, fetch y un adaptador Payrexx inertes.
+No se han creado pagos, usuarios, solicitudes ni mensajes en producción, ni se han
+desplegado reglas. Firebase Emulator Suite real sigue pendiente por falta de Java.
+
+Este PR se prepara como borrador para revisión. Quedan dos avisos de tamaño de
+chunks, los 22 originales visuales, validación de proveedores con cuentas de
+prueba, reglas Firebase y conciliación Payrexx mediante notificación validada en
+servidor. El retorno del navegador sólo muestra pago pendiente. Para un despliegue
+comercial también hay que configurar expresamente los destinos EmailJS/Make.
+Estado y pasos reproducibles: `docs/CODEX_SETUP.md`, `docs/INTEGRATIONS.md` y
+`docs/ASSET_AUDIT.md`.

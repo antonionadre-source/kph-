@@ -1,4 +1,5 @@
-Kraken PFM — continuación local, 20 de noviembre de 2026
+Kraken PFM — continuación local, pruebas del 20 de noviembre de 2026
+Estado de GitHub actualizado el 21 de noviembre de 2026
 
 La carpeta aportada another-star---kraken-properties se ha comparado con el
 commit fd8cc1ee9c9947cb7e2c718bc433a896c3da244a. Su única diferencia era
@@ -9,4 +10,11 @@ el CODEX_SETUP.md adjunto; se han creado/reparado en esta continuación.
 Lee docs/CODEX_SETUP.md. Usa Node.js 24, npm ci y npm run dev.
 No pongas claves privadas en el chat, en Git ni en variables VITE_*.
 No se han creado pagos, usuarios, mensajes ni datos en producción.
-El repositorio conserva historial y rama local; no hay permiso para subir a GitHub.
+El repositorio conserva historial y la rama codex/local-migration-2026-11-20.
+origin apunta al fork autorizado https://github.com/antonionadre2-dev/kph-;
+upstream sigue el original https://github.com/antonionadre-source/kph-.
+La rama está publicada en el fork y propuesta al original mediante el PR borrador:
+https://github.com/antonionadre-source/kph-/pull/1
+El acceso directo al original sigue siendo de lectura. No se ha fusionado el PR
+ni se ha desplegado el sitio. Las integraciones y recursos pendientes constan en
+docs/CODEX_SETUP.md.

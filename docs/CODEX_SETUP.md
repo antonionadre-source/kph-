@@ -1,6 +1,7 @@
 # Kraken PFM — estado verificado para Codex
 
-Actualizado el **20 de noviembre de 2026**, con Node.js **v24.12.0** y npm **11.6.2**.
+Pruebas realizadas el **20 de noviembre de 2026**, con Node.js **v24.12.0** y npm
+**11.6.2**. Estado de GitHub actualizado el **21 de noviembre de 2026**.
 
 ## Procedencia y carpeta de trabajo
 
@@ -20,9 +21,9 @@ local ni cambios posteriores del remoto. La rama de continuación es
 
 Los cambios se prepararon y verificaron en una copia con historial bajo
 `outputs/Kraken-PFM-Codex`, y se aplicaron también a la carpeta aportada de Descargas.
-Ambas contienen el mismo código y rama. La carpeta de Descargas es la que debes
-abrir en Codex para continuar. El clon temporal de comparación se retiró después de recuperar el historial
-para liberar espacio; el historial completo permanece en `.git` del proyecto.
+La carpeta de Descargas es la copia principal que debes abrir en Codex para
+continuar. El clon temporal de comparación se retiró después de recuperar el
+historial para liberar espacio; el historial completo permanece en `.git` del proyecto.
 El directorio `work/` del chat sólo contiene temporales de esta sesión.
 
 ## Abrir y ejecutar
@@ -36,9 +37,9 @@ npm ci
 npm run dev
 ```
 
-Abre <http://localhost:3000>. El servidor queda escuchando en loopback durante
-esta sesión de verificación. Al ejecutar normalmente se conserva el host original
-`0.0.0.0`; puedes restringirlo con `HOST=127.0.0.1` en `.env.local`.
+Tras arrancar, la URL prevista es <http://localhost:3000>; comprueba el puerto que
+indica la terminal. El comando conserva el host original `0.0.0.0`; puedes
+restringirlo a loopback con `HOST=127.0.0.1` en `.env.local`.
 Para cambiar de puerto en macOS/Linux: `PORT=3001 npm run dev`. Ctrl+C lo detiene.
 
 `npm run dev` establece desarrollo explícitamente, aunque el entorno heredado
@@ -160,26 +161,49 @@ requiere Pillow; el informe distingue también los archivos antiguos de `src/ass
 
 ## GitHub y próximos pasos
 
-La conexión comprobada corresponde a `ainhoaredondoarauz-cpu` y tiene `pull=true`,
-`push=false`, `admin=false` en `antonionadre-source/kph-`. La credencial de Git local
-se identifica como `antonionadre2-dev`: `git push --dry-run` devuelve HTTP 403
-(`Permission denied`). No se han comprobado
-permisos administrativos en Firebase/Google Cloud, Payrexx, Gemini, EmailJS o Make.
-No se ha publicado ni desplegado esta continuación ni se ha usado force push.
+El **21 de noviembre de 2026** se creó el fork
+[antonionadre2-dev/kph-](https://github.com/antonionadre2-dev/kph-) y se publicó allí
+la rama `codex/local-migration-2026-11-20`. La cuenta Git local
+`antonionadre2-dev` tiene escritura y administración en su fork. El acceso al
+repositorio original sigue siendo de lectura; el flujo de fork permite proponer
+los cambios sin escribir directamente en su rama `main`.
 
-Para crear el pull request hay que autorizar `antonionadre-source` o una cuenta
-colaboradora con escritura sobre `antonionadre-source/kph-`. Antes de subir:
+El [pull request #1](https://github.com/antonionadre-source/kph-/pull/1) está abierto
+como **borrador**, desde esa rama del fork hacia `antonionadre-source/kph-:main`.
+No se ha fusionado ni desplegado el sitio, ni se ha usado force push.
+
+El PR disparó una comprobación automática de Vercel. `vercel[bot]` indica que la
+vista previa necesita autorización de un miembro del equipo. No se ha autorizado
+ni desplegado Vercel durante esta sesión; esta comprobación externa pendiente no
+cambia los resultados de las pruebas locales realizadas el 20 de noviembre.
+
+Los remotos de la carpeta principal son:
+
+| Remoto | Repositorio | Uso |
+| --- | --- | --- |
+| `origin` | <https://github.com/antonionadre2-dev/kph-> | Publicar la rama en el fork autorizado |
+| `upstream` | <https://github.com/antonionadre-source/kph-> | Seguir el original y revisar cambios de `main` |
+
+Para continuar en la rama y actualizar el mismo PR:
 
 ```sh
+git fetch upstream
 git fetch origin
 git status
-git log --oneline origin/main..HEAD
-git push -u origin codex/local-migration-2026-11-20
+git log --oneline HEAD..upstream/main
+git log --oneline upstream/main..HEAD
+git push origin codex/local-migration-2026-11-20
 ```
 
-Si el remoto ha avanzado, incorporar sus cambios en esta rama antes de abrir el PR;
-no sobrescribirlos. Una vez disponible el acceso, abrir un PR contra `main` con la
-descripción preparada en `docs/PULL_REQUEST.md` y las pruebas de esta entrega.
+Si `upstream/main` ha avanzado, revisar e incorporar sus cambios en esta rama,
+conservar el trabajo ajeno y repetir las comprobaciones afectadas antes de subir.
+Los nuevos commits en la rama del fork actualizan el PR existente. La descripción
+preparada está en `docs/PULL_REQUEST.md`; el estado de borrador mantiene visibles
+las integraciones y los recursos pendientes de revisión.
+
+No se han comprobado permisos administrativos en Firebase/Google Cloud, Payrexx,
+Gemini, EmailJS o Make. Publicar la rama en GitHub no configura ni valida esos
+servicios.
 
 Después: aportar los 22 originales activos pendientes y configurar cuentas de
 prueba. La conciliación Payrexx por notificación validada en servidor y las reglas
