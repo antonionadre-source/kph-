@@ -14,9 +14,12 @@
     "test:server": "node --import tsx --test tests/server.test.ts",
     "test:integrations": "node scripts/test-integrations.mjs",
     "test:forms": "node scripts/test-form-delivery.mjs",
-    "test": "npm run test:integrations && npm run test:forms && npm run test:server && npm run test:vercel",
+    "test": "npm run test:integrations && npm run test:forms && npm run test:uploads && npm run test:server && npm run test:vercel && npm run test:unit",
     "build:vercel": "node scripts/build-vercel.mjs",
-    "test:vercel": "node --import tsx --test tests/vercel.test.ts"
+    "test:vercel": "node --import tsx --test tests/vercel.test.ts",
+    "test:unit": "node --import tsx --test tests/navigation.test.ts tests/locales.test.ts tests/kai-calendar.test.ts tests/chat-protocol.test.ts tests/portal.test.ts tests/backend.test.ts tests/html.test.ts tests/booking-client.test.mjs tests/quote-pdf.test.ts",
+    "test:rules": "node --import tsx --test tests/rules.test.ts",
+    "test:uploads": "node scripts/test-uploads.mjs"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -34,7 +37,7 @@
     "esbuild": "^0.28.0",
     "express": "^5.2.1",
     "firebase": "^12.14.0",
-    "jimp": "^1.6.1",
+    "firebase-admin": "^14.5.1",
     "jspdf": "^4.2.1",
     "jszip": "^3.10.1",
     "lucide-react": "^0.577.0",
@@ -47,9 +50,16 @@
     "vite": "^6.2.0"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
     "rollup-plugin-visualizer": "^7.1.1"
   },
   "engines": {
     "node": ">=24 <25"
+  },
+  "overrides": {
+    "@grpc/grpc-js": "1.14.7",
+    "tsx": {
+      "esbuild": "^0.28.1"
+    }
   }
 }

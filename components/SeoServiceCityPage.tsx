@@ -26,7 +26,7 @@ import {
   Store, 
   Utensils 
 } from 'lucide-react';
-import { services, cityImages, schaffhausenServiceImages } from '../assets';
+import { services, cityImages } from '../assets';
 import { SERVICE_SEO_CONTENT } from './seoData';
 import { MUNICIPALITIES } from '../src/data/locations';
 import { getLocalizedCuriosity } from './seoCuriosities';
@@ -3739,12 +3739,12 @@ const SeoServiceCityPage: React.FC<SeoServiceCityPageProps> = ({ cityId, service
   };
 
   const serviceAsset = services.find(s => s.id.toLowerCase() === serviceId.toLowerCase());
-  const getServiceImageUrl = () => {
-      if (cityId.toLowerCase() === 'schaffhausen' && schaffhausenServiceImages[serviceId.toLowerCase()]) {
-          return schaffhausenServiceImages[serviceId.toLowerCase()];
-            }
-              return serviceAsset?.imageUrl;
-              };
+  // Verified generic service illustrations; unrecovered city-specific originals
+  // remain archived. Regional artwork is an explicit fallback, not a recovered photo.
+  const getServiceImageUrl = () =>
+    serviceAsset?.imageUrl ||
+    cityImages[cityId.toLowerCase() as keyof typeof cityImages] ||
+    cityImages.schaffhausen;
 
   const localizedTitle = getCleanServiceTitle(serviceId, serviceAsset?.titleKey || '', t, service.title, currentLang);
   const localizedSubtitle = getCleanServiceSubtitle(serviceId, serviceAsset?.titleKey || '', t, service.subtitle, currentLang);

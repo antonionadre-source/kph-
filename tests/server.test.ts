@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:net';
-import { cpSync, existsSync, mkdtempSync, mkdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -50,9 +50,14 @@ async function checkRoutes(base: string, dev: boolean) {
     assert.ok(!html.includes('STALE_BUILD_SENTINEL'));
   }
   for (const lang of ['de', 'en', 'fr', 'it', 'es', 'pt']) {
-    const html = await (await fetch(`${base}/services?lang=${lang}`)).text();
+    const servicesResponse = await fetch(`${base}/services?lang=${lang}`);
+    assert.equal(servicesResponse.status, 200, `/services?lang=${lang}`);
+    const html = await servicesResponse.text();
     assert.match(html, /rel="canonical"/);
-    const home = await (await fetch(`${base}/?lang=${lang}`)).text();
+    const homeResponse = await fetch(`${base}/?lang=${lang}`);
+    assert.equal(homeResponse.status, 200, `/?lang=${lang}`);
+    const home = await homeResponse.text();
+    assert.doesNotMatch(home, /\?lang=[^"\s<]*\?html-proxy/);
     if (lang === 'es') assert.match(home, /Gesti[oó]n|Limpieza|propiedades|Facility Management/i);
   }
   assert.equal((await fetch(`${base}/missing-page`)).status, 404);
@@ -71,6 +76,10 @@ test('development uses Vite in a clean copy and after a build, even with NODE_EN
   const scratch = mkdtempSync(path.join(tmpdir(), 'kraken-dev-test-'));
   try {
     cpSync(root, scratch, { recursive: true, filter: src => !['node_modules', '.git', 'dist', 'public'].includes(path.relative(root, src).split(path.sep)[0]) && !path.basename(src).startsWith('.env') });
+    // Inline CSS exercises Vite's virtual HTML proxy IDs even if the app moves
+    // its own styles to a stylesheet. A locale query must never become a path.
+    const templatePath = path.join(scratch, 'index.html');
+    writeFileSync(templatePath, readFileSync(templatePath, 'utf8').replace('</head>', '<style>.locale-query-regression { color: #123456; }</style></head>'));
     symlinkSync(path.join(root, 'node_modules'), path.join(scratch, 'node_modules'), 'dir');
     symlinkSync(path.join(root, 'public'), path.join(scratch, 'public'), 'dir');
     await withServer(scratch, ['--import', 'tsx', 'scripts/dev.ts'], { NODE_ENV: 'production' }, async base => {
@@ -89,9 +98,8 @@ test('development uses Vite in a clean copy and after a build, even with NODE_EN
       for (const amount of [0, -1, 'Infinity', {}, true]) {
         assert.equal((await fetch(`${base}/api/payrexx/create-gateway`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount }) })).status, 400);
       }
-      const response = await fetch(`${base}/api/payrexx/create-gateway`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount: 12.35, clientName: 'Test Person' }) });
-      assert.equal(response.status, 200);
-      assert.deepEqual(await response.json(), { success: true, id: 42, link: 'https://example.invalid/payment' });
+      const response = await fetch(`${base}/api/payrexx/create-gateway`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ bookingId: 'persisted-booking' }) });
+      assert.equal(response.status, 401, 'Unverified sessions never open a payment gateway');
     });
   } finally { rmSync(scratch, { recursive: true, force: true }); }
 });
@@ -107,5 +115,10 @@ test('production bundle starts without NODE_ENV and serves compiled routes with 
     const asset = await fetch(base + script[1]);
     assert.equal(asset.status, 200);
     assert.match(asset.headers.get('cache-control') || '', /immutable/);
+    for (const artifact of ['/server.cjs', '/server.cjs.map', '/stats.html']) assert.equal((await fetch(base + artifact)).status, 404, artifact);
+    const spanish = await (await fetch(base + '/services?lang=es')).text();
+    assert.match(spanish, /<html lang="es"/);
+    assert.match(spanish, /og:url" content="https:\/\/krakenpfm.ch\/services/);
+    assert.doesNotMatch(spanish, /Bändigen Sie das Chaos/);
   });
 });

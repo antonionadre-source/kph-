@@ -605,7 +605,9 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
         it: ['Aree comuni', 'Ingresso / Uscita', 'Manutenzione preventiva'],
         pt: ['Áreas comuns', 'Entrada / Saída', 'Manutenção preventiva']
       },
-      imageUrl: '/servicio-comercial-limpieza-escaleras.webp',
+      imageUrl: '/kai-calendar/optimized/commercial/property-managers/768.webp',
+      imageWidth: 768,
+      imageHeight: 576,
       icon: <Building className="w-5 h-5 text-blue-600" />
     },
     {
@@ -634,7 +636,9 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
         it: ['Pulizia di cambio', 'Lavanderia e biancheria', 'Rifornimento e ispezione'],
         pt: ['Limpeza de rotatividade', 'Tratamento de roupa', 'Reposição e inspeção']
       },
-      imageUrl: '/imagen-02-google-ai.webp',
+      imageUrl: '/kai-calendar/optimized/commercial/airbnb-rentals/768.webp',
+      imageWidth: 768,
+      imageHeight: 576,
       icon: <Sparkles className="w-5 h-5 text-blue-600" />
     },
     {
@@ -663,7 +667,9 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
         it: ['Pulizia quotidiana uffici', 'Servizi igienici e cucine', 'Disinfezione e forniture'],
         pt: ['Limpeza diária de escritórios', 'Casas de banho e cozinhas', 'Desinfecção e consumíveis']
       },
-      imageUrl: '/servicio-comercial-limpieza-showroom.webp',
+      imageUrl: '/kai-calendar/optimized/commercial/offices-corporate/768.webp',
+      imageWidth: 768,
+      imageHeight: 576,
       icon: <Briefcase className="w-5 h-5 text-blue-600" />
     },
     {
@@ -692,7 +698,9 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
         it: ['Cura dei pavimenti', 'Pulizia vetrate', 'Apertura / Chiusura'],
         pt: ['Tratamento de pisos', 'Limpeza de vidros', 'Abertura / Fecho']
       },
-      imageUrl: '/servicio-comercial-limpieza-retail.webp',
+      imageUrl: '/kai-calendar/optimized/commercial/retail-showrooms/768.webp',
+      imageWidth: 768,
+      imageHeight: 576,
       icon: <ShoppingBag className="w-5 h-5 text-blue-600" />
     },
     {
@@ -721,7 +729,9 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
         it: ['Pulizia profonda cucine', 'Conformità HACCP', 'Cura di grassi e cappe'],
         pt: ['Limpeza profunda de cozinhas', 'Conformidade HACCP', 'Limpeza de gordura e exaustor']
       },
-      imageUrl: '/servicio-comercial-limpieza-bar-restaurante.webp',
+      imageUrl: '/kai-calendar/optimized/commercial/gastronomy-restaurants/768.webp',
+      imageWidth: 768,
+      imageHeight: 960,
       icon: <Soup className="w-5 h-5 text-blue-600" />
     },
     {
@@ -750,7 +760,9 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
         it: ['Pulizia industriale', 'Cura macchinari e pavimentazioni', 'Magazzini e cortili'],
         pt: ['Limpeza industrial', 'Cuidado de máquinas e pisos', 'Armazéns e pátios']
       },
-      imageUrl: '/servicio-comercial-limpieza-industrial.webp',
+      imageUrl: '/kai-calendar/optimized/commercial/industry-logistics/768.webp',
+      imageWidth: 768,
+      imageHeight: 960,
       icon: <Factory className="w-5 h-5 text-blue-600" />
     }
   ];
@@ -1393,8 +1405,9 @@ const CommercialServicesPage: React.FC<CommercialServicesPageProps> = ({ onNavig
                     alt={getLangVal(item.title)} 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
-                    width="600"
-                    height="400"
+                    width={item.imageWidth}
+                    height={item.imageHeight}
+                    decoding="async"
                     referrerPolicy="no-referrer"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent"></div>

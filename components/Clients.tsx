@@ -154,6 +154,8 @@ export const ClientCarousel: React.FC = () => {
                 <img
                   src={logo.url}
                   alt={logo.name}
+                  width={logo.width}
+                  height={logo.height}
                   loading="lazy"
                   decoding="async"
                   className="max-h-8 max-w-full object-contain opacity-60 grayscale hover:opacity-100 hover:grayscale-0 hover:scale-110 transition-all duration-500"

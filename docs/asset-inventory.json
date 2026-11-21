@@ -1,17 +1,17 @@
 {
   "summary": {
-    "totalPaths": 180,
-    "valid": 134,
-    "invalid": 41,
-    "missing": 5,
-    "referencedInvalid": 19,
-    "referencedMissing": 5
+    "totalPaths": 285,
+    "valid": 285,
+    "invalid": 0,
+    "missing": 0,
+    "referencedInvalid": 0,
+    "referencedMissing": 0
   },
   "assets": [
     {
       "path": "/Amazon-logo-svg.png",
       "references": [
-        "assets.ts:100"
+        "assets.ts:86"
       ],
       "bytes": 41432,
       "format": "PNG",
@@ -20,29 +20,6 @@
         387
       ],
       "status": "valid"
-    },
-    {
-      "path": "/Asset-47-jpg.webp",
-      "references": [
-        "assets.ts:99"
-      ],
-      "bytes": 0,
-      "status": "missing",
-      "error": "Missing local image"
-    },
-    {
-      "path": "/ChatGPT Image Aug 12, 2026, 09_30_31 AM.png",
-      "references": [],
-      "bytes": 3275048,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/ChatGPT Image Aug 12, 2026, 09_30_31 AM.png'"
-    },
-    {
-      "path": "/ChatGPT Image Aug 12, 2026, 09_33_16 AM copy.png",
-      "references": [],
-      "bytes": 1492092,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/ChatGPT Image Aug 12, 2026, 09_33_16 AM copy.png'"
     },
     {
       "path": "/ChatGPT Image Aug 20, 2026, 06_37_46 PM.png",
@@ -56,22 +33,6 @@
       "status": "valid"
     },
     {
-      "path": "/ChatGPT Image Jul 1, 2026, 10_36_53 AM.png",
-      "references": [],
-      "bytes": 3506450,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/ChatGPT Image Jul 1, 2026, 10_36_53 AM.png'"
-    },
-    {
-      "path": "/ChatGPT Image Jul 11, 2026, 03_32_16 AM.png",
-      "references": [
-        "assets.ts:47"
-      ],
-      "bytes": 0,
-      "status": "missing",
-      "error": "Missing local image"
-    },
-    {
       "path": "/ChatGPT Image Jul 16, 2026, 03_06_15 AM.png",
       "references": [],
       "bytes": 1896281,
@@ -81,15 +42,6 @@
         941
       ],
       "status": "valid"
-    },
-    {
-      "path": "/ChatGPT Image Jul 18, 2026, 07_40_06 PM.png",
-      "references": [
-        "components/PaymentCelebrationPage.tsx:313"
-      ],
-      "bytes": 2203417,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/ChatGPT Image Jul 18, 2026, 07_40_06 PM.png'"
     },
     {
       "path": "/ChatGPT Image Jun 29, 2026, 02_32_15 AM.png",
@@ -105,16 +57,9 @@
       "status": "valid"
     },
     {
-      "path": "/ChatGPT%20Image%20Aug%2020,%202026,%2006_37_46%20PM.png",
-      "references": [],
-      "bytes": 3494499,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/ChatGPT%20Image%20Aug%2020,%202026,%2006_37_46%20PM.png'"
-    },
-    {
       "path": "/Crisis-logo-1024x366.jpg",
       "references": [
-        "assets.ts:98"
+        "assets.ts:85"
       ],
       "bytes": 29789,
       "format": "JPEG",
@@ -127,7 +72,7 @@
     {
       "path": "/Logo-Steinfels-Swiss-RGB.png",
       "references": [
-        "assets.ts:107"
+        "assets.ts:93"
       ],
       "bytes": 10604,
       "format": "PNG",
@@ -138,18 +83,9 @@
       "status": "valid"
     },
     {
-      "path": "/Logo.jpg",
-      "references": [
-        "assets.ts:95"
-      ],
-      "bytes": 0,
-      "status": "missing",
-      "error": "Missing local image"
-    },
-    {
       "path": "/Logo_EBP_Logo.jpg",
       "references": [
-        "assets.ts:109"
+        "assets.ts:95"
       ],
       "bytes": 306287,
       "format": "JPEG",
@@ -162,7 +98,7 @@
     {
       "path": "/MOZUR-gold-logo-1024x884.png",
       "references": [
-        "assets.ts:93"
+        "assets.ts:81"
       ],
       "bytes": 46729,
       "format": "PNG",
@@ -199,7 +135,7 @@
     {
       "path": "/Meili-Logo-black-cmyc-png.webp",
       "references": [
-        "assets.ts:94"
+        "assets.ts:82"
       ],
       "bytes": 2306,
       "format": "WEBP",
@@ -212,7 +148,7 @@
     {
       "path": "/Schweizerische-Unfallversicherungsanstalt-logo-svg.png",
       "references": [
-        "assets.ts:105"
+        "assets.ts:91"
       ],
       "bytes": 68229,
       "format": "PNG",
@@ -279,18 +215,9 @@
       "status": "valid"
     },
     {
-      "path": "/antes-limpieza-experiencia.webp",
-      "references": [
-        "components/SegmentationSection.tsx:1998"
-      ],
-      "bytes": 0,
-      "status": "missing",
-      "error": "Missing local image"
-    },
-    {
       "path": "/apple-touch-icon.png",
       "references": [
-        "index.html:87",
+        "index.html:44",
         "favicon-head.html:7",
         "public/favicon-head.html:7"
       ],
@@ -301,57 +228,6 @@
         180
       ],
       "status": "valid"
-    },
-    {
-      "path": "/car-detailing-schaffhausen.webp",
-      "references": [
-        "assets.ts:54"
-      ],
-      "bytes": 654045,
-      "status": "invalid",
-      "error": "could not create decoder object"
-    },
-    {
-      "path": "/chatgpt-image-aug12-093031.png",
-      "references": [],
-      "bytes": 1999579,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/chatgpt-image-aug12-093031.png'"
-    },
-    {
-      "path": "/chatgpt-image-aug12-093316.png",
-      "references": [],
-      "bytes": 1492092,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/chatgpt-image-aug12-093316.png'"
-    },
-    {
-      "path": "/chatgpt-image-aug12.png",
-      "references": [],
-      "bytes": 1492092,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/chatgpt-image-aug12.png'"
-    },
-    {
-      "path": "/chatgpt-image-aug20.png",
-      "references": [],
-      "bytes": 3494499,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/chatgpt-image-aug20.png'"
-    },
-    {
-      "path": "/chatgpt-image-jun-13-1.png",
-      "references": [],
-      "bytes": 3605824,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/chatgpt-image-jun-13-1.png'"
-    },
-    {
-      "path": "/chatgpt-image-jun-13-2.png",
-      "references": [],
-      "bytes": 3616730,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/chatgpt-image-jun-13-2.png'"
     },
     {
       "path": "/cinematic-design-workspace.webp",
@@ -383,33 +259,6 @@
       "status": "valid"
     },
     {
-      "path": "/common-area-cleaning-schaffhausen.webp",
-      "references": [
-        "assets.ts:55"
-      ],
-      "bytes": 483762,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/common-area-cleaning-schaffhausen.webp'"
-    },
-    {
-      "path": "/daily-recurring-cleaning-schaffhausen.webp",
-      "references": [
-        "assets.ts:56"
-      ],
-      "bytes": 399887,
-      "status": "invalid",
-      "error": "could not create decoder object"
-    },
-    {
-      "path": "/deep-cleaning-schaffhausen.webp",
-      "references": [
-        "assets.ts:57"
-      ],
-      "bytes": 372176,
-      "status": "invalid",
-      "error": "could not create decoder object"
-    },
-    {
       "path": "/despues-limpieza-experiencia.png",
       "references": [],
       "bytes": 2052118,
@@ -436,7 +285,7 @@
     {
       "path": "/display-green-mountain-as-logo.png",
       "references": [
-        "assets.ts:101"
+        "assets.ts:87"
       ],
       "bytes": 47698,
       "format": "PNG",
@@ -463,15 +312,6 @@
       "status": "valid"
     },
     {
-      "path": "/exterior-cleaning-schaffhausen.webp",
-      "references": [
-        "assets.ts:58"
-      ],
-      "bytes": 650823,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/exterior-cleaning-schaffhausen.webp'"
-    },
-    {
       "path": "/favicon-128x128.png",
       "references": [],
       "bytes": 9150,
@@ -485,7 +325,7 @@
     {
       "path": "/favicon-16x16.png",
       "references": [
-        "index.html:83",
+        "index.html:40",
         "favicon-head.html:3",
         "public/favicon-head.html:3"
       ],
@@ -511,7 +351,7 @@
     {
       "path": "/favicon-32x32.png",
       "references": [
-        "index.html:84",
+        "index.html:41",
         "favicon-head.html:4",
         "public/favicon-head.html:4"
       ],
@@ -526,7 +366,7 @@
     {
       "path": "/favicon-48x48.png",
       "references": [
-        "index.html:85",
+        "index.html:42",
         "favicon-head.html:5",
         "public/favicon-head.html:5"
       ],
@@ -563,7 +403,7 @@
     {
       "path": "/favicon-96x96.png",
       "references": [
-        "index.html:86",
+        "index.html:43",
         "favicon-head.html:6",
         "public/favicon-head.html:6"
       ],
@@ -589,7 +429,7 @@
     {
       "path": "/favicon.ico",
       "references": [
-        "index.html:82",
+        "index.html:39",
         "favicon-head.html:2",
         "public/favicon-head.html:2"
       ],
@@ -602,43 +442,9 @@
       "status": "valid"
     },
     {
-      "path": "/favicon.png",
-      "references": [],
-      "bytes": 82,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/favicon.png'"
-    },
-    {
-      "path": "/furniture-moving-schaffhausen.webp",
-      "references": [
-        "assets.ts:59"
-      ],
-      "bytes": 407696,
-      "status": "invalid",
-      "error": "could not create decoder object"
-    },
-    {
-      "path": "/gardening-schaffhausen.webp",
-      "references": [
-        "assets.ts:60"
-      ],
-      "bytes": 659537,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/gardening-schaffhausen.webp'"
-    },
-    {
-      "path": "/gutter-cleaning-schaffhausen.webp",
-      "references": [
-        "assets.ts:61"
-      ],
-      "bytes": 462874,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/gutter-cleaning-schaffhausen.webp'"
-    },
-    {
       "path": "/head-logo-Basque-Trade-jpg.webp",
       "references": [
-        "assets.ts:97"
+        "assets.ts:84"
       ],
       "bytes": 2628,
       "format": "WEBP",
@@ -739,10 +545,7 @@
     },
     {
       "path": "/imagen-02-google-ai.webp",
-      "references": [
-        "assets.ts:267",
-        "components/CommercialServicesPage.tsx:637"
-      ],
+      "references": [],
       "bytes": 1677564,
       "format": "WEBP",
       "dimensions": [
@@ -754,8 +557,8 @@
     {
       "path": "/imagen-google-ai-compatible-desktop.webp",
       "references": [
-        "index.html:93",
-        "components/Hero.tsx:26"
+        "components/SalesHome.tsx:29",
+        "components/SalesHero.tsx:25"
       ],
       "bytes": 133410,
       "format": "WEBP",
@@ -767,9 +570,7 @@
     },
     {
       "path": "/imagen-google-ai-compatible-mobile.webp",
-      "references": [
-        "index.html:92"
-      ],
+      "references": [],
       "bytes": 49990,
       "format": "WEBP",
       "dimensions": [
@@ -792,7 +593,7 @@
     {
       "path": "/images-2.png",
       "references": [
-        "assets.ts:96"
+        "assets.ts:83"
       ],
       "bytes": 9718,
       "format": "PNG",
@@ -803,31 +604,12 @@
       "status": "valid"
     },
     {
-      "path": "/images-3.png",
-      "references": [
-        "assets.ts:110"
-      ],
-      "bytes": 0,
-      "status": "missing",
-      "error": "Missing local image"
-    },
-    {
-      "path": "/industrial-maintenance-schaffhausen.webp",
-      "references": [
-        "assets.ts:62"
-      ],
-      "bytes": 406449,
-      "status": "invalid",
-      "error": "could not create decoder object"
-    },
-    {
       "path": "/kai about us.webp",
       "references": [
         "assets.ts:14",
         "assets.ts:49",
         "components/OurStoryPage.tsx:410",
-        "components/AboutPage.tsx:75",
-        "components/FloatingMascot.tsx:445"
+        "components/AboutPage.tsx:75"
       ],
       "bytes": 231798,
       "format": "WEBP",
@@ -839,9 +621,7 @@
     },
     {
       "path": "/kai blog.webp",
-      "references": [
-        "components/FloatingMascot.tsx:447"
-      ],
+      "references": [],
       "bytes": 196256,
       "format": "WEBP",
       "dimensions": [
@@ -853,10 +633,9 @@
     {
       "path": "/kai build your quote.webp",
       "references": [
-        "assets.ts:71",
-        "components/ConsultationPage.tsx:9151",
-        "components/ConsultationPage.tsx:9303",
-        "components/FloatingMascot.tsx:450"
+        "assets.ts:59",
+        "components/ConsultationPage.tsx:7929",
+        "components/ConsultationPage.tsx:8081"
       ],
       "bytes": 182920,
       "format": "WEBP",
@@ -870,8 +649,7 @@
       "path": "/kai careers.webp",
       "references": [
         "assets.ts:16",
-        "components/FloatingMascot.tsx:452",
-        "components/CareersPage.tsx:1319"
+        "components/CareersPage.tsx:1225"
       ],
       "bytes": 192982,
       "format": "WEBP",
@@ -886,8 +664,7 @@
       "references": [
         "assets.ts:15",
         "assets.ts:28",
-        "assets.ts:36",
-        "components/FloatingMascot.tsx:477"
+        "assets.ts:36"
       ],
       "bytes": 154324,
       "format": "WEBP",
@@ -899,9 +676,7 @@
     },
     {
       "path": "/kai health and safety.webp",
-      "references": [
-        "components/FloatingMascot.tsx:454"
-      ],
+      "references": [],
       "bytes": 233264,
       "format": "WEBP",
       "dimensions": [
@@ -913,8 +688,7 @@
     {
       "path": "/kai privacy.webp",
       "references": [
-        "components/GDPRPage.tsx:31",
-        "components/FloatingMascot.tsx:457"
+        "components/GDPRPage.tsx:31"
       ],
       "bytes": 224780,
       "format": "WEBP",
@@ -927,7 +701,6 @@
     {
       "path": "/kai reviews.webp",
       "references": [
-        "components/FloatingMascot.tsx:460",
         "components/ReviewInvitePage.tsx:447"
       ],
       "bytes": 162072,
@@ -941,8 +714,7 @@
     {
       "path": "/kai schaffhausen.webp",
       "references": [
-        "assets.ts:45",
-        "components/FloatingMascot.tsx:433"
+        "assets.ts:45"
       ],
       "bytes": 205660,
       "format": "WEBP",
@@ -954,9 +726,7 @@
     },
     {
       "path": "/kai security.webp",
-      "references": [
-        "components/FloatingMascot.tsx:465"
-      ],
+      "references": [],
       "bytes": 200934,
       "format": "WEBP",
       "dimensions": [
@@ -969,8 +739,7 @@
       "path": "/kai services.webp",
       "references": [
         "assets.ts:17",
-        "components/ChatWidget.tsx:365",
-        "components/FloatingMascot.tsx:469"
+        "components/ChatWidget.tsx:365"
       ],
       "bytes": 247462,
       "format": "WEBP",
@@ -982,9 +751,7 @@
     },
     {
       "path": "/kai sustainability.webp",
-      "references": [
-        "components/FloatingMascot.tsx:471"
-      ],
+      "references": [],
       "bytes": 177376,
       "format": "WEBP",
       "dimensions": [
@@ -996,8 +763,7 @@
     {
       "path": "/kai terms and condition.webp",
       "references": [
-        "components/TermsPage.tsx:20",
-        "components/FloatingMascot.tsx:473"
+        "components/TermsPage.tsx:20"
       ],
       "bytes": 192746,
       "format": "WEBP",
@@ -1010,8 +776,7 @@
     {
       "path": "/kai winterthur.webp",
       "references": [
-        "assets.ts:48",
-        "components/FloatingMascot.tsx:436"
+        "assets.ts:48"
       ],
       "bytes": 235788,
       "format": "WEBP",
@@ -1022,17 +787,9 @@
       "status": "valid"
     },
     {
-      "path": "/kai winterthur_opt.webp",
-      "references": [],
-      "bytes": 0,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/kai winterthur_opt.webp'"
-    },
-    {
       "path": "/kai zurich.webp",
       "references": [
-        "assets.ts:44",
-        "components/FloatingMascot.tsx:439"
+        "assets.ts:44"
       ],
       "bytes": 217150,
       "format": "WEBP",
@@ -1043,25 +800,1538 @@
       "status": "valid"
     },
     {
-      "path": "/kai-1.webp",
+      "path": "/kai-calendar/autumn/avatar-320.webp",
       "references": [],
-      "bytes": 584541,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/kai-1.webp'"
+      "bytes": 29368,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
     },
     {
-      "path": "/kai-2.webp",
+      "path": "/kai-calendar/autumn/hero-1440.webp",
       "references": [],
-      "bytes": 371321,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/kai-2.webp'"
+      "bytes": 280786,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
     },
     {
-      "path": "/kai-3.webp",
+      "path": "/kai-calendar/autumn/hero-768.webp",
       "references": [],
-      "bytes": 410312,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/kai-3.webp'"
+      "bytes": 110904,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/autumn/mobile-768.webp",
+      "references": [],
+      "bytes": 118718,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/back-to-school/avatar-320.webp",
+      "references": [],
+      "bytes": 21220,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/back-to-school/hero-1440.webp",
+      "references": [],
+      "bytes": 204246,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/back-to-school/hero-768.webp",
+      "references": [],
+      "bytes": 81774,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/back-to-school/mobile-768.webp",
+      "references": [],
+      "bytes": 86492,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/carnival/avatar-320.webp",
+      "references": [],
+      "bytes": 21064,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/carnival/hero-1440.webp",
+      "references": [],
+      "bytes": 235316,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/carnival/hero-768.webp",
+      "references": [],
+      "bytes": 93686,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/carnival/mobile-768.webp",
+      "references": [],
+      "bytes": 97410,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/christmas/avatar-320.webp",
+      "references": [],
+      "bytes": 19566,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/christmas/hero-1440.webp",
+      "references": [],
+      "bytes": 239406,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/christmas/hero-768.webp",
+      "references": [],
+      "bytes": 89378,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/christmas/mobile-768.webp",
+      "references": [],
+      "bytes": 95296,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/easter/avatar-320.webp",
+      "references": [],
+      "bytes": 23500,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/easter/hero-1440.webp",
+      "references": [],
+      "bytes": 229066,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/easter/hero-768.webp",
+      "references": [],
+      "bytes": 88058,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/easter/mobile-768.webp",
+      "references": [],
+      "bytes": 92354,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/harvest/avatar-320.webp",
+      "references": [],
+      "bytes": 23610,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/harvest/hero-1440.webp",
+      "references": [],
+      "bytes": 262572,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/harvest/hero-768.webp",
+      "references": [],
+      "bytes": 101222,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/harvest/mobile-768.webp",
+      "references": [],
+      "bytes": 108192,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/new-year/avatar-320.webp",
+      "references": [],
+      "bytes": 22654,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/new-year/hero-1440.webp",
+      "references": [],
+      "bytes": 186046,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/new-year/hero-768.webp",
+      "references": [],
+      "bytes": 73226,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/new-year/mobile-768.webp",
+      "references": [],
+      "bytes": 75282,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/new-years-eve/avatar-320.webp",
+      "references": [],
+      "bytes": 16408,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/new-years-eve/hero-1440.webp",
+      "references": [],
+      "bytes": 187592,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/new-years-eve/hero-768.webp",
+      "references": [],
+      "bytes": 71180,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/new-years-eve/mobile-768.webp",
+      "references": [],
+      "bytes": 74208,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/about/consultancy-1200.webp",
+      "references": [],
+      "bytes": 94984,
+      "format": "WEBP",
+      "dimensions": [
+        1086,
+        1448
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/about/consultancy-768.webp",
+      "references": [
+        "components/AboutPage.tsx:20"
+      ],
+      "bytes": 61446,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        1024
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/about/team-1200.webp",
+      "references": [],
+      "bytes": 60312,
+      "format": "WEBP",
+      "dimensions": [
+        1200,
+        675
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/about/team-768.webp",
+      "references": [
+        "components/AboutPage.tsx:251"
+      ],
+      "bytes": 34126,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        432
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/brand/logo-blue-480.webp",
+      "references": [
+        "components/SalesHeader.tsx:7"
+      ],
+      "bytes": 18916,
+      "format": "WEBP",
+      "dimensions": [
+        480,
+        206
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/brand/logo-blue.webp",
+      "references": [],
+      "bytes": 172084,
+      "format": "WEBP",
+      "dimensions": [
+        1016,
+        436
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/brand/logo-white-480.webp",
+      "references": [
+        "components/SalesFooter.tsx:4"
+      ],
+      "bytes": 24062,
+      "format": "WEBP",
+      "dimensions": [
+        480,
+        206
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/brand/logo-white.webp",
+      "references": [],
+      "bytes": 75344,
+      "format": "WEBP",
+      "dimensions": [
+        1007,
+        433
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/airbnb-rentals/1440.webp",
+      "references": [
+        "assets.ts:253"
+      ],
+      "bytes": 131046,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        1080
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/airbnb-rentals/480.webp",
+      "references": [],
+      "bytes": 25800,
+      "format": "WEBP",
+      "dimensions": [
+        480,
+        360
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/airbnb-rentals/768.webp",
+      "references": [
+        "components/CommercialServicesPage.tsx:639"
+      ],
+      "bytes": 51066,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/gastronomy-restaurants/1440.webp",
+      "references": [
+        "assets.ts:277"
+      ],
+      "bytes": 132582,
+      "format": "WEBP",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/gastronomy-restaurants/480.webp",
+      "references": [],
+      "bytes": 39862,
+      "format": "WEBP",
+      "dimensions": [
+        480,
+        600
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/gastronomy-restaurants/768.webp",
+      "references": [
+        "components/CommercialServicesPage.tsx:732"
+      ],
+      "bytes": 76296,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/industry-logistics/1440.webp",
+      "references": [
+        "assets.ts:285"
+      ],
+      "bytes": 128120,
+      "format": "WEBP",
+      "dimensions": [
+        1122,
+        1402
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/industry-logistics/480.webp",
+      "references": [],
+      "bytes": 37794,
+      "format": "WEBP",
+      "dimensions": [
+        480,
+        600
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/industry-logistics/768.webp",
+      "references": [
+        "assets.ts:58",
+        "components/CommercialServicesPage.tsx:763"
+      ],
+      "bytes": 72438,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/offices-corporate/1440.webp",
+      "references": [
+        "assets.ts:261"
+      ],
+      "bytes": 119542,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        1080
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/offices-corporate/480.webp",
+      "references": [],
+      "bytes": 25560,
+      "format": "WEBP",
+      "dimensions": [
+        480,
+        360
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/offices-corporate/768.webp",
+      "references": [
+        "components/SalesHome.tsx:11",
+        "components/CommercialServicesPage.tsx:670"
+      ],
+      "bytes": 50734,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/property-managers/1440.webp",
+      "references": [
+        "assets.ts:245"
+      ],
+      "bytes": 136092,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        1080
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/property-managers/480.webp",
+      "references": [],
+      "bytes": 25240,
+      "format": "WEBP",
+      "dimensions": [
+        480,
+        360
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/property-managers/768.webp",
+      "references": [
+        "assets.ts:237",
+        "components/CommercialServicesPage.tsx:608"
+      ],
+      "bytes": 51876,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/retail-showrooms/1440.webp",
+      "references": [
+        "assets.ts:269"
+      ],
+      "bytes": 109452,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        1080
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/retail-showrooms/480.webp",
+      "references": [],
+      "bytes": 25076,
+      "format": "WEBP",
+      "dimensions": [
+        480,
+        360
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/commercial/retail-showrooms/768.webp",
+      "references": [
+        "components/CommercialServicesPage.tsx:701"
+      ],
+      "bytes": 46036,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-about-us-160.webp",
+      "references": [],
+      "bytes": 10646,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-about-us-320.webp",
+      "references": [],
+      "bytes": 25176,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-blog-160.webp",
+      "references": [],
+      "bytes": 9628,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-blog-320.webp",
+      "references": [],
+      "bytes": 22030,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-build-your-quote-160.webp",
+      "references": [],
+      "bytes": 9470,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-build-your-quote-320.webp",
+      "references": [],
+      "bytes": 22662,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-careers-160.webp",
+      "references": [],
+      "bytes": 9670,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-careers-320.webp",
+      "references": [],
+      "bytes": 22384,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-comics-160.webp",
+      "references": [],
+      "bytes": 10608,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-comics-320.webp",
+      "references": [],
+      "bytes": 25780,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-health-and-safety-160.webp",
+      "references": [],
+      "bytes": 11912,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-health-and-safety-320.webp",
+      "references": [],
+      "bytes": 27760,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-imagen-1-160.webp",
+      "references": [],
+      "bytes": 3866,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        90
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-imagen-1-320.webp",
+      "references": [],
+      "bytes": 11222,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        180
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-imagen-160.webp",
+      "references": [],
+      "bytes": 3866,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        90
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-imagen-320.webp",
+      "references": [],
+      "bytes": 11222,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        180
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-jul16-interview-160.webp",
+      "references": [],
+      "bytes": 3666,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        90
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-jul16-interview-320.webp",
+      "references": [],
+      "bytes": 10254,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        180
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-privacy-160.webp",
+      "references": [],
+      "bytes": 10892,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-privacy-320.webp",
+      "references": [],
+      "bytes": 25782,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-reviews-160.webp",
+      "references": [],
+      "bytes": 8502,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-reviews-320.webp",
+      "references": [],
+      "bytes": 19670,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-schaffhausen-160.webp",
+      "references": [],
+      "bytes": 10100,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-schaffhausen-320.webp",
+      "references": [],
+      "bytes": 23876,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-security-160.webp",
+      "references": [],
+      "bytes": 11060,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-security-320.webp",
+      "references": [],
+      "bytes": 25518,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-services-160.webp",
+      "references": [],
+      "bytes": 12700,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-services-320.webp",
+      "references": [],
+      "bytes": 29732,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-sustainability-160.webp",
+      "references": [],
+      "bytes": 9866,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-sustainability-320.webp",
+      "references": [],
+      "bytes": 23020,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-terms-and-condition-160.webp",
+      "references": [],
+      "bytes": 9976,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-terms-and-condition-320.webp",
+      "references": [],
+      "bytes": 23470,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-webp-aug17-1-160.webp",
+      "references": [],
+      "bytes": 4796,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        120
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-webp-aug17-1-320.webp",
+      "references": [],
+      "bytes": 14180,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        240
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-webp-aug17-2-160.webp",
+      "references": [],
+      "bytes": 5170,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        120
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-webp-aug17-2-320.webp",
+      "references": [],
+      "bytes": 14930,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        240
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-webp-aug17-3-160.webp",
+      "references": [],
+      "bytes": 5290,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        120
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-webp-aug17-3-320.webp",
+      "references": [],
+      "bytes": 14452,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        240
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-winterthur-160.webp",
+      "references": [],
+      "bytes": 11244,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-winterthur-320.webp",
+      "references": [],
+      "bytes": 26192,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-zurich-160.webp",
+      "references": [],
+      "bytes": 10654,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/kai-zurich-320.webp",
+      "references": [],
+      "bytes": 25018,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/mascota-kraken-homepage-160.webp",
+      "references": [],
+      "bytes": 8396,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/mascota-kraken-homepage-200-160.webp",
+      "references": [],
+      "bytes": 8152,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/mascota-kraken-homepage-200-320.webp",
+      "references": [],
+      "bytes": 8766,
+      "format": "WEBP",
+      "dimensions": [
+        200,
+        200
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/mascota-kraken-homepage-320.webp",
+      "references": [
+        "assets.ts:9",
+        "components/PaymentCelebrationPage.tsx:314"
+      ],
+      "bytes": 19052,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/mascota-kraken-homepage-500-160.webp",
+      "references": [],
+      "bytes": 8056,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/mascota-kraken-homepage-500-320.webp",
+      "references": [],
+      "bytes": 18708,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/mascota-kraken-homepage-800-160.webp",
+      "references": [],
+      "bytes": 8356,
+      "format": "WEBP",
+      "dimensions": [
+        160,
+        160
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/optimized/kai/mascota-kraken-homepage-800-320.webp",
+      "references": [],
+      "bytes": 19002,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/samichlaus/avatar-320.webp",
+      "references": [],
+      "bytes": 22752,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/samichlaus/hero-1440.webp",
+      "references": [],
+      "bytes": 246194,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/samichlaus/hero-768.webp",
+      "references": [],
+      "bytes": 87580,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/samichlaus/mobile-768.webp",
+      "references": [],
+      "bytes": 93906,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/sechselaeuten/avatar-320.webp",
+      "references": [],
+      "bytes": 21128,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/sechselaeuten/hero-1440.webp",
+      "references": [],
+      "bytes": 207962,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/sechselaeuten/hero-768.webp",
+      "references": [],
+      "bytes": 82746,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/sechselaeuten/mobile-768.webp",
+      "references": [],
+      "bytes": 86208,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/spring-cleaning/avatar-320.webp",
+      "references": [],
+      "bytes": 22384,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/spring-cleaning/hero-1440.webp",
+      "references": [],
+      "bytes": 173978,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/spring-cleaning/hero-768.webp",
+      "references": [],
+      "bytes": 70878,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/spring-cleaning/mobile-768.webp",
+      "references": [],
+      "bytes": 74494,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/spring/avatar-320.webp",
+      "references": [],
+      "bytes": 21748,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/spring/hero-1440.webp",
+      "references": [],
+      "bytes": 204840,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/spring/hero-768.webp",
+      "references": [],
+      "bytes": 82092,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/spring/mobile-768.webp",
+      "references": [],
+      "bytes": 85254,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/summer/avatar-320.webp",
+      "references": [],
+      "bytes": 20244,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/summer/hero-1440.webp",
+      "references": [],
+      "bytes": 230546,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/summer/hero-768.webp",
+      "references": [],
+      "bytes": 90560,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/summer/mobile-768.webp",
+      "references": [],
+      "bytes": 95110,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/swiss-national-day/avatar-320.webp",
+      "references": [],
+      "bytes": 22834,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/swiss-national-day/hero-1440.webp",
+      "references": [],
+      "bytes": 216758,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/swiss-national-day/hero-768.webp",
+      "references": [],
+      "bytes": 87400,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/swiss-national-day/mobile-768.webp",
+      "references": [],
+      "bytes": 91322,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/winter/avatar-320.webp",
+      "references": [],
+      "bytes": 20780,
+      "format": "WEBP",
+      "dimensions": [
+        320,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/winter/hero-1440.webp",
+      "references": [],
+      "bytes": 192462,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/winter/hero-768.webp",
+      "references": [],
+      "bytes": 74718,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-calendar/winter/mobile-768.webp",
+      "references": [],
+      "bytes": 78788,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        576
+      ],
+      "status": "valid"
     },
     {
       "path": "/kai-imagen-1.webp",
@@ -1090,13 +2360,189 @@
     {
       "path": "/kai-jul16-interview.webp",
       "references": [
-        "components/CareersPage.tsx:1311"
+        "components/CareersPage.tsx:1217"
       ],
       "bytes": 172270,
       "format": "WEBP",
       "dimensions": [
         1672,
         941
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-services/floor-care-1440.webp",
+      "references": [],
+      "bytes": 152646,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-services/floor-care-480.webp",
+      "references": [],
+      "bytes": 32100,
+      "format": "WEBP",
+      "dimensions": [
+        480,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-services/floor-care.webp",
+      "references": [
+        "assets.ts:229"
+      ],
+      "bytes": 64874,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-services/moving-1440.webp",
+      "references": [],
+      "bytes": 177160,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-services/moving-480.webp",
+      "references": [],
+      "bytes": 34652,
+      "format": "WEBP",
+      "dimensions": [
+        480,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-services/moving.webp",
+      "references": [
+        "assets.ts:221"
+      ],
+      "bytes": 71328,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-services/thurgau-1440.webp",
+      "references": [],
+      "bytes": 250852,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-services/thurgau-480.webp",
+      "references": [],
+      "bytes": 46452,
+      "format": "WEBP",
+      "dimensions": [
+        480,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-services/thurgau.webp",
+      "references": [
+        "assets.ts:47"
+      ],
+      "bytes": 98468,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-services/upholstery-1440.webp",
+      "references": [],
+      "bytes": 191474,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-services/upholstery-480.webp",
+      "references": [],
+      "bytes": 34924,
+      "format": "WEBP",
+      "dimensions": [
+        480,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-services/upholstery.webp",
+      "references": [
+        "assets.ts:205"
+      ],
+      "bytes": 75570,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-services/windows-1440.webp",
+      "references": [],
+      "bytes": 146684,
+      "format": "WEBP",
+      "dimensions": [
+        1440,
+        960
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-services/windows-480.webp",
+      "references": [],
+      "bytes": 31264,
+      "format": "WEBP",
+      "dimensions": [
+        480,
+        320
+      ],
+      "status": "valid"
+    },
+    {
+      "path": "/kai-services/windows.webp",
+      "references": [
+        "assets.ts:213",
+        "components/SalesHome.tsx:10"
+      ],
+      "bytes": 61194,
+      "format": "WEBP",
+      "dimensions": [
+        768,
+        512
       ],
       "status": "valid"
     },
@@ -1142,8 +2588,8 @@
     {
       "path": "/kraken-og-1200x630.jpg",
       "references": [
-        "index.html:55",
-        "index.html:69"
+        "index.html:12",
+        "index.html:26"
       ],
       "bytes": 222964,
       "format": "JPEG",
@@ -1152,13 +2598,6 @@
         630
       ],
       "status": "valid"
-    },
-    {
-      "path": "/kraken-og-1200x630.png",
-      "references": [],
-      "bytes": 2124819,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/kraken-og-1200x630.png'"
     },
     {
       "path": "/kraken-og-1200x630.webp",
@@ -1181,13 +2620,6 @@
         315
       ],
       "status": "valid"
-    },
-    {
-      "path": "/kraken-original-1731x909.png",
-      "references": [],
-      "bytes": 2097844,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/kraken-original-1731x909.png'"
     },
     {
       "path": "/kraken-social-square-1200x1200.jpg",
@@ -1214,11 +2646,10 @@
     {
       "path": "/logo-kraken-azul.webp",
       "references": [
-        "index.html:133",
-        "index.html:134",
+        "index.html:65",
+        "index.html:66",
         "assets.ts:6",
-        "components/Dashboard.tsx:879",
-        "components/PaymentCelebrationPage.tsx:227",
+        "components/PaymentCelebrationPage.tsx:228",
         "components/BlogPage.tsx:474",
         "components/BlogPage.tsx:860",
         "components/SchemaComponents.tsx:69"
@@ -1246,7 +2677,9 @@
     },
     {
       "path": "/mascota-kraken-homepage-200.webp",
-      "references": [],
+      "references": [
+        "components/SalesAssistant.tsx:48"
+      ],
       "bytes": 8780,
       "format": "WEBP",
       "dimensions": [
@@ -1257,9 +2690,7 @@
     },
     {
       "path": "/mascota-kraken-homepage-500.webp",
-      "references": [
-        "components/FloatingMascot.tsx:479"
-      ],
+      "references": [],
       "bytes": 29980,
       "format": "WEBP",
       "dimensions": [
@@ -1282,8 +2713,6 @@
     {
       "path": "/mascota-kraken-homepage.webp",
       "references": [
-        "assets.ts:9",
-        "assets.ts:11",
         "assets.ts:31"
       ],
       "bytes": 151698,
@@ -1299,7 +2728,7 @@
       "references": [
         "assets.ts:13",
         "assets.ts:39",
-        "components/ServicesPage.tsx:927"
+        "components/ServicesPage.tsx:950"
       ],
       "bytes": 253156,
       "format": "WEBP",
@@ -1325,7 +2754,7 @@
     {
       "path": "/new-200-Aldersgate-Logo.jpg",
       "references": [
-        "assets.ts:92"
+        "assets.ts:80"
       ],
       "bytes": 437367,
       "format": "JPEG",
@@ -1358,15 +2787,6 @@
       "status": "valid"
     },
     {
-      "path": "/office-cleaning-schaffhausen.webp",
-      "references": [
-        "assets.ts:63"
-      ],
-      "bytes": 445001,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/office-cleaning-schaffhausen.webp'"
-    },
-    {
       "path": "/oficina-moderna-homepage.webp",
       "references": [
         "assets.ts:46",
@@ -1396,7 +2816,8 @@
     {
       "path": "/oven-before.webp",
       "references": [
-        "components/SegmentationSection.tsx:1984"
+        "components/SegmentationSection.tsx:1984",
+        "components/SegmentationSection.tsx:1998"
       ],
       "bytes": 79274,
       "format": "WEBP",
@@ -1405,32 +2826,6 @@
         600
       ],
       "status": "valid"
-    },
-    {
-      "path": "/payrexx-checkout-banner.png",
-      "references": [
-        "components/TrustIcons.tsx:8",
-        "components/WhyKrakenSection.tsx:48"
-      ],
-      "bytes": 1999578,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/payrexx-checkout-banner.png'"
-    },
-    {
-      "path": "/payrexx-checkout-banner.webp",
-      "references": [],
-      "bytes": 0,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/payrexx-checkout-banner.webp'"
-    },
-    {
-      "path": "/pest-control-schaffhausen.webp",
-      "references": [
-        "assets.ts:64"
-      ],
-      "bytes": 328383,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/pest-control-schaffhausen.webp'"
     },
     {
       "path": "/portada-interior-apartamento.webp",
@@ -1444,15 +2839,6 @@
         2874
       ],
       "status": "valid"
-    },
-    {
-      "path": "/retail-cleaning-schaffhausen.webp",
-      "references": [
-        "assets.ts:65"
-      ],
-      "bytes": 390803,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/retail-cleaning-schaffhausen.webp'"
     },
     {
       "path": "/schaffhausen-1.webp",
@@ -1481,9 +2867,7 @@
     },
     {
       "path": "/servicio-comercial-limpieza-bar-restaurante.png",
-      "references": [
-        "assets.ts:291"
-      ],
+      "references": [],
       "bytes": 2181934,
       "format": "PNG",
       "dimensions": [
@@ -1494,9 +2878,7 @@
     },
     {
       "path": "/servicio-comercial-limpieza-bar-restaurante.webp",
-      "references": [
-        "components/CommercialServicesPage.tsx:724"
-      ],
+      "references": [],
       "bytes": 1601472,
       "format": "WEBP",
       "dimensions": [
@@ -1507,9 +2889,7 @@
     },
     {
       "path": "/servicio-comercial-limpieza-escaleras.png",
-      "references": [
-        "assets.ts:259"
-      ],
+      "references": [],
       "bytes": 2275649,
       "format": "PNG",
       "dimensions": [
@@ -1520,10 +2900,7 @@
     },
     {
       "path": "/servicio-comercial-limpieza-escaleras.webp",
-      "references": [
-        "assets.ts:251",
-        "components/CommercialServicesPage.tsx:608"
-      ],
+      "references": [],
       "bytes": 1644198,
       "format": "WEBP",
       "dimensions": [
@@ -1534,9 +2911,7 @@
     },
     {
       "path": "/servicio-comercial-limpieza-industrial.png",
-      "references": [
-        "assets.ts:299"
-      ],
+      "references": [],
       "bytes": 2253244,
       "format": "PNG",
       "dimensions": [
@@ -1547,10 +2922,7 @@
     },
     {
       "path": "/servicio-comercial-limpieza-industrial.webp",
-      "references": [
-        "assets.ts:70",
-        "components/CommercialServicesPage.tsx:753"
-      ],
+      "references": [],
       "bytes": 1606462,
       "format": "WEBP",
       "dimensions": [
@@ -1561,9 +2933,7 @@
     },
     {
       "path": "/servicio-comercial-limpieza-retail.png",
-      "references": [
-        "assets.ts:283"
-      ],
+      "references": [],
       "bytes": 2148576,
       "format": "PNG",
       "dimensions": [
@@ -1574,9 +2944,7 @@
     },
     {
       "path": "/servicio-comercial-limpieza-retail.webp",
-      "references": [
-        "components/CommercialServicesPage.tsx:695"
-      ],
+      "references": [],
       "bytes": 1558260,
       "format": "WEBP",
       "dimensions": [
@@ -1587,9 +2955,7 @@
     },
     {
       "path": "/servicio-comercial-limpieza-showroom.png",
-      "references": [
-        "assets.ts:275"
-      ],
+      "references": [],
       "bytes": 2174512,
       "format": "PNG",
       "dimensions": [
@@ -1600,9 +2966,7 @@
     },
     {
       "path": "/servicio-comercial-limpieza-showroom.webp",
-      "references": [
-        "components/CommercialServicesPage.tsx:666"
-      ],
+      "references": [],
       "bytes": 1601494,
       "format": "WEBP",
       "dimensions": [
@@ -1614,9 +2978,9 @@
     {
       "path": "/servicio-privado-canalones.webp",
       "references": [
-        "assets.ts:83",
-        "assets.ts:211",
-        "components/ServicesPage.tsx:544"
+        "assets.ts:71",
+        "assets.ts:197",
+        "components/ServicesPage.tsx:562"
       ],
       "bytes": 226958,
       "format": "WEBP",
@@ -1629,9 +2993,9 @@
     {
       "path": "/servicio-privado-control-plagas.webp",
       "references": [
-        "assets.ts:76",
-        "assets.ts:195",
-        "components/ServicesPage.tsx:486"
+        "assets.ts:64",
+        "assets.ts:181",
+        "components/ServicesPage.tsx:500"
       ],
       "bytes": 208042,
       "format": "WEBP",
@@ -1644,8 +3008,10 @@
     {
       "path": "/servicio-privado-jardineria.webp",
       "references": [
-        "assets.ts:79",
-        "assets.ts:179"
+        "assets.ts:67",
+        "assets.ts:165",
+        "components/SalesHome.tsx:12",
+        "components/ServicesPage.tsx:438"
       ],
       "bytes": 161588,
       "format": "WEBP",
@@ -1658,9 +3024,10 @@
     {
       "path": "/servicio-privado-lavado-coche.webp",
       "references": [
-        "assets.ts:73",
-        "assets.ts:77",
-        "assets.ts:171"
+        "assets.ts:61",
+        "assets.ts:65",
+        "assets.ts:157",
+        "components/ServicesPage.tsx:407"
       ],
       "bytes": 109114,
       "format": "WEBP",
@@ -1673,8 +3040,10 @@
     {
       "path": "/servicio-privado-limpieza-apartamento.webp",
       "references": [
-        "assets.ts:69",
-        "assets.ts:139"
+        "assets.ts:57",
+        "assets.ts:125",
+        "components/SalesHome.tsx:7",
+        "components/ServicesPage.tsx:283"
       ],
       "bytes": 96424,
       "format": "WEBP",
@@ -1687,7 +3056,9 @@
     {
       "path": "/servicio-privado-limpieza-cocina.webp",
       "references": [
-        "assets.ts:147"
+        "assets.ts:133",
+        "components/SalesHome.tsx:9",
+        "components/ServicesPage.tsx:314"
       ],
       "bytes": 105670,
       "format": "WEBP",
@@ -1700,8 +3071,9 @@
     {
       "path": "/servicio-privado-limpieza-exterior.webp",
       "references": [
-        "assets.ts:82",
-        "assets.ts:187"
+        "assets.ts:70",
+        "assets.ts:173",
+        "components/ServicesPage.tsx:469"
       ],
       "bytes": 133814,
       "format": "WEBP",
@@ -1714,7 +3086,9 @@
     {
       "path": "/servicio-privado-limpieza-oficina-casa.webp",
       "references": [
-        "assets.ts:155"
+        "assets.ts:141",
+        "components/SalesHome.tsx:8",
+        "components/ServicesPage.tsx:345"
       ],
       "bytes": 95310,
       "format": "WEBP",
@@ -1725,37 +3099,11 @@
       "status": "valid"
     },
     {
-      "path": "/servicio-privado-limpieza-tapiceria-1.webp",
-      "references": [
-        "assets.ts:219"
-      ],
-      "bytes": 233192,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/servicio-privado-limpieza-tapiceria-1.webp'"
-    },
-    {
-      "path": "/servicio-privado-limpieza-ventanas-1.webp",
-      "references": [
-        "assets.ts:227"
-      ],
-      "bytes": 466423,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/servicio-privado-limpieza-ventanas-1.webp'"
-    },
-    {
-      "path": "/servicio-privado-mudanza-cajas-1.webp",
-      "references": [
-        "assets.ts:235"
-      ],
-      "bytes": 417220,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/servicio-privado-mudanza-cajas-1.webp'"
-    },
-    {
       "path": "/servicio-privado-mudanza-cajas.webp",
       "references": [
-        "assets.ts:72",
-        "assets.ts:163"
+        "assets.ts:60",
+        "assets.ts:149",
+        "components/ServicesPage.tsx:376"
       ],
       "bytes": 115100,
       "format": "WEBP",
@@ -1766,20 +3114,11 @@
       "status": "valid"
     },
     {
-      "path": "/servicio-privado-pulido-suelos-1.webp",
-      "references": [
-        "assets.ts:243"
-      ],
-      "bytes": 273283,
-      "status": "invalid",
-      "error": "could not create decoder object"
-    },
-    {
       "path": "/servicio-privado-residuos-desalojo.webp",
       "references": [
-        "assets.ts:78",
-        "assets.ts:203",
-        "components/ServicesPage.tsx:515"
+        "assets.ts:66",
+        "assets.ts:189",
+        "components/ServicesPage.tsx:531"
       ],
       "bytes": 253768,
       "format": "WEBP",
@@ -1900,13 +3239,6 @@
       "status": "valid"
     },
     {
-      "path": "/sobre-nosotros-reunion-consultoria-propiedad.webp",
-      "references": [],
-      "bytes": 143,
-      "status": "invalid",
-      "error": "could not create decoder object"
-    },
-    {
       "path": "/sobre-nosotros-reunion-equipo-kraken.png",
       "references": [
         "components/OurStoryPage.tsx:341",
@@ -1921,16 +3253,9 @@
       "status": "valid"
     },
     {
-      "path": "/sobre-nosotros-reunion-equipo-kraken.webp",
-      "references": [],
-      "bytes": 143,
-      "status": "invalid",
-      "error": "could not create decoder object"
-    },
-    {
       "path": "/sustainability-circular.png",
       "references": [
-        "assets.ts:119"
+        "assets.ts:105"
       ],
       "bytes": 2036682,
       "format": "PNG",
@@ -1976,8 +3301,8 @@
     {
       "path": "/sustainability-hero.png",
       "references": [
-        "assets.ts:87",
-        "assets.ts:115"
+        "assets.ts:75",
+        "assets.ts:101"
       ],
       "bytes": 2673732,
       "format": "PNG",
@@ -2001,7 +3326,7 @@
     {
       "path": "/sustainability-logistics.png",
       "references": [
-        "assets.ts:116"
+        "assets.ts:102"
       ],
       "bytes": 1856384,
       "format": "PNG",
@@ -2025,8 +3350,8 @@
     {
       "path": "/sustainability-ops.png",
       "references": [
-        "assets.ts:85",
-        "assets.ts:118"
+        "assets.ts:73",
+        "assets.ts:104"
       ],
       "bytes": 1899467,
       "format": "PNG",
@@ -2050,7 +3375,7 @@
     {
       "path": "/sustainability-partner.png",
       "references": [
-        "assets.ts:86"
+        "assets.ts:74"
       ],
       "bytes": 1889804,
       "format": "PNG",
@@ -2074,8 +3399,8 @@
     {
       "path": "/sustainability-people.png",
       "references": [
-        "assets.ts:89",
-        "assets.ts:117"
+        "assets.ts:77",
+        "assets.ts:103"
       ],
       "bytes": 1774986,
       "format": "PNG",
@@ -2095,29 +3420,6 @@
         1586
       ],
       "status": "valid"
-    },
-    {
-      "path": "/test_fixed.png",
-      "references": [],
-      "bytes": 3626183,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/test_fixed.png'"
-    },
-    {
-      "path": "/test_fixed.webp",
-      "references": [],
-      "bytes": 0,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/test_fixed.webp'"
-    },
-    {
-      "path": "/waste-management-schaffhausen.webp",
-      "references": [
-        "assets.ts:66"
-      ],
-      "bytes": 518885,
-      "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/public/waste-management-schaffhausen.webp'"
     },
     {
       "path": "/winterthur.webp",
@@ -2151,13 +3453,13 @@
       "path": "src/assets/images/H.png",
       "bytes": 1145729,
       "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/src/assets/images/H.png'"
+      "error": "cannot identify image file '/Users/Projects/Downloads/another-star---kraken-properties/src/assets/images/H.png'"
     },
     {
       "path": "src/assets/images/SA.png",
       "bytes": 740352,
       "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/src/assets/images/SA.png'"
+      "error": "cannot identify image file '/Users/Projects/Downloads/another-star---kraken-properties/src/assets/images/SA.png'"
     },
     {
       "path": "src/assets/images/antes_limpieza_1787252907784.jpg",
@@ -2213,7 +3515,7 @@
       "path": "src/assets/images/despues_limpieza_1787252894701.webp",
       "bytes": 0,
       "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/src/assets/images/despues_limpieza_1787252894701.webp'"
+      "error": "cannot identify image file '/Users/Projects/Downloads/another-star---kraken-properties/src/assets/images/despues_limpieza_1787252894701.webp'"
     },
     {
       "path": "src/assets/images/kraken_hero_banner_1784580230486.jpg",
@@ -2239,19 +3541,19 @@
       "path": "src/assets/images/retrato_uniforme_1783273262968.jpg",
       "bytes": 1418435,
       "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/src/assets/images/retrato_uniforme_1783273262968.jpg'"
+      "error": "cannot identify image file '/Users/Projects/Downloads/another-star---kraken-properties/src/assets/images/retrato_uniforme_1783273262968.jpg'"
     },
     {
       "path": "src/assets/images/reunion_consultoria_1783273291515.jpg",
       "bytes": 1417038,
       "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/src/assets/images/reunion_consultoria_1783273291515.jpg'"
+      "error": "cannot identify image file '/Users/Projects/Downloads/another-star---kraken-properties/src/assets/images/reunion_consultoria_1783273291515.jpg'"
     },
     {
       "path": "src/assets/images/reunion_kraken_1783273305130.jpg",
       "bytes": 1431897,
       "status": "invalid",
-      "error": "cannot identify image file '/Users/Projects/Documents/Codex/2026-11-20/files-pasted-by-the-user-abre/outputs/Kraken-PFM-Codex/src/assets/images/reunion_kraken_1783273305130.jpg'"
+      "error": "cannot identify image file '/Users/Projects/Downloads/another-star---kraken-properties/src/assets/images/reunion_kraken_1783273305130.jpg'"
     },
     {
       "path": "src/assets/images/schaffhausen_city_1787253468232.jpg",

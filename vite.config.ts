@@ -32,50 +32,10 @@ export default defineConfig(() => {
         rollupOptions: {
           output: {
             manualChunks(id) {
-              if (
-                id.includes('i18n.ts') ||
-                id.includes('docTranslations') ||
-                id.includes('seoTranslations') ||
-                id.includes('dashboardTranslations') ||
-                id.includes('locations.ts') ||
-                id.includes('municipalRegimes') ||
-                id.includes('seoData') ||
-                id.includes('seoConfig')
-              ) {
-                return 'data-app-resources';
-              }
-              if (id.includes('node_modules')) {
-                if (
-                  id.includes('react') ||
-                  id.includes('react-dom') ||
-                  id.includes('scheduler') ||
-                  id.includes('react-is') ||
-                  id.includes('use-sync-external-store')
-                ) {
-                  return 'vendor-react';
-                }
-                if (id.includes('firebase') || id.includes('@firebase')) {
-                  if (id.includes('firestore')) {
-                    return 'vendor-firebase-firestore';
-                  }
-                  if (id.includes('storage')) {
-                    return 'vendor-firebase-storage';
-                  }
-                  return 'vendor-firebase-core';
-                }
-                if (id.includes('lucide-react')) {
-                  return 'vendor-icons';
-                }
-                if (id.includes('motion')) {
-                  return 'vendor-motion';
-                }
-                if (id.includes('jspdf') || id.includes('html2canvas') || id.includes('dompurify') || id.includes('purify')) {
-                  return 'vendor-pdf-utils';
-                }
-                if (id.includes('jszip')) {
-                  return 'vendor-zip';
-                }
-              }
+              if (id.includes('vite/preload-helper') || id.includes('commonjsHelpers')) return 'vendor-runtime';
+              if (/\/node_modules\/(react|react-dom|scheduler|react-is|use-sync-external-store)\//.test(id)) return 'vendor-react';
+              // Route-local libraries and dictionaries use Rollup's dependency graph.
+              // In particular, PDF utilities must never own an entry preload helper.
             },
           },
         },

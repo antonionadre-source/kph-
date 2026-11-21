@@ -1,11 +1,12 @@
 import React, { useState, FormEvent } from 'react';
 import { motion } from 'motion/react';
 import { useTranslation } from '../i18n';
+import { salesCopy } from '../src/content/salesCopy';
 import { MapPinIcon, PhoneIcon, MailIcon, ClockIcon, CheckIcon } from './icons';
 import emailjs, { EMAIL_SERVICE_ID as SERVICE_ID, EMAIL_TEMPLATE_ID as TEMPLATE_ID, EMAIL_PUBLIC_KEY as PUBLIC_KEY } from './emailClient';
 import { db } from './firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { sendLead } from './leadWebhook';
+import { postWebhook, MAKE_WEBHOOK_URL } from './leadWebhook';
 
 
 interface KontaktPageProps {
@@ -242,11 +243,24 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
   const { language } = useTranslation();
   const d = kontaktTranslations[language] || kontaktTranslations['de'];
 
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
+  const [formData, setFormData] = useState(() => {
+    const selectedServices = typeof window === 'undefined'
+      ? []
+      : new URLSearchParams(window.location.search).getAll('service');
+    const requestedService = selectedServices.length === 1 ? selectedServices[0] : null;
+    const serviceSubject = requestedService === 'window-cleaning'
+      ? salesCopy(language).serviceNames[3]
+      : requestedService === 'gardening'
+        ? salesCopy(language).serviceNames[5]
+        : '';
+    // Initialize once from the same six-language label as the Home card. Editing
+    // the subject remains under the user's control on subsequent renders.
+    return {
+      name: '',
+      email: '',
+      subject: serviceSubject,
+      message: ''
+    };
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -264,22 +278,20 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
 
     try {
       // 1. Save contact message to Firestore (non-blocking if it fails)
-      try {
-        await addDoc(collection(db, 'contact_messages'), {
-          name: formData.name,
-          email: formData.email,
+      const persistence = addDoc(collection(db, 'contact_messages'), {
+          name: formData.name.trim(),
+          email: formData.email.trim(),
           subject: formData.subject || '',
           message: formData.message,
           language: language || 'de',
           status: 'new',
           createdAt: serverTimestamp()
         });
-      } catch (fsErr) {
-        console.warn('Firestore contact_messages save failed:', fsErr);
-      }
+
+      await persistence; // The dashboard record is the primary delivery channel.
 
       // 2. Send lead to Make Webhook
-      const webhookPromise = sendLead({
+      const webhookPromise = postWebhook(MAKE_WEBHOOK_URL, {
         ...formData,
         source: 'CONTACT_FORM'
       });
@@ -299,7 +311,7 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
         PUBLIC_KEY
       );
 
-      await Promise.all([webhookPromise, emailPromise]);
+      await Promise.allSettled([webhookPromise, emailPromise]);
       setIsSubmitted(true);
       window.scrollTo(0, 0);
     } catch (err) {

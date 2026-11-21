@@ -1,14 +1,14 @@
 import React from 'react';
 
 // This file centralizes URLs for static image assets, making them easier to manage.
-// Using external URLs is more performant than embedding large images directly in the code.
+// Optimized local derivatives retain originals and provenance in docs/KAI_MEDIA*.json.
 
 export const companyLogoUrl = '/logo-kraken-azul.webp';
 export const companyLogoWhiteUrl = '/logo-kraken-blanco.webp';
 export const teamPhotoUrl = '/ChatGPT Image Jun 29, 2026, 02_32_15 AM.png';
-export const mascotImageUrl = '/mascota-kraken-homepage.webp';
+export const mascotImageUrl = '/kai-calendar/optimized/kai/mascota-kraken-homepage-320.webp';
 export const mascotVideoUrl = '';
-export const tentacleImageUrl = '/mascota-kraken-homepage.webp';
+export const tentacleImageUrl = mascotImageUrl;
 export const heroVideoUrl = 'https://storage.googleapis.com/aai-web-samples/services-montage.mp4';
 export const heroImageUrl = '/mascota-kraken-noche-zurich-home.webp';
 export const aboutHeroImageUrl = '/kai about us.webp';
@@ -44,30 +44,18 @@ export const cityImages = {
   zurich: '/kai zurich.webp',
   schaffhausen: '/kai schaffhausen.webp',
   stgallen: '/oficina-moderna-homepage.webp',
-  thurgau: '/ChatGPT%20Image%20Jul%2011,%202026,%2003_32_16%20AM.png',
+  thurgau: '/kai-services/thurgau.webp',
   winterthur: '/kai winterthur.webp',
   bern: '/kai about us.webp'
 };
 
-// Schaffhausen-specific SEO service+city images (13 pages, one photo each)
-export const schaffhausenServiceImages: Record<string, string> = {
-  'car-detailing': '/car-detailing-schaffhausen.webp',
-    'common-area-cleaning': '/common-area-cleaning-schaffhausen.webp',
-      'daily-cleaning': '/daily-recurring-cleaning-schaffhausen.webp',
-        'deep-cleaning': '/deep-cleaning-schaffhausen.webp',
-          'exterior-cleaning': '/exterior-cleaning-schaffhausen.webp',
-            'moving-furniture': '/furniture-moving-schaffhausen.webp',
-              'gardening': '/gardening-schaffhausen.webp',
-                'gutter-cleaning': '/gutter-cleaning-schaffhausen.webp',
-                  'industrial-maintenance': '/industrial-maintenance-schaffhausen.webp',
-                    'office-cleaning': '/office-cleaning-schaffhausen.webp',
-                      'pest-control': '/pest-control-schaffhausen.webp',
-                        'retail-management': '/retail-cleaning-schaffhausen.webp',
-                          'waste-management': '/waste-management-schaffhausen.webp',
-                          };
+// The 13 former Schaffhausen-specific files were corrupt, not recovered.
+// SEO pages use verified service or regional images; retain this export for compatibility.
+// Original paths and archive: docs/ASSET_PENDING_ORIGINALS.json.
+export const schaffhausenServiceImages: Record<string, string> = {};
 
 export const cardCleaningUrl = '/servicio-privado-limpieza-apartamento.webp';
-export const cardMaintenanceUrl = '/servicio-comercial-limpieza-industrial.webp';
+export const cardMaintenanceUrl = '/kai-calendar/optimized/commercial/industry-logistics/768.webp';
 export const cardTabletUrl = '/kai build your quote.webp';
 export const cardMovingUrl = '/servicio-privado-mudanza-cajas.webp';
 export const cardCarDetailingUrl = '/servicio-privado-lavado-coche.webp';
@@ -89,16 +77,14 @@ export const sustainabilityBackgroundUrl = '/sustainability-hero.png';
 export const csrImageUrl = '/sustainability-people.png';
 
 export const clientLogos = [
-  { url: '/new-200-Aldersgate-Logo.jpg', name: '200 Aldersgate' },
-  { url: '/MOZUR-gold-logo-1024x884.png', name: 'Mandarin Oriental Savoy Zurich' },
-  { url: '/Meili-Logo-black-cmyc-png.webp', name: 'Meili' },
-  { url: '/Logo.jpg', name: 'Government of Senegal' },
-  { url: '/images-2.png', name: 'Board of Deputies of British Jews' },
-  { url: '/head-logo-Basque-Trade-jpg.webp', name: 'Basque Trade & Investment' },
-  { url: '/Crisis-logo-1024x366.jpg', name: 'Crisis' },
-  { url: '/Asset-47-jpg.webp', name: 'One One Six' },
-  { url: '/Amazon-logo-svg.png', name: 'Amazon' },
-  { url: '/display-green-mountain-as-logo.png', name: 'Green Mountain' },
+  { url: '/new-200-Aldersgate-Logo.jpg', name: '200 Aldersgate', width: 3841, height: 2161 },
+  { url: '/MOZUR-gold-logo-1024x884.png', name: 'Mandarin Oriental Savoy Zurich', width: 1024, height: 884 },
+  { url: '/Meili-Logo-black-cmyc-png.webp', name: 'Meili', width: 709, height: 299 },
+  { url: '/images-2.png', name: 'Board of Deputies of British Jews', width: 432, height: 117 },
+  { url: '/head-logo-Basque-Trade-jpg.webp', name: 'Basque Trade & Investment', width: 230, height: 100 },
+  { url: '/Crisis-logo-1024x366.jpg', name: 'Crisis', width: 1024, height: 366 },
+  { url: '/Amazon-logo-svg.png', name: 'Amazon', width: 1280, height: 387 },
+  { url: '/display-green-mountain-as-logo.png', name: 'Green Mountain', width: 700, height: 492 },
 ];
 
 export const sustainabilityPartnerLogos = {
@@ -107,7 +93,7 @@ export const sustainabilityPartnerLogos = {
   steinfels: '/Logo-Steinfels-Swiss-RGB.png',
   ecolab: '',
   ebp: '/Logo_EBP_Logo.jpg',
-  climeworks: '/images-3.png',
+  climeworks: '', // Historical logo is unavailable; do not render a broken or invented logo.
 };
 
 // Restored Original Sustainability Page Images
@@ -216,7 +202,7 @@ export const services: Service[] = [
     titleKey: 'services.upholstery.title',
     descriptionKey: 'services.upholstery.desc',
     marketingDescKey: 'services.upholstery.marketingDesc',
-    imageUrl: '/servicio-privado-limpieza-tapiceria-1.webp',
+    imageUrl: '/kai-services/upholstery.webp',
   },
   {
     id: 'window-cleaning',
@@ -224,7 +210,7 @@ export const services: Service[] = [
     titleKey: 'services.window.title',
     descriptionKey: 'services.window.desc',
     marketingDescKey: 'services.window.marketingDesc',
-    imageUrl: '/servicio-privado-limpieza-ventanas-1.webp',
+    imageUrl: '/kai-services/windows.webp',
   },
   {
     id: 'mudanza-cajas',
@@ -232,7 +218,7 @@ export const services: Service[] = [
     titleKey: 'services.mudanzaCajas.title',
     descriptionKey: 'services.mudanzaCajas.desc',
     marketingDescKey: 'services.mudanzaCajas.marketingDesc',
-    imageUrl: '/servicio-privado-mudanza-cajas-1.webp',
+    imageUrl: '/kai-services/moving.webp',
   },
   {
     id: 'pulido-suelos',
@@ -240,7 +226,7 @@ export const services: Service[] = [
     titleKey: 'services.pulidoSuelos.title',
     descriptionKey: 'services.pulidoSuelos.desc',
     marketingDescKey: 'services.pulidoSuelos.marketingDesc',
-    imageUrl: '/servicio-privado-pulido-suelos-1.webp',
+    imageUrl: '/kai-services/floor-care.webp',
   },
   {
     id: 'common-area-cleaning',
@@ -248,7 +234,7 @@ export const services: Service[] = [
     titleKey: 'commercial.service.common.title',
     descriptionKey: 'commercial.service.common.desc',
     marketingDescKey: 'commercial.service.common.desc',
-    imageUrl: '/servicio-comercial-limpieza-escaleras.webp',
+    imageUrl: '/kai-calendar/optimized/commercial/property-managers/768.webp',
   },
   {
     id: 'property-managers',
@@ -256,7 +242,7 @@ export const services: Service[] = [
     titleKey: 'services.propertyManagers.title',
     descriptionKey: 'services.propertyManagers.desc',
     marketingDescKey: 'services.propertyManagers.marketingDesc',
-    imageUrl: '/servicio-comercial-limpieza-escaleras.png',
+    imageUrl: '/kai-calendar/optimized/commercial/property-managers/1440.webp',
   },
   {
     id: 'airbnb-rentals',
@@ -264,7 +250,7 @@ export const services: Service[] = [
     titleKey: 'services.airbnbRentals.title',
     descriptionKey: 'services.airbnbRentals.desc',
     marketingDescKey: 'services.airbnbRentals.marketingDesc',
-    imageUrl: '/imagen-02-google-ai.webp',
+    imageUrl: '/kai-calendar/optimized/commercial/airbnb-rentals/1440.webp',
   },
   {
     id: 'offices-corporate',
@@ -272,7 +258,7 @@ export const services: Service[] = [
     titleKey: 'services.officesCorporate.title',
     descriptionKey: 'services.officesCorporate.desc',
     marketingDescKey: 'services.officesCorporate.marketingDesc',
-    imageUrl: '/servicio-comercial-limpieza-showroom.png',
+    imageUrl: '/kai-calendar/optimized/commercial/offices-corporate/1440.webp',
   },
   {
     id: 'retail-showrooms',
@@ -280,7 +266,7 @@ export const services: Service[] = [
     titleKey: 'services.retailShowrooms.title',
     descriptionKey: 'services.retailShowrooms.desc',
     marketingDescKey: 'services.retailShowrooms.marketingDesc',
-    imageUrl: '/servicio-comercial-limpieza-retail.png',
+    imageUrl: '/kai-calendar/optimized/commercial/retail-showrooms/1440.webp',
   },
   {
     id: 'gastronomy-restaurants',
@@ -288,7 +274,7 @@ export const services: Service[] = [
     titleKey: 'services.gastronomyRestaurants.title',
     descriptionKey: 'services.gastronomyRestaurants.desc',
     marketingDescKey: 'services.gastronomyRestaurants.marketingDesc',
-    imageUrl: '/servicio-comercial-limpieza-bar-restaurante.png',
+    imageUrl: '/kai-calendar/optimized/commercial/gastronomy-restaurants/1440.webp',
   },
   {
     id: 'industry-logistics',
@@ -296,6 +282,6 @@ export const services: Service[] = [
     titleKey: 'services.industryLogistics.title',
     descriptionKey: 'services.industryLogistics.desc',
     marketingDescKey: 'services.industryLogistics.marketingDesc',
-    imageUrl: '/servicio-comercial-limpieza-industrial.png',
+    imageUrl: '/kai-calendar/optimized/commercial/industry-logistics/1440.webp',
   },
 ];

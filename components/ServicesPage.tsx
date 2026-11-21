@@ -2,31 +2,31 @@ import React, { useState } from 'react';
 import { useTranslation } from '../i18n';
 import { services } from '../assets';
 import { getServiceLinkForMunicipality } from '../seoConfig';
-import { 
-  Key, 
-  Sparkles, 
-  Calendar, 
-  Truck, 
-  Car, 
-  Leaf, 
-  Droplet, 
-  Bug, 
-  Trash2, 
-  ClipboardList, 
-  CheckCircle2, 
-  ShieldAlert, 
-  Award, 
-  Star, 
-  ArrowRight, 
-  Phone, 
-  MessageCircle, 
-  ChevronLeft, 
-  ChevronRight, 
-  UserCheck, 
-  ShieldCheck, 
-  HeartHandshake, 
-  Smile, 
-  RefreshCw, 
+import {
+  Key,
+  Sparkles,
+  Calendar,
+  Truck,
+  Car,
+  Leaf,
+  Droplet,
+  Bug,
+  Trash2,
+  ClipboardList,
+  CheckCircle2,
+  ShieldAlert,
+  Award,
+  Star,
+  ArrowRight,
+  Phone,
+  MessageCircle,
+  ChevronLeft,
+  ChevronRight,
+  UserCheck,
+  ShieldCheck,
+  HeartHandshake,
+  Smile,
+  RefreshCw,
   X,
   FileText
 } from 'lucide-react';
@@ -37,13 +37,13 @@ interface ServicesPageProps {
 
 const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
   const { t, language } = useTranslation();
-  
+
   const lastVisited = typeof window !== 'undefined' ? (localStorage.getItem('kraken_last_visited_municipality') || 'zurich') : 'zurich';
-  
+
   // State for the interactive Hero Calculator
   const [selectedHeroService, setSelectedHeroService] = useState<'daily-cleaning' | 'moving' | 'gardening' | 'pest-control' | 'exterior-cleaning' | 'waste-management' | 'others'>('daily-cleaning');
   const [heroLocation, setHeroLocation] = useState<string>('Zürich, Suiza');
-  
+
   // Testimonial slider state
   const [activeTestimonialIdx, setActiveTestimonialIdx] = useState(0);
 
@@ -280,7 +280,9 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
         pt: 'A partir de 550 CHF'
       },
       icon: <Key className="w-5 h-5 text-white" />,
-      imageUrl: 'https://www.dropbox.com/scl/fi/cylyo5ytzkmj4znb6o5xa/servicio-privado-limpieza-apartamento.webp?rlkey=05qwqg9i2v625pu4l8zewc9mo&st=xk7ablnv&raw=1'
+      imageUrl: '/servicio-privado-limpieza-apartamento.webp',
+      imageWidth: 1448,
+      imageHeight: 1086
     },
     {
       id: 'deep-cleaning',
@@ -309,7 +311,9 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
         pt: 'A partir de 320 CHF'
       },
       icon: <Sparkles className="w-5 h-5 text-white" />,
-      imageUrl: 'https://www.dropbox.com/scl/fi/59bzz6p4e7r2eiy83bzin/servicio-privado-limpieza-cocina.webp?rlkey=2fwi4lpzcuopld7js0kdadgok&st=bu3p7in6&raw=1'
+      imageUrl: '/servicio-privado-limpieza-cocina.webp',
+      imageWidth: 1448,
+      imageHeight: 1086
     },
     {
       id: 'daily-cleaning',
@@ -338,7 +342,9 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
         pt: 'A partir de 85 CHF / mês'
       },
       icon: <Calendar className="w-5 h-5 text-white" />,
-      imageUrl: 'https://www.dropbox.com/scl/fi/h0mvnnlclm631kn5zxqnh/servicio-privado-limpieza-oficina-casa.webp?rlkey=9b3nvjjm1syt3d9r86qt6jtx4&st=4nt8efqc&raw=1'
+      imageUrl: '/servicio-privado-limpieza-oficina-casa.webp',
+      imageWidth: 1448,
+      imageHeight: 1086
     },
     {
       id: 'moving-furniture',
@@ -367,7 +373,9 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
         pt: 'A partir de 145 CHF'
       },
       icon: <Truck className="w-5 h-5 text-white" />,
-      imageUrl: 'https://www.dropbox.com/scl/fi/vaw5n8iqx3r42f3co5qir/servicio-privado-mudanza-cajas.webp?rlkey=ogss3ftloq89pknwq5hixihxu&st=7d1jd2im&raw=1'
+      imageUrl: '/servicio-privado-mudanza-cajas.webp',
+      imageWidth: 1448,
+      imageHeight: 1086
     },
     {
       id: 'car-detailing',
@@ -396,7 +404,9 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
         pt: 'A partir de 140 CHF'
       },
       icon: <Car className="w-5 h-5 text-white" />,
-      imageUrl: 'https://www.dropbox.com/scl/fi/5o1s20a1gbnpkweux0yio/servicio-privado-lavado-coche.webp?rlkey=lmlin1t29zbx5fqwte24kpvkt&st=cx497a9l&raw=1'
+      imageUrl: '/servicio-privado-lavado-coche.webp',
+      imageWidth: 1122,
+      imageHeight: 1402
     },
     {
       id: 'gardening',
@@ -425,7 +435,9 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
         pt: 'A partir de 80 CHF / h'
       },
       icon: <Leaf className="w-5 h-5 text-white" />,
-      imageUrl: 'https://www.dropbox.com/scl/fi/xkpuoqlnlukig2tk4dokm/servicio-privado-jardineria.webp?rlkey=ook2125yt3u6p04izvaak8ei2&st=fnadpn2e&raw=1'
+      imageUrl: '/servicio-privado-jardineria.webp',
+      imageWidth: 1122,
+      imageHeight: 1402
     },
     {
       id: 'exterior-cleaning',
@@ -454,7 +466,9 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
         pt: 'A partir de 90 CHF / h'
       },
       icon: <Droplet className="w-5 h-5 text-white" />,
-      imageUrl: 'https://www.dropbox.com/scl/fi/s584iq3w3ton5cpfoz92s/servicio-privado-limpieza-exterior.webp?rlkey=4uzfn7m99h3os1gl8sbnxiqg2&st=67943x7s&raw=1'
+      imageUrl: '/servicio-privado-limpieza-exterior.webp',
+      imageWidth: 1122,
+      imageHeight: 1402
     },
     {
       id: 'pest-control',
@@ -483,7 +497,9 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
         pt: 'A partir de 130 CHF'
       },
       icon: <Bug className="w-5 h-5 text-white" />,
-      imageUrl: '/servicio-privado-control-plagas.webp'
+      imageUrl: '/servicio-privado-control-plagas.webp',
+      imageWidth: 1448,
+      imageHeight: 1086
     },
     {
       id: 'waste-management',
@@ -512,7 +528,9 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
         pt: 'A partir de 150 CHF'
       },
       icon: <Trash2 className="w-5 h-5 text-white" />,
-      imageUrl: '/servicio-privado-residuos-desalojo.webp'
+      imageUrl: '/servicio-privado-residuos-desalojo.webp',
+      imageWidth: 1448,
+      imageHeight: 1086
     },
     {
       id: 'gutter-cleaning',
@@ -541,7 +559,9 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
         pt: 'A partir de 120 CHF'
       },
       icon: <ShieldAlert className="w-5 h-5 text-white" />,
-      imageUrl: '/servicio-privado-canalones.webp'
+      imageUrl: '/servicio-privado-canalones.webp',
+      imageWidth: 1448,
+      imageHeight: 1086
     }
   ];
 
@@ -590,7 +610,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
   // Map local calculator services to keys expected by ConsultationPage
   const handleCalculatorSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Map selecting options
     let mappedService = 'daily-cleaning';
     if (selectedHeroService === 'moving') mappedService = 'moving';
@@ -603,10 +623,10 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
     // Pre-save location to localStorage to auto-skip first step
     const localPostcode = '8001';
     const localCity = 'Zürich';
-    
+
     // Set preselection
     localStorage.setItem('kraken_preselected_service', mappedService);
-    
+
     const initialLocationData = {
       address: heroLocation,
       postcode: localPostcode,
@@ -614,9 +634,9 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
       billingRegion: 'Zürich',
       rateMultiplier: 0
     };
-    
+
     localStorage.setItem('kraken_consultation_data_v2', JSON.stringify(initialLocationData));
-    
+
     // Navigate
     onNavigate('consultation');
   };
@@ -631,33 +651,33 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
 
   return (
     <main className="bg-[#fcfdfd] min-h-screen selection:bg-blue-100 selection:text-blue-900 font-sans text-slate-900 overflow-hidden">
-      
+
       {/* 1. HERO SECTION WITH EMBEDDED INTERACTIVE CALCULATOR */}
       <section data-header-theme="dark" className="relative pt-24 md:pt-36 pb-20 md:pb-36 bg-[#001D3D] text-white overflow-hidden">
-        
+
         {/* Full-width background image coverage */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80" 
-            alt="Kraken PFM Modern Clean Facility Interior" 
+          <img
+            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1920&q=80"
+            alt="Kraken PFM Modern Clean Facility Interior"
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />
         </div>
-        
+
         {/* Subtle background decoration */}
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-300 via-transparent to-transparent z-10"></div>
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none z-10"></div>
-        
+
         <div className="container mx-auto px-4 md:px-8 max-w-7xl relative z-10">
           <div className="max-w-4xl">
-            
+
             {/* Left Column: Title and details */}
             <div className="flex flex-col text-left">
               <span className="inline-block self-start bg-blue-500/15 border border-blue-400/20 text-[#2196F3] text-[10px] font-black tracking-widest px-4 py-2 rounded-full mb-6">
                 {getL(d.badge)}
               </span>
-              
+
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.05] mb-6 text-white font-sans">
                 {getL(d.title1)}{' '}
                 <span className="text-[#007AFF]">{getConnector()}</span>
@@ -666,11 +686,11 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
                 <br />
                 {getL(d.title3)}
               </h1>
-              
+
               <p className="text-[#007AFF] text-sm md:text-lg font-bold max-w-xl leading-relaxed mb-8">
                 {getL(d.desc)}
               </p>
-              
+
               {/* Actions */}
               <div className="flex flex-wrap gap-4 mb-10">
                 <button
@@ -687,7 +707,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
                   {getL(d.ctaServices)}
                 </a>
               </div>
-              
+
               {/* Trust Indicators below Hero */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-2 border-t border-white/10 pt-8">
                 {d.trustTags.map((tag, idx) => (
@@ -706,7 +726,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
       <section className="relative z-20 px-4 -mt-10 sm:-mt-12">
         <div className="container mx-auto max-w-7xl">
           <div className="bg-white border border-slate-100 rounded-[2.2rem] py-8 px-6 sm:px-10 shadow-xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-6 items-center">
-            
+
             {/* Overlapping Faces & Clients */}
             <div className="flex items-center gap-4 border-b md:border-b-0 lg:border-r border-slate-100 pb-6 md:pb-0 lg:pr-6">
               <div className="flex -space-x-3.5 flex-shrink-0">
@@ -723,7 +743,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
                 </div>
               </div>
             </div>
-            
+
             {/* Google Rating */}
             <div className="flex items-center gap-3.5 border-b md:border-b-0 lg:border-r border-slate-100 pb-6 md:pb-0 lg:pr-6">
               <div className="flex flex-col flex-shrink-0 text-[#FFB300]">
@@ -742,7 +762,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
                 </div>
               </div>
             </div>
-            
+
             {/* Support/Flexible booking */}
             <div className="flex items-center gap-3.5 border-b sm:border-b-0 lg:border-r border-slate-100 pb-6 sm:pb-0 lg:pr-6">
               <div className="w-10 h-10 rounded-2xl bg-blue-50 text-[#007AFF] flex items-center justify-center flex-shrink-0">
@@ -757,7 +777,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
                 </div>
               </div>
             </div>
-            
+
             {/* PDF Quote */}
             <div className="flex items-center gap-3.5 pl-0 lg:pl-4">
               <div className="w-10 h-10 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center flex-shrink-0">
@@ -780,7 +800,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
       {/* 3. "NUESTROS SERVICIOS" GRID OF 10 CARDS */}
       <section id="servicios-grid" className="py-24 md:py-32 bg-[#F8FAFC]">
         <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-          
+
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
             <div className="max-w-2xl text-left">
@@ -794,7 +814,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
                 {getL(d.ourServices.desc)}
               </p>
             </div>
-            
+
             <button
               onClick={() => onNavigate('consultation')}
               className="bg-gradient-to-r from-[#4ade80] to-[#2dd4bf] text-[#002d5b] hover:from-[#3feb73] hover:to-[#1ecdb6] text-xs sm:text-sm font-black uppercase tracking-wider px-6 py-3.5 rounded-full shadow-lg shadow-emerald-500/10 transition-all flex items-center justify-center gap-2 self-start md:self-auto cursor-pointer hover:scale-105 active:scale-95"
@@ -803,26 +823,29 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
               <ArrowRight className="w-3.5 h-3.5 shrink-0" />
             </button>
           </div>
-          
+
           {/* Grid of 10 Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {serviceCards.map((card, idx) => (
-              <div 
+              <div
                 key={card.id}
                 onClick={() => onNavigate(getServiceLinkForMunicipality(lastVisited, card.id))}
                 className="group bg-white rounded-3xl border border-slate-100 hover:border-[#007AFF]/40 hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden cursor-pointer"
               >
                 {/* Image container */}
                 <div className="h-44 relative overflow-hidden bg-slate-50">
-                  <img 
-                    src={card.imageUrl} 
-                    alt={getL(card.title)} 
+                  <img
+                    src={card.imageUrl}
+                    alt={getL(card.title)}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
+                    decoding="async"
+                    width={card.imageWidth}
+                    height={card.imageHeight}
                   />
                   {/* Subtle black overlay to help price pop */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
-                  
+
                   {/* Floating price badge */}
                   {getL(card.price) && (
                     <div className="absolute top-4 left-4">
@@ -835,19 +858,19 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
 
                 {/* Content & Icon overlay */}
                 <div className="p-6 pt-8 relative flex flex-col flex-grow text-left">
-                  
+
                   {/* Floating Circular Icon */}
                   <div className="absolute -top-7 left-6 w-11 h-11 rounded-full bg-[#001D3D] border-4 border-white flex items-center justify-center shadow-md">
                     {card.icon}
                   </div>
-                  
+
                   <h3 className="text-sm font-extrabold text-[#001D3D] mb-2 leading-snug group-hover:text-[#007AFF] transition-colors">
                     {getL(card.title)}
                   </h3>
                   <p className="text-slate-500 text-xs leading-relaxed flex-grow">
                     {getL(card.desc)}
                   </p>
-                  
+
                   {/* Link "Ver más" */}
                   <button
                     onClick={(e) => {
@@ -870,9 +893,9 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
       {/* 4. "ASÍ DE FÁCIL: EN 4 PASOS SIMPLES" SECTION */}
       <section className="py-24 md:py-32 bg-white relative">
         <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-          
+
           <div className="grid lg:grid-cols-12 gap-12 items-center">
-            
+
             {/* Left Col: Steps List */}
             <div className="lg:col-span-7 text-left">
               <span className="text-[#007AFF] font-black text-[10px] uppercase tracking-[0.4em] mb-3 block">
@@ -884,11 +907,11 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
               <p className="text-gray-500 text-sm md:text-base font-medium mb-12">
                 {getL(d.process.desc)}
               </p>
-              
+
               <div className="relative space-y-8 pl-1">
                 {/* Vertical Connector Line for Mobile */}
                 <div className="absolute left-6 top-4 bottom-4 w-0.5 bg-slate-100 z-0"></div>
-                
+
                 {[
                   { id: '01', title: d.process.step1Title, desc: d.process.step1Desc, icon: <ClipboardList className="w-5 h-5 text-[#007AFF]" /> },
                   { id: '02', title: d.process.step2Title, desc: d.process.step2Desc, icon: <FileText className="w-5 h-5 text-[#007AFF]" /> },
@@ -917,19 +940,23 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
                 ))}
               </div>
             </div>
-            
+
             {/* Right Col: Nice Visual Illustration featuring Mascot */}
             <div className="lg:col-span-5 relative flex justify-center">
               <div className="absolute -inset-4 bg-blue-50/40 rounded-[3rem] blur-2xl pointer-events-none"></div>
-              
+
               <div className="relative rounded-[2.5rem] overflow-hidden bg-[#001D3D] shadow-2xl w-full max-w-md aspect-[4/5] group border border-white/10">
-                <img 
-                  src="/mascota-kraken-noche-zurich-home.webp" 
-                  alt="Kraken Mascot" 
+                <img
+                  src="/mascota-kraken-noche-zurich-home.webp"
+                  loading="lazy"
+                  decoding="async"
+                  width={1672}
+                  height={941}
+                  alt="Kraken Mascot"
                   className="w-full h-full object-cover opacity-95 transition-transform duration-[2s] group-hover:scale-105"
                   referrerPolicy="no-referrer"
                 />
-                
+
                 {/* Inner gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#001D3D] via-[#001D3D]/20 to-transparent pointer-events-none"></div>
 
@@ -946,14 +973,14 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
             </div>
 
           </div>
-          
+
         </div>
       </section>
 
       {/* 5. "¿POR QUÉ KRAKEN?: MÁS QUE LIMPIEZA. TRANQUILIDAD" WITH COMPARISON TABLE */}
       <section className="py-24 md:py-32 bg-[#F8FAFC]">
         <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-          
+
           {/* Header */}
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span className="text-[#007AFF] font-black text-[10px] uppercase tracking-[0.4em] mb-3 block">
@@ -966,12 +993,12 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
               {getL(d.why.desc)}
             </p>
           </div>
-          
+
           <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            
+
             {/* Left side: Mascot & checklist */}
             <div className="lg:col-span-5 flex flex-col items-center lg:items-start text-center lg:text-left">
-              
+
               {/* Checklist */}
               <div className="space-y-4 w-full max-w-md">
                 {[
@@ -989,7 +1016,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
                 ))}
               </div>
             </div>
-            
+
             {/* Right side: High-contrast comparison table */}
             <div className="lg:col-span-7 w-full overflow-x-auto rounded-[2.2rem] border border-slate-100 bg-white shadow-xl p-4 sm:p-6">
               <table className="w-full min-w-[500px]">
@@ -1010,7 +1037,7 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  
+
                   {/* Row 1 */}
                   <tr>
                     <td className="py-4 px-3 text-xs font-black text-slate-800">
@@ -1116,14 +1143,14 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
             </div>
 
           </div>
-          
+
         </div>
       </section>
 
       {/* 6. LO QUE DICEN NUESTROS CLIENTES (TESTIMONIALS WITH SLIDER CONTROLS) */}
       <section className="py-24 md:py-32 bg-white">
         <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-          
+
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
             <div className="max-w-2xl text-left">
@@ -1137,17 +1164,17 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
                 {getL(d.testimonials.desc)}
               </p>
             </div>
-            
+
             {/* Slider Navigation arrows */}
             <div className="flex gap-2">
-              <button 
+              <button
                 onClick={handleTestimonialPrev}
                 className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-[#007AFF] hover:text-white hover:border-[#007AFF] transition-all cursor-pointer"
                 aria-label="Previous testimonial"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
-              <button 
+              <button
                 onClick={handleTestimonialNext}
                 className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-[#007AFF] hover:text-white hover:border-[#007AFF] transition-all cursor-pointer"
                 aria-label="Next testimonial"
@@ -1156,15 +1183,15 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
               </button>
             </div>
           </div>
-          
+
           {/* Desktop Row layout / Mobile active card layout */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {clientTestimonials.map((test, index) => {
               // Highlight selected slider card on mobile, or just display nicely on desktop
               const isActiveOnMobile = index === activeTestimonialIdx;
-              
+
               return (
-                <div 
+                <div
                   key={index}
                   className={`bg-[#F8FAFC] border border-slate-100 p-8 rounded-[2.2rem] shadow-sm hover:shadow-lg transition-all duration-300 text-left flex flex-col justify-between ${
                     isActiveOnMobile ? 'block ring-2 ring-blue-100' : 'hidden md:flex'
@@ -1177,17 +1204,17 @@ const ServicesPage: React.FC<ServicesPageProps> = ({ onNavigate }) => {
                         <Star key={i} className="w-4 h-4 fill-current" />
                       ))}
                     </div>
-                    
+
                     <p className="text-slate-600 text-sm md:text-base leading-relaxed italic mb-8">
                       "{getL(test.text)}"
                     </p>
                   </div>
-                  
+
                   {/* User Profile Info */}
                   <div className="flex items-center gap-4">
-                    <img 
-                      src={test.avatar} 
-                      alt={test.name} 
+                    <img
+                      src={test.avatar}
+                      alt={test.name}
                       className="w-11 h-11 rounded-full object-cover border-2 border-white shadow-sm"
                     />
                     <div>

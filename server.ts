@@ -1,12 +1,14 @@
 import express from "express";
 import cors from "cors";
-import axios from "axios";
 import dotenv from "dotenv";
-import crypto from "crypto";
 import path from "path";
 import compression from "compression";
 import fs from "fs";
 import { createServer } from "node:http";
+import { paymentHandlers } from './server/payments.ts';
+import { draftTransferHandler } from './server/draftTransfer.ts';
+import { CHAT_INSTRUCTION, validateChat, createRateLimiter } from './server/chatPolicy.ts';
+import { renderInitialHtml, languageFromRequest } from './server/html.ts';
 import { getMetadataForPath, isRouteValid, VALID_CITIES } from "./seoConfig.ts";
 import { MUNICIPALITIES } from "./src/data/locations.ts";
 // No need to define currentDirname or use import.meta.url as they are unused and cause a parse-time SyntaxError in bundled CommonJS on startup.
@@ -18,7 +20,7 @@ process.env.NODE_ENV = (isBundled || runningOnVercel) ? "production" : (process.
 const isDev = process.env.NODE_ENV !== "production";
 const externalIntegrationsEnabled = process.env.VERCEL_ENV === "preview"
   ? false
-  : (!isDev || process.env.ALLOW_EXTERNAL_INTEGRATIONS === "true");
+  : process.env.ALLOW_EXTERNAL_INTEGRATIONS === "true";
 
 // Vercel imports the app; the ordinary dev/start commands retain their HTTP listener.
 const app = express();
@@ -28,8 +30,10 @@ async function startServer() {
   const server = createServer(app);
 
   app.use(compression());
-  app.use(cors());
-  app.use(express.json());
+  app.disable('x-powered-by');
+  app.set('trust proxy', runningOnVercel ? 1 : false);
+  app.use(cors({ origin: process.env.APP_URL || false }));
+  app.use(express.json({ limit: '100kb', verify: (req, _res, body) => { (req as any).rawBody = body; } }));
 
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
@@ -44,124 +48,20 @@ async function startServer() {
     }
   });
 
-  // ====================================================================
-  // PAYREXX PAYMENT GATEWAY
-  // Creates a Payrexx Gateway via REST API and returns the payment link.
-  // Auth: requests are signed with an HMAC-SHA256 over the URL-encoded
-  // body using your Payrexx API secret (base64-encoded). The instance
-  // name is your Payrexx subdomain (e.g. "krakenpfm").
-  // ====================================================================
-  const handlePayrexxGateway = async (req: express.Request, res: express.Response) => {
-    if (!externalIntegrationsEnabled) {
-      return res.status(503).json({ success: false, error: "External payments are disabled in this environment." });
-    }
-    const {
-      amount,
-      currency = "CHF",
-      title = "Kraken PFM Service",
-      description = "",
-      clientName = "",
-      email = "",
-    } = req.body || {};
+  const payments = paymentHandlers();
+  const paymentLimit = createRateLimiter(12, 60000);
+  app.post('/api/payrexx/create-gateway', (req, res) => {
+    if (!paymentLimit(req.ip || req.socket.remoteAddress || 'unknown')) return res.status(429).json({ success: false, error: 'Too many payment requests. Please wait.' });
+    return payments.gateway(req, res);
+  });
+  app.post('/api/payrexx/webhook', payments.webhook);
 
-    const PAYREXX_INSTANCE = process.env.PAYREXX_INSTANCE;
-    const PAYREXX_API_SECRET = process.env.PAYREXX_API_SECRET;
-
-    // Guard: configuration missing
-    if (!PAYREXX_INSTANCE || !PAYREXX_API_SECRET) {
-      console.error("[Payrexx] Missing PAYREXX_INSTANCE or PAYREXX_API_SECRET environment variable.");
-      return res.status(503).json({
-        success: false,
-        error: "Payment gateway is not configured. Please set PAYREXX_INSTANCE and PAYREXX_API_SECRET.",
-      });
-    }
-
-    // Guard: validate amount (Payrexx expects the amount in cents / smallest unit)
-    const amountNumber = Number(amount);
-    if ((typeof amount !== "number" && typeof amount !== "string") || !Number.isFinite(amountNumber) || amountNumber <= 0 || amountNumber > Number.MAX_SAFE_INTEGER / 100) {
-      return res.status(400).json({ success: false, error: "Invalid or missing amount." });
-    }
-    const amountInCents = Math.round(amountNumber * 100);
-
-    try {
-      const appUrl = process.env.APP_URL || (req.headers.origin as string) || "https://krakenpfm.ch";
-
-      // Helper to build a query string format exactly matching PHP's http_build_query
-      const buildPayrexxQuery = (obj: Record<string, string>, spaceChar: string) => {
-        return Object.entries(obj)
-          .map(([key, val]) => {
-            const encodedKey = encodeURIComponent(key).replace(/%20/g, spaceChar);
-            const encodedVal = encodeURIComponent(val).replace(/%20/g, spaceChar);
-            return `${encodedKey}=${encodedVal}`;
-          })
-          .join("&");
-      };
-
-      // Build the request payload fields
-      const baseParams: Record<string, string> = {
-        amount: String(amountInCents),
-        currency,
-        purpose: description || title,
-        successRedirectUrl: appUrl + "/quote?payment=success",
-        failedRedirectUrl: appUrl + "/quote?payment=failed",
-        cancelRedirectUrl: appUrl + "/quote?payment=cancelled",
-      };
-
-      if (clientName) {
-        const parts = clientName.trim().split(" ");
-        baseParams["fields[forename][value]"] = parts[0] || "";
-        baseParams["fields[surname][value]"] = parts.slice(1).join(" ") || "";
-      }
-      if (email) {
-        baseParams["fields[email][value]"] = email;
-      }
-
-      // Compute the HMAC-SHA256 signature over the data string where spaces are encoded as '+'
-      const signableStr = buildPayrexxQuery(baseParams, "+");
-      const signature = crypto
-        .createHmac("sha256", PAYREXX_API_SECRET)
-        .update(signableStr)
-        .digest("base64");
-
-      // Build the final POST payload where spaces are encoded as '%20'
-      const postPayload = `${buildPayrexxQuery(baseParams, "%20")}&ApiSignature=${encodeURIComponent(signature)}`;
-
-      const endpoint =
-        "https://api.payrexx.com/v1.0/Gateway/?instance=" + encodeURIComponent(PAYREXX_INSTANCE);
-
-      const response = await axios.post(endpoint, postPayload, {
-        timeout: 15000,
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        },
-      });
-
-      const data = response.data;
-      if (data && data.status === "success" && Array.isArray(data.data) && data.data[0]) {
-        const gateway = data.data[0];
-        return res.json({
-          success: true,
-          link: gateway.link,
-          id: gateway.id,
-        });
-      }
-
-      console.error("[Payrexx] Unexpected response:", JSON.stringify(data));
-      return res.status(502).json({
-        success: false,
-        error: "Payrexx did not return a valid gateway.",
-      });
-    } catch (err: any) {
-    console.error('Payrexx gateway creation failed:', err && err.message);
-    res.status(500).json({
-      error: 'Failed to create the Payrexx payment gateway.',
-    });
-    }
-  };
-
-  // API Route to create a Payrexx Payment Gateway and retrieve the payment link
-  app.post("/api/payrexx/create-gateway", handlePayrexxGateway);
+  const transferDrafts = draftTransferHandler();
+  const transferLimit = createRateLimiter(10, 60000);
+  app.post('/api/bookings/transfer-drafts', (req, res) => {
+    if (!transferLimit(req.ip || req.socket.remoteAddress || 'unknown')) return res.status(429).json({ success: false, error: 'Please wait before retrying the draft transfer.' });
+    return transferDrafts(req, res);
+  });
 
   const FALLBACK_LANGS: Record<string, Record<string, string>> = {
     de: {
@@ -171,9 +71,9 @@ async function startServer() {
       garden: "Unsere **Gartenpflege** hält deine Grünflächen das ganze Jahr über in Top-Zustand. Wir übernehmen Rasenmähen, Heckenschnitt, Unkrautbeseitigung und saisonale Pflege.\n\nMöchtest du ein unverbindliches Angebot für deinen Garten erhalten?",
       quote: "Gerne erstellen wir dir eine massgeschneiderte Offerte! Nutze am besten unseren interaktiven Offertenrechner auf der Seite oder gib mir kurz an, um welche Dienstleistung (z.B. Reinigung) und welche Flächengrösse es geht.",
       contact: "Du erreichst unser Team telefonisch unter **+41 77 450 57 05** oder per E-Mail unter **info@krakenpfm.ch**.\n\nAlternativ kannst du auch das Kontaktformular unten auf der Seite ausfüllen.",
-      booking: "Gerne reservieren wir einen Beratungstermin für dich! Klicke einfach auf 'Termin buchen' oder nutze das Buchungsformular auf unserer Webseite.\n\n```json\n{\n  \"trigger\": \"SUBMIT_BOOKING\",\n  \"action\": \"BOOK_RESERVATION\",\n  \"data\": {\n    \"service\": \"Consultation\",\n    \"notes\": \"Automatisch gebucht über Assistenten-Backup\"\n  }\n}\n```",
+      booking: "Gerne reservieren wir einen Beratungstermin für dich! Klicke einfach auf 'Termin buchen' oder nutze das Buchungsformular auf unserer Webseite.",
       thanks: "Sehr gerne! Wenn du weitere Fragen hast oder Unterstützung benötigst, bin ich jederzeit für dich da. Ich wünsche dir einen erfolgreichen Tag!",
-      default: "Dabei helfe ich dir gerne weiter! Als dein digitaler Assistent Kai bin ich für alle Fragen rund um Gebäubeservice, Hauswartung und Reinigung da.\n\nDa der Live-Modus im Demo-Modus gerade ausgelastet ist, kannst du uns auch direkt unter **info@krakenpfm.ch** kontaktieren."
+      default: "Gerne helfe ich Ihnen bei Reinigung, Hauswartung, Umzug oder Gartenpflege. Welche Dienstleistung, Postleitzahl und welchen Termin benötigen Sie? Unter /quote erhalten Sie eine unverbindliche Schätzung; das Team bestätigt das endgültige Angebot. Kontakt: kai@krakenpfm.ch."
     },
     en: {
       greet: "Hello! I'm Kai, your digital assistant for Kraken Properties & Facilities Management. 🐙 How can I assist you today?\n\nYou can ask me about our services (building cleaning, facility maintenance, garden care) or directly request a consultation!",
@@ -182,9 +82,9 @@ async function startServer() {
       garden: "Our **garden care** keeps your green spaces beautiful all year round. We do lawn mowing, hedge trimming, weeding, and seasonal gardening.\n\nWould you like a free estimate for your garden?",
       quote: "We would be glad to send you a customized quote! You can use our interactive quote generator on the page, or let me know the service you need and the approximate size of the area.",
       contact: "You can contact our team via phone at **+41 77 450 57 05** or email us at **info@krakenpfm.ch**.\n\nWe look forward to hearing from you!",
-      booking: "I can help you book a free consultation! You can schedule one directly using the 'Book Consultation' form on the site.\n\n```json\n{\n  \"trigger\": \"SUBMIT_BOOKING\",\n  \"action\": \"BOOK_RESERVATION\",\n  \"data\": {\n    \"service\": \"Consultation\",\n    \"notes\": \"Booked automatically via backup chat assistant\"\n  }\n}\n```",
+      booking: "I can help you book a free consultation! You can schedule one directly using the 'Book Consultation' form on the site.",
       thanks: "You're very welcome! If you need any more information or assistance, feel free to ask. Have an amazing day!",
-      default: "I would be happy to help with that! As your assistant Kai, I support you with all aspects of facility management, cleaning, and maintenance.\n\nSince the live AI system is in backup mode right now, please feel free to drop us an email at **info@krakenpfm.ch** for a personal response!"
+      default: "I can help with cleaning, caretaking, moving or garden care. Which service, postcode and date do you need? Use /quote for a non-binding estimate; the team will confirm the final offer. Contact: kai@krakenpfm.ch."
     },
     fr: {
       greet: "Bonjour ! Je suis Kai, votre assistant virtuel pour Kraken Properties & Facilities Management. 🐙 Comment puis-je vous aider aujourd'hui ?\n\nVous pouvez me poser des questions sur nos services (nettoyage de bâtiment, entretien, jardinage) ou demander directement une consultation !",
@@ -193,9 +93,9 @@ async function startServer() {
       garden: "Notre service d'**entretien de jardin** maintient vos espaces verts magnifiques toute l'année. Nous nous occupons de la tonte de pelouse, de la taille des haies et du désherbage.\n\nSouhaitez-vous une estimation gratuite pour votre jardin ?",
       quote: "Nous serions ravis de vous envoyer un devis personnalisé ! Vous pouvez utiliser notre générateur de devis interactif sur la page, ou m'indiquer le service souhaité et la surface approximative.",
       contact: "Vous pouvez contacter notre équipe par téléphone au **+41 77 450 57 05** ou par e-mail à **info@krakenpfm.ch**.\n\nNous nous réjouissons de vous entendre !",
-      booking: "Je peux vous aider à réserver une consultation gratuite ! Vous pouvez planifier cela directement en utilisant le formulaire sur le site.\n\n```json\n{\n  \"trigger\": \"SUBMIT_BOOKING\",\n  \"action\": \"BOOK_RESERVATION\",\n  \"data\": {\n    \"service\": \"Consultation\",\n    \"notes\": \"Réserve automatique par l'assistant de secours\"\n  }\n}\n```",
+      booking: "Je peux vous aider à réserver une consultation gratuite ! Vous pouvez planifier cela directement en utilisant le formulaire sur le site.",
       thanks: "De rien ! Si vous avez besoin de plus d'informations ou d'aide, n'hésitez pas à demander. Passez une excellente journée !",
-      default: "Je serais ravi de vous aider ! En tant qu'assistant Kai, je vous accompagne pour le nettoyage, l'entretien et la conciergerie.\n\nLe système d'IA étant en mode de secours, n'hésitez pas à nous envoyer un e-mail à **info@krakenpfm.ch** !"
+      default: "Je peux vous aider pour le nettoyage, la conciergerie, le déménagement ou le jardin. Quel service, code postal et date souhaitez-vous ? Utilisez /quote pour une estimation sans engagement ; notre équipe confirmera l’offre finale. Contact : kai@krakenpfm.ch."
     },
     es: {
       greet: "¡Hola! Soy Kai, su asistente virtual de Kraken Properties & Facilities Management. 🐙 ¿Cómo le puedo ayudar hoy?\n\n¡Puede preguntarme sobre nuestros servicios (limpieza de edificios, mantenimiento de instalaciones, cuidado de jardines) o solicitar directamente una consulta!",
@@ -204,9 +104,9 @@ async function startServer() {
       garden: "Nuestro servicio de **cuidado de jardines** mantiene sus áreas verdes hermosas todo el año. Realizamos corte de césped, poda de setos, deshierbe y jardinería estacional.\n\n¿Le gustaría una estimación gratuita para su jardín?",
       quote: "¡Estaremos encantados de enviarle un presupuesto personalizado! Puede utilizar nuestro generador interactivo de presupuestos en la página, o indicarme el servicio que necesita y el tamaño aproximado de la superficie.",
       contact: "Puede ponerse en contacto con nuestro equipo por teléfono al **+41 77 450 57 05** o por correo electrónico a **info@krakenpfm.ch**.\n\n¡Esperamos tener noticias suyas!",
-      booking: "¡Puedo ayudarle a reservar una consulta gratuita! Puede programar una directamente utilizando el formulario en el sitio.\n\n```json\n{\n  \"trigger\": \"SUBMIT_BOOKING\",\n  \"action\": \"BOOK_RESERVATION\",\n  \"data\": {\n    \"service\": \"Consultation\",\n    \"notes\": \"Reservado automáticamente a través del asistente de respaldo\"\n  }\n}\n```",
+      booking: "¡Puedo ayudarle a reservar una consulta gratuita! Puede programar una directamente utilizando el formulario en el sitio.",
       thanks: "¡De nada! Si necesita más información o ayuda, no dude en preguntar. ¡Que tenga un día excelente!",
-      default: "¡Estaría encantado de ayudarle con eso! Como su asistente Kai, le apoyo con el mantenimiento de instalaciones, limpieza y cuidado.\n\nDado que el sistema de IA está en modo de respaldo, no dude en enviarnos un correo electrónico a **info@krakenpfm.ch**."
+      default: "Puedo ayudarte con limpieza, mantenimiento, mudanzas o jardín. ¿Qué servicio necesitas, en qué código postal y para qué fecha? En /quote puedes calcular una estimación sin compromiso; nuestro equipo confirmará la oferta final. Contacto: kai@krakenpfm.ch."
     },
     it: {
       greet: "Ciao! Sono Kai, il tuo assistente virtuale per Kraken Properties & Facilities Management. 🐙 Come posso aiutarti oggi?\n\nPuoi chiedermi informazioni sui nostri servizi (pulizia di edifici, manutenzione impianti, cura del giardino) o richiedere direttamente una consulenza!",
@@ -215,9 +115,9 @@ async function startServer() {
       garden: "Il nostro servizio di **cura del giardino** mantiene i tuoi spazi verdi bellissimi tutto l'anno. Eseguiamo taglio del prato, potatura siepi, diserbo e giardinaggio stagionale.\n\nDesideri un preventivo gratuito per il tuo giardino?",
       quote: "Saremmo lieti di inviarti un preventivo personalizzato! Puoi utilizzare il nostro generatore di preventivi interattivo sulla pagina, o indicarmi il servizio di cui hai bisogno e la dimensione approssimativa dell'area.",
       contact: "Puoi contattare il nostro team telefonicamente al **+41 77 450 57 05** o via e-mail all'indirizzo **info@krakenpfm.ch**.\n\nNon vediamo l'ora di sentirti!",
-      booking: "Posso aiutarti a prenotare una consulenza gratuita! Puoi pianificarla direttamente utilizzando il modulo sul sito.\n\n```json\n{\n  \"trigger\": \"SUBMIT_BOOKING\",\n  \"action\": \"BOOK_RESERVATION\",\n  \"data\": {\n    \"service\": \"Consultation\",\n    \"notes\": \"Prenotato automaticamente tramite l'assistente di backup\"\n  }\n}\n```",
+      booking: "Posso aiutarti a prenotare una consulenza gratuita! Puoi pianificarla direttamente utilizzando il modulo sul sito.",
       thanks: "Prego! Se hai bisogno di ulteriori informazioni o assistenza, non esitare a chiedere. Buona giornata!",
-      default: "Sarei felice di aiutarti! Come tuo assistente Kai, ti supporto in tutti gli aspetti di gestione impianti, pulizia e manutenzione.\n\nPoiché il sistema di IA è in modalità di backup, non esitare a inviarci un'e-mail a **info@krakenpfm.ch**."
+      default: "Posso aiutarti con pulizia, manutenzione, traslochi o giardino. Quale servizio, codice postale e data ti servono? Usa /quote per una stima senza impegno; il team confermerà l’offerta finale. Contatto: kai@krakenpfm.ch."
     },
     pt: {
       greet: "Olá! Sou o Kai, o seu assistente virtual da Kraken Properties & Facilities Management. 🐙 Como posso ajudar hoje?\n\nPode perguntar-me sobre os nossos serviços (limpeza de edifícios, manutenção de instalações, jardinagem) ou solicitar diretamente uma consulta!",
@@ -226,9 +126,9 @@ async function startServer() {
       garden: "O nosso serviço de **jardinagem** mantém as suas áreas verdes bonitas todo o ano. Realizamos corte de relva, poda de sebes, remoção de ervas daninhas e jardinagem sazonal.\n\nGostaria de uma estimativa gratuita para o seu jardim?",
       quote: "Teremos todo o gosto em enviar-lhe um orçamento personalizado! Pode utilizar o nosso gerador de orçamentos interativo na página, ou indicar-me o serviço que necessita e o tamanho aproximado da área.",
       contact: "Pode contactar a nossa equipa por telefone através do **+41 77 450 57 05** ou por e-mail para **info@krakenpfm.ch**.\n\nAguardamos o seu contacto!",
-      booking: "Posso ajudar a reservar uma consulta gratuita! Pode agendar diretamente através do formulário no site.\n\n```json\n{\n  \"trigger\": \"SUBMIT_BOOKING\",\n  \"action\": \"BOOK_RESERVATION\",\n  \"data\": {\n    \"service\": \"Consultation\",\n    \"notes\": \"Agendado automaticamente através do assistente de backup\"\n  }\n}\n```",
+      booking: "Posso ajudar a reservar uma consulta gratuita! Pode agendar diretamente através do formulário no site.",
       thanks: "De nada! Se precisar de mais informações ou assistência, não hesite em perguntar. Tenha um excelente dia!",
-      default: "Terei todo o gosto em ajudar com isso! Como seu assistente Kai, apoio-o em todos os aspetos de gestão de instalações, limpeza e manutenção.\n\nComo o sistema de IA está em modo de segurança, não hesite em enviar-nos um e-mail para **info@krakenpfm.ch**."
+      default: "Posso ajudar com limpeza, manutenção, mudanças ou jardim. De que serviço precisa, em que código postal e para que data? Use /quote para uma estimativa sem compromisso; a equipa confirmará a proposta final. Contacto: kai@krakenpfm.ch."
     }
   };
 
@@ -371,14 +271,19 @@ async function startServer() {
     return dict.default;
   }
 
-  // Secure Server-Side Gemini API Chat Route
+  const chatLimit = createRateLimiter(15, 60000);
+  const instanceChatLimit = createRateLimiter(150, 60000, 1);
+  // Server-owned instructions and bounded user histories.
   app.post("/api/chat", async (req, res) => {
     try {
-      const { messages, systemInstruction, language } = req.body;
-
-      if (!messages || !Array.isArray(messages) || messages.length === 0) {
-        return res.status(400).json({ success: false, error: "Messages array is required." });
+      if (!chatLimit(req.ip || req.socket.remoteAddress || 'unknown') || !instanceChatLimit('all')) {
+        res.setHeader('Retry-After', '60');
+        return res.status(429).json({ success: false, error: 'Please wait before sending another message.' });
       }
+      let validated;
+      try { validated = validateChat(req.body); }
+      catch (error) { return res.status(400).json({ success: false, error: (error as Error).message }); }
+      const { messages, language } = validated;
 
       const lastMessage = messages[messages.length - 1];
       const userText = lastMessage ? lastMessage.text : "";
@@ -394,8 +299,8 @@ async function startServer() {
       }
 
       try {
-        const { GoogleGenAI } = await (specifier => import(specifier))("@google/genai") as any;
-        const ai = new GoogleGenAI({ apiKey });
+        const { GoogleGenAI } = await import("@google/genai");
+        const ai = new GoogleGenAI({ apiKey, httpOptions: { timeout: 10000 } });
 
         // Format the history for the SDK by filtering out system messages and formatting roles matching gemini format
         // Gemini chats format expects role: 'user' | 'model'
@@ -407,12 +312,14 @@ async function startServer() {
         const chat = ai.chats.create({
           model: 'gemini-2.5-flash',
           config: {
-            systemInstruction: systemInstruction || undefined,
+            systemInstruction: CHAT_INSTRUCTION,
+            maxOutputTokens: 500,
           },
           history: history
         });
 
         const response = await chat.sendMessage({ message: userText || '' });
+        if (!response.text) throw new Error('Empty model response.');
 
         res.json({
           success: true,
@@ -420,7 +327,7 @@ async function startServer() {
           text: response.text
         });
       } catch (geminiError: any) {
-        console.error("Gemini API error, activating fallback assistant:", geminiError);
+        console.error("Gemini unavailable; using the local sales assistant.");
         // Fallback to local response if spending limit, 429, or quota exceeded
         res.json({
           success: true,
@@ -437,63 +344,11 @@ async function startServer() {
     }
   });
 
-  const injectSeoMeta = (html: string, pathname: string, langQuery?: string): string => {
-    try {
-      const meta = getMetadataForPath(pathname, langQuery);
-
-      // Replace Title
-      let renderedHtml = html.replace(
-        /<title>[\s\S]*?<\/title>/i,
-        `<title>${meta.title}</title>`
-      );
-
-      // Replace other title metas
-      renderedHtml = renderedHtml.replace(
-        /<meta property="og:title" content="[\s\S]*?">/i,
-        `<meta property="og:title" content="${meta.title}">`
-      );
-      renderedHtml = renderedHtml.replace(
-        /<meta name="twitter:title" content="[\s\S]*?">/i,
-        `<meta name="twitter:title" content="${meta.title}">`
-      );
-      renderedHtml = renderedHtml.replace(
-        /<meta name="title" content="[\s\S]*?">/i,
-        `<meta name="title" content="${meta.title}">`
-      );
-
-      // Replace Description
-      renderedHtml = renderedHtml.replace(
-        /<meta name="description" content="[\s\S]*?">/i,
-        `<meta name="description" content="${meta.description}">`
-      );
-      renderedHtml = renderedHtml.replace(
-        /<meta property="og:description" content="[\s\S]*?">/i,
-        `<meta property="og:description" content="${meta.description}">`
-      );
-      renderedHtml = renderedHtml.replace(
-        /<meta name="twitter:description" content="[\s\S]*?">/i,
-        `<meta name="twitter:description" content="${meta.description}">`
-      );
-
-      // Replace Canonical
-      renderedHtml = renderedHtml.replace(
-        /<link rel="canonical" href="[\s\S]*?" \/>/i,
-        `<link rel="canonical" href="${meta.canonical}" />`
-      );
-
-      // Strip existing alternate hreflangs to avoid duplication
-      renderedHtml = renderedHtml.replace(
-        /<link rel="alternate" hreflang="[\s\S]*?" href="[\s\S]*?">/gi,
-        ""
-      );
-
-      return renderedHtml;
-    } catch (error) {
-      console.error("Error injecting SEO meta:", error);
-      return html;
-    }
+  const injectSeoMeta = (html: string, pathname: string, language: string): string => {
+    return renderInitialHtml(html, getMetadataForPath(pathname, language), language);
   };
 
+  const templateCache = new Map<string, string>();
   const handleHtmlRequest = async (req: express.Request, res: express.Response) => {
     try {
       const isProd = !isDev;
@@ -505,10 +360,8 @@ async function startServer() {
       // 1. In production, prefer a pre-rendered page, while still applying request SEO.
       if (isProd) {
         const cleanPath = req.path.replace(/\/$/, ""); // remove trailing slash
-        const candidate = cleanPath === ""
-          ? path.join(distPath, "index.html")
-          : path.join(distPath, `${cleanPath}.html`);
-        if (fs.existsSync(candidate)) preRenderedFilePath = candidate;
+        const candidate = path.resolve(distPath, `.${cleanPath || '/index'}.html`);
+        if (candidate.startsWith(path.resolve(distPath) + path.sep) && isRouteValid(req.path) && fs.existsSync(candidate)) preRenderedFilePath = candidate;
       }
 
       // 2. Fallback to SPA template (use index-spa.html backup in prod if exists, otherwise index.html)
@@ -519,26 +372,21 @@ async function startServer() {
         : path.join(process.cwd(), "index.html"));
 
       if (fs.existsSync(indexPath)) {
-        let html = fs.readFileSync(indexPath, "utf8");
+        let html = !isDev ? templateCache.get(indexPath) : undefined;
+        if (!html) { html = fs.readFileSync(indexPath, 'utf8'); if (!isDev) templateCache.set(indexPath, html); }
 
         // If Vite development server is active, transform index.html dynamically
         if (!isProd && viteInstance) {
-          html = await viteInstance.transformIndexHtml(req.originalUrl, html);
+          // Vite derives virtual inline CSS/module IDs from the first argument.
+          // Keep locale query parameters only in the original-URL context.
+          html = await viteInstance.transformIndexHtml(req.path, html, req.originalUrl);
         }
 
-        const langParam = (req.query.lang || req.query.hl) as string | undefined;
-        let detectedLang = langParam;
-        if (!detectedLang && req.headers["accept-language"]) {
-          const header = req.headers["accept-language"] as string;
-          const match = header.match(/(de|en|fr|it|es|pt)/i);
-          if (match) {
-            detectedLang = match[1].toLowerCase();
-          }
-        }
-
+        const detectedLang = languageFromRequest(req.query.lang || req.query.hl, req.headers['accept-language']);
         const valid = isRouteValid(req.path);
         if (!valid) {
           res.status(404);
+          res.setHeader('X-Robots-Tag', 'noindex');
         }
 
         html = injectSeoMeta(html, req.path, detectedLang);
@@ -549,7 +397,7 @@ async function startServer() {
       console.error("Failed to render and serve dynamic HTML:", e);
     }
 
-    res.status(500).send("Internal Server Error - HTML template not found");
+    res.status(500).send("Internal Server Error");
   };
 
   // Development always uses source files; a previous build must never disable HMR.
@@ -582,18 +430,8 @@ async function startServer() {
     }));
   }
 
-  if (!isDev) app.use(express.static(distPath, {
-    index: false,
-    maxAge: "1d",
-    setHeaders: (res, filePath) => {
-      if (filePath.includes("/assets/") || filePath.match(/\.[0-9a-f]{8,}\./)) {
-        res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
-      } else if (filePath.endsWith(".html")) {
-        res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
-      } else {
-        res.setHeader("Cache-Control", "public, max-age=604800"); // 7 days cache
-      }
-    }
+  if (!isDev) app.use('/assets', express.static(path.join(distPath, 'assets'), {
+    index: false, maxAge: '1y', immutable: true,
   }));
 
   // Intercept all routes for pre-rendering

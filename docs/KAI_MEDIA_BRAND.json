@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-21",
+  "assets": [
+    {
+      "render480": {
+        "src": "/kai-calendar/optimized/brand/logo-blue-480.webp",
+        "width": 480,
+        "height": 206,
+        "bytes": 18916,
+        "sha256": "e7209cff02c3d40011e58d0a71915273ada1250529f2b2d34a7c055b2a62140a",
+        "method": "LANCZOS resize from pixel-identical trimmed source; WebP quality90 with alpha"
+      },
+      "id": "blue",
+      "source": "/logo-kraken-azul.webp",
+      "sourceSha256": "8821afc66d10704dfa5adc9c1ed28aa1fb15d92e6dfe293a0d85cddf0fe21a68",
+      "sourceDimensions": [
+        1024,
+        1024
+      ],
+      "cropBox": [
+        4,
+        283,
+        1020,
+        719
+      ],
+      "method": "alpha greater than zero bounding box; no resize or pixel changes",
+      "src": "/kai-calendar/optimized/brand/logo-blue.webp",
+      "width": 1016,
+      "height": 436,
+      "bytes": 172084,
+      "sha256": "7497c1977054d97cc252c685814ca7b7ccc224d26cd10f68d684c4885a4d07da",
+      "decodedRgbaIdenticalToOriginalCrop": true
+    },
+    {
+      "render480": {
+        "src": "/kai-calendar/optimized/brand/logo-white-480.webp",
+        "width": 480,
+        "height": 206,
+        "bytes": 24062,
+        "sha256": "d4a908d755f5437b1828658173bdfcdcd8691d6c4d8364af89227aade8e66efb",
+        "method": "LANCZOS resize from pixel-identical trimmed source; WebP quality90 with alpha"
+      },
+      "id": "white",
+      "source": "/logo-kraken-blanco.webp",
+      "sourceSha256": "c31ba41ece95c3c00c3e58270dc388ef8813e0aad34d610982768819982691dc",
+      "sourceDimensions": [
+        1024,
+        1024
+      ],
+      "cropBox": [
+        10,
+        285,
+        1017,
+        718
+      ],
+      "method": "alpha greater than zero bounding box; no resize or pixel changes",
+      "src": "/kai-calendar/optimized/brand/logo-white.webp",
+      "width": 1007,
+      "height": 433,
+      "bytes": 75344,
+      "sha256": "9d6468cfca82f3a28d3921576b2bbc7be45f2e517095d506e4a42317e2243a99",
+      "decodedRgbaIdenticalToOriginalCrop": true
+    }
+  ]
+}

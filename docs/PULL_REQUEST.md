@@ -1,43 +1,59 @@
-# Corregir desarrollo local y desplegar Kraken PFM en Vercel Preview
+# Renovar ventas, portal y reservas de Kraken PFM con permisos y pagos verificados
 
-`npm run dev` podía servir producción o dejar de cargar Vite después de compilar,
-y el lock impedía instalar con `npm ci`. El cambio selecciona desarrollo
-explícitamente, mantiene `npm run build` y `npm start`, repara el lock y corrige
-tres errores TypeScript y la persistencia del idioma en la URL.
+El cliente podía aportar importes/estados financieros, el dominio de email otorgaba
+privilegios y varios formularios aparentaban éxito tras fallar. La entrega separa
+estimación, persistencia y pago, y facilita pedir presupuesto con una portada
+comercial compacta, header/footer móviles y Kai de ventas en seis idiomas.
 
-Conserva el diseño, Kai, contenidos, idiomas, rutas y SEO. Recupera 74 recursos
-con procedencia y SHA256, conserva los originales válidos y documenta 22 rutas
-de imágenes todavía pendientes en componentes activos. Firebase local y SSR usan
-un proyecto demo; EmailJS y Make requieren configuración y habilitación explícitas;
-Gemini permanece en el servidor. Corrige el registro automático tras login
-fallido y las confirmaciones falsas de formularios y retornos de pago.
+Registro y login conservan la identidad anónima mediante enlace o transferencia
+servidor de borradores con dos tokens verificados. Sólo se transfieren Draft sin
+pago/checkout/cotización/transacción ni adjuntos; los casos protegidos necesitan
+asistencia. Un fallo de transferencia conserva el login y ofrece retry con la prueba
+sólo en memoria. El panel pagina por propietario; staff exige claim y correo
+verificado. Notas internas privadas, documentos escapados y calendario ICS como
+borrador sustituyen privilegios implícitos y afirmaciones de factura/sincronización.
 
-Vercel ejecuta ahora la aplicación Express completa, con SEO, redirecciones y
-API, y sirve los bundles por CDN. Preview fuerza Firebase emulador y desactiva
-los envíos externos y Payrexx/Gemini aunque herede claves. La producción existente
-y el dominio `krakenpfm.ch` permanecen intactos.
+Los borradores preservan createdAt y deben guardarse antes de avanzar o abrir
+checkout. Express calcula la cotización desde servicios guardados, asocia el
+Gateway a la reserva propia y confirma pagos mediante webhook HMAC verificado e
+idempotente. Sin configuración Payrexx devuelve 503 antes de bloquear el pedido.
+El retorno del navegador no confirma captura. Contacto, candidaturas y B2B esperan
+su recibo Firestore primario y los adjuntos seleccionados deben subirse; los
+reintentos reutilizan ID. Reglas e índices están versionados, sin deploy productivo.
 
-[Vista previa protegida](https://kpfm-m1oddj90p-antonionadre2-5701s-projects.vercel.app):
-Vercel informa **READY** para el commit `10fbb52` tras instalación y build remotas.
-La verificación de páginas y `/api/health` remotos sigue pendiente de completar
-MFA en la sesión autorizada. El despliegue por CLI no autoriza por sí mismo la
-comprobación automática de Vercel del PR.
+Se añaden 20 escenas Kai (15 calendario Europe/Zurich y cinco servicios/Thurgau) y
+151 derivados. El inventario tiene 285 imágenes públicas válidas, cero dañadas y
+cero rutas faltantes. Los 41 archivos dañados se archivan preservando bytes/hashes;
+los 22 originales históricos siguen identificados, sin presentar ilustraciones
+nuevas como recuperación de originales. Las cargas diferidas y WebP reducen el JS
+inicial de entrada/modulepreloads de 2.570.402 a 722.451 B (730.521 a 201.858 B gzip),
+71,9% menos sin comprimir. Queda el aviso de Firebase diferido de unos 570 kB;
+estas medidas no son una puntuación Lighthouse.
 
-Validación realizada: `npm ci`, `npm run typecheck`, `npm run build`,
-`npm run build:vercel`, suites de servidor, integraciones y formularios, y las
-cuatro regresiones de Vercel incorporadas a `npm test`;
-revisión Chrome en escritorio, móvil y seis idiomas; inventario de imágenes con
-decodificación. Las pruebas usan SDKs, fetch y un adaptador Payrexx inertes.
-No se han creado pagos, usuarios, solicitudes ni mensajes en producción, ni se han
-desplegado reglas. Firebase Emulator Suite real sigue pendiente por falta de Java.
+La arquitectura React/Vite/Express conserva rutas, API y SEO por idioma. Vercel usa
+Express y assets CDN. Preview fuerza Firebase demo y bloquea proveedores reales
+aunque herede claves; no aloja emuladores remotos. La Preview 10fbb52 es anterior
+a estos cambios. **Publicación de esta revisión: consultar registro de despliegue
+en `docs/VERCEL_SETUP.md`.** La protección SSO y la producción se conservan.
 
-Este PR se prepara como borrador para revisión. Quedan dos avisos de tamaño de
-chunks, los 22 originales visuales, validación de proveedores con cuentas de
-prueba, reglas Firebase y conciliación Payrexx mediante notificación validada en
-servidor. El retorno del navegador sólo muestra pago pendiente. Para un despliegue
-comercial también hay que configurar expresamente los destinos EmailJS/Make.
-La instalación y `npm audit` reportan 55 hallazgos, incluidos dos críticos en
-`proxy-addr` y `websocket-driver`; el triaje de uso y las fuentes primarias están
-documentados, con actualización y validación pendientes.
-Estado y pasos reproducibles: `docs/CODEX_SETUP.md`, `docs/INTEGRATIONS.md` y
-`docs/ASSET_AUDIT.md`. Despliegue y dependencias: `docs/VERCEL_SETUP.md`.
+Validación local del 21 de noviembre de 2026:
+
+- `npm ci`: 436 paquetes, salida 0; typecheck, build:vercel y npm test: salida 0.
+- 43 unidades (portal 18, backend 7 y PDF 6 incluidas), 16 formularios, 12 subidas,
+  servidor 2/2, Vercel 4/4 y reglas/Auth/Firestore/Storage reales en emuladores 7/7.
+- `npm audit`: cero hallazgos de todas las severidades tras corregir los dos
+  críticos iniciales, retirar Jimp sin uso y fijar dependencias transitivas.
+- Navegador: portada sin overflow en nueve anchos de 320 a 1920 px, seis idiomas,
+  chat fallback, registro/perfil reales demo, datos propios/tercero oculto,
+  staff con claim real, paginación 25→46 y mensajes.
+
+CI Node 24/Java 21/emuladores está implementada; primera ejecución GitHub pendiente.
+Quedan acceso Firebase del propietario, configuración Auth/Admin/claims,
+migración de notas, reglas/índices en la **base nombrada** y Storage, además de
+sandbox Payrexx y cuentas/destinos Gemini/EmailJS/Make. `firebase.production.example.json`
+explicita la base original, que debe verificarse contra cliente/Admin y proyecto
+antes de desplegar. No se crearon datos, mensajes, usuarios o pagos productivos,
+no se desplegaron reglas reales, no se fusionó el PR y no se sustituyó producción.
+
+Guías: `docs/CODEX_SETUP.md`, `docs/INTEGRATIONS.md`, `docs/BACKEND_SECURITY.md`,
+`docs/VERCEL_SETUP.md`, `docs/ASSET_AUDIT.md` y `docs/KAI_MEDIA.md`.

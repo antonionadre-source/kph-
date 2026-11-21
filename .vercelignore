@@ -7,3 +7,6 @@ dist
 !.env.example
 .venv-assets
 public/assets
+
+# Original media and audit evidence are kept in Git, not shipped to runtime.
+assets-source

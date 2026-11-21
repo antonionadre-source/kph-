@@ -1,0 +1,28 @@
+name: Verify Kraken
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build:vercel
+      - run: npm test
+      - name: Firebase rules and booking contracts against local emulators
+        run: npx --yes firebase-tools@15.37.0 emulators:exec --project demo-kraken-pfm --config firebase.emulators.json --only auth,firestore,storage "npm run test:rules"

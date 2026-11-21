@@ -18,13 +18,17 @@ extensions = {'.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.ico', '.avif',
 refs = {}
 pattern = re.compile(r'''["'`](?:https://krakenpfm\.ch)?(/[A-Za-z0-9_%][^"'`<>\r\n]*?\.(?:png|jpe?g|webp|gif|svg|ico|avif|bmp))(?:[?#][^"'`<>\r\n]*)?["'`]''', re.I)
 for source in root.rglob('*'):
-    if not source.is_file() or any(part in {'.git', 'node_modules', 'dist', 'docs', 'work', '.venv', '.venv-assets'} for part in source.relative_to(root).parts):
+    if not source.is_file() or any(part in {'.git', 'node_modules', 'dist', 'docs', 'work', '.venv', '.venv-assets', '.vercel', 'assets-source', 'tests'} for part in source.relative_to(root).parts):
+        continue
+    if source.relative_to(root).parts[:2] == ('public', 'assets'):
         continue
     if source.suffix not in {'.ts', '.tsx', '.js', '.jsx', '.css', '.html', '.json', '.webmanifest'}:
         continue
     for number, line in enumerate(source.read_text(errors='replace').splitlines(), 1):
         for match in pattern.finditer(line):
             path = urllib.parse.unquote(match.group(1))
+            if '${' in path:
+                continue
             refs.setdefault(path, []).append(f'{source.relative_to(root)}:{number}')
 paths = set(refs) | {'/' + str(p.relative_to(public)) for p in public.rglob('*') if p.is_file() and p.suffix.lower() in extensions}
 rows = []

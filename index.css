@@ -5,6 +5,36 @@
 }
 
 @layer base {
+  html { scroll-padding-top: 6rem; }
+  body { min-width: 320px; margin: 0; background: #f8fafc; color: #0f172a; font-family: 'Poppins', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+  #root { min-height: 100vh; }
+  button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+  button, input, select, textarea { font: inherit; }
+  button:not(:disabled), summary { cursor: pointer; }
+  :focus-visible { outline: 3px solid #0d756b; outline-offset: 4px; }
+  img, video { max-width: 100%; }
+  input, select, textarea { font-size: max(1rem, 16px); }
+  button { overflow-wrap: anywhere; }
+}
+
+.kraken-container { max-width: 80rem; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+.kraken-section { padding-block: clamp(3rem, 6vw, 5rem); }
+.kraken-heading { font-size: clamp(1.8rem, 3vw, 2.55rem); line-height: 1.15; font-weight: 650; letter-spacing: -0.035em; color: #062e51; }
+.kraken-description { margin-top: 1rem; font-size: 1rem; line-height: 1.75; color: #526476; }
+.kraken-button { display: inline-flex; align-items: center; justify-content: center; gap: .6rem; min-height: 3.25rem; padding: .8rem 1.5rem; border: 1px solid transparent; border-radius: .8rem; font-size: 1rem; font-weight: 600; text-align: center; line-height: 1.35; transition: background-color .2s, border-color .2s; }
+.kraken-primary { background: #0d756b; color: white; }
+.kraken-primary:hover { background: #075e56; }
+.kraken-secondary { background: white; color: #062e51; border-color: #becdd7; }
+.kraken-secondary:hover { background: #f0f6f9; border-color: #0d756b; }
+.kraken-button:disabled { cursor: wait; opacity: .6; }
+.kraken-language { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' stroke='%23062e51' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right .6rem center; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+@layer base {
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-10px); }
