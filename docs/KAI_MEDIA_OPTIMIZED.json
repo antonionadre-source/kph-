@@ -1,0 +1,829 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-21",
+  "assets": [
+    {
+      "kind": "existing-commercial-original",
+      "id": "property-managers",
+      "source": "/servicio-comercial-limpieza-escaleras.png",
+      "sourceBytes": 2275649,
+      "sourceSha256": "979d29550577509ffc03b1c03c55e57927b2c000c1f5cc78b310dbb9fc051c6e",
+      "variants": {
+        "1440": {
+          "src": "/kai-calendar/optimized/commercial/property-managers/1440.webp",
+          "width": 1440,
+          "height": 1080,
+          "bytes": 136092,
+          "format": "WEBP",
+          "sha256": "ba6787b050b91873dd8fbf908088202292f52135e72e09ecb519590784a48509"
+        },
+        "768": {
+          "src": "/kai-calendar/optimized/commercial/property-managers/768.webp",
+          "width": 768,
+          "height": 576,
+          "bytes": 51876,
+          "format": "WEBP",
+          "sha256": "81bf181ddea66657cfd1c724d30313342a54d5b12a586cfeeec5d4f0abe9d94d"
+        },
+        "480": {
+          "src": "/kai-calendar/optimized/commercial/property-managers/480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 25240,
+          "format": "WEBP",
+          "sha256": "56675f3ab9c6b5bb1c224af4d49e68125f5d2e87683ab04d8004db729bc8d5f0"
+        }
+      }
+    },
+    {
+      "kind": "existing-commercial-original",
+      "id": "offices-corporate",
+      "source": "/servicio-comercial-limpieza-showroom.png",
+      "sourceBytes": 2174512,
+      "sourceSha256": "c64a84e7735d1368ef9c506b672354afb6c57d4b57b8f5b7016ed51270319b47",
+      "variants": {
+        "1440": {
+          "src": "/kai-calendar/optimized/commercial/offices-corporate/1440.webp",
+          "width": 1440,
+          "height": 1080,
+          "bytes": 119542,
+          "format": "WEBP",
+          "sha256": "e8b2542510d8b0b538b5cfb52c2a142e6c188f7dd07271bdc2498d15383f63a7"
+        },
+        "768": {
+          "src": "/kai-calendar/optimized/commercial/offices-corporate/768.webp",
+          "width": 768,
+          "height": 576,
+          "bytes": 50734,
+          "format": "WEBP",
+          "sha256": "1e712fa64ec421087ce6d461617b27bdfdb359c89dfe03c960d20bf93bbd140f"
+        },
+        "480": {
+          "src": "/kai-calendar/optimized/commercial/offices-corporate/480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 25560,
+          "format": "WEBP",
+          "sha256": "5472f1222cc891c29253ec6b9f2a754d3b1c325711dfca5c5f988ff895d4da50"
+        }
+      }
+    },
+    {
+      "kind": "existing-commercial-original",
+      "id": "retail-showrooms",
+      "source": "/servicio-comercial-limpieza-retail.png",
+      "sourceBytes": 2148576,
+      "sourceSha256": "78790603e687884deef7014b2038be7a1098013c17746576a004fc15d972d5a0",
+      "variants": {
+        "1440": {
+          "src": "/kai-calendar/optimized/commercial/retail-showrooms/1440.webp",
+          "width": 1440,
+          "height": 1080,
+          "bytes": 109452,
+          "format": "WEBP",
+          "sha256": "64f22d5560576e2e73bd560cc8ad28b6729764522dc40cb24bf546c13c9f39a8"
+        },
+        "768": {
+          "src": "/kai-calendar/optimized/commercial/retail-showrooms/768.webp",
+          "width": 768,
+          "height": 576,
+          "bytes": 46036,
+          "format": "WEBP",
+          "sha256": "4fe3ed157f5a062aa6c8311f9b919358027db4452fdc60ff6d7c953798a0a77c"
+        },
+        "480": {
+          "src": "/kai-calendar/optimized/commercial/retail-showrooms/480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 25076,
+          "format": "WEBP",
+          "sha256": "7ab4f8e7b032a77636f285204e286b18c707fa721475ee575cafaf6e97ca05bb"
+        }
+      }
+    },
+    {
+      "kind": "existing-commercial-original",
+      "id": "gastronomy-restaurants",
+      "source": "/servicio-comercial-limpieza-bar-restaurante.png",
+      "sourceBytes": 2181934,
+      "sourceSha256": "3e3e4fd392057ba0e400d8c80b8bd7795ec75d53e92e42e358345056fb6759be",
+      "variants": {
+        "1440": {
+          "src": "/kai-calendar/optimized/commercial/gastronomy-restaurants/1440.webp",
+          "width": 1122,
+          "height": 1402,
+          "bytes": 132582,
+          "format": "WEBP",
+          "sha256": "150ca6467f8ba5ac64cb5582f9074e2e48b43f7967e252650815e58dfc3fd512"
+        },
+        "768": {
+          "src": "/kai-calendar/optimized/commercial/gastronomy-restaurants/768.webp",
+          "width": 768,
+          "height": 960,
+          "bytes": 76296,
+          "format": "WEBP",
+          "sha256": "ceda9d754b9f34f4b6372247148ed31548dd3b6621733d1ef126456b3d6bee85"
+        },
+        "480": {
+          "src": "/kai-calendar/optimized/commercial/gastronomy-restaurants/480.webp",
+          "width": 480,
+          "height": 600,
+          "bytes": 39862,
+          "format": "WEBP",
+          "sha256": "1c39afe1b78af15ec98de48a20a169c8bb87e860d00db4a4f06e13647ee86c05"
+        }
+      }
+    },
+    {
+      "kind": "existing-commercial-original",
+      "id": "industry-logistics",
+      "source": "/servicio-comercial-limpieza-industrial.png",
+      "sourceBytes": 2253244,
+      "sourceSha256": "64bbb3c2e5eeb18cdba38a635033d6a3fdbaad67a607fed32d9d9aee51a10fd9",
+      "variants": {
+        "1440": {
+          "src": "/kai-calendar/optimized/commercial/industry-logistics/1440.webp",
+          "width": 1122,
+          "height": 1402,
+          "bytes": 128120,
+          "format": "WEBP",
+          "sha256": "7f213e67f2da95f0193aa1c725ab311ecd4f166d2ca5d75dc780f4981351ce41"
+        },
+        "768": {
+          "src": "/kai-calendar/optimized/commercial/industry-logistics/768.webp",
+          "width": 768,
+          "height": 960,
+          "bytes": 72438,
+          "format": "WEBP",
+          "sha256": "74146a75a7cd1c4a62c0755a34ea82fb7090cf94b60fbf5c589e827153c21caf"
+        },
+        "480": {
+          "src": "/kai-calendar/optimized/commercial/industry-logistics/480.webp",
+          "width": 480,
+          "height": 600,
+          "bytes": 37794,
+          "format": "WEBP",
+          "sha256": "6f58fbf1b327352a01069d9ac26ff4486ec5554b0f42f647d66f51fab01ca33e"
+        }
+      }
+    },
+    {
+      "kind": "existing-commercial-original",
+      "id": "airbnb-rentals",
+      "source": "/imagen-02-google-ai.webp",
+      "sourceBytes": 1677564,
+      "sourceSha256": "d26f806921eef13fa5c0c75c227e4bc6605420d774c519f9f3a26b6d8560c485",
+      "variants": {
+        "1440": {
+          "src": "/kai-calendar/optimized/commercial/airbnb-rentals/1440.webp",
+          "width": 1440,
+          "height": 1080,
+          "bytes": 131046,
+          "format": "WEBP",
+          "sha256": "e6fd1dbef37d8340a5a3543c8783512ac73b4923537eff2c9a29d27c064c1c6f"
+        },
+        "768": {
+          "src": "/kai-calendar/optimized/commercial/airbnb-rentals/768.webp",
+          "width": 768,
+          "height": 576,
+          "bytes": 51066,
+          "format": "WEBP",
+          "sha256": "3799a22528b0935c5471b5eed516bd8d7b5ea3392bb20d578cf89714fc28a57c"
+        },
+        "480": {
+          "src": "/kai-calendar/optimized/commercial/airbnb-rentals/480.webp",
+          "width": 480,
+          "height": 360,
+          "bytes": 25800,
+          "format": "WEBP",
+          "sha256": "929b0afedaeafb03f6b4cd214bdd2582b2209d0f6c204095226b0f388f507a33"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-about-us",
+      "source": "/kai about us.webp",
+      "sourceBytes": 231798,
+      "sourceSha256": "9c0acbf2e93af7ebd4b5bcc021a0e019944ea216a399315d72c0e4c50d3ddd2b",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-about-us-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 10646,
+          "format": "WEBP",
+          "sha256": "208470f939cec89ddd43db85d91c1ff7edea608c96b9f141ce8eb40807ce5dae"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-about-us-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 25176,
+          "format": "WEBP",
+          "sha256": "1c9c032c5df0495ad5cf5fc0f3a88e4ebb3f58273ed3ffa4002c04d9fe587001"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-blog",
+      "source": "/kai blog.webp",
+      "sourceBytes": 196256,
+      "sourceSha256": "046ff905f6cbef72b9087af28655f4768a5a658816e79c658e8f8e9196e6a560",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-blog-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 9628,
+          "format": "WEBP",
+          "sha256": "d42ed6d94773135957e1411eaf65c0400f665a825950115853d6881d484e71b5"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-blog-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 22030,
+          "format": "WEBP",
+          "sha256": "4d2d42622b1fe7f9055df8b9054a5dfc97aae311378204c261c4bf1714f95dd8"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-build-your-quote",
+      "source": "/kai build your quote.webp",
+      "sourceBytes": 182920,
+      "sourceSha256": "e62f2a4bcc90c49e4203d1f85b5603f6cf4c146cc06f9ccacde15711dbea7e9b",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-build-your-quote-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 9470,
+          "format": "WEBP",
+          "sha256": "183ceaf2d78d7793ea71d6a39b89f2a0bd4cedfa95616e12cfc8e22a1715a76a"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-build-your-quote-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 22662,
+          "format": "WEBP",
+          "sha256": "48f43ef68e2310f942e0ca6c31e748579643be9c1ad33ef768f408b899e66708"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-careers",
+      "source": "/kai careers.webp",
+      "sourceBytes": 192982,
+      "sourceSha256": "c887be93e6c83ba090070d673ab1a42aeb2d3bb121d5bca69068ca8caac8db8c",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-careers-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 9670,
+          "format": "WEBP",
+          "sha256": "62fae08502aa699ca3f2286c700c84e5052fe83aaee1aeb08afa39df4aadfb76"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-careers-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 22384,
+          "format": "WEBP",
+          "sha256": "79f98547107253dd6fe2366d558a6cb595f6477351d26b14d2725a13005dbd29"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-comics",
+      "source": "/kai comics.webp",
+      "sourceBytes": 154324,
+      "sourceSha256": "f55e31b37f39d08cceac09d75b2a54056b0e00c323ccb1ad7e92b4f3b16501d4",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-comics-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 10608,
+          "format": "WEBP",
+          "sha256": "945e12a72eea18272021e9666f7279461b44191228fd628ba5007cb571c182ef"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-comics-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 25780,
+          "format": "WEBP",
+          "sha256": "aa84013e6a6995db0352aa7162063b565fc51e308f8c138d6ad9bd5b68c182bc"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-health-and-safety",
+      "source": "/kai health and safety.webp",
+      "sourceBytes": 233264,
+      "sourceSha256": "8476890946b720b132a51fad3a2ed028eac776a0083829512a247ca7753f968f",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-health-and-safety-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 11912,
+          "format": "WEBP",
+          "sha256": "1a3041c77e23d78e034bf3ba43cbeba4ef68178b451fe1a4ee10b494ccd7fc48"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-health-and-safety-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 27760,
+          "format": "WEBP",
+          "sha256": "cdc71210441f7b581131883f134229e3aa37599828c635ce9bce5e2174488eed"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-privacy",
+      "source": "/kai privacy.webp",
+      "sourceBytes": 224780,
+      "sourceSha256": "721385415a048f51792f19f01de39e68fc5343638be92746a40b6fef50c73c54",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-privacy-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 10892,
+          "format": "WEBP",
+          "sha256": "60283471bfffda97deba2b7d17fdf31688b43218faea9d1cb3ff24da0b47d0f6"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-privacy-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 25782,
+          "format": "WEBP",
+          "sha256": "333b1a6183f705a717bb366c1763ffee40ca10bbcaa9e7e61eecf9deaa5dd8e7"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-reviews",
+      "source": "/kai reviews.webp",
+      "sourceBytes": 162072,
+      "sourceSha256": "8d245f9e0c097d6c753e8559c9ca58d4b9741eb7ef9daad55d58cc94d0e2565b",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-reviews-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 8502,
+          "format": "WEBP",
+          "sha256": "fe5780486df831f82287b755b7d669498a2aa9f08cb8135369ebb8dd6956a3c7"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-reviews-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 19670,
+          "format": "WEBP",
+          "sha256": "8b5e8afbec33962a5b73956570e3b35f35f88c8ffa14de33550e3610875cf4a2"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-schaffhausen",
+      "source": "/kai schaffhausen.webp",
+      "sourceBytes": 205660,
+      "sourceSha256": "55ef7fb0a9f32767a79d2b8068b7d12a13c2b283138f43cbb741f7a9d841d0b1",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-schaffhausen-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 10100,
+          "format": "WEBP",
+          "sha256": "c3f0c1a0dab22c65c8fa505a9520cf2b8cc70312582512cf73f9aa5c88b4f3e8"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-schaffhausen-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 23876,
+          "format": "WEBP",
+          "sha256": "959126592b04c79b7297e1bd58c25f591c8922014e639428e84159bc1f6942cb"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-security",
+      "source": "/kai security.webp",
+      "sourceBytes": 200934,
+      "sourceSha256": "2619f179a86d4cdfa8c90e37a6282a842079aa31eecc8c183c416299030a19e7",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-security-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 11060,
+          "format": "WEBP",
+          "sha256": "9459dd50df673cb0e691d863d0d5b206ba1c4c7230bd82e722eab58dc547eded"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-security-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 25518,
+          "format": "WEBP",
+          "sha256": "02542ccaf994e389981c1fa2f6292a4c117376d9d7625510cd9d9606cea999a4"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-services",
+      "source": "/kai services.webp",
+      "sourceBytes": 247462,
+      "sourceSha256": "9ed2ec5ca632a4056815a2cdc1d699eaa003f81277a3ac1cbebb29af8de67f7b",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-services-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 12700,
+          "format": "WEBP",
+          "sha256": "dd2b641f590d963aaa3eb50efc3189b381631879a6cbe95cf214b56db54d78a6"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-services-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 29732,
+          "format": "WEBP",
+          "sha256": "305093109f837364059c9bc9e64fbe29efa8c3e360bf2d1df8777f9c792c461d"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-sustainability",
+      "source": "/kai sustainability.webp",
+      "sourceBytes": 177376,
+      "sourceSha256": "fd3e2868ba4c8e8d056fc989c2621c9cf1a2a5f9248ba74ddcd3800aad120734",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-sustainability-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 9866,
+          "format": "WEBP",
+          "sha256": "2cf4ac2b7c476ed6180ed5c8450140e5ca5032c04d6b36508026814e1026f225"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-sustainability-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 23020,
+          "format": "WEBP",
+          "sha256": "60bced216c82edbf22d21d065ae2bec41b59a73988c23c10aa4d2ba0144be0f4"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-terms-and-condition",
+      "source": "/kai terms and condition.webp",
+      "sourceBytes": 192746,
+      "sourceSha256": "80b8ae8d9b1ae204706b141d206b92040fa0b7cdf06347ffaba1aa2e3eec5861",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-terms-and-condition-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 9976,
+          "format": "WEBP",
+          "sha256": "4fa7f79aaeea7320947f80382cb2d47324cdd16cf552470c353d0e077fa9bdb1"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-terms-and-condition-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 23470,
+          "format": "WEBP",
+          "sha256": "66d0a469a2e48301714ed6474bae88b4461585abd7d4f991724f8bef821a1332"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-winterthur",
+      "source": "/kai winterthur.webp",
+      "sourceBytes": 235788,
+      "sourceSha256": "e94662282f61d16703ea8e9bc49fde07802519d0c6e43edad48ed3d0656f2698",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-winterthur-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 11244,
+          "format": "WEBP",
+          "sha256": "575fe98e15f8a7b75db528af5c7d41d5aeb3e97fdd4df5daabab13dd8feb1009"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-winterthur-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 26192,
+          "format": "WEBP",
+          "sha256": "6e01a2f59f34cd254ef07ef74496e206b9a81a847113f9785c24a253a2000df8"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-zurich",
+      "source": "/kai zurich.webp",
+      "sourceBytes": 217150,
+      "sourceSha256": "49e2b423a2d317e1b3a0a48f98d13fbb5fe49a1e1de0048d409484fb23420faf",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-zurich-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 10654,
+          "format": "WEBP",
+          "sha256": "de5c886f2e0d34b3799a582e0a7e4c9e25d77c7e97861311192bdc7c8993f507"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-zurich-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 25018,
+          "format": "WEBP",
+          "sha256": "818ead85286706576d3dd7b1b82aea21add857c1c6700f3c6a9ea34a1c3cde7a"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-imagen-1",
+      "source": "/kai-imagen-1.webp",
+      "sourceBytes": 253402,
+      "sourceSha256": "14b647ec3fdc5e2d3aff778a8e410edb544517af0d1b904e724f9d038b5b2f99",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-imagen-1-160.webp",
+          "width": 160,
+          "height": 90,
+          "bytes": 3866,
+          "format": "WEBP",
+          "sha256": "6565031055fd31b9b114657c4e37efcd1f2fe1202c330d04d6526fb805287438"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-imagen-1-320.webp",
+          "width": 320,
+          "height": 180,
+          "bytes": 11222,
+          "format": "WEBP",
+          "sha256": "4d9f47dede61537dd940071ab115a9914639eb1693c8e17e95d58085cea80926"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-imagen",
+      "source": "/kai-imagen.webp",
+      "sourceBytes": 253402,
+      "sourceSha256": "14b647ec3fdc5e2d3aff778a8e410edb544517af0d1b904e724f9d038b5b2f99",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-imagen-160.webp",
+          "width": 160,
+          "height": 90,
+          "bytes": 3866,
+          "format": "WEBP",
+          "sha256": "6565031055fd31b9b114657c4e37efcd1f2fe1202c330d04d6526fb805287438"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-imagen-320.webp",
+          "width": 320,
+          "height": 180,
+          "bytes": 11222,
+          "format": "WEBP",
+          "sha256": "4d9f47dede61537dd940071ab115a9914639eb1693c8e17e95d58085cea80926"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-jul16-interview",
+      "source": "/kai-jul16-interview.webp",
+      "sourceBytes": 172270,
+      "sourceSha256": "5da41fc71656e9ba7f2b6d43f6279625e5e9398e5c2ac81caafc318429e9589e",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-jul16-interview-160.webp",
+          "width": 160,
+          "height": 90,
+          "bytes": 3666,
+          "format": "WEBP",
+          "sha256": "145c5b60f4aa6f702a988c000c5bfba3c881b2e20bc148babb27eb98e1b07753"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-jul16-interview-320.webp",
+          "width": 320,
+          "height": 180,
+          "bytes": 10254,
+          "format": "WEBP",
+          "sha256": "cf77183b42120a2a6176084fe4f5e83f842a1b1a0b04f59b81757dcdd79d6783"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-webp-aug17-1",
+      "source": "/kai-webp-aug17-1.webp",
+      "sourceBytes": 235214,
+      "sourceSha256": "7f1ba30e2c729268e028e6ecdb7b26bd290fa10df8de0f4c167debda18b63d92",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-webp-aug17-1-160.webp",
+          "width": 160,
+          "height": 120,
+          "bytes": 4796,
+          "format": "WEBP",
+          "sha256": "f8cc05dac1dd03c98d317cfcbb9fdf6efb53e7da9ed3c75936776ffccd8d029b"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-webp-aug17-1-320.webp",
+          "width": 320,
+          "height": 240,
+          "bytes": 14180,
+          "format": "WEBP",
+          "sha256": "3baae06b5f857caa8035128c299b2e6b4b79cb36e473bedb4b1b28facd2ded4f"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-webp-aug17-2",
+      "source": "/kai-webp-aug17-2.webp",
+      "sourceBytes": 220938,
+      "sourceSha256": "469d2e2debc1033a341cc3e7c09d86bbc8b3fea93665197f6e296eeaa1872e53",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-webp-aug17-2-160.webp",
+          "width": 160,
+          "height": 120,
+          "bytes": 5170,
+          "format": "WEBP",
+          "sha256": "ea3c655991d08025750624a5d21b318a9eba0053bf79e4c41b51cb67cd636f26"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-webp-aug17-2-320.webp",
+          "width": 320,
+          "height": 240,
+          "bytes": 14930,
+          "format": "WEBP",
+          "sha256": "f129d33b094162de6d41093c1542c38e77d794ec62c734bde971eb9a403af6f2"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "kai-webp-aug17-3",
+      "source": "/kai-webp-aug17-3.webp",
+      "sourceBytes": 204432,
+      "sourceSha256": "919af483388cf4e77ab14a0a171b606fda457544cd3f8c891c69d76f28f2e442",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/kai-webp-aug17-3-160.webp",
+          "width": 160,
+          "height": 120,
+          "bytes": 5290,
+          "format": "WEBP",
+          "sha256": "246b20b9d8b3d9b2f53db371d6aed854807d90d55d958baaea888eafe25c0081"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/kai-webp-aug17-3-320.webp",
+          "width": 320,
+          "height": 240,
+          "bytes": 14452,
+          "format": "WEBP",
+          "sha256": "b3832477812565362d0a7a0281c098b2444d2f53593ab78a0d7f3914b6cf41d7"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "mascota-kraken-homepage-200",
+      "source": "/mascota-kraken-homepage-200.webp",
+      "sourceBytes": 8780,
+      "sourceSha256": "fb3112ac4d96e8864680b2de320953046ffa88673d415aeef98b2ddaa71961d7",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/mascota-kraken-homepage-200-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 8152,
+          "format": "WEBP",
+          "sha256": "e932458b0d7dafe1fbb5df7b075e13567862543ca07fddc769841514a879b680"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/mascota-kraken-homepage-200-320.webp",
+          "width": 200,
+          "height": 200,
+          "bytes": 8766,
+          "format": "WEBP",
+          "sha256": "056d5f034de7ed18dbdc28e752df9626a3c439a62549a073049168809f231faa"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "mascota-kraken-homepage-500",
+      "source": "/mascota-kraken-homepage-500.webp",
+      "sourceBytes": 29980,
+      "sourceSha256": "d15c447de73cfb057483fad6e414006fc25ec376bc75bdaa00a7ac491709d495",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/mascota-kraken-homepage-500-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 8056,
+          "format": "WEBP",
+          "sha256": "14fe67c8361173555e75f1fab154cfc8325f7216323bb3d4793090be4478b230"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/mascota-kraken-homepage-500-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 18708,
+          "format": "WEBP",
+          "sha256": "a8e67e2060bde6709e8718b57d6d45fa26c0b10c9c411b71d1f21cd0f32d451c"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "mascota-kraken-homepage-800",
+      "source": "/mascota-kraken-homepage-800.webp",
+      "sourceBytes": 53944,
+      "sourceSha256": "bb278ae38d87c6baad7a8b400bdd35516b86f52f9c14fdbb1ea6be0eca648730",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/mascota-kraken-homepage-800-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 8356,
+          "format": "WEBP",
+          "sha256": "14275e2646458ea943c0bc82df6fe92b44e3239f06d1c488b54b7b380178d25a"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/mascota-kraken-homepage-800-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 19002,
+          "format": "WEBP",
+          "sha256": "511381254d664fc4f5b9e3b5b34e65a22c9c5847ac771881c209980d6d43ab00"
+        }
+      }
+    },
+    {
+      "kind": "existing-kai-original",
+      "id": "mascota-kraken-homepage",
+      "source": "/mascota-kraken-homepage.webp",
+      "sourceBytes": 151698,
+      "sourceSha256": "865a8003c20f966534aaf2a195a674d39bfce8d5dc88e10dec643b6c6ccbb128",
+      "variants": {
+        "160": {
+          "src": "/kai-calendar/optimized/kai/mascota-kraken-homepage-160.webp",
+          "width": 160,
+          "height": 160,
+          "bytes": 8396,
+          "format": "WEBP",
+          "sha256": "7b1a7a3800cd85fedc2bda6d4789c280090a484503f645e65a81ec78bd985d9b"
+        },
+        "320": {
+          "src": "/kai-calendar/optimized/kai/mascota-kraken-homepage-320.webp",
+          "width": 320,
+          "height": 320,
+          "bytes": 19052,
+          "format": "WEBP",
+          "sha256": "4ab602cd27d6c2587bd43e8fa34c3ba54aec02ac42c138b1e00918773e0491df"
+        }
+      }
+    }
+  ]
+}

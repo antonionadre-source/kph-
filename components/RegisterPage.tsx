@@ -2,9 +2,13 @@ import React, { useState } from 'react';
 import { useAuth } from './Auth';
 import { useTranslation } from '../i18n';
 import { motion, AnimatePresence } from 'motion/react';
-import { db, auth, sanitizeFirestoreData } from './firebase';
-import { doc, setDoc, serverTimestamp, collection } from 'firebase/firestore';
-import emailjs from '@emailjs/browser';
+import { db, sanitizeFirestoreData } from './firebase';
+import { portalText } from './portalText';
+import { registrationText } from './registrationText';
+import { finishRegistration, withPortalTimeout, type PortalUser } from './portalIdentity';
+import { externalSubmissionsEnabled } from './integrationConfig';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import emailjs, { EMAIL_SERVICE_ID as SERVICE_ID, EMAIL_TEMPLATE_ID as TEMPLATE_ID, EMAIL_PUBLIC_KEY as PUBLIC_KEY } from './emailClient';
 import { 
   User as UserIcon, 
   Mail as MailIcon, 
@@ -19,7 +23,9 @@ import {
   Home, 
   Trees, 
   FolderPlus,
-  Bath
+  Bath,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 import { sendLead } from './leadWebhook';
@@ -28,13 +34,14 @@ interface RegisterPageProps {
   onNavigate: (page: string) => void;
 }
 
-const SERVICE_ID = 'service_aiv15bc'; 
-const TEMPLATE_ID = 'template_aktj7t9'; 
-const PUBLIC_KEY = 'sH5K84ChHyssJrarm'; 
 
 const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
-  const { register } = useAuth();
-  const { t } = useTranslation();
+  const { register, warning, resendVerification } = useAuth();
+  const { t, language } = useTranslation();
+  const pt = (key: Parameters<typeof portalText>[1]) => portalText(language, key);
+  const rt = (source: string) => registrationText(language, source);
+  const [createdAccount, setCreatedAccount] = useState<PortalUser | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   
   // Applet Multi-Step States
   const [step, setStep] = useState(1);
@@ -48,6 +55,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   // Step 2: Address & Property Access
   const [street, setStreet] = useState('');
@@ -65,18 +73,19 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
   const handleNextStep = () => {
     setError(null);
     if (step === 1) {
-      if (!name || !email || !phone || !password) {
-        setError('Please fill out all contact fields.');
+      if (!name.trim() || !email.trim() || !phone.trim() || !password) {
+        setError(pt('required'));
         return;
       }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) { setError(pt('invalidEmail')); return; }
       if (password.length < 6) {
-        setError('Password must be at least 6 characters.');
+        setError(pt('passwordHint'));
         return;
       }
     }
     if (step === 2) {
-      if (!street || !postcode || !city) {
-        setError('Please enter the full address of the property.');
+      if (!street.trim() || !postcode.trim() || !city.trim()) {
+        setError(pt('required'));
         return;
       }
     }
@@ -90,92 +99,44 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
 
   const handleSubmitRegistration = async () => {
     setError(null);
+    if (!name.trim() || !email.trim() || !phone.trim() || !street.trim() || !postcode.trim() || !city.trim() || password.length < 6) { setError(pt('required')); return; }
     setIsLoading(true);
 
     try {
-      // 1. Create client account in Firebase Auth
-      const user = await register(name, email, password);
-      console.log("Real client account registered in Firebase successfully ID:", user.uid);
-
-      // Dispatch lead webhook notification
-      sendLead({ source: 'new_account', name, email });
-
-      // 2. Prepare Detailed Notes / Onboarding checklist string
-      const fullNotesText = `DETAILED CLIENT REGISTRATION AND PROPERTY ONBOARDING APPLICATION:
-- Street & House: ${street}
-- Postcode: ${postcode}
-- City: ${city}
-- Access Protocol: ${accessType}
-- Rooms count: ${rooms}
-- Toilets count: ${toilets}
-- Has Balcony: ${hasBalcony ? 'YES' : 'NO'}
-- Has Garden: ${hasGarden ? 'YES' : 'NO'}
-- Client Comments: ${extraNotes || 'None'}`;
-
-      // 3. Save as dynamic Profile Checklist request to firestore maintenance_requests collection
-      const newDocId = doc(collection(db, 'maintenance_requests')).id;
-      const requestRef = doc(db, 'maintenance_requests', newDocId);
-      await setDoc(requestRef, sanitizeFirestoreData({
-        id: newDocId,
-        userId: user.uid,
-        client: name,
-        service: "ONBOARDING PROFILE SETUP & VERIFICATION",
-        date: new Date().toISOString().split('T')[0],
-        status: 'Pending',
-        priority: 'Medium',
-        amount: 0,
-        phone: phone,
-        email: email,
-        address: `${street}, ${postcode} ${city}`,
-        notes: fullNotesText,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
-      }));
-      console.log("Onboarding profile saved to Firestore as doc:", newDocId);
-
-      // 4. Submit real email metadata directly to kai@krakenpfm.ch via EmailJS
-      await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
-        from_name: name,
-        from_email: email,
-        phone_number: phone,
-        service_address: `${street}, ${postcode} ${city}`,
-        service_type: "CLIENT ONBOARDING APPLICATION",
-        total_price: "CHF 0.00 (Onboarding Request)",
-        amount_to_pay: "CHF 0.00",
-        preferred_date: new Date().toLocaleDateString(),
-        preferred_time: new Date().toLocaleTimeString(),
-        payment_status: "PENDING VERIFICATION",
-        transaction_id: `ONB_${Date.now()}`,
-        services_list: `REGISTRATION PROFILE METADATA:
-------------------------------------------
-• Access Type: ${accessType}
-• Bedrooms/Rooms: ${rooms}
-• Bathrooms/Toilets: ${toilets}
-• Balcony/Terrace: ${hasBalcony ? 'YES' : 'NO'}
-• Garden Setup: ${hasGarden ? 'YES' : 'NO'}
-• Extra comments: ${extraNotes || 'None'}
-------------------------------------------`
-      }, PUBLIC_KEY);
-
-      console.log("Email notification sent successfully to kai@krakenpfm.ch");
+      const result = await finishRegistration({
+        existingAccount: createdAccount,
+        createAccount: () => register(name.trim(), email.trim(), password),
+        saveProfile: async account => {
+          setCreatedAccount(account);
+          const profile = doc(db, 'profiles', account.uid);
+          const previous = await withPortalTimeout(getDoc(profile));
+          await withPortalTimeout(setDoc(profile, sanitizeFirestoreData({
+            userId: account.uid, name: name.trim(), email: account.email, phone: phone.trim(),
+            address: { street: street.trim(), postcode: postcode.trim(), city: city.trim() },
+            accessType, rooms, toilets, hasBalcony, hasGarden, notes: extraNotes.trim(),
+            ...(!previous.exists() ? { createdAt: serverTimestamp() } : {}),
+            updatedAt: serverTimestamp(),
+          }), { merge: true }));
+        },
+        ...(externalSubmissionsEnabled ? { notify: () => emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+          from_name: name.trim(), from_email: email.trim(), phone_number: phone.trim(),
+          services_interest: 'CLIENT PROFILE', message: 'Client account and property profile saved.',
+        }, PUBLIC_KEY) } : {}),
+      });
+      setCreatedAccount(result.account);
+      if (!result.profileSaved) { setError(pt('profilePending')); return; }
+      if (result.error) setNotice(pt('notificationPending'));
       setSuccess(true);
-      setTimeout(() => {
-        onNavigate('clients');
-      }, 3000);
-
-    } catch (err: any) {
-      console.error("Registration onboarding failed:", err);
-      setError(err.message || "Failed to finalize registration. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+    } catch (error: any) {
+      setError(pt(['auth/credential-already-in-use', 'auth/email-already-in-use'].includes(error?.code) ? 'accountExists' : 'authError'));
+    } finally { setIsLoading(false); }
   };
 
   const accessOptions = [
-    { name: 'Key Safe / Lockbox', desc: 'Secure box located on high-safety wall' },
-    { name: 'In-Person Handover', desc: 'Meet face-to-face with our cleaning specialist' },
-    { name: 'Digital Code', desc: 'Electronic keypad or smartphone remote swipe access' },
-    { name: 'Building Concierge / Agency', desc: 'Pick up keys from frontdesk or agency safe' }
+    { name: 'Key Safe / Lockbox', desc: '' },
+    { name: 'In-Person Handover', desc: '' },
+    { name: 'Digital Code', desc: '' },
+    { name: 'Building Concierge / Agency', desc: '' }
   ];
 
   return (
@@ -190,16 +151,16 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-xl w-full relative z-10 px-6"
+        className="max-w-xl w-full relative z-10 px-4 sm:px-6"
       >
-        <div className="bg-white p-8 sm:p-10 rounded-[2.5rem] border border-slate-150/85 shadow-[0_30px_70px_rgba(15,23,42,0.06)]">
+        <div className="bg-white p-5 sm:p-10 rounded-[2.5rem] border border-slate-150/85 shadow-[0_30px_70px_rgba(15,23,42,0.06)]">
           {/* Custom Header */}
           <div className="text-center mb-8">
             <span className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-600 font-bold text-[10px] tracking-[0.2em] px-4 py-2 rounded-2xl uppercase mb-4">
-              <FolderPlus className="w-3.5 h-3.5" /> Interactive Onboarding
+              <FolderPlus className="w-3.5 h-3.5" /> {rt('Interactive Onboarding')}
             </span>
-            <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">Create Client Account</h2>
-            <p className="text-slate-400 font-bold text-xs uppercase tracking-[0.15em] mt-1.5">Submit registration request to kai@krakenpfm.ch</p>
+            <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">{pt('createAccount')}</h2>
+            <p className="text-slate-400 font-bold text-xs uppercase tracking-[0.15em] mt-1.5">{pt('portal')}</p>
           </div>
 
           {/* Form Progress Stepper */}
@@ -234,15 +195,17 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-emerald-50 border border-emerald-100 text-emerald-600 mb-4 animate-bounce">
                 <Check className="w-10 h-10" />
               </div>
-              <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">Thank You!</h3>
+              <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">{pt('accountCreated')}</h3>
               <p className="text-slate-600 text-sm leading-relaxed max-w-md mx-auto font-bold">
-                Your request is pending for approval. You will receive an email shortly.
+                {pt('verifyHint')}
               </p>
               <p className="text-slate-500 text-xs leading-relaxed max-w-md mx-auto">
-                Your interactive property profile has been securely sent to <strong className="text-slate-700">kai@krakenpfm.ch</strong> and your client portal is now provisioned.
+                {pt('saved')}
               </p>
               <div className="pt-4">
-                <p className="text-xs text-blue-600 font-bold uppercase animate-pulse">Redirecting to your dashboard...</p>
+                {(notice || warning) && <p role="status" className="text-sm text-amber-800 mb-4">{notice || pt('notificationPending')}</p>}
+                <button type="button" className="px-5 py-3 bg-blue-600 text-white rounded-xl font-bold" onClick={() => onNavigate('dashboard')}>{pt('dashboard')}</button>
+                <button type="button" className="block mx-auto mt-4 text-blue-700" onClick={async () => { try { await resendVerification(); setNotice(pt('verificationSent')); } catch { setNotice(pt('notificationPending')); } }}>{pt('verify')}</button>
               </div>
             </motion.div>
           ) : (
@@ -251,7 +214,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="bg-red-50 border border-red-100 text-red-600 p-4 rounded-2xl mb-8 text-xs font-bold text-center"
+                  role="alert" className="bg-red-50 border border-red-100 text-red-600 p-4 rounded-2xl mb-8 text-xs font-bold text-center"
                 >
                   {error}
                 </motion.div>
@@ -267,17 +230,19 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                     className="space-y-6"
                   >
                     <div className="border border-slate-100 bg-slate-50/50 p-6 rounded-2xl">
-                      <h4 className="font-black text-slate-700 text-xs uppercase tracking-wider mb-4 border-b border-slate-200/60 pb-2">Step 1: Contact Details</h4>
+                      <h4 className="font-black text-slate-700 text-xs uppercase tracking-wider mb-4 border-b border-slate-200/60 pb-2">{rt('Step 1: Contact Details')}</h4>
                       
                       <div className="space-y-4">
                         <div className="space-y-1.5">
-                          <label className="block text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">Full Name</label>
+                          <label className="block text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">{pt('name')}</label>
                           <div className="relative">
                             <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                             <input
                               type="text"
                               required
                               value={name}
+                              autoComplete="name"
+                              maxLength={100}
                               onChange={(e) => setName(e.target.value)}
                               className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-11 pr-5 text-sm text-slate-900 font-semibold focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-300"
                               placeholder="John Doe"
@@ -286,28 +251,33 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="block text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">Email Address</label>
+                          <label className="block text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">{pt('email')}</label>
                           <div className="relative">
                             <MailIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                             <input
                               type="email"
                               required
                               value={email}
+                              disabled={Boolean(createdAccount)}
+                              autoComplete="email"
+                              maxLength={254}
                               onChange={(e) => setEmail(e.target.value)}
                               className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-11 pr-5 text-sm text-slate-900 font-semibold focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-300"
-                              placeholder="john.doe@krakenpfm.ch"
+                              placeholder="name@example.ch"
                             />
                           </div>
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="block text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">Phone Number</label>
+                          <label className="block text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">{pt('phone')}</label>
                           <div className="relative">
                             <PhoneIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                             <input
                               type="tel"
                               required
                               value={phone}
+                              autoComplete="tel"
+                              maxLength={50}
                               onChange={(e) => setPhone(e.target.value)}
                               className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-11 pr-5 text-sm text-slate-900 font-semibold focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-300"
                               placeholder="+41 79 123 45 67"
@@ -316,17 +286,32 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="block text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">Password (min. 6)</label>
+                          <label htmlFor="register-password" className="block text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">{pt('password')} ({pt('passwordHint')})</label>
                           <div className="relative">
                             <LockIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                             <input
-                              type="password"
+                              id="register-password"
+                              type={showPassword ? 'text' : 'password'}
+                              autoComplete="new-password"
+                              minLength={6}
                               required
                               value={password}
                               onChange={(e) => setPassword(e.target.value)}
                               className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-11 pr-5 text-sm text-slate-900 font-semibold focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-300"
                               placeholder="••••••••"
+                              style={{ paddingRight: '3.5rem' }}
                             />
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword(previous => !previous)}
+                              aria-label={pt(showPassword ? 'hidePassword' : 'showPassword')}
+                              title={pt(showPassword ? 'hidePassword' : 'showPassword')}
+                              aria-controls="register-password"
+                              aria-pressed={showPassword}
+                              className="absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 inline-flex items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-blue-600"
+                            >
+                              {showPassword ? <EyeOff aria-hidden="true" className="w-5 h-5" /> : <Eye aria-hidden="true" className="w-5 h-5" />}
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -343,17 +328,18 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                     className="space-y-6"
                   >
                     <div className="border border-slate-100 bg-slate-50/50 p-6 rounded-2xl space-y-5">
-                      <h4 className="font-black text-slate-700 text-xs uppercase tracking-wider border-b border-slate-200/60 pb-2">Step 2: Location &amp; Physical Access</h4>
+                      <h4 className="font-black text-slate-700 text-xs uppercase tracking-wider border-b border-slate-200/60 pb-2">{rt('Step 2: Location & Physical Access')}</h4>
 
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div className="sm:col-span-2 space-y-1.5">
-                          <label className="block text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">Street and House Number</label>
+                          <label className="block text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">{rt('Street and House Number')}</label>
                           <div className="relative">
                             <MapPinIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                             <input
                               type="text"
                               required
                               value={street}
+                              maxLength={250}
                               onChange={(e) => setStreet(e.target.value)}
                               className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-11 pr-5 text-sm text-slate-900 font-semibold focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-300"
                               placeholder="Bahnhofstrasse 12"
@@ -362,11 +348,12 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                         </div>
 
                         <div className="space-y-1.5">
-                          <label className="block text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">Postal Code</label>
+                          <label className="block text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">{rt('Postal Code')}</label>
                           <input
                             type="text"
                             required
                             value={postcode}
+                            maxLength={10}
                             onChange={(e) => setPostcode(e.target.value)}
                             className="w-full bg-white border border-slate-200 rounded-2xl py-3 px-5 text-sm text-slate-900 font-semibold focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-300"
                             placeholder="8001"
@@ -375,11 +362,12 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="block text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">City</label>
+                        <label className="block text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">{rt('City')}</label>
                         <input
                           type="text"
                           required
                           value={city}
+                          maxLength={120}
                           onChange={(e) => setCity(e.target.value)}
                           className="w-full bg-white border border-slate-200 rounded-2xl py-3 px-5 text-sm text-slate-900 font-semibold focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-300"
                           placeholder="Zürich"
@@ -388,13 +376,13 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
 
                       <div className="space-y-3 pt-2">
                         <label className="block text-[9px] font-black text-slate-500 uppercase tracking-[0.25em] ml-2">
-                          <span className="flex items-center gap-1.5"><KeyIcon className="w-3.5 h-3.5 text-blue-600" /> Access Protocol</span>
+                          <span className="flex items-center gap-1.5"><KeyIcon className="w-3.5 h-3.5 text-blue-600" />{rt('Access Protocol')}</span>
                         </label>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           {accessOptions.map((opt) => (
                             <button
-                              key={opt.name}
+                              key={rt(opt.name)}
                               type="button"
                               onClick={() => setAccessType(opt.name)}
                               className={`p-4 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between cursor-pointer ${
@@ -404,7 +392,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                               }`}
                             >
                               <div className="flex items-center justify-between w-full mb-1">
-                                <span className="text-xs font-black uppercase tracking-tight">{opt.name}</span>
+                                <span className="text-xs font-black uppercase tracking-tight">{rt(opt.name)}</span>
                                 {accessType === opt.name && (
                                   <span className="w-4 h-4 rounded-full bg-blue-600 flex items-center justify-center text-[8px] text-white">✓</span>
                                 )}
@@ -427,19 +415,20 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                     className="space-y-6"
                   >
                     <div className="border border-slate-100 bg-slate-50/50 p-6 rounded-2xl space-y-5">
-                      <h4 className="font-black text-slate-700 text-xs uppercase tracking-wider border-b border-slate-200/60 pb-2">Step 3: Property Specifications</h4>
+                      <h4 className="font-black text-slate-700 text-xs uppercase tracking-wider border-b border-slate-200/60 pb-2">{rt('Step 3: Property Specifications')}</h4>
 
                       {/* Room Quantity Selector */}
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 rounded-2xl bg-white border border-slate-200">
                         <div className="space-y-0.5">
                           <span className="text-xs font-black text-slate-800 uppercase tracking-tight flex items-center gap-1.5">
-                            <LayersIcon className="w-4 h-4 text-blue-600" /> Number of Rooms
+                            <LayersIcon className="w-4 h-4 text-blue-600" /> {rt('Number of Rooms')}
                           </span>
-                          <p className="text-[10px] text-slate-400 font-medium">Includes bedrooms, living rooms, and office rooms</p>
+                          <p className="text-[10px] text-slate-400 font-medium">{rt('Includes bedrooms, living rooms, and office rooms')}</p>
                         </div>
                         <div className="flex items-center gap-4 self-center">
                           <button
                             type="button"
+                            aria-label={rt('Decrease number of rooms')}
                             onClick={() => setRooms(Math.max(1, rooms - 1))}
                             className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-colors flex items-center justify-center font-black text-slate-700 text-base cursor-pointer"
                           >
@@ -448,7 +437,8 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                           <span className="text-base font-black text-slate-900 min-w-[20px] text-center">{rooms}</span>
                           <button
                             type="button"
-                            onClick={() => setRooms(rooms + 1)}
+                            aria-label={rt('Increase number of rooms')}
+                            onClick={() => setRooms(Math.min(100, rooms + 1))}
                             className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-colors flex items-center justify-center font-black text-slate-700 text-base cursor-pointer"
                           >
                             +
@@ -460,13 +450,14 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 rounded-2xl bg-white border border-slate-200">
                         <div className="space-y-0.5">
                           <span className="text-xs font-black text-slate-800 uppercase tracking-tight flex items-center gap-1.5">
-                            <Bath className="w-4 h-4 text-blue-600" /> Number of Toilets / Bathrooms
+                            <Bath className="w-4 h-4 text-blue-600" /> {rt('Number of Toilets / Bathrooms')}
                           </span>
-                          <p className="text-[10px] text-slate-400 font-medium">Includes main bathroom, guest toilets, and en-suites</p>
+                          <p className="text-[10px] text-slate-400 font-medium">{rt('Includes main bathroom, guest toilets, and en-suites')}</p>
                         </div>
                         <div className="flex items-center gap-4 self-center">
                           <button
                             type="button"
+                            aria-label={rt('Decrease number of bathrooms')}
                             onClick={() => setToilets(Math.max(1, toilets - 1))}
                             className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-colors flex items-center justify-center font-black text-slate-700 text-base cursor-pointer"
                           >
@@ -475,7 +466,8 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                           <span className="text-base font-black text-slate-900 min-w-[20px] text-center">{toilets}</span>
                           <button
                             type="button"
-                            onClick={() => setToilets(toilets + 1)}
+                            aria-label={rt('Increase number of bathrooms')}
+                            onClick={() => setToilets(Math.min(100, toilets + 1))}
                             className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-colors flex items-center justify-center font-black text-slate-700 text-base cursor-pointer"
                           >
                             +
@@ -487,7 +479,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-3">
                           <span className="text-xs font-black text-slate-800 uppercase tracking-tight flex items-center gap-1.5">
-                            <Home className="w-4 h-4 text-blue-600" /> Balcony?
+                            <Home className="w-4 h-4 text-blue-600" /> {rt('Balcony?')}
                           </span>
                           <div className="flex gap-2.5">
                             <button
@@ -499,7 +491,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                                   : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100'
                               }`}
                             >
-                              YES
+                              {rt('YES')}
                             </button>
                             <button
                               type="button"
@@ -510,14 +502,14 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                                   : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100'
                               }`}
                             >
-                              NO
+                              {rt('NO')}
                             </button>
                           </div>
                         </div>
 
                         <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-3">
                           <span className="text-xs font-black text-slate-800 uppercase tracking-tight flex items-center gap-1.5">
-                            <Trees className="w-4 h-4 text-emerald-600" /> Garden?
+                            <Trees className="w-4 h-4 text-emerald-600" /> {rt('Garden?')}
                           </span>
                           <div className="flex gap-2.5">
                             <button
@@ -529,7 +521,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                                   : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100'
                               }`}
                             >
-                              YES
+                              {rt('YES')}
                             </button>
                             <button
                               type="button"
@@ -540,7 +532,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                                   : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100'
                               }`}
                             >
-                              NO
+                              {rt('NO')}
                             </button>
                           </div>
                         </div>
@@ -548,13 +540,14 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
 
                       {/* Additional comments/requirements */}
                       <div className="space-y-1.5">
-                        <label className="block text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">Extra Notes / Special Instructions</label>
+                        <label className="block text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] ml-2">{rt('Extra Notes / Special Instructions')}</label>
                         <textarea
                           value={extraNotes}
+                          maxLength={5000}
                           onChange={(e) => setExtraNotes(e.target.value)}
                           rows={3}
                           className="w-full bg-white border border-slate-200 rounded-2xl py-3 px-5 text-sm text-slate-900 font-semibold focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all placeholder:text-slate-300 resize-none"
-                          placeholder="Please leave keys in the mailbox number 4... / Let us know any specific requirements..."
+                          placeholder={rt('Additional relevant information')}
                         />
                       </div>
                     </div>
@@ -570,53 +563,53 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                     className="space-y-6"
                   >
                     <div className="border border-slate-100 bg-slate-50/50 p-6 rounded-2xl space-y-4">
-                      <h4 className="font-black text-slate-700 text-xs uppercase tracking-wider border-b border-slate-200/60 pb-2">Step 4: Confirm Registration</h4>
+                      <h4 className="font-black text-slate-700 text-xs uppercase tracking-wider border-b border-slate-200/60 pb-2">{rt('Step 4: Confirm Registration')}</h4>
                       
                       <p className="text-xs text-slate-500 leading-relaxed font-semibold">
-                        Please review your answers below. Clicking &quot;Complete Registration&quot; will provision your client portal, save your settings, and automatically forward your property details to **kai@krakenpfm.ch**.
+                        {rt('Review profile')}
                       </p>
 
                       <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
                         <div className="grid grid-cols-2 gap-y-3 text-xs border-b border-slate-100 pb-3">
                           <div>
-                            <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">CLIENT NAME</span>
+                            <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">{pt('name')}</span>
                             <span className="text-slate-800 font-bold">{name}</span>
                           </div>
                           <div>
-                            <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">EMAIL ADDRESS</span>
+                            <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">{pt('email')}</span>
                             <span className="text-slate-850 font-semibold truncate block">{email}</span>
                           </div>
                           <div>
-                            <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">PHONE NUMBER</span>
+                            <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">{pt('phone')}</span>
                             <span className="text-slate-800 font-semibold">{phone}</span>
                           </div>
                           <div>
-                            <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">ACCESS SYSTEM</span>
-                            <span className="text-blue-600 font-bold">{accessType}</span>
+                            <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">{rt('Access Protocol')}</span>
+                            <span className="text-blue-600 font-bold">{rt(accessType)}</span>
                           </div>
                         </div>
 
                         <div className="grid grid-cols-4 gap-2 text-xs pt-1">
                           <div>
-                            <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">ROOMS</span>
+                            <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">{rt('Number of Rooms')}</span>
                             <span className="text-slate-800 font-black text-base">{rooms}</span>
                           </div>
                           <div>
-                            <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">TOILETS</span>
+                            <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">{rt('Number of Toilets / Bathrooms')}</span>
                             <span className="text-slate-800 font-black text-base">{toilets}</span>
                           </div>
                           <div>
-                            <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">BALCONY?</span>
-                            <span className="text-slate-700 font-bold text-xs">{hasBalcony ? 'YES' : 'NO'}</span>
+                            <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">{rt('Balcony?')}</span>
+                            <span className="text-slate-700 font-bold text-xs">{hasBalcony ? rt('YES') : rt('NO')}</span>
                           </div>
                           <div>
-                            <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">GARDEN?</span>
-                            <span className="text-emerald-600 font-bold text-xs">{hasGarden ? 'YES' : 'NO'}</span>
+                            <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">{rt('Garden?')}</span>
+                            <span className="text-emerald-600 font-bold text-xs">{hasGarden ? rt('YES') : rt('NO')}</span>
                           </div>
                         </div>
 
                         <div className="text-xs border-t border-slate-100 pt-3">
-                          <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">PROPERTY ADDRESS</span>
+                          <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">{pt('address')}</span>
                           <span className="text-slate-600 font-semibold leading-relaxed">{street}, {postcode} {city}</span>
                         </div>
                       </div>
@@ -630,10 +623,10 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                 {step > 1 ? (
                   <button
                     type="button"
-                    onClick={handlePrevStep}
+                    disabled={isLoading} onClick={handlePrevStep}
                     className="flex items-center gap-1.5 text-xs font-black text-slate-400 hover:text-slate-700 uppercase tracking-widest transition-colors cursor-pointer"
                   >
-                    <ChevronLeft className="w-4 h-4" /> Back
+                    <ChevronLeft className="w-4 h-4" /> {pt('back')}
                   </button>
                 ) : (
                   <button 
@@ -641,17 +634,17 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                     onClick={() => onNavigate('login')}
                     className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors cursor-pointer"
                   >
-                    Login to existing account
+                    {pt('signIn')}
                   </button>
                 )}
 
                 {step < totalSteps ? (
                   <button
                     type="button"
-                    onClick={handleNextStep}
+                    disabled={isLoading} onClick={handleNextStep}
                     className="bg-blue-600 hover:bg-blue-500 text-white font-black text-xs uppercase px-7 py-3.5 rounded-2xl flex items-center gap-1.5 shadow-md shadow-blue-600/10 transition-all cursor-pointer"
                   >
-                    Next <ChevronRight className="w-4 h-4" />
+                    {pt('continue')} <ChevronRight className="w-4 h-4" />
                   </button>
                 ) : (
                   <button
@@ -660,7 +653,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                     disabled={isLoading}
                     className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase px-8 py-4 rounded-2xl shadow-md shadow-emerald-600/10 disabled:opacity-50 transition-all cursor-pointer"
                   >
-                    {isLoading ? 'Registering...' : 'Complete Registration'}
+                    {isLoading ? pt('loading') : createdAccount ? pt('retry') : pt('createAccount')}
                   </button>
                 )}
               </div>
@@ -671,21 +664,18 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
           {!success && (
             <div className="mt-10 text-center border-t border-slate-100 pt-6">
               <p className="text-slate-400 text-xs font-semibold">
-                Already have an onboarded account?{' '}
+                {pt('portal')}{' '}
                 <button 
                   onClick={() => onNavigate('login')} 
                   className="text-blue-600 hover:text-blue-700 transition-colors ml-1 cursor-pointer font-black uppercase tracking-wider text-[11px]"
                 >
-                  Login here
+                  {pt('signIn')}
                 </button>
               </p>
             </div>
           )}
         </div>
 
-        <p className="mt-8 text-center text-[9px] font-black text-slate-300 uppercase tracking-[0.4em]">
-          Kraken PFM Multi-Step Portal v5.0
-        </p>
       </motion.div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '../i18n';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
@@ -22,10 +22,13 @@ import {
   CloudUploadIcon
 } from './icons';
 import { db, sanitizeFirestoreData } from './firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { withPortalTimeout } from './portalIdentity';
+import { portalText } from './portalText';
+import { attachmentText } from './attachmentText';
 import { Star } from 'lucide-react';
 import { sendLead } from './leadWebhook';
-import { uploadFilesToStorage } from './fileUploadHelper';
+import { uploadFilesToStorage, ensureUploadUser, validateFloorPlan } from './fileUploadHelper';
 
 type BuildingType = 'office' | 'residential' | 'retail' | 'industrial' | 'medical';
 type FrequencyType = 'daily' | 'multiple' | 'weekly' | 'biweekly' | 'monthly' | 'ondemand';
@@ -65,7 +68,7 @@ interface CommercialFormData {
   contactName: string;
   contactEmail: string;
   contactPhone: string;
-  floorPlans: { name: string; size: string; content: string }[];
+  floorPlans: { name: string; size: string; rawFile: File }[];
 }
 
 const LOCALIZED = {
@@ -602,6 +605,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
   const [submitting, setSubmitting] = useState(false);
   const [complete, setComplete] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const quoteRef = useRef<{ id: string; fingerprint: string; attempted: boolean } | null>(null);
 
   // Form States
   const [formData, setFormData] = useState<CommercialFormData>({
@@ -706,7 +710,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
   };
 
   const handleBack = () => {
-    if (step > 1) {
+    if (!submitting && step > 1) {
       setStep((p) => p - 1);
       window.scrollTo(0, 0);
     }
@@ -732,73 +736,55 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
     }));
   };
 
+  const addFloorPlans = (files: File[]) => {
+    if (submitting) return;
+    setFormData(previous => ({ ...previous, floorPlans: [...previous.floorPlans, ...files.map(file => ({ name: file.name, size: (file.size / 1024 / 1024).toFixed(2) + ' MiB', rawFile: file }))] }));
+    try { files.forEach(validateFloorPlan); setErrorMsg(''); }
+    catch { setErrorMsg(attachmentText(language, 'invalid')); }
+  };
   const handleSubmit = async () => {
-    // Validate inputs
-    if (!formData.companyName.trim() || !formData.contactName.trim() || !formData.contactEmail.trim() || !formData.postalCode.trim() || !formData.city.trim() || !formData.address.trim()) {
-      setErrorMsg(activeLang === 'es' ? 'Por favor complete todos los campos obligatorios (*)' : 'Please fill in all required fields (*), including City and Address');
-      return;
+    if (!formData.companyName.trim() || formData.companyName.length > 200 || !formData.contactName.trim() || formData.contactName.length > 150 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.contactEmail.trim()) || formData.contactEmail.length > 254 || !formData.contactPhone.trim() || formData.contactPhone.length > 50 || !/^\d{4}$/.test(formData.postalCode.trim()) || !formData.city.trim() || !formData.address.trim() || formData.address.length > 500) {
+      setErrorMsg(portalText(language, 'required')); return;
     }
-
-    setErrorMsg('');
-    setSubmitting(true);
-
+    setErrorMsg(''); setSubmitting(true);
     try {
-      const filesToUpload = (formData.floorPlans || [])
-        .map((plan: any) => plan.rawFile)
-        .filter((f: any): f is File => f instanceof File);
-
-      const fileResult = await uploadFilesToStorage(filesToUpload);
-
-      const cleanedFloorPlans = (formData.floorPlans || []).map(({ rawFile, ...rest }: any) => rest);
-
-      // Save data structure to Firestore
+      const selectedServices = Object.keys(formData.services).filter(key => formData.services[key as keyof SelectedServices]);
+      if (!selectedServices.length || !Number.isInteger(formData.numBuildings) || formData.numBuildings < 1 || formData.numBuildings > 200 || !Number.isFinite(formData.totalArea) || formData.totalArea < 1 || formData.totalArea > 1000000 || !Number.isFinite(formData.hours) || formData.hours < 0.5 || formData.hours > 24 || !Number.isFinite(monthly) || monthly < 0 || monthly > 10000000 || !Number.isFinite(annual) || annual > 120000000) throw new Error('quote/invalid');
+      if (formData.floorPlans.length > 30) throw new Error('attachment/too-many');
+      const filesToUpload = formData.floorPlans.map(plan => plan.rawFile);
+      filesToUpload.forEach(validateFloorPlan);
+      const uid = await ensureUploadUser();
+      const fileResult = await uploadFilesToStorage(filesToUpload, { directory: 'b2b_quotes' });
+      if (fileResult.errors.length || fileResult.fileCount !== filesToUpload.length) throw new Error('attachment/upload-failed');
+      const fingerprint = JSON.stringify([uid, { ...formData, floorPlans: formData.floorPlans.map(plan => [plan.name, plan.rawFile.size, plan.rawFile.lastModified]) }]);
+      if (quoteRef.current?.fingerprint !== fingerprint) quoteRef.current = { id: doc(collection(db, 'b2b_quotes')).id, fingerprint, attempted: false };
+      const receipt = quoteRef.current!;
+      const reference = doc(db, 'b2b_quotes', receipt.id);
+      let alreadySaved = false;
+      if (receipt.attempted) {
+        try { alreadySaved = (await withPortalTimeout(getDoc(reference))).exists(); } catch { /* Retry the same receipt ID. */ }
+      }
       const quoteDetails = {
-        type: 'commercial_b2b',
-        buildingType: formData.buildingType,
-        numBuildings: formData.numBuildings,
-        totalArea: formData.totalArea,
-        services: formData.services,
-        frequency: formData.frequency,
-        protocols: formData.protocols,
-        postalCode: formData.postalCode,
-        city: formData.city,
-        hours: formData.hours,
-        address: formData.address,
-        companyName: formData.companyName,
-        contactName: formData.contactName,
-        contactEmail: formData.contactEmail,
-        contactPhone: formData.contactPhone,
-        floorPlans: cleanedFloorPlans,
-        estimatedMonthlyBudget: monthly,
-        estimatedAnnualBudget: annual,
-        createdAt: serverTimestamp(),
-        language: language,
-        status: 'pending'
+        userId: uid, type: 'commercial_b2b', buildingType: formData.buildingType, numBuildings: formData.numBuildings,
+        totalArea: formData.totalArea, services: selectedServices, frequency: formData.frequency, protocols: formData.protocols,
+        postalCode: formData.postalCode.trim(), city: formData.city.trim(), hours: formData.hours,
+        address: formData.address.trim(), companyName: formData.companyName.trim(), contactName: formData.contactName.trim(),
+        contactEmail: formData.contactEmail.trim(), contactPhone: formData.contactPhone.trim(),
+        floorPlans: fileResult.files.map(file => ({ name: file.name, sizeBytes: file.size, url: file.url, path: file.path, contentType: file.contentType })),
+        estimatedMonthlyBudget: monthly, estimatedAnnualBudget: annual,
+        createdAt: serverTimestamp(), language, status: 'pending',
       };
-
-      await addDoc(collection(db, 'b2b_quotes'), sanitizeFirestoreData(quoteDetails));
-
-      // Trigger standard Webhook to MAKE (same as private leads webhook!)
-      sendLead({
-        ...quoteDetails,
-        email: formData.contactEmail,
-        event_source: 'kraken_b2b_calculator',
-        source: 'Commercial B2B Calculator',
-        title: `Nueva Propuesta B2B - ${formData.companyName}`,
-        fileUrl: fileResult.fileUrl,
-        fileUrls: fileResult.fileUrls,
-        fileName: fileResult.fileName,
-        fileCount: fileResult.fileCount
-      });
-
-      setComplete(true);
-      setStep(5);
-    } catch (e: any) {
-      console.error('Firestore save failed', e);
-      setErrorMsg(e?.message || 'Transaction error on Switzerland core servers. Try again.');
-    } finally {
-      setSubmitting(false);
-    }
+      receipt.attempted = true;
+      if (!alreadySaved) await withPortalTimeout(setDoc(reference, sanitizeFirestoreData(quoteDetails)));
+      // A stored quote is the primary receipt; a secondary webhook cannot undo it.
+      sendLead({ ...quoteDetails, email: formData.contactEmail.trim(), source: 'Commercial B2B Calculator',
+        fileUrl: fileResult.fileUrl, fileUrls: fileResult.fileUrls, fileName: fileResult.fileName, fileCount: fileResult.fileCount });
+      setComplete(true); setStep(5);
+    } catch (error: any) {
+      const attachmentFailure = String(error?.message || '').startsWith('attachment/');
+      const invalidAttachment = /attachment\/(unsupported|too-large|empty)/.test(String(error?.message || ''));
+      setErrorMsg(attachmentFailure ? attachmentText(language, error?.message === 'attachment/too-many' ? 'tooMany' : invalidAttachment ? 'invalid' : 'failed') : portalText(language, 'saveError'));
+    } finally { setSubmitting(false); }
   };
 
   const zoneFeedback = getZoneByPostalCode(formData.postalCode);
@@ -862,6 +848,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                   exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.25 }}
                 >
+                  <fieldset disabled={submitting} className="contents">
                   {/* STEP 1: PORTFOLIO */}
                   {step === 1 && (
                     <div className="space-y-6">
@@ -1152,7 +1139,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                           <input
                             type="text"
                             placeholder="e.g., Rheinstrasse 12, 8200 Schaffhausen"
-                            value={formData.address}
+                            maxLength={500} value={formData.address}
                             onChange={(e) => setFormData(p => ({ ...p, address: e.target.value }))}
                             className="w-full bg-slate-920 border border-slate-800 rounded-xl px-4 py-3 text-xs md:text-sm text-white focus:outline-none focus:border-sky-500 placeholder:text-slate-500"
                           />
@@ -1164,36 +1151,19 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                           </label>
                           <div 
                             className="border-2 border-dashed border-slate-800 hover:border-sky-500/50 rounded-xl p-6 transition-all bg-slate-900/20 text-center cursor-pointer relative"
+                            role="button" tabIndex={0}
+                            onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); document.getElementById('floor-plan-upload')?.click(); } }}
+                            onDragOver={event => event.preventDefault()}
+                            onDrop={event => { event.preventDefault(); addFloorPlans(Array.from(event.dataTransfer.files)); }}
                             onClick={() => document.getElementById('floor-plan-upload')?.click()}
                           >
                             <input 
                               id="floor-plan-upload"
                               type="file"
-                              multiple
+                              multiple disabled={submitting}
                               accept=".pdf,.png,.jpg,.jpeg"
                               className="hidden"
-                              onChange={(e) => {
-                                if (e.target.files) {
-                                  Array.from(e.target.files).forEach((file: any) => {
-                                    const reader = new FileReader();
-                                    reader.onload = (event) => {
-                                      setFormData(p => ({
-                                        ...p,
-                                        floorPlans: [
-                                          ...(p.floorPlans || []),
-                                          {
-                                            name: file.name,
-                                            size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
-                                            content: event.target?.result as string || '',
-                                            rawFile: file
-                                          }
-                                        ]
-                                      }));
-                                    };
-                                    reader.readAsDataURL(file);
-                                  });
-                                }
-                              }}
+                              onChange={event => addFloorPlans(Array.from(event.target.files || []))}
                             />
                             <div className="flex flex-col items-center justify-center gap-2 select-none">
                               <span className="text-3xl">📤</span>
@@ -1201,7 +1171,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                                 Drag and drop files here, or <span className="text-sky-400 underline">browse</span>
                               </p>
                               <p className="text-[10px] text-slate-500">
-                                Supports PDF, PNG, JPG, JPEG (Max 15MB)
+                                PDF / PNG / JPG / JPEG · 20 MiB
                               </p>
                             </div>
                           </div>
@@ -1217,8 +1187,11 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                                   </div>
                                   <button
                                     type="button"
+                                    disabled={submitting}
+                                    aria-label={attachmentText(language, 'remove')}
                                     onClick={(e) => {
                                       e.stopPropagation();
+                                      setErrorMsg('');
                                       setFormData(p => ({
                                         ...p,
                                         floorPlans: (p.floorPlans || []).filter((_, i) => i !== index)
@@ -1241,7 +1214,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                           <input
                             type="text"
                             placeholder={texts.companyPlaceholder}
-                            value={formData.companyName}
+                            maxLength={200} value={formData.companyName}
                             onChange={(e) => setFormData(p => ({ ...p, companyName: e.target.value }))}
                             className="w-full bg-slate-920 border border-slate-800 rounded-xl px-4 py-3 text-xs md:text-sm text-white focus:outline-none focus:border-sky-500 placeholder:text-slate-500"
                           />
@@ -1254,7 +1227,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                           <input
                             type="text"
                             placeholder={texts.contactPlaceholder}
-                            value={formData.contactName}
+                            maxLength={150} value={formData.contactName}
                             onChange={(e) => setFormData(p => ({ ...p, contactName: e.target.value }))}
                             className="w-full bg-slate-920 border border-slate-800 rounded-xl px-4 py-3 text-xs md:text-sm text-white focus:outline-none focus:border-sky-500 placeholder:text-slate-500"
                           />
@@ -1268,7 +1241,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                             <input
                               type="email"
                               placeholder={texts.emailPlaceholder}
-                              value={formData.contactEmail}
+                              maxLength={254} value={formData.contactEmail}
                               onChange={(e) => setFormData(p => ({ ...p, contactEmail: e.target.value }))}
                               className="w-full bg-slate-920 border border-slate-800 rounded-xl px-4 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-sky-500 placeholder:text-slate-500"
                             />
@@ -1281,7 +1254,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                             <input
                               type="tel"
                               placeholder={texts.phonePlaceholder}
-                              value={formData.contactPhone}
+                              maxLength={50} value={formData.contactPhone}
                               onChange={(e) => setFormData(p => ({ ...p, contactPhone: e.target.value }))}
                               className="w-full bg-slate-920 border border-slate-800 rounded-xl px-4 py-2.5 text-xs md:text-sm text-white focus:outline-none focus:border-sky-500 placeholder:text-slate-500"
                             />
@@ -1306,8 +1279,8 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                       </div>
 
                       <div className="space-y-2">
-                        <h2 className="text-2xl md:text-3xl font-black text-white">{texts.successHeading}</h2>
-                        <p className="text-slate-300 text-sm max-w-xl mx-auto leading-relaxed">{texts.successSub}</p>
+                        <h2 className="text-2xl md:text-3xl font-black text-white">{portalText(language, 'saved')}</h2>
+                        <p className="text-slate-300 text-sm max-w-xl mx-auto leading-relaxed">{attachmentText(language, 'stored')}</p>
                       </div>
 
                       <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 text-left max-w-lg mx-auto space-y-3.5">
@@ -1337,11 +1310,11 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mx-auto text-left py-4">
                         <div className="flex gap-3 bg-slate-900/40 border border-slate-800/40 p-3.5 rounded-xl">
                           <span className="text-lg">👔</span>
-                          <span className="text-[11px] text-slate-400 leading-normal">{texts.successCard1}</span>
+                          <span className="text-[11px] text-slate-400 leading-normal">{attachmentText(language, 'estimate')}</span>
                         </div>
                         <div className="flex gap-3 bg-slate-900/40 border border-slate-800/40 p-3.5 rounded-xl">
                           <span className="text-lg">📄</span>
-                          <span className="text-[11px] text-slate-400 leading-normal">{texts.successCard2}</span>
+                          <span className="text-[11px] text-slate-400 leading-normal">{attachmentText(language, formData.floorPlans.length ? 'attachmentsSaved' : 'noAttachments')}</span>
                         </div>
                       </div>
 
@@ -1354,6 +1327,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                       </button>
                     </div>
                   )}
+                  </fieldset>
                 </motion.div>
               </AnimatePresence>
 
@@ -1363,7 +1337,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                   <button
                     type="button"
                     onClick={handleBack}
-                    disabled={step === 1}
+                    disabled={step === 1 || submitting}
                     className={`px-6 py-3 rounded-full text-xs font-black transition-all text-slate-300 ${
                       step === 1
                         ? 'opacity-30 cursor-not-allowed bg-transparent'

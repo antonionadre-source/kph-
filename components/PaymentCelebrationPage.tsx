@@ -1,25 +1,36 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from '../i18n';
 import { motion } from 'motion/react';
 import { Check, Shield, Calendar, Headphones, ArrowRight, ClipboardCheck } from 'lucide-react';
-import { sendLead } from './leadWebhook';
 
 interface PaymentCelebrationPageProps {
   booking: any;
   onBackHome: () => void;
 }
 
+interface ConfettiPiece {
+  id: number;
+  x: number;
+  y: number;
+  size: number;
+  color: string;
+  duration: number;
+  delay: number;
+  rotate: number;
+}
+
 const translations = {
   en: {
     paymentCompleted: "Payment completed!",
-    serviceBooked: "Your service has been booked successfully.",
-    confirmationSent: "Confirmation sent by email.",
+    serviceBooked: "Your payment is confirmed. Our team will confirm service details and availability.",
+    confirmationSent: "Payment confirmed by Payrexx.",
     thankYouPayment: "Thank you for your payment!",
     precisionReview: "Our team is now reviewing the images you sent us and we will provide you with the final cost. In the meantime, sit back and relax — we will contact you shortly.",
-    imagesReceived: "Images received and under review.",
+    imagesReceived: "Request received and under review.",
     securePayment: "Secure Payment",
-    securePaymentDesc: "Your payment is encrypted and 100% secure.",
-    bookingConfirmed: "Booking Confirmed",
-    bookingConfirmedDesc: "Your reservation is confirmed and guaranteed.",
+    securePaymentDesc: "Payment confirmed by Payrexx.",
+    bookingConfirmed: "Service under review",
+    bookingConfirmedDesc: "Our team will confirm the date and service details.",
     supportAvailable: "Support Available",
     supportAvailableDesc: "We're here to help whenever you need us.",
     reviewInProgress: "Review in Progress",
@@ -30,15 +41,15 @@ const translations = {
   },
   es: {
     paymentCompleted: "¡Pago completado!",
-    serviceBooked: "Tu servicio ha sido reservado con éxito.",
-    confirmationSent: "Confirmación enviada por email.",
+    serviceBooked: "Tu pago está confirmado. Nuestro equipo confirmará la disponibilidad y los detalles del servicio.",
+    confirmationSent: "Pago confirmado por Payrexx.",
     thankYouPayment: "¡Gracias por tu pago!",
     precisionReview: "Nuestro equipo está revisando las imágenes que enviaste y te proporcionaremos el costo final. Mientras tanto, relájate, nos pondremos en contacto contigo en breve.",
-    imagesReceived: "Imágenes recibidas y bajo revisión.",
+    imagesReceived: "Solicitud recibida y en revisión.",
     securePayment: "Pago Seguro",
-    securePaymentDesc: "Tu pago está encriptado y es 100% seguro.",
-    bookingConfirmed: "Reserva Confirmada",
-    bookingConfirmedDesc: "Tu reserva está confirmada y garantizada.",
+    securePaymentDesc: "Pago confirmado por Payrexx.",
+    bookingConfirmed: "Servicio en revisión",
+    bookingConfirmedDesc: "Nuestro equipo confirmará la fecha y los detalles del servicio.",
     supportAvailable: "Soporte Disponible",
     supportAvailableDesc: "Estamos aquí para ayudar cuando nos necesites.",
     reviewInProgress: "Revisión en Curso",
@@ -49,15 +60,15 @@ const translations = {
   },
   de: {
     paymentCompleted: "Zahlung abgeschlossen!",
-    serviceBooked: "Ihr Service wurde erfolgreich gebucht.",
-    confirmationSent: "Bestätigung per E-Mail gesendet.",
+    serviceBooked: "Ihre Zahlung ist bestätigt. Unser Team bestätigt die Verfügbarkeit und Leistungsdetails.",
+    confirmationSent: "Zahlung durch Payrexx bestätigt.",
     thankYouPayment: "Vielen Dank für Ihre Zahlung!",
     precisionReview: "Unser Team überprüft nun die von Ihnen gesendeten Bilder und wir werden Ihnen die endgültigen Kosten mitteilen. Lehnen Sie sich in der Zwischenzeit zurück und entspannen Sie sich – wir werden uns in Kürze mit Ihnen in Verbindung setzen.",
-    imagesReceived: "Bilder erhalten und in Prüfung.",
+    imagesReceived: "Anfrage erhalten und in Prüfung.",
     securePayment: "Sichere Zahlung",
-    securePaymentDesc: "Ihre Zahlung ist verschlüsselt und 100% sicher.",
-    bookingConfirmed: "Buchung bestätigt",
-    bookingConfirmedDesc: "Ihre Reservierung ist bestätigt und garantiert.",
+    securePaymentDesc: "Zahlung durch Payrexx bestätigt.",
+    bookingConfirmed: "Anfrage wird geprüft",
+    bookingConfirmedDesc: "Unser Team bestätigt Termin und Leistungsdetails.",
     supportAvailable: "Support verfügbar",
     supportAvailableDesc: "Wir sind für Sie da, wann immer Sie uns brauchen.",
     reviewInProgress: "Prüfung läuft",
@@ -68,15 +79,15 @@ const translations = {
   },
   fr: {
     paymentCompleted: "Paiement complété !",
-    serviceBooked: "Votre service a été réservé avec succès.",
-    confirmationSent: "Confirmation envoyée par e-mail.",
+    serviceBooked: "Votre paiement est confirmé. Notre équipe confirmera les disponibilités et les détails du service.",
+    confirmationSent: "Paiement confirmé par Payrexx.",
     thankYouPayment: "Merci pour votre paiement !",
     precisionReview: "Notre équipe examine actuellement les images que vous avez envoyées et nous vous fournirons le coût final. En attendant, asseyez-vous et détendez-vous – nous vous contacterons sous peu.",
-    imagesReceived: "Images reçues et en cours d'examen.",
+    imagesReceived: "Demande reçue et en cours de vérification.",
     securePayment: "Paiement sécurisé",
-    securePaymentDesc: "Votre paiement est crypté et 100% sécurisé.",
-    bookingConfirmed: "Réservation confirmée",
-    bookingConfirmedDesc: "Votre réservation est confirmée et garantie.",
+    securePaymentDesc: "Paiement confirmé par Payrexx.",
+    bookingConfirmed: "Service en cours de vérification",
+    bookingConfirmedDesc: "Notre équipe confirmera la date et les détails du service.",
     supportAvailable: "Support disponible",
     supportAvailableDesc: "Nous sommes là pour vous aider quand vous avez besoin de nous.",
     reviewInProgress: "Examen en cours",
@@ -87,15 +98,15 @@ const translations = {
   },
   it: {
     paymentCompleted: "Pagamento completato!",
-    serviceBooked: "Il tuo servizio è stato prenotato con successo.",
-    confirmationSent: "Conferma inviata via email.",
+    serviceBooked: "Il pagamento è confermato. Il nostro team confermerà disponibilità e dettagli del servizio.",
+    confirmationSent: "Pagamento confermato da Payrexx.",
     thankYouPayment: "Grazie per il pagamento!",
     precisionReview: "Il nostro team sta esaminando le immagini che hai inviato e ti forniremo il costo finale. Nel frattempo, rilassati: ti contatteremo a breve.",
-    imagesReceived: "Immagini ricevute e in corso di revisione.",
+    imagesReceived: "Richiesta ricevuta e in verifica.",
     securePayment: "Pagamento Sicuro",
-    securePaymentDesc: "Il tuo pagamento è crittografato e sicuro al 100%.",
-    bookingConfirmed: "Prenotazione Confermata",
-    bookingConfirmedDesc: "La tua prenotazione è confermata e garantita.",
+    securePaymentDesc: "Pagamento confermato da Payrexx.",
+    bookingConfirmed: "Servizio in verifica",
+    bookingConfirmedDesc: "Il team confermerà la data e i dettagli del servizio.",
     supportAvailable: "Supporto Disponibile",
     supportAvailableDesc: "Siamo qui per aiutarti ogni volta che ne hai bisogno.",
     reviewInProgress: "Revisione in Corso",
@@ -106,15 +117,15 @@ const translations = {
   },
   pt: {
     paymentCompleted: "Pagamento concluído!",
-    serviceBooked: "O seu serviço foi reservado com sucesso.",
-    confirmationSent: "Confirmação enviada por e-mail.",
+    serviceBooked: "O pagamento está confirmado. A nossa equipa confirmará a disponibilidade e os detalhes do serviço.",
+    confirmationSent: "Pagamento confirmado pela Payrexx.",
     thankYouPayment: "Obrigado pelo seu pagamento!",
     precisionReview: "A nossa equipa está a analisar as imagens que enviou e forneceremos o custo final. Entretanto, relaxe – entraremos em contacto em breve.",
-    imagesReceived: "Imagens recebidas e sob revisão.",
+    imagesReceived: "Pedido recebido e em análise.",
     securePayment: "Pagamento Seguro",
-    securePaymentDesc: "O seu pagamento é encriptado e 100% seguro.",
-    bookingConfirmed: "Reserva Confirmada",
-    bookingConfirmedDesc: "A sua reserva está confirmada e garantizada.",
+    securePaymentDesc: "Pagamento confirmado pela Payrexx.",
+    bookingConfirmed: "Serviço em análise",
+    bookingConfirmedDesc: "A equipa confirmará a data e os detalhes do serviço.",
     supportAvailable: "Suporte Disponível",
     supportAvailableDesc: "Estamos aqui para ajudar sempre que precisar.",
     reviewInProgress: "Análise em Curso",
@@ -136,33 +147,24 @@ const speechBubbles = [
 ];
 
 export const PaymentCelebrationPage: React.FC<PaymentCelebrationPageProps> = ({ booking, onBackHome }) => {
-  const currentLang = (localStorage.getItem('kraken_preferred_lang') || 'en') as keyof typeof translations;
+  const [confetti, setConfetti] = useState<ConfettiPiece[]>([]);
+  const { language } = useTranslation();
+  const currentLang = (language === 'de-CH' ? 'de' : language) as keyof typeof translations;
   const tLocal = translations[currentLang] || translations.en;
 
   // Determine booking type (Express vs Precision Quote)
   const isDirect = booking.bookingMode === 'direct';
 
-  const hasSentLead = useRef(false);
-
-  useEffect(() => {
-    if (!hasSentLead.current) {
-      hasSentLead.current = true;
-      const params = new URLSearchParams(window.location.search);
-      const urlPayment = params.get('payment');
-      const urlRef = params.get('ref') || params.get('transaction_id') || params.get('id');
-
-      sendLead({
-        source: 'payment_success',
-        amount: booking?.depositAmount || booking?.totalPrice || booking?.payment?.amountCharged || params.get('amount') || '',
-        currency: booking?.payment?.currency || 'CHF',
-        reference: booking?.id || urlRef || '',
-        name: booking?.clientName || booking?.client || '',
-        email: booking?.email || '',
-        payment_status: urlPayment || booking?.payment?.status || 'success',
-        bookingMode: booking?.bookingMode || ''
-      });
-    }
-  }, [booking]);
+  // A browser redirect is untrusted; server-side gateway confirmation is pending.
+  const awaitingVerification = !(booking?.payment?.status === 'captured' && booking.payment.verified === true && booking.payment.transactionId && booking.payment.gateway === 'payrexx');
+  const pendingText = {
+    de: ['Anfrage erhalten', 'Die Zahlungsbestätigung steht noch aus. Unser Team prüft Ihre Anfrage.', 'Zahlung wird geprüft'],
+    en: ['Request received', 'Payment confirmation is pending. Our team will review your request.', 'Payment under review'],
+    fr: ['Demande reçue', 'La confirmation du paiement est en attente. Notre équipe examinera votre demande.', 'Paiement en cours de vérification'],
+    it: ['Richiesta ricevuta', 'La conferma del pagamento è in attesa. Il nostro team esaminerà la richiesta.', 'Pagamento in verifica'],
+    es: ['Solicitud recibida', 'La confirmación del pago está pendiente. Nuestro equipo revisará tu solicitud.', 'Pago en revisión'],
+    pt: ['Pedido recebido', 'A confirmação do pagamento está pendente. A nossa equipa irá analisar o seu pedido.', 'Pagamento em análise'],
+  }[currentLang] || ['Request received', 'Payment confirmation is pending.', 'Payment under review'];
 
   useEffect(() => {
     // Generate 60 colorful confetti pieces
@@ -245,12 +247,12 @@ export const PaymentCelebrationPage: React.FC<PaymentCelebrationPageProps> = ({ 
 
             {/* Success Heading */}
             <h1 className="text-3xl md:text-4xl font-black text-[#002D5B] tracking-tight mb-4 leading-tight uppercase">
-              {isDirect ? tLocal.paymentCompleted : tLocal.thankYouPayment}
+              {awaitingVerification ? pendingText[0] : (isDirect ? tLocal.paymentCompleted : tLocal.thankYouPayment)}
             </h1>
 
             {/* Success Subtitle Description */}
             <p className="text-gray-600 text-sm md:text-base font-semibold mb-6 leading-relaxed">
-              {isDirect ? tLocal.serviceBooked : tLocal.precisionReview}
+              {awaitingVerification ? pendingText[1] : (isDirect ? tLocal.serviceBooked : tLocal.precisionReview)}
             </p>
 
             {/* Lower Badge/Pill */}
@@ -258,7 +260,7 @@ export const PaymentCelebrationPage: React.FC<PaymentCelebrationPageProps> = ({ 
               {isDirect ? (
                 <>
                   <span className="text-sm">✉</span>
-                  <span>{tLocal.confirmationSent}</span>
+                  <span>{awaitingVerification ? pendingText[2] : tLocal.confirmationSent}</span>
                 </>
               ) : (
                 <>
@@ -309,7 +311,7 @@ export const PaymentCelebrationPage: React.FC<PaymentCelebrationPageProps> = ({ 
               className="relative z-10"
             >
               <img
-                src="/ChatGPT%20Image%20Jul%2018,%202026,%2007_40_06%20PM.png"
+                src="/kai-calendar/optimized/kai/mascota-kraken-homepage-320.webp"
                 alt="Kai Kraken Mascot Happy"
                 className="h-[260px] md:h-[310px] w-auto object-contain drop-shadow-2xl animate-float"
                 referrerPolicy="no-referrer"
@@ -330,7 +332,7 @@ export const PaymentCelebrationPage: React.FC<PaymentCelebrationPageProps> = ({ 
               </div>
               <div>
                 <h4 className="text-xs font-black text-[#002D5B] uppercase tracking-wide mb-0.5">{tLocal.securePayment}</h4>
-                <p className="text-[10px] text-gray-500 font-bold leading-normal">{tLocal.securePaymentDesc}</p>
+                <p className="text-[10px] text-gray-500 font-bold leading-normal">{awaitingVerification ? pendingText[1] : tLocal.securePaymentDesc}</p>
               </div>
             </div>
 
@@ -341,8 +343,8 @@ export const PaymentCelebrationPage: React.FC<PaymentCelebrationPageProps> = ({ 
                   <Calendar className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-black text-[#002D5B] uppercase tracking-wide mb-0.5">{tLocal.bookingConfirmed}</h4>
-                  <p className="text-[10px] text-gray-500 font-bold leading-normal">{tLocal.bookingConfirmedDesc}</p>
+                  <h4 className="text-xs font-black text-[#002D5B] uppercase tracking-wide mb-0.5">{awaitingVerification ? pendingText[0] : tLocal.bookingConfirmed}</h4>
+                  <p className="text-[10px] text-gray-500 font-bold leading-normal">{awaitingVerification ? pendingText[1] : tLocal.bookingConfirmedDesc}</p>
                 </div>
               </div>
             ) : (

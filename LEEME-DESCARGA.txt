@@ -1,0 +1,68 @@
+Kraken PFM — entrega y continuación del 21 de noviembre de 2026
+
+Abre esta carpeta de Descargas en Codex y lee docs/CODEX_SETUP.md.
+Usa Node.js 24:
+
+    npm ci
+    npm run dev
+
+La web suele abrir en http://localhost:3000. Sin claves puedes revisar páginas,
+idiomas y Kai de ventas. Para probar registro, panel, borradores y archivos,
+arranca Auth/Firestore/Storage Emulator Suite con Java 21. Los comandos y variables
+están en docs/CODEX_SETUP.md. Se probaron emuladores reales demo-kraken-pfm,
+sin datos productivos.
+
+La entrega incluye portada compacta, header/footer y chat nuevos; registro que
+conserva identidad anónima, panel paginado y staff con permisos verificados.
+El login de una cuenta existente puede transferir borradores de invitado mediante
+dos identidades verificadas en servidor: sólo Draft sin pago, checkout ni adjuntos.
+Un fallo conserva el login y permite reintentar con la prueba sólo en memoria.
+Precios y confirmaciones de pago tienen autoridad de servidor. Los formularios
+esperan el recibo primario y los adjuntos elegidos deben subir antes de confirmar.
+
+Se crearon 20 escenas de Kai: 15 calendario Europe/Zurich y cinco de servicios/
+Thurgau, con 151 derivados. Inventario: 285 imágenes públicas válidas, cero dañadas
+y cero rutas faltantes. Los 41 archivos dañados se archivaron preservando hashes;
+los 22 originales históricos pendientes no se presentan como recuperados.
+Procedencia: docs/ASSET_AUDIT.md y docs/KAI_MEDIA.md.
+
+La carpeta original se contrastó con fd8cc1ee9c9947cb7e2c718bc433a896c3da244a;
+se conservó la retirada previa de Gemini del cliente y se recuperó el historial.
+Rama: codex/local-migration-2026-11-20.
+Fork: https://github.com/antonionadre2-dev/kph-
+Original: https://github.com/antonionadre-source/kph-
+PR borrador: https://github.com/antonionadre-source/kph-/pull/1
+Código de aplicación: 9a8c7835f9f3c361bdedb4e4761f003baa5a15b2.
+Preview READY: https://kpfm-c9yyqi0ak-antonionadre2-5701s-projects.vercel.app
+Protegida por inicio de sesión Vercel; la Preview anterior 10fbb52 es histórica.
+Registro: docs/VERCEL_SETUP.md y docs/PUBLICATION_2026-11-21.json.
+No se fusionó el PR ni se sustituyó producción.
+
+Preview permite revisar diseño/navegación, pero no aloja emuladores Firebase.
+Su loopback no es una base compartida remota. Falta acceso del propietario a
+Firebase/Google Cloud para configurar proveedores Auth, claims, reglas, índices y
+Storage. Registro/perfil/panel usan SDK cliente; transferencia entre UIDs y checkout
+necesitan Admin privado. Firebase CLI no tenía sesión autenticada al listar proyectos.
+La base productiva es NOMBRADA: revisar firebase.production.example.json y hacer
+coincidir ID con cliente/Admin/proyecto antes de desplegar. La configuración de
+emuladores no selecciona esa base; no se ha desplegado ninguna regla real.
+Payrexx TEST, Gemini, EmailJS y Make necesitan cuentas y destinos autorizados.
+
+Resultados locales finales: npm ci (436 paquetes), typecheck, build:vercel y npm
+test terminaron con salida 0. Pasaron 43 unidades (portal 18/backend 7/PDF 6
+incluidas), 16 formularios, 12 subidas, servidor 2/2, Vercel 4/4 y emuladores 7/7.
+Npm audit reporta cero vulnerabilidades en todas las severidades. CI Node 24,
+Java 21 y emuladores: success sobre 9a8c783.
+https://github.com/antonionadre2-dev/kph-/actions/runs/44908677518
+QA: portada sin overflow en nueve anchos de 320 a 1920 px, seis idiomas, chat
+fallback, registro/perfil reales demo, datos propios y tercero oculto, staff real,
+paginación 25→46 y mensajes. No certifica servicios comerciales de producción.
+
+El JS inicial entrada/modulepreloads baja de 2.570.402 a 722.451 bytes sin comprimir
+(71,9%); gzip de 730.521 a 201.858. No es una puntuación Lighthouse. Queda el aviso
+de Firebase diferido de unos 570 kB. Detalles CSS/chunks: docs/CODEX_SETUP.md.
+Para repetir: npm run build:vercel y npm test; con emuladores, npm run test:rules.
+
+No pongas claves privadas en el chat, Git ni variables VITE_*.
+No se crearon usuarios, pagos, mensajes ni solicitudes productivos.
+Estados y accesos por proveedor: docs/INTEGRATIONS.md.

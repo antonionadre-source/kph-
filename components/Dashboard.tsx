@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { postWebhook } from './leadWebhook';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '../i18n';
 import { motion, AnimatePresence } from 'motion/react';
 import { FilePreviewModal } from './FilePreviewModal';
@@ -47,7 +48,11 @@ import {
 } from 'lucide-react';
 import { useAuth } from './Auth';
 import { db, sanitizeFirestoreData } from './firebase';
-import { detectZone } from './ConsultationPage';
+import { portalText } from './portalText';
+import { portalQueryPlan, portalAmount, mergePortalRecords, PORTAL_PAGE_SIZE, type PortalCollection } from './portalRecords';
+import { withPortalTimeout } from './portalIdentity';
+import { openInvoiceSummary, escapeHtml } from './invoiceDocument';
+import { detectZone } from '../src/domain/pricing';
 import { DetailInspectorModal } from './DetailInspectorModal';
 import { getDashboardTranslation } from './dashboardTranslations';
 import { companyLogoUrl } from '../assets';
@@ -60,8 +65,17 @@ import {
   doc, 
   updateDoc, 
   deleteDoc, 
-  serverTimestamp
+  serverTimestamp, orderBy, limit, startAfter, type QueryDocumentSnapshot, type QueryConstraint
 } from 'firebase/firestore';
+
+const portalHeadings: Record<string, { title: string; subtitle: string; logout: string; loggingOut: string; logoutError: string; refresh: string }> = {
+  de: { title: 'Meine Anfragen', subtitle: 'Kundenportal', logout: 'Abmelden', loggingOut: 'Abmeldung läuft…', logoutError: 'Abmelden fehlgeschlagen. Bitte erneut versuchen.', refresh: 'Aktualisieren' },
+  en: { title: 'My requests', subtitle: 'Client dashboard', logout: 'Sign out', loggingOut: 'Signing out…', logoutError: 'Unable to sign out. Please retry.', refresh: 'Refresh' },
+  fr: { title: 'Mes demandes', subtitle: 'Espace client', logout: 'Se déconnecter', loggingOut: 'Déconnexion…', logoutError: 'Déconnexion impossible. Réessayez.', refresh: 'Actualiser' },
+  it: { title: 'Le mie richieste', subtitle: 'Portale clienti', logout: 'Esci', loggingOut: 'Disconnessione…', logoutError: 'Impossibile uscire. Riprova.', refresh: 'Aggiorna' },
+  es: { title: 'Mis solicitudes', subtitle: 'Panel de clientes', logout: 'Cerrar sesión', loggingOut: 'Cerrando sesión…', logoutError: 'No se pudo cerrar sesión. Reinténtalo.', refresh: 'Actualizar' },
+  pt: { title: 'Os meus pedidos', subtitle: 'Painel de clientes', logout: 'Terminar sessão', loggingOut: 'A terminar sessão…', logoutError: 'Não foi possível terminar sessão. Tente novamente.', refresh: 'Atualizar' },
+};
 
 // Maintenance & Cleaning Request Datastructure
 type MaintenanceRequest = {
@@ -72,6 +86,8 @@ type MaintenanceRequest = {
     status: 'Pending' | 'In Progress' | 'Completed' | 'Draft';
     priority: 'Low' | 'Medium' | 'High';
     amount: number;
+    estimatedAmount?: number;
+    serverQuote?: Record<string, any>;
     email?: string;
     phone?: string;
     address?: string;
@@ -118,6 +134,7 @@ type MaintenanceRequest = {
       estimatedDurationHours: number;
       estimatedEndTime: string | null;
     } | null;
+    checkout?: unknown;
     createdAt?: any;
     updatedAt?: any;
 };
@@ -155,262 +172,26 @@ type ContactMessage = {
     createdAt?: any;
 };
 
-// Seed fallback data for fresh developer portals
-const INITIAL_SEED_DATA = [
-    { 
-        client: "Mandarin Oriental Resort", 
-        service: "B2B Deep Cleaning", 
-        date: "2026-06-01", 
-        status: "In Progress" as const, 
-        priority: "High" as const, 
-        amount: 4800, 
-        email: "facilities@mandarin.ch", 
-        phone: "+41 44 222 11 00", 
-        address: "Quai Turrettini 1, 1201 Geneva", 
-        notes: "Ensure specialized marble polish is completed. Standard corporate credentials requested on site.", 
-        mediaUrls: ["https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=600&auto=format&fit=crop"], 
-        mediaNames: ["lounge_marble_area.jpg"],
-        bookingMode: 'direct',
-        accessMethod: 'Coordinate with Operational Gate Staff',
-        time: '08:00 - 17:00',
-        services: [
-            {
-                type: 'deep-cleaning',
-                description: 'Office Deep Cleaning | 12 Bed/Offices | 8 Bath | Frequency: Weekly | Day: Mondays',
-                price: 4800,
-                duration: 9,
-                details: {
-                    bedrooms: 12,
-                    bathrooms: 8,
-                    frequency: 'Weekly',
-                    recurringDayPreference: 'Monday',
-                    balconyCount: 4,
-                    storageCount: 2,
-                    carpetCount: 12,
-                    furnitureCount: 24
-                }
-            }
-        ],
-        payment: {
-            method: 'card' as const,
-            gateway: 'payrexx' as const,
-            last4: '4242',
-            brand: 'visa',
-            cardholderName: 'Facilities Manager',
-            expiryMonth: '08',
-            expiryYear: '28',
-            transactionId: 'ch_3M3pxuLkdIj789BC0298aKj1',
-            amountCharged: 720,
-            currency: 'CHF',
-            status: 'captured' as const,
-            billingPostal: '1201'
-        },
-        mediaAttachments: [
-            {
-                filename: 'lounge_marble_area.jpg',
-                mimeType: 'image/jpeg',
-                sizeBytes: 1548576,
-                uploadedAt: '2026-05-31T10:15:30Z',
-                url: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=600&auto=format&fit=crop'
-            }
-        ],
-        timestamps: {
-            formSubmittedAt: '2026-05-31T10:00:23Z',
-            priceCalculatedAt: '2026-05-31T09:58:12Z',
-            depositCapturedAt: '2026-05-31T10:00:45Z',
-            lastUpdatedAt: '2026-05-31T10:05:00Z',
-            requestedServiceDate: '2026-06-01',
-            requestedServiceTime: '08:00'
-        },
-        scheduling: {
-            requestedDate: '2026-06-01',
-            preferredTimeWindow: 'specific' as const,
-            specificTime: '08:00',
-            estimatedDurationHours: 9,
-            estimatedEndTime: '17:00'
-        }
-    },
-    { 
-        client: "Zurich Swiss Tower B", 
-        service: "End of Tenancy Deluxe", 
-        date: "2026-06-08", 
-        status: "Pending" as const, 
-        priority: "Medium" as const, 
-        amount: 2450, 
-        email: "contact@towerb.ch", 
-        phone: "+41 43 900 33 22", 
-        address: "Brandschenkestrasse 90, 8002 Zurich", 
-        notes: "15 rooms handover guarantee protocol required. Client requested dual inspection reports.", 
-        mediaUrls: [], 
-        mediaNames: [],
-        bookingMode: 'direct',
-        accessMethod: 'Key under the codebox: Pin 8002',
-        time: '09:00 - 18:00',
-        services: [
-            {
-                type: 'end-of-tenancy',
-                description: 'Deluxe Handover Cleaning | 15 Rooms | 4 Bathrooms | Balcony (2)',
-                price: 2450,
-                duration: 10,
-                details: {
-                    roomsCount: 15,
-                    bathroomsCount: 4,
-                    balconyCount: 2,
-                    storageCount: 1,
-                    carpetCount: 3,
-                    furnitureCount: 5
-                }
-            }
-        ],
-        payment: {
-            method: 'bank_transfer' as const,
-            gateway: 'manual' as const,
-            last4: '',
-            brand: '',
-            cardholderName: 'Corporate Operations',
-            expiryMonth: '',
-            expiryYear: '',
-            transactionId: 'invoice_bank_transfer',
-            amountCharged: 367.50,
-            currency: 'CHF',
-            status: 'pending' as const,
-            billingPostal: '8002'
-        },
-        mediaAttachments: [],
-        timestamps: {
-            formSubmittedAt: '2026-05-31T08:24:12Z',
-            priceCalculatedAt: '2026-05-31T08:20:00Z',
-            depositCapturedAt: null,
-            lastUpdatedAt: '2026-05-31T08:24:12Z',
-            requestedServiceDate: '2026-06-08',
-            requestedServiceTime: '09:00'
-        },
-        scheduling: {
-            requestedDate: '2026-06-08',
-            preferredTimeWindow: 'specific' as const,
-            specificTime: '09:00',
-            estimatedDurationHours: 10,
-            estimatedEndTime: '19:00'
-        }
-    },
-    { 
-        client: "Grand Hotel Bellevue", 
-        service: "Exterior Glass Facade", 
-        date: "2026-05-28", 
-        status: "Completed" as const, 
-        priority: "Low" as const, 
-        amount: 1350, 
-        email: "maintenance@bellevue-gstaad.ch", 
-        phone: "+41 33 748 00 00", 
-        address: "Untergstaadstrasse 26, 3780 Gstaad", 
-        notes: "Eco-Performance water filtration system applied. 100% certified bio products used.", 
-        mediaUrls: [], 
-        mediaNames: [],
-        bookingMode: 'quote',
-        accessMethod: 'Key box near side entrance | Pass: BELLE',
-        time: '13:00 - 17:00',
-        services: [
-            {
-                type: 'exterior-cleaning',
-                description: 'Double Glass Facade Water Jet Jet wash',
-                price: 1350,
-                duration: 4.5,
-                details: {
-                    surface: 'Glass & Slate Panels',
-                    material: 'Toughened Facade Glass',
-                    approxSize: 340
-                }
-            }
-        ],
-        payment: {
-            method: 'twint' as const,
-            gateway: 'payrexx' as const,
-            last4: '',
-            brand: '',
-            cardholderName: 'Hotel Bellevue Management',
-            expiryMonth: '',
-            expiryYear: '',
-            transactionId: 'tw_9081267BcaKj32890',
-            amountCharged: 202.50,
-            currency: 'CHF',
-            status: 'captured' as const,
-            billingPostal: '3780'
-        },
-        mediaAttachments: [],
-        timestamps: {
-            formSubmittedAt: '2026-05-27T16:11:00Z',
-            priceCalculatedAt: '2026-05-27T16:05:00Z',
-            depositCapturedAt: '2026-05-27T16:12:30Z',
-            lastUpdatedAt: '2026-05-28T18:00:00Z',
-            requestedServiceDate: '2026-05-28',
-            requestedServiceTime: '13:00'
-        },
-        scheduling: {
-            requestedDate: '2026-05-28',
-            preferredTimeWindow: 'specific' as const,
-            specificTime: '13:00',
-            estimatedDurationHours: 4.5,
-            estimatedEndTime: '17:30'
-        }
-    },
-];
-
-const getClientSeedData = (userName: string, userEmail: string) => [
-   { 
-       client: userName, 
-       service: "Initial Facility Check & Key Setup", 
-       date: new Date().toISOString().split("T")[0], 
-       status: "Pending" as const, 
-       priority: "Medium" as const, 
-       amount: 350, 
-       email: userEmail, 
-       phone: "+41 79 123 45 67", 
-       address: "Zürich, Switzerland", 
-       notes: "Welcome to Kraken PFM. This onboarding check verifies your localized passcode, key-box access codes, or smart cards. A staff member will check the premises shortly.", 
-       mediaUrls: [], 
-       mediaNames: [],
-       bookingMode: 'direct',
-       accessMethod: 'Passcode sent under SMS auth',
-       time: '10:00 - 12:00',
-       services: [],
-       payment: {
-           method: 'cash' as const,
-           gateway: 'manual' as const,
-           last4: '',
-           brand: '',
-           cardholderName: userName,
-           expiryMonth: '',
-           expiryYear: '',
-           transactionId: 'hand_setup',
-           amountCharged: 52.50,
-           currency: 'CHF',
-           status: 'pending' as const,
-           billingPostal: '8000'
-       },
-       mediaAttachments: [],
-       timestamps: {
-           formSubmittedAt: new Date().toISOString(),
-           priceCalculatedAt: new Date().toISOString(),
-           depositCapturedAt: null,
-           lastUpdatedAt: new Date().toISOString(),
-           requestedServiceDate: new Date().toISOString().split("T")[0],
-           requestedServiceTime: '10:00'
-       },
-       scheduling: {
-           requestedDate: new Date().toISOString().split("T")[0],
-           preferredTimeWindow: 'specific' as const,
-           specificTime: '10:00',
-           estimatedDurationHours: 2,
-           estimatedEndTime: '12:00'
-       }
-   }
-];
-
 const Dashboard: React.FC = () => {
   const { language } = useTranslation();
   const dt = getDashboardTranslation(language);
-  const { user } = useAuth();
+  const { user, resendVerification, refreshUser, logout } = useAuth();
+  const pt = (key: Parameters<typeof portalText>[1]) => portalText(language, key);
+  const heading = portalHeadings[language.split('-')[0]] || portalHeadings.de;
   
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [logoutError, setLogoutError] = useState(false);
+  const logoutPending = useRef(false);
+
+  const handleLogout = async () => {
+    if (logoutPending.current) return;
+    logoutPending.current = true;
+    setLoggingOut(true); setLogoutError(false);
+    try { await logout(); }
+    catch { setLogoutError(true); }
+    finally { logoutPending.current = false; setLoggingOut(false); }
+  };
+
   // States
   const [requests, setRequests] = useState<MaintenanceRequest[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -432,10 +213,10 @@ const Dashboard: React.FC = () => {
   const [emailHistoryClientFilter, setEmailHistoryClientFilter] = useState('');
   const [showEmailHistory, setShowEmailHistory] = useState(false);
   const [emailHistory, setEmailHistory] = useState<Array<{id:string;requestId:string;clientName:string;clientEmail:string;subject:string;sentAt:string;status:'sent'|'pending'|'error';amount:string;}>>(() => {
-    try { return JSON.parse(localStorage.getItem('kraken_email_history') || '[]'); } catch { return []; }
+    try { return JSON.parse(localStorage.getItem(`kraken_email_history_${user?.uid || ''}`) || '[]'); } catch { return []; }
   });
   const [confirmationStatuses, setConfirmationStatuses] = useState<Record<string,'confirmed'|'pending'|'none'>>(() => {
-    try { return JSON.parse(localStorage.getItem('kraken_confirm_status') || '{}'); } catch { return {}; }
+    try { return JSON.parse(localStorage.getItem(`kraken_confirm_status_${user?.uid || ''}`) || '{}'); } catch { return {}; }
   });
   useEffect(() => {
     if (selectedRequest) {
@@ -473,241 +254,86 @@ const Dashboard: React.FC = () => {
   const [messageSearchQuery, setMessageSearchQuery] = useState('');
   const [messageFilterStatus, setMessageFilterStatus] = useState<'all' | 'new' | 'done'>('all');
 
-  const isStaff = user?.email?.toLowerCase().trim().endsWith('@krakenpfm.ch') || user?.email?.toLowerCase().trim() === 'kai@krakenpfm.ch' || user?.email?.toLowerCase().trim() === 'antonio.nadre@anotherstar.com';
+  const isStaff = user?.isStaff === true && user.emailVerified === true;
+  const isPageLoading = activeTab === 'requests' ? loading : activeTab === 'careers' ? loadingCareers : loadingMessages;
 
-  const fetchContactMessages = async () => {
-    if (!user) return;
-    setLoadingMessages(true);
+  const [loadErrors, setLoadErrors] = useState<Record<string, boolean>>({});
+  const [hasMore, setHasMore] = useState<Record<string, boolean>>({});
+  const cursors = useRef<Record<string, QueryDocumentSnapshot | null>>({});
+  const loadVersions = useRef<Record<string, number>>({});
+  const collectionByTab: Record<string, PortalCollection> = { requests: 'maintenance_requests', careers: 'job_applications', messages: 'contact_messages' };
+
+  const fetchPortalPage = async (tab: 'requests' | 'careers' | 'messages', append = false) => {
+    if (!user?.uid || (tab === 'messages' && !isStaff)) return;
+    const generation = (loadVersions.current[tab] || 0) + 1;
+    loadVersions.current[tab] = generation;
+    const status = tab === 'requests' ? filterStatus : tab === 'careers' ? careerFilterStatus : messageFilterStatus;
+    const setBusy = tab === 'requests' ? setLoading : tab === 'careers' ? setLoadingCareers : setLoadingMessages;
+    setBusy(true); setLoadErrors(previous => ({ ...previous, [tab]: false }));
     try {
-      const q = collection(db, 'contact_messages');
-      const querySnapshot = await getDocs(q);
-      const fetched: ContactMessage[] = [];
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data() as any;
-        fetched.push({
-          id: docSnap.id,
-          name: data.name || 'Anónimo',
-          email: data.email || 'No email',
-          subject: data.subject || 'Sin asunto',
-          message: data.message || '',
-          language: data.language || 'de',
-          status: data.status === 'done' ? 'done' : 'new',
-          createdAt: data.createdAt
-        });
+      const plan = portalQueryPlan(collectionByTab[tab], user.uid, isStaff, status);
+      const constraints: QueryConstraint[] = plan.filters.map(([field, value]) => where(field, '==', value));
+      constraints.push(orderBy(plan.orderBy[0], plan.orderBy[1]), limit(plan.limit));
+      if (append && cursors.current[tab]) constraints.push(startAfter(cursors.current[tab]));
+      const snapshot = await withPortalTimeout(getDocs(query(collection(db, plan.collection), ...constraints)));
+      if (generation !== loadVersions.current[tab]) return;
+      cursors.current[tab] = snapshot.docs[snapshot.docs.length - 1] || null;
+      setHasMore(previous => ({ ...previous, [tab]: snapshot.size === PORTAL_PAGE_SIZE }));
+      const records = snapshot.docs.map(record => {
+        const data = record.data();
+        return {
+          ...data, id: record.id, client: String(data.client || data.clientName || ''), name: String(data.name || ''),
+          position: String(data.position || ''), region: String(data.region || ''), permit: String(data.permit || ''), startDate: String(data.startDate || ''), pensum: String(data.pensum || ''), subject: String(data.subject || ''), message: String(data.message || ''),
+          email: String(data.email || ''), service: String(data.service || ''), date: String(data.date || ''),
+          phone: String(data.phone || ''), address: String(data.address || ''), notes: String(data.notes || ''),
+          cvData: String(data.cvUrl || data.cvData || ''), cvName: String(data.cvName || ''), cvType: String(data.cvType || ''),
+          amount: Number.isFinite(Number(data.amount)) ? Number(data.amount) : 0,
+          mediaUrls: Array.isArray(data.mediaUrls) ? data.mediaUrls : [],
+          mediaNames: Array.isArray(data.mediaNames) ? data.mediaNames : [],
+          status: String(data.status || (tab === 'messages' ? 'new' : 'Pending')), priority: String(data.priority || 'Medium'),
+        };
       });
-      fetched.sort((a, b) => {
-        if (a.status === 'new' && b.status !== 'new') return -1;
-        if (a.status !== 'new' && b.status === 'new') return 1;
-        return 0;
-      });
-      setContactMessages(fetched);
-    } catch (err) {
-      console.error("Error fetching contact messages from Firestore:", err);
-    } finally {
-      setLoadingMessages(false);
-    }
+      if (tab === 'requests') setRequests(previous => append ? mergePortalRecords(previous, records as MaintenanceRequest[]) : records as MaintenanceRequest[]);
+      if (tab === 'careers') setJobApplications(previous => append ? mergePortalRecords(previous, records as JobApplication[]) : records as JobApplication[]);
+      if (tab === 'messages') setContactMessages(previous => append ? mergePortalRecords(previous, records as ContactMessage[]) : records as ContactMessage[]);
+    } catch {
+      if (generation === loadVersions.current[tab]) setLoadErrors(previous => ({ ...previous, [tab]: true }));
+    } finally { if (generation === loadVersions.current[tab]) setBusy(false); }
   };
 
-  const handleMessageStatusToggle = async (msgId: string, currentStatus: 'new' | 'done') => {
-    const nextStatus = currentStatus === 'new' ? 'done' : 'new';
+  const handleMessageStatusToggle = async (id: string, status: 'new' | 'done') => {
+    if (!isStaff) return;
     try {
-      await updateDoc(doc(db, 'contact_messages', msgId), {
-        status: nextStatus,
-        updatedAt: serverTimestamp()
-      });
-      setContactMessages(prev => prev.map(m => m.id === msgId ? { ...m, status: nextStatus } : m));
-      setActionAlert(`Estado del mensaje actualizado a: ${nextStatus === 'done' ? 'Atendido (Done)' : 'Nuevo (New)'}`);
-    } catch (err) {
-      console.error("Error updating contact message status:", err);
-    }
+      const nextStatus = status === 'new' ? 'done' : 'new';
+      await withPortalTimeout(updateDoc(doc(db, 'contact_messages', id), { status: nextStatus, updatedAt: serverTimestamp() }));
+      setContactMessages(previous => previous.map(record => record.id === id ? { ...record, status: nextStatus } : record));
+      setActionAlert(pt('saved'));
+    } catch { setActionAlert(pt('saveError')); }
   };
-
-  const fetchJobApplications = async () => {
-    if (!user) return;
-    setLoadingCareers(true);
+  const handleJobAppStatusChange = async (id: string, status: JobApplication['status']) => {
+    if (!isStaff) return;
     try {
-      let q;
-      if (isStaff) {
-        q = collection(db, 'job_applications');
-      } else {
-        q = query(
-          collection(db, 'job_applications'),
-          where('userId', '==', user.uid)
-        );
-      }
-      const querySnapshot = await getDocs(q);
-      const fetched: JobApplication[] = [];
-      querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data() as any;
-        fetched.push({
-          id: docSnap.id,
-          name: data.name || '',
-          phone: data.phone || '',
-          position: data.position || '',
-          region: data.region || '',
-          permit: data.permit || '',
-          startDate: data.startDate || '',
-          pensum: data.pensum || '',
-          certificates: data.certificates || '',
-          languages: data.languages || '',
-          message: data.message || '',
-          cvName: data.cvName || '',
-          cvData: data.cvData || '',
-          cvType: data.cvType || '',
-          status: data.status || 'Pending',
-          createdAt: data.createdAt,
-          updatedAt: data.updatedAt
-        });
-      });
-      setJobApplications(fetched);
-    } catch (err) {
-      console.error("Error fetching candidate job applications from Firestore:", err);
-    } finally {
-      setLoadingCareers(false);
-    }
+      await withPortalTimeout(updateDoc(doc(db, 'job_applications', id), { status, updatedAt: serverTimestamp() }));
+      setJobApplications(previous => previous.map(record => record.id === id ? { ...record, status } : record));
+      setSelectedJobApp(previous => previous?.id === id ? { ...previous, status } : previous);
+      setActionAlert(pt('saved'));
+    } catch { setActionAlert(pt('saveError')); }
   };
-
-  const handleJobAppStatusChange = async (appId: string, nextStatus: 'Pending' | 'Reviewed' | 'Contacted' | 'Hired' | 'Rejected') => {
-    try {
-      await updateDoc(doc(db, 'job_applications', appId), {
-        status: nextStatus,
-        updatedAt: serverTimestamp()
-      });
-      setJobApplications(prev => prev.map(app => app.id === appId ? { ...app, status: nextStatus } : app));
-      if (selectedJobApp?.id === appId) {
-        setSelectedJobApp(prev => prev ? { ...prev, status: nextStatus } : null);
-      }
-      setActionAlert(`Estatus de candidato actualizado a: ${nextStatus}`);
-    } catch (err) {
-      console.error("Error updating candidate application status:", err);
-    }
-  };
-
-  // Fetch requests
   useEffect(() => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-
-    const fetchRequests = async () => {
-      try {
-        console.log("Fetching requested cleaning records. Operator role is staff status =", isStaff);
-        
-        let q;
-        if (isStaff) {
-          // Workers console sees all submissions
-          q = collection(db, 'maintenance_requests');
-        } else {
-          // Client only sees their own
-          q = query(
-            collection(db, 'maintenance_requests'),
-            where('userId', '==', user.uid)
-          );
-        }
-
-        const querySnapshot = await getDocs(q);
-        const fetched: MaintenanceRequest[] = [];
-        
-        querySnapshot.forEach((doc) => {
-          const data = doc.data() as any;
-          fetched.push({
-            id: doc.id,
-            client: data.client || '',
-            service: data.service || '',
-            date: data.date || '',
-            status: data.status || 'Pending',
-            priority: data.priority || 'Medium',
-            amount: Number(data.amount) || 0,
-            email: data.email || '',
-            phone: data.phone || '',
-            address: data.address || '',
-            notes: data.notes || '',
-            mediaUrls: data.mediaUrls || [],
-            mediaNames: data.mediaNames || [],
-            bookingMode: data.bookingMode || '',
-            accessMethod: data.accessMethod || '',
-            time: data.time || '',
-            services: data.services || [],
-            // Enriched JSON schema fields
-            payment: data.payment || null,
-            mediaAttachments: data.mediaAttachments || [],
-            timestamps: data.timestamps || null,
-            scheduling: data.scheduling || null,
-            createdAt: data.createdAt,
-            updatedAt: data.updatedAt
-          });
-        });
-
-        // Seed if totally empty to prevent cold start feedback on clean dbs
-        const seedFlag = `seeded_v3_${user.uid}`;
-        if (fetched.length === 0 && !localStorage.getItem(seedFlag)) {
-          const seededList: MaintenanceRequest[] = [];
-          
-          const seedData = isStaff 
-            ? INITIAL_SEED_DATA 
-            : getClientSeedData(user.name, user.email);
-
-          for (const item of seedData) {
-            const newDocId = doc(collection(db, 'maintenance_requests')).id;
-            const requestRef = doc(db, 'maintenance_requests', newDocId);
-            
-            const payload = {
-              id: newDocId,
-              client: item.client,
-              service: item.service,
-              date: item.date,
-              status: item.status,
-              priority: item.priority,
-              amount: item.amount,
-              email: item.email,
-              phone: item.phone,
-              address: item.address,
-              notes: item.notes,
-              mediaUrls: item.mediaUrls,
-              mediaNames: item.mediaNames,
-              bookingMode: item.bookingMode,
-              accessMethod: item.accessMethod,
-              time: item.time,
-              services: item.services,
-              // Enrichment fields from item:
-              payment: item.payment || null,
-              mediaAttachments: item.mediaAttachments || [],
-              timestamps: item.timestamps || null,
-              scheduling: item.scheduling || null,
-              userId: user.uid,
-              createdAt: serverTimestamp(),
-              updatedAt: serverTimestamp()
-            };
-            
-            await setDoc(requestRef, sanitizeFirestoreData(payload));
-            
-            seededList.push({
-              ...payload,
-              id: newDocId,
-              createdAt: null,
-              updatedAt: null
-            });
-          }
-          
-          localStorage.setItem(seedFlag, 'true');
-          setRequests(seededList);
-        } else {
-          // Sort descending by date
-          fetched.sort((a, b) => b.date.localeCompare(a.date));
-          setRequests(fetched);
-        }
-      } catch (error) {
-        console.error('Error fetching maintenance requests from firestore:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRequests();
-    fetchJobApplications();
-    fetchContactMessages();
-  }, [user, isStaff]);
+    for (const tab of ['requests', 'careers', 'messages']) loadVersions.current[tab] = (loadVersions.current[tab] || 0) + 1;
+    try {
+      setEmailHistory(JSON.parse(localStorage.getItem(`kraken_email_history_${user?.uid || ''}`) || '[]'));
+      setConfirmationStatuses(JSON.parse(localStorage.getItem(`kraken_confirm_status_${user?.uid || ''}`) || '{}'));
+    } catch { setEmailHistory([]); setConfirmationStatuses({}); }
+    cursors.current = {}; setRequests([]); setJobApplications([]); setContactMessages([]); setSelectedRequest(null); setSelectedJobApp(null);
+    setLoadErrors({}); setHasMore({});
+    if (!isStaff && activeTab === 'messages') setActiveTab('requests');
+  }, [user?.uid, isStaff]);
+  useEffect(() => {
+    if (!user?.uid) { setLoading(false); return; }
+    fetchPortalPage(activeTab);
+    return () => { loadVersions.current[activeTab] = (loadVersions.current[activeTab] || 0) + 1; };
+  }, [user?.uid, isStaff, activeTab, filterStatus, careerFilterStatus, messageFilterStatus]);
 
   // Actions
   const handleDelete = async (id: string, e?: React.MouseEvent) => {
@@ -715,7 +341,7 @@ const Dashboard: React.FC = () => {
       if (!user) return;
       
       const targetRequest = requests.find(r => r.id === id);
-      if (targetRequest && !isStaff && targetRequest.status !== 'Pending') {
+      if (targetRequest && !isStaff && (targetRequest.checkout || !['Draft', 'Pending'].includes(targetRequest.status))) {
         alert("Locked for Operations Security: Requests that are already 'In Progress' or 'Completed' cannot be cancelled or deleted online. Please contact our operational staff at kai@krakenpfm.ch for immediate assistance.");
         return;
       }
@@ -731,7 +357,7 @@ const Dashboard: React.FC = () => {
               setSelectedRequest(null);
           }
       } catch (error) {
-          console.error('Error deleting document:', error);
+          setActionAlert(pt('saveError'));
       }
   };
 
@@ -772,13 +398,13 @@ const Dashboard: React.FC = () => {
           });
           setRequests(updatedList);
       } catch (error) {
-          console.error('Error changing document status:', error);
+          setActionAlert(pt('saveError'));
       }
   };
 
   // Direct Status Update Selector from details
-  const updateStatusDirect = async (id: string, nextStatus: 'Pending' | 'In Progress' | 'Completed') => {
-      if (!user) return;
+  const updateStatusDirect = async (id: string, nextStatus: 'Pending' | 'In Progress' | 'Completed' | 'Draft') => {
+      if (!user || !isStaff) return;
       try {
           await updateDoc(doc(db, 'maintenance_requests', id), {
               status: nextStatus,
@@ -797,7 +423,7 @@ const Dashboard: React.FC = () => {
           });
           setRequests(updatedList);
       } catch (error) {
-          console.error('Error updating status on detail panel:', error);
+          setActionAlert(pt('saveError'));
       }
   };
 
@@ -808,7 +434,7 @@ const Dashboard: React.FC = () => {
   };
 
   const handleSaveNotes = async (id: string, notesText: string) => {
-      if (!user) return;
+      if (!user || !isStaff) return;
       try {
           await updateDoc(doc(db, 'maintenance_requests', id), {
               notes: notesText,
@@ -826,16 +452,19 @@ const Dashboard: React.FC = () => {
               return req;
           });
           setRequests(updatedList);
-          setActionAlert("Notes saved and synchronized with Cloud Database.");
+          setActionAlert(pt('saved'));
           setTimeout(() => setActionAlert(null), 3000);
       } catch (error) {
-          console.error('Error saving notes:', error);
+          setActionAlert(pt('saveError'));
       }
   };
 
+  const amountText = (record: MaintenanceRequest) => { const financial = portalAmount(record); return financial.value === undefined ? '—' : `${pt(financial.confirmed ? 'quotedAmount' : 'amount')}: ${financial.value.toLocaleString()}`; };
+
   const handleSendEmail = (req: MaintenanceRequest) => {
-    const subjText = dt.emailSubjConfirmation + ' – ' + (req.service || req.client || 'Service') + ' | CHF ' + (req.amount || '0');
-    const bHtml = `<!DOCTYPE html><html><head><meta charset='utf-8'><style>body{font-family:Arial,sans-serif;background:#f0f4f8;margin:0;padding:0}.c{max-width:600px;margin:20px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1)}.h{background:#0f1b2d;padding:28px 32px;text-align:center}.h h1{color:#00d4ff;margin:0;font-size:22px;letter-spacing:2px;text-transform:uppercase}.h p{color:#94a3b8;margin:4px 0 0;font-size:12px}.b{padding:28px 32px}.tbl{width:100%;border-collapse:collapse;margin:16px 0}.tbl th{background:#0f1b2d;color:#00d4ff;padding:10px 14px;text-align:left;font-size:12px;text-transform:uppercase}.tbl td{padding:10px 14px;border-bottom:1px solid #e2e8f0;font-size:13px;color:#334155}.tot td{font-weight:bold;background:#f8fafc}.totamt{color:#0f1b2d;font-size:18px;font-weight:900}.ft{background:#0f1b2d;padding:16px 32px;text-align:center}.ft p{color:#64748b;font-size:11px;margin:3px 0}</style></head><body><div class='c'><div class='h'><h1>Kraken PFM</h1><p>Properties &amp; Facilities Management</p></div><div class='b'><p style='font-size:15px;color:#1e293b'>${dt.emailGreeting}<br><br>${dt.emailBodyIntro}</p><table class='tbl'><tr><th>${dt.emailThDetail}</th><th>${dt.emailThInfo}</th></tr><tr><td>${dt.emailThClient}</td><td><b>${req.client||'N/A'}</b></td></tr><tr><td>${dt.emailThService}</td><td><b>${req.service||'Facility Management'}</b></td></tr><tr><td>${dt.emailThDate}</td><td><b>${req.date||new Date().toLocaleDateString('de-CH')}</b></td></tr><tr><td>${dt.emailThPriority}</td><td><b>${req.priority||'Standard'}</b></td></tr><tr class='tot'><td><b>${dt.emailThTotal}</b></td><td><span class='totamt'>CHF ${req.amount||'0.00'}</span></td></tr></table><p style='font-size:12px;color:#64748b'>${dt.emailReplyPrompt}</p></div><div class='ft'><p style='color:#94a3b8;font-size:13px;font-weight:bold'>Kraken Properties &amp; Facilities Management</p><p>kai@krakenpfm.ch | krakenpfm.ch</p></div></div></body></html>`;
+    if (!isStaff) return;
+    const subjText = dt.emailSubjConfirmation + ' – ' + (req.service || req.client || 'Service') + ' | ' + amountText(req);
+    const bHtml = `<!DOCTYPE html><html><head><meta charset='utf-8'><style>body{font-family:Arial,sans-serif;background:#f0f4f8;margin:0;padding:0}.c{max-width:600px;margin:20px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1)}.h{background:#0f1b2d;padding:28px 32px;text-align:center}.h h1{color:#00d4ff;margin:0;font-size:22px;letter-spacing:2px;text-transform:uppercase}.h p{color:#94a3b8;margin:4px 0 0;font-size:12px}.b{padding:28px 32px}.tbl{width:100%;border-collapse:collapse;margin:16px 0}.tbl th{background:#0f1b2d;color:#00d4ff;padding:10px 14px;text-align:left;font-size:12px;text-transform:uppercase}.tbl td{padding:10px 14px;border-bottom:1px solid #e2e8f0;font-size:13px;color:#334155}.tot td{font-weight:bold;background:#f8fafc}.totamt{color:#0f1b2d;font-size:18px;font-weight:900}.ft{background:#0f1b2d;padding:16px 32px;text-align:center}.ft p{color:#64748b;font-size:11px;margin:3px 0}</style></head><body><div class='c'><div class='h'><h1>Kraken PFM</h1><p>Properties &amp; Facilities Management</p></div><div class='b'><p style='font-size:15px;color:#1e293b'>${escapeHtml(dt.emailGreeting)}<br><br>${escapeHtml(dt.emailBodyIntro)}</p><table class='tbl'><tr><th>${escapeHtml(dt.emailThDetail)}</th><th>${escapeHtml(dt.emailThInfo)}</th></tr><tr><td>${escapeHtml(dt.emailThClient)}</td><td><b>${escapeHtml(req.client||'N/A')}</b></td></tr><tr><td>${escapeHtml(dt.emailThService)}</td><td><b>${escapeHtml(req.service||'Facility Management')}</b></td></tr><tr><td>${escapeHtml(dt.emailThDate)}</td><td><b>${escapeHtml(req.date||'—')}</b></td></tr><tr><td>${escapeHtml(dt.emailThPriority)}</td><td><b>${escapeHtml(req.priority||'Standard')}</b></td></tr><tr class='tot'><td><b>${escapeHtml(pt(portalAmount(req).confirmed ? 'quotedAmount' : 'amount'))}</b></td><td><span class='totamt'>${escapeHtml(amountText(req))}</span></td></tr></table><p style='font-size:12px;color:#64748b'>${escapeHtml(dt.emailReplyPrompt)}</p></div><div class='ft'><p style='color:#94a3b8;font-size:13px;font-weight:bold'>Kraken Properties &amp; Facilities Management</p><p>kai@krakenpfm.ch | krakenpfm.ch</p></div></div></body></html>`;
     setSelectedEmailRequest(req);
     setEmailTo(req.email || '');
     setEmailCC('');
@@ -846,139 +475,24 @@ const Dashboard: React.FC = () => {
   };
 
   const handleScheduleService = async (req: MaintenanceRequest) => {
-      try {
-          await updateDoc(doc(db, 'maintenance_requests', req.id), {
-              status: 'In Progress',
-              scheduledAt: serverTimestamp(),
-              updatedAt: serverTimestamp()
-          });
-
-          setRequests(prev => prev.map(r => r.id === req.id ? { ...r, status: 'In Progress' } : r));
-
-          // Trigger Outlook Calendar event & .ics download for kai@krakenpfm.ch with 1h reminder
-          scheduleCalendarEventForKai(req);
-
-          setActionAlert(`SUCCESS: Evento agendado en Outlook para kai@krakenpfm.ch con recordatorio de 1 hora. Sincronizado en Firebase.`);
-      } catch (err) {
-          console.error('Error actualizando programación:', err);
-          setActionAlert(`ERROR: No se pudo guardar la programación en Firebase.`);
-      }
-      setTimeout(() => setActionAlert(null), 5000);
+    if (!isStaff) return;
+    try { scheduleCalendarEventForKai(req); setActionAlert(pt('calendarDraft')); }
+    catch { setActionAlert(pt('calendarInvalid')); }
   };
-
   const handleGenerateInvoice = (req: MaintenanceRequest) => {
-      const printWindow = window.open('', '_blank');
-      if (!printWindow) {
-          setActionAlert("WARNING: Por favor permita las ventanas emergentes para ver/guardar la factura PDF.");
-          return;
-      }
-
-      const invoiceNum = `INV-${req.id.substring(0, 8).toUpperCase()}`;
-      const dateStr = new Date().toLocaleDateString(language === 'es' ? 'es-ES' : language === 'de' || language === 'de-CH' ? 'de-CH' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      const logoUrl = 'https://krakenpfm.ch/logo-kraken-azul.webp';
-
-      printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>${dt.pdfInvoiceTitle} ${invoiceNum} - Kraken PFM</title>
-          <style>
-            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; color: #1e293b; max-width: 800px; margin: 0 auto; }
-            .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0284c7; padding-bottom: 20px; margin-bottom: 30px; }
-            .brand { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
-            .brand-logo { height: 50px; width: auto; object-fit: contain; display: block; }
-            .brand-sub { font-size: 11px; font-weight: 700; color: #002d5b; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
-            .inv-title { font-size: 28px; font-weight: 800; color: #0284c7; text-align: right; }
-            .details { display: flex; justify-content: space-between; margin-bottom: 30px; line-height: 1.6; }
-            .box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; width: 45%; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th { background: #0f172a; color: white; text-align: left; padding: 12px; font-size: 12px; text-transform: uppercase; }
-            td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
-            .total-row { font-weight: 800; font-size: 16px; background: #f0f9ff; }
-            .footer { margin-top: 50px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 20px; }
-            .btn-print { background: #0284c7; color: white; border: none; padding: 12px 24px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-bottom: 20px; }
-            @media print { .btn-print { display: none; } }
-          </style>
-        </head>
-        <body>
-          <button class="btn-print" onclick="window.print()">${dt.pdfPrintSave}</button>
-          
-          <div class="header">
-            <div class="brand">
-              <img src="${logoUrl}" alt="Kraken Logo" class="brand-logo" />
-              <div class="brand-sub">Properties and Facilities Management</div>
-            </div>
-            <div class="inv-title">${dt.pdfServiceInvoice}<br><span style="font-size:14px; color:#64748b;">${invoiceNum}</span></div>
-          </div>
-
-          <div class="details">
-            <div class="box">
-              <strong>${dt.pdfIssuer}:</strong><br>
-              Kraken Properties & Facilities Management<br>
-              Bahnhofstrasse 42, 8001 Zürich<br>
-              Schweiz • CHE-109.823.411 TVA<br>
-              kai@krakenpfm.ch
-            </div>
-            <div class="box">
-              <strong>${dt.pdfClient}:</strong><br>
-              ${req.client}<br>
-              ${req.email || dt.pdfNoEmail}<br>
-              ${req.address || dt.pdfAddressRecord}<br>
-              <strong>${dt.pdfIssueDate}:</strong> ${dateStr}
-            </div>
-          </div>
-
-          <table>
-            <thead>
-              <tr>
-                <th>${dt.pdfThDescription}</th>
-                <th>${dt.pdfThDate}</th>
-                <th style="text-align:right;">${dt.pdfThAmount}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>${req.service}</strong><br><span style="font-size:12px; color:#64748b;">${dt.pdfServiceSubtext}</span></td>
-                <td>${req.date || dateStr}</td>
-                <td style="text-align:right;">CHF ${(req.amount || 0).toLocaleString('de-CH', { minimumFractionDigits: 2 })}</td>
-              </tr>
-              <tr class="total-row">
-                <td colspan="2" style="text-align:right;">${dt.pdfTotalVat}:</td>
-                <td style="text-align:right; color:#0284c7;">CHF ${(req.amount || 0).toLocaleString('de-CH', { minimumFractionDigits: 2 })}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="footer">
-            ${dt.pdfFooterTagline}<br>
-            ${dt.pdfValidFiscalDoc}
-          </div>
-        </body>
-        </html>
-      `);
-      printWindow.document.close();
-      setActionAlert(`SUCCESS: Factura PDF generada e interactivamente lista para guardar o imprimir.`);
-      setTimeout(() => setActionAlert(null), 4000);
+    if (!openInvoiceSummary(req, language)) setActionAlert(pt('saveError'));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!user) return;
+      if (!newRequest.service.trim() || !newRequest.date) { setActionAlert(pt('required')); return; }
 
       const newDocId = doc(collection(db, 'maintenance_requests')).id;
       const requestRef = doc(db, 'maintenance_requests', newDocId);
 
-      // Default estimate logic
-      const servicePricing: { [key: string]: number } = {
-        'End of Tenancy': 1400,
-        'Deep Cleaning': 2200,
-        'Maintenance': 600,
-        'Consultation': 350,
-        'B2B Premium Complex': 4500,
-        'Office Routine': 850
-      };
-      
-      const parsedAmount = Number(newRequest.amount) || servicePricing[newRequest.service] || 600;
+      // Financial amounts are estimates only; client entries never establish a price.
+      const parsedAmount = isStaff ? Math.max(0, Number(newRequest.amount) || 0) : 0;
 
       // Handle media links
       const mediaUrlsInput: string[] = [];
@@ -1005,14 +519,14 @@ const Dashboard: React.FC = () => {
           id: newDocId,
           client: isStaff ? (newRequest.client || 'Direct Client Lookup') : user.name,
           email: isStaff ? (newRequest.email || 'staff@krakenpfm.ch') : user.email,
-          phone: newRequest.phone || '+41 44 000 00 00',
-          address: newRequest.address || 'Switzerland',
+          phone: newRequest.phone.trim(),
+          address: newRequest.address.trim(),
           service: newRequest.service || 'FACILITY MAINTENANCE',
-          date: newRequest.date || new Date().toISOString().split('T')[0],
+          date: newRequest.date,
           status: 'Pending' as const,
-          priority: newRequest.priority,
+          priority: isStaff ? newRequest.priority : 'Medium' as const,
           amount: parsedAmount,
-          notes: newRequest.notes || 'Manually registered booking.',
+          notes: newRequest.notes.trim(),
           mediaUrls: mediaUrlsInput,
           mediaNames: mediaNamesInput,
           userId: user.uid,
@@ -1056,13 +570,13 @@ const Dashboard: React.FC = () => {
           });
           setIsFormOpen(false);
       } catch (error) {
-          console.error('Error registering new maintenance request:', error);
+          setActionAlert(pt('saveError'));
       }
   };
 
   // Summaries Calculations
   const totalSubmissions = requests.length;
-  const totalRevenue = requests.reduce((acc, curr) => acc + curr.amount, 0);
+  const totalRevenue = requests.reduce((acc, curr) => acc + (portalAmount(curr).value ?? 0), 0);
   const activeJobs = requests.filter(r => r.status !== 'Completed').length;
   const highPriorityCount = requests.filter(r => r.priority === 'High' && r.status !== 'Completed').length;
 
@@ -1083,7 +597,7 @@ const Dashboard: React.FC = () => {
   });
 
   const doSendEmail = async () => {
-    if (!selectedEmailRequest || !emailTo) return;
+    if (!isStaff || !selectedEmailRequest || !emailTo) return;
     setEmailSending(true);
     const entry = {
       id: Date.now().toString(),
@@ -1093,32 +607,29 @@ const Dashboard: React.FC = () => {
       subject: emailSubject,
       sentAt: new Date().toISOString(),
       status: 'pending' as 'sent' | 'pending' | 'error',
-      amount: selectedEmailRequest.amount || '0',
+      amount: amountText(selectedEmailRequest),
     };
     try {
-      await fetch('https://hook.eu1.make.com/uc1q47ys3jwjkl3bm9cxpvbdgp9i1u37', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'cost_confirmation_email',
-          to: emailTo, cc: emailCC, subject: emailSubject,
-          html: emailBody,
-          requestId: selectedEmailRequest.id,
-          client: selectedEmailRequest.client,
-          amount: selectedEmailRequest.amount,
-          service: selectedEmailRequest.service,
-          sentAt: entry.sentAt,
-        }),
+      await postWebhook(import.meta.env?.VITE_MAKE_EMAIL_WEBHOOK_URL || '', {
+        type: 'cost_confirmation_email',
+        to: emailTo, cc: emailCC, subject: emailSubject,
+        html: emailBody,
+        requestId: selectedEmailRequest.id,
+        client: selectedEmailRequest.client,
+        amount: portalAmount(selectedEmailRequest).value ?? null,
+        isEstimate: !portalAmount(selectedEmailRequest).confirmed,
+        service: selectedEmailRequest.service,
+        sentAt: entry.sentAt,
       });
       entry.status = 'sent';
-      setActionAlert('SUCCESS: Cost confirmation email sent to ' + emailTo);
+      setActionAlert(pt('webhookAccepted'));
     } catch {
       entry.status = 'error';
-      setActionAlert('ERROR: Email delivery failed. Check network and try again.');
+      setActionAlert(pt('saveError'));
     }
     const newHist = [entry, ...emailHistory];
     setEmailHistory(newHist);
-    localStorage.setItem('kraken_email_history', JSON.stringify(newHist));
+    try { localStorage.setItem(`kraken_email_history_${user?.uid || ''}`, JSON.stringify(newHist)); } catch { /* Delivery status remains in memory. */ }
     setEmailSending(false);
     setEmailModalOpen(false);
   };
@@ -1126,7 +637,7 @@ const Dashboard: React.FC = () => {
   const markConfirmed = (requestId: string, status: 'confirmed' | 'pending' | 'none') => {
     const n = { ...confirmationStatuses, [requestId]: status };
     setConfirmationStatuses(n);
-    localStorage.setItem('kraken_confirm_status', JSON.stringify(n));
+    try { localStorage.setItem(`kraken_confirm_status_${user?.uid || ''}`, JSON.stringify(n)); } catch { /* Local annotation only. */ }
   };
 
   const doResendEmail = (entry: { requestId: string }) => {
@@ -1149,91 +660,49 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <main className="bg-slate-55 min-h-screen pt-32 pb-20 font-sans text-slate-800 relative overflow-hidden bg-slate-50">
-      {/* Background Radial Ambiance */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_70%)]" />
-        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-blue-100/40 rounded-full blur-[140px] animate-pulse" />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-slate-100/50 rounded-full blur-[140px]" />
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px)', backgroundSize: '60px 60px' }}></div>
-      </div>
-
+    <main className="min-h-screen pt-6 sm:pt-10 pb-12 font-sans text-slate-800 relative bg-slate-50">
       {/* Main Container */}
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10 min-w-0 [overflow-wrap:anywhere]">
 
-        {/* Console Header */}
-        <div className="mb-12 animate-fade-in">
-            <div className="bg-white backdrop-blur-3xl p-10 rounded-[3.5rem] border border-slate-200/80 shadow-[0_30px_60px_rgba(0,0,0,0.04)] flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
-                <div>
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="w-8 h-px bg-blue-500"></span>
-                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600">
-                          {isStaff ? `🛡️ ${dt.staffConsole}` : `🔒 ${dt.clientPortal}`}
-                      </span>
-                    </div>
-                    <h1 className="text-4xl md:text-5xl font-black tracking-tighter uppercase mb-2 text-slate-900">
-                        {isStaff ? 'Worker' : dt.myFacilities.split(' ')[0]}{' '}
-                        <span className="text-blue-600">{isStaff ? 'Dashboard' : (dt.myFacilities.split(' ').slice(1).join(' ') || 'Facilities')}</span>
-                    </h1>
-                    <p className="text-slate-500 font-bold text-sm uppercase tracking-[0.2em]">
-                        {dt.welcomeBack} {user ? user.name : 'Authorized Partner'} 
-                        {isStaff && <span className="text-emerald-700 text-xs font-black ml-3 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">{dt.activeOperator}</span>}
-                    </p>
-                </div>
-
-                <div className="flex flex-wrap gap-4 md:gap-6 w-full xl:w-auto">
-                    <motion.div 
-                      key="active"
-                      whileHover={{ y: -4, scale: 1.02 }}
-                      className="bg-white hover:bg-slate-50 shadow-[0_15px_35px_rgba(0,0,0,0.02)] transition-all duration-300 px-6 py-5 rounded-[2rem] border border-slate-200 flex items-center gap-4 flex-1 md:flex-initial min-w-[200px]"
-                    >
-                      <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl border border-blue-200">
-                          <Briefcase className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-0.5 leading-none">
-                            {isStaff ? dt.activeTasks : dt.activeServices}
-                        </p>
-                        <p className="text-2xl font-black text-slate-800 leading-tight mt-1">{activeJobs}</p>
-                      </div>
-                    </motion.div>
-                    
-                    <motion.div 
-                      key="high"
-                      whileHover={{ y: -4, scale: 1.02 }}
-                      className="bg-white hover:bg-slate-50 shadow-[0_15px_35px_rgba(0,0,0,0.02)] transition-all duration-300 px-6 py-5 rounded-[2rem] border border-slate-200 flex items-center gap-4 flex-1 md:flex-initial min-w-[200px]"
-                    >
-                      <div className="p-3 bg-rose-50 text-rose-600 rounded-2xl border border-rose-200">
-                          <AlertTriangle className="w-5 h-5 animate-pulse" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-black text-rose-600 uppercase tracking-widest mb-0.5 leading-none">
-                            {isStaff ? dt.highPriority : dt.milestones}
-                        </p>
-                        <p className="text-2xl font-black text-rose-600 leading-tight mt-1">{highPriorityCount}</p>
-                      </div>
-                    </motion.div>
-
-                    <motion.div 
-                      key="rev"
-                      whileHover={{ y: -4, scale: 1.02 }}
-                      className="bg-white hover:bg-slate-50 shadow-[0_15px_35px_rgba(0,0,0,0.02)] transition-all duration-300 px-6 py-5 rounded-[2rem] border border-slate-200 flex items-center gap-4 flex-1 md:flex-initial min-w-[220px]"
-                    >
-                      <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl border border-emerald-200">
-                          <DollarSign className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-0.5 leading-none">
-                            {isStaff ? dt.estRevenue : dt.estBudget}
-                        </p>
-                        <p className="text-2xl font-black text-emerald-600 leading-tight mt-1 font-mono">CHF {totalRevenue.toLocaleString()}</p>
-                      </div>
-                    </motion.div>
-                </div>
+        {/* Portal heading and loaded-record summaries */}
+        <section className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm" aria-labelledby="portal-heading">
+          <div className="mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 min-w-0">
+            <div className="min-w-0">
+            <p className="mb-1 text-sm font-semibold text-blue-700">{isStaff ? dt.staffConsole.replace(/^[^\p{L}]+/u, '') : heading.subtitle}</p>
+            <h1 id="portal-heading" className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 break-words">{isStaff ? dt.activeTasks : heading.title}</h1>
+            <p className="mt-2 text-sm text-slate-600 break-words">{dt.welcomeBack} {user?.name || ''}</p>
             </div>
-        </div>
+            <button type="button" onClick={handleLogout} disabled={loggingOut} aria-busy={loggingOut} className="min-h-11 px-4 py-2 self-start sm:self-center shrink-0 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-100 disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-blue-600">{loggingOut ? heading.loggingOut : heading.logout}</button>
+          </div>
+          {logoutError && <p role="alert" className="mb-4 text-sm font-semibold text-red-700">{heading.logoutError}</p>}
+          <dl className="grid grid-cols-1 md:grid-cols-3 gap-3 min-w-0">
+            <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
+              <dt className="min-w-0 text-sm font-medium leading-5 text-slate-600 [overflow-wrap:normal]">{isStaff ? dt.activeTasks : dt.activeServices}</dt>
+              <dd className="shrink-0 text-xl font-bold tabular-nums text-slate-900">{activeJobs}</dd>
+            </div>
+            <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
+              <dt className="min-w-0 text-sm font-medium leading-5 text-slate-600 [overflow-wrap:normal]">{dt.highPriority}</dt>
+              <dd className="shrink-0 text-xl font-bold tabular-nums text-slate-900">{highPriorityCount}</dd>
+            </div>
+            <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
+              <dt className="min-w-0 text-sm font-medium leading-5 text-slate-600 [overflow-wrap:normal]">{isStaff ? dt.estRevenue : dt.estBudget}</dt>
+              <dd className="min-w-0 max-w-[65%] text-right text-base sm:text-lg font-bold tabular-nums text-emerald-700 [overflow-wrap:normal]">CHF {totalRevenue.toLocaleString()}</dd>
+            </div>
+          </dl>
+        </section>
 
+        {!user?.emailVerified && <div className="bg-blue-50 border border-blue-200 rounded-2xl p-5 mb-6 text-sm">
+          <p>{pt('verifyHint')}</p><div className="flex flex-wrap gap-4 mt-3 font-bold text-blue-800">
+            <button type="button" onClick={async () => { try { await resendVerification(); setActionAlert(pt('verificationSent')); } catch { setActionAlert(pt('saveError')); } }}>{pt('verify')}</button>
+            <button type="button" onClick={async () => { try { await refreshUser(); } catch { setActionAlert(pt('loadError')); } }}>{pt('refresh')}</button>
+          </div></div>}
+        <div className="flex flex-wrap items-center justify-between gap-3 bg-white border border-slate-200 rounded-2xl p-4 mb-5">
+          <p className="text-xs text-slate-600">{pt('loadedOnly')}</p>
+          <button type="button" className="font-bold text-blue-700" onClick={() => fetchPortalPage(activeTab)}>{heading.refresh}</button>
+        </div>
+        {loadErrors[activeTab] && <div role="alert" className="bg-red-50 text-red-800 rounded-2xl p-4 mb-5">
+          <p>{pt('loadError')}</p><button type="button" className="font-bold underline mt-2" onClick={() => fetchPortalPage(activeTab)}>{pt('retry')}</button>
+        </div>}
         {/* Section Navigation Tabs */}
         <div className="flex items-center gap-3 mb-8 border-b border-slate-200 pb-4 overflow-x-auto">
           <button
@@ -1260,7 +729,7 @@ const Dashboard: React.FC = () => {
             <span>{dt.tabCareers} ({jobApplications.length})</span>
           </button>
 
-          <button
+          {isStaff && <button
             onClick={() => setActiveTab('messages')}
             className={`px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'messages'
@@ -1269,8 +738,8 @@ const Dashboard: React.FC = () => {
             }`}
           >
             <Mail className="w-4 h-4" />
-            <span>Mensajes ({contactMessages.length})</span>
-          </button>
+            <span>{pt('messages')} ({contactMessages.length})</span>
+          </button>}
         </div>
 
         {activeTab === 'messages' ? (
@@ -1318,7 +787,7 @@ const Dashboard: React.FC = () => {
             ) : contactMessages.length === 0 ? (
               <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 shadow-sm p-8">
                 <Mail className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                <h3 className="text-lg font-black text-slate-800">No hay mensajes registrados</h3>
+                <h3 className="text-lg font-black text-slate-800">{loadErrors.messages ? pt('loadError') : pt('messages')}</h3>
                 <p className="text-sm text-slate-500 mt-1">Los mensajes enviados desde el formulario de contacto aparecerán aquí.</p>
               </div>
             ) : (
@@ -1483,7 +952,7 @@ const Dashboard: React.FC = () => {
                       }).length === 0 ? (
                       <tr>
                         <td colSpan={7} className="px-8 py-16 text-center text-slate-400 font-bold">
-                          {dt.noCandidatesFound}
+                          {loadErrors.careers ? pt('loadError') : dt.noCandidatesFound}
                         </td>
                       </tr>
                     ) : (
@@ -1571,7 +1040,7 @@ const Dashboard: React.FC = () => {
                             <select
                               value={app.status}
                               onClick={(e) => e.stopPropagation()}
-                              onChange={(e) => handleJobAppStatusChange(app.id, e.target.value as any)}
+                              disabled={!isStaff} onChange={(e) => handleJobAppStatusChange(app.id, e.target.value as any)}
                               className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border cursor-pointer ${
                                 app.status === 'Hired' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' :
                                 app.status === 'Contacted' ? 'bg-blue-100 text-blue-800 border-blue-300' :
@@ -1709,7 +1178,7 @@ const Dashboard: React.FC = () => {
                                       </div>
 
                                       {/* Contact Email & Phone */}
-                                      <div className="grid grid-cols-2 gap-4">
+                                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                           <div className="space-y-1.5">
                                               <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-3">{dt.clientEmail}</label>
                                               <input 
@@ -1781,7 +1250,7 @@ const Dashboard: React.FC = () => {
                               </div>
 
                               {/* Date & Priority */}
-                              <div className="grid grid-cols-2 gap-4">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                   <div className="space-y-1.5">
                                       <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.executionDate}</label>
                                       <input 
@@ -1796,7 +1265,7 @@ const Dashboard: React.FC = () => {
                                       <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.priority}</label>
                                       <select 
                                           className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-xs text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all appearance-none"
-                                          value={newRequest.priority}
+                                          disabled={!isStaff} value={newRequest.priority}
                                           onChange={e => setNewRequest({...newRequest, priority: e.target.value as any})}
                                       >
                                           <option value="Low">Low</option>
@@ -1806,14 +1275,14 @@ const Dashboard: React.FC = () => {
                                   </div>
                               </div>
 
-                              {/* Amount (Budget CHF) */}
-                              <div className="space-y-1.5">
+                              {/* Staff estimates do not establish payment. */}
+                              <div hidden={!isStaff} className="space-y-1.5">
                                   <label className="block text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] ml-4">{dt.budgetQuotedPrice}</label>
                                   <input 
                                       type="number" 
                                       className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm text-slate-800 font-bold focus:outline-none focus:border-blue-500 focus:bg-white transition-all placeholder:text-slate-400" 
                                       placeholder={dt.budgetPlaceholder}
-                                      value={newRequest.amount}
+                                      min={0} max={1000000} step="0.01" value={newRequest.amount}
                                       onChange={e => setNewRequest({...newRequest, amount: e.target.value})}
                                   />
                               </div>
@@ -1874,8 +1343,15 @@ const Dashboard: React.FC = () => {
                     </div>
                 </div>
 
+                <div className="md:hidden space-y-4 mb-5">
+                  {loading ? <p role="status" className="p-6 bg-white rounded-2xl">{pt('loading')}</p> : filteredRequests.length === 0 ? <p className="p-6 bg-white rounded-2xl">{loadErrors.requests ? pt('loadError') : dt.noRequestsFound}</p> : filteredRequests.map(request => <article key={request.id} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3">
+                    <div className="flex justify-between gap-3"><h3 className="font-black text-[#032b59] min-w-0 [overflow-wrap:anywhere]">{request.service}</h3><span className="text-xs text-slate-600 shrink-0">{request.status === 'Pending' ? dt.statusPending : request.status === 'In Progress' ? dt.statusInProgress : request.status === 'Completed' ? dt.statusCompleted : dt.draftLabel}</span></div>
+                    <p className="text-sm break-words">{request.client}</p><p className="text-sm text-slate-600">{request.date || '—'} · {amountText(request)}</p>
+                    <button type="button" onClick={() => setSelectedRequest(request)} className="w-full bg-blue-700 text-white rounded-xl px-4 py-3 font-bold">{dt.actions}</button>
+                  </article>)}
+                </div>
                 <div className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-sm">
-                    <div className="overflow-x-auto">
+                    <div className="hidden md:block overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead className="bg-slate-50 text-slate-500 uppercase text-[9px] font-black tracking-[0.3em] border-b border-slate-100">
                                 <tr>
@@ -1899,7 +1375,7 @@ const Dashboard: React.FC = () => {
                                 ) : filteredRequests.length === 0 ? (
                                     <tr>
                                         <td colSpan={7} className="px-8 py-20 text-center text-slate-400 font-bold">
-                                            {dt.noRequestsFound}
+                                            {loadErrors.requests ? pt('loadError') : dt.noRequestsFound}
                                         </td>
                                     </tr>
                                 ) : (
@@ -1935,7 +1411,7 @@ const Dashboard: React.FC = () => {
                                                 <td className="px-6 py-5">
                                                     <div className="flex flex-col gap-1">
                                                         <span className="font-bold text-slate-700 text-xs">{req.service}</span>
-                                                        <span className="text-[10px] text-emerald-600 font-mono font-black mt-0.5">CHF {req.amount.toLocaleString()}</span>
+                                                        <span className="text-[10px] text-emerald-600 font-mono font-black mt-0.5">{amountText(req)}</span>
                                                     </div>
                                                 </td>
                                                 
@@ -1995,23 +1471,23 @@ const Dashboard: React.FC = () => {
                     whileTap={{ scale: 0.95 }}
                     onClick={(e) => { e.stopPropagation(); handleSendEmail(req); }}
                     className="px-3.5 py-1.5 bg-blue-50 hover:bg-[#0f1b2d] rounded-xl text-blue-500 hover:text-[#00d4ff] text-[9px] font-black uppercase tracking-wider transition-all duration-150 flex items-center gap-1"
-                    title="Send Cost Confirmation Email"
+                    hidden={!isStaff} title="Send Cost Confirmation Email"
                   >
                     <Mail size={11} /> Email
                   </motion.button>
                   {confirmationStatuses[req.id] === 'confirmed' && (
-                    <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-[8px] font-black">OK</span>
+                    <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-[8px] font-black">{pt('localNote')}</span>
                   )}
                   <motion.button
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={(e) => { e.stopPropagation(); markConfirmed(req.id, confirmationStatuses[req.id] === 'confirmed' ? 'none' : 'confirmed'); }}
                     className={`px-3.5 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-wider transition-all flex items-center gap-1 ${confirmationStatuses[req.id] === 'confirmed' ? 'bg-green-100 text-green-700' : 'bg-slate-100 hover:bg-green-50 text-slate-400 hover:text-green-600'}`}
-                    title="Toggle Client Approval"
+                    hidden={!isStaff} title={pt('localNote')}
                   >
-                    <Check size={11} /> {confirmationStatuses[req.id] === 'confirmed' ? dt.approved : dt.approve}
+                    <Check size={11} /> {pt('localNote')}
                   </motion.button>
-                                                         {(isStaff || req.status === 'Pending') && (
+                                                         {((isStaff && !req.payment) || (!isStaff && !req.checkout && ['Draft', 'Pending'].includes(req.status))) && (
                                                              <motion.button 
                                                                  whileHover={{ scale: 1.15, color: "#f43f5e" }}
                                                                  whileTap={{ scale: 0.8 }}
@@ -2037,6 +1513,7 @@ const Dashboard: React.FC = () => {
         </>
         )}
 
+        {hasMore[activeTab] && <div className="flex justify-center my-8"><button type="button" disabled={isPageLoading} onClick={() => fetchPortalPage(activeTab, true)} className="px-6 py-3 rounded-2xl bg-blue-700 text-white font-bold disabled:opacity-50">{isPageLoading ? pt('loading') : pt('more')}</button></div>}
         {/* Dynamic Detail-Inspector Overlay Modal for Service Requests */}
         <AnimatePresence>
             {selectedRequest && (
@@ -2162,7 +1639,7 @@ const Dashboard: React.FC = () => {
                                     ].map(st => (
                                         <button
                                             key={st.key}
-                                            onClick={() => handleJobAppStatusChange(selectedJobApp.id, st.key as any)}
+                                            disabled={!isStaff} onClick={() => handleJobAppStatusChange(selectedJobApp.id, st.key as any)}
                                             className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider border cursor-pointer transition-all ${
                                                 selectedJobApp.status === st.key
                                                     ? 'bg-[#002D5B] text-white border-blue-900 shadow-md'
@@ -2182,7 +1659,7 @@ const Dashboard: React.FC = () => {
 
       </div>
         {/* ===== EMAIL CONFIRMATION CENTER ===== */}
-        <div className="mt-6 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mx-4 mb-4">
+        <div hidden={!isStaff} className="mt-6 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mx-4 mb-4">
           <div className="bg-[#0f1b2d] px-6 py-4 flex items-center justify-between cursor-pointer select-none" onClick={() => setShowEmailHistory(v => !v)}>
             <div className="flex items-center gap-3">
               <Mail size={18} className="text-[#00d4ff]" />
@@ -2191,7 +1668,7 @@ const Dashboard: React.FC = () => {
             </div>
             <ArrowLeft size={16} className={`text-slate-400 transition-transform duration-300 ${showEmailHistory ? 'rotate-90' : '-rotate-90'}`} />
           </div>
-          <div className="grid grid-cols-5 divide-x divide-slate-100 border-b border-slate-100">
+          <div className="grid grid-cols-2 sm:grid-cols-5 divide-x divide-slate-100 border-b border-slate-100">
             {([
               { label: dt.total, value: emailStats.total, color: 'text-slate-700', bg: 'bg-white', icon: '📨' },
               { label: dt.delivered, value: emailStats.sent, color: 'text-green-600', bg: 'bg-green-50', icon: '✅' },
@@ -2272,7 +1749,7 @@ const Dashboard: React.FC = () => {
               <div className="bg-[#0f1b2d] px-6 py-4 flex items-center justify-between flex-shrink-0">
                 <div>
                   <h2 className="text-[#00d4ff] font-black text-base uppercase tracking-widest flex items-center gap-2"><Mail size={16}/> {dt.sendCostConfirmation}</h2>
-                  <p className="text-slate-400 text-xs mt-0.5">{dt.thClient}: {selectedEmailRequest.client} · CHF {selectedEmailRequest.amount}</p>
+                  <p className="text-slate-400 text-xs mt-0.5">{dt.thClient}: {selectedEmailRequest.client} · {amountText(selectedEmailRequest)}</p>
                 </div>
                 <button onClick={() => setEmailModalOpen(false)} className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"><X size={18}/></button>
               </div>
@@ -2283,7 +1760,7 @@ const Dashboard: React.FC = () => {
               <div className="flex-1 overflow-y-auto p-6">
                 {!emailPreviewMode ? (
                   <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{dt.to} *</label>
                         <input type="email" value={emailTo} onChange={e => setEmailTo(e.target.value)} className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d4ff] focus:border-transparent" placeholder="client@example.com"/>
@@ -2305,12 +1782,12 @@ const Dashboard: React.FC = () => {
                 ) : (
                   <div className="border border-slate-200 rounded-xl overflow-hidden">
                     <div className="bg-slate-100 px-4 py-2 text-xs text-slate-500 font-medium border-b border-slate-200">{dt.preview}</div>
-                    <iframe srcDoc={emailBody} className="w-full" style={{height:'420px',border:'none'}} title="Email Preview" sandbox="allow-same-origin"/>
+                    <iframe srcDoc={emailBody} className="w-full" style={{height:'420px',border:'none'}} title="Email Preview" sandbox=""/>
                   </div>
                 )}
               </div>
               <div className="border-t border-slate-100 px-6 py-4 flex items-center justify-between bg-slate-50 flex-shrink-0">
-                <div className="flex items-center gap-2 text-xs text-slate-400">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
                   <CheckCircle size={12} className="text-green-400"/> Via Kraken PFM Dispatch
                 </div>
                 <div className="flex gap-3">

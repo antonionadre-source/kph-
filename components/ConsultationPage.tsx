@@ -20,7 +20,6 @@ import {
     SparklesIcon,
     BuildingIcon,
     TruckIcon,
-    StarIcon,
     LeafIcon,
     DropIcon,
     ShieldCheckIcon,
@@ -34,12 +33,13 @@ import {
     PaperClipIcon
 } from './icons';
 import { mascotImageUrl, teamPhotoUrl } from '../assets';
-import emailjs from '@emailjs/browser';
 import { db, auth, storage, sanitizeFirestoreData } from './firebase';
-import { doc, setDoc, updateDoc, serverTimestamp, collection } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, serverTimestamp, collection } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { useAuth } from './Auth';
-import { generateQuotePDF, translateSperrgutModell, translateBereitstellung, translateConfidence } from './QuotePdfGenerator';
+import { translateSperrgutModell, translateBereitstellung, translateConfidence } from './quoteMunicipalText';
+import { downloadQuotePdf, quotePdfStatusText } from './quotePdfDownload';
+import type { GeneratorOptions } from './QuotePdfGenerator';
 import { PaymentCelebrationPage } from './PaymentCelebrationPage';
 import { ServiceDetailsModal } from './ServiceDetailsModal';
 import { 
@@ -51,14 +51,9 @@ import {
 
 import { sendLead } from './leadWebhook';
 
-const SERVICE_ID = 'service_aiv15bc'; 
-const TEMPLATE_ID = 'template_aktj7t9'; 
-const PUBLIC_KEY = 'sH5K84ChHyssJrarm'; 
 const PERSISTENCE_KEY = 'kraken_consultation_data_v2';
 const MAX_FILE_SIZE = 250 * 1024 * 1024; // 250 MB limit
 
-// Initialize EmailJS
-emailjs.init(PUBLIC_KEY);
 
 interface ConsultationPageProps {
   onNavigate: (page: string) => void;
@@ -68,7 +63,7 @@ interface ConsultationPageProps {
 
 // --- Constants & Types ---
 
-type ServiceType = 'end-of-tenancy' | 'deep-cleaning' | 'daily-cleaning' | 'moving' | 'pest-control' | 'waste-management' | 'gutter-cleaning' | 'car-detailing' | 'gardening' | 'exterior-cleaning';
+type ServiceType = 'comic-book' | 'end-of-tenancy' | 'deep-cleaning' | 'daily-cleaning' | 'moving' | 'pest-control' | 'waste-management' | 'gutter-cleaning' | 'car-detailing' | 'gardening' | 'exterior-cleaning';
 
 interface VehicleConfig {
     id: string;
@@ -92,601 +87,9 @@ interface CartItem {
     duration?: number;
 }
 
-const PRICES = {
-  // Hourly rates
-  deepHourly: 56.50,
-  regularHourly: 43.50,
-  movingAssemblyRate: 80.00,
-  movingHydraulicLiftRate: 150.00,
-
-  // Fixed add-ons
-  balconyPrice: 40.00,
-  storagePrice: 30.00,
-  carpetPrice: 45.00,
-  furniturePrice: 40.00,
-  ovenInteriorPrice: 45.00,
-  fridgeFreezerPrice: 40.00,
-  windowUnitPrice: 12.00,
-  blindsUnitPrice: 25.00,
-  extractorHoodPrice: 35.00,
-  showerDescalingPrice: 40.00,
-  cabinetInteriorPrice: 35.00,
-  bedLinenLaundryPrice: 25.00,
-  ecoProductsPrice: 15.00,
-  trashBinPrice: 25.00,
-  machineFloorRate: 3.50,
-  machineFloorSetup: 30.00,
-  bathroomEOTPrice: 60.00,
-  baseCallOut: 45.00,
-
-  // EOT base prices by room count
-  eotBase: { 1: 520, 2: 700, 3: 950, 4: 1200, 5: 1500 } as Record<number, number>,
-  eotGuideline: { 1: 520, 2: 700, 3: 950, 4: 1200, 5: 1500 } as Record<number, number>,
-
-  // Moving labour hourly
-  movingStandard: 145.00,
-  movingLarge: 195.00,
-  movingCommercial: 195.00,
-  movingExtraHelperSurcharge: 50.00,
-
-  // Car detailing by size
-  carSize: { S: 140, M: 190, L: 240, XL: 290 } as Record<string, number>,
-  carDirtSurcharge: { medium: 0, high: 30, extreme: 60 } as Record<string, number>,
-  carPets: 60.00,
-  carCeramic: 1000.00,
-  carMetroMultiplier: 1.2,
-
-  // Gardening base by size
-  gardenBase: { small: 140, medium: 260, large: 480 } as Record<string, number>,
-  gardenMowingPerSqm: 0.35,
-  gardenHedgePerMeter: 15.00,
-  gardenPlantingPerHour: 45.00,
-  gardenWeedingPerHour: 40.00,
-  gardenWastePerBag: 18.00,
-
-  // Pressure washing per sqm by material
-  washMaterial: { stone: 9, concrete: 7, wood: 12, composite: 8, glass: 11 } as Record<string, number>,
-  washFacadeFactor: 1.2,
-
-  // Gutter cleaning base by floors
-  gutterFloors: { 1: 180, 2: 290, 3: 450 } as Record<number, number>,
-  gutterMediumSurcharge: 40,   // 20–50m
-  gutterXLSurcharge: 90,       // 50m+
-
-  // Travel / callout discounts
-  travelSingle: 45.00,
-  travelOneMainPlusOne: 25.00,
-  travelMulti: 0.00,
-};
-
-export type Zone = "schaffhausen" | "winterthur" | "zurich" | "other";
-
-export interface ZoneInfo {
-  zone: Zone;
-  label: string;
-  multiplier: number;
-  surchargePercent: number;
-  travelBase: number;
-}
-
-const ZONE_MAP: Record<Zone, ZoneInfo> = {
-  schaffhausen: {
-    zone: "schaffhausen",
-    label: "Schaffhausen",
-    multiplier: 1.0,
-    surchargePercent: 0,
-    travelBase: 45,
-  },
-  winterthur: {
-    zone: "winterthur",
-    label: "Winterthur",
-    multiplier: 1.12,
-    surchargePercent: 12,
-    travelBase: 45,
-  },
-  zurich: {
-    zone: "zurich",
-    label: "Zürich",
-    multiplier: 1.22,
-    surchargePercent: 22,
-    travelBase: 45,
-  },
-  other: {
-    zone: "other",
-    label: "Other region",
-    multiplier: 1.08,
-    surchargePercent: 8,
-    travelBase: 45,
-  },
-};
-
-export function detectZone(postalCode: string): ZoneInfo {
-  const pc = postalCode.trim().replace(/\s/g, "");
-  const n = parseInt(pc, 10);
-
-  if (isNaN(n)) return ZONE_MAP.other;
-
-  if (n >= 8200 && n <= 8239) return ZONE_MAP.schaffhausen;
-  if (n >= 8400 && n <= 8416) return ZONE_MAP.winterthur;
-  if (n >= 8000 && n <= 8099) return ZONE_MAP.zurich;
-  if (n >= 8100 && n <= 8199) return ZONE_MAP.zurich;
-  if (n >= 8300 && n <= 8399) return ZONE_MAP.zurich;
-  if (n >= 8600 && n <= 8699) return ZONE_MAP.zurich;
-
-  return ZONE_MAP.other;
-}
-
-export function applyZone(basePrice: number, zone: ZoneInfo): number {
-  return Math.round(basePrice * zone.multiplier * 100) / 100;
-}
-
-export interface EOTOptions {
-  rooms: number;
-  bathrooms: number;
-  balconies?: number;
-  storageUnits?: number;
-  carpets?: number;
-  furniture?: number;
-  ovenInterior?: boolean;
-  fridgeFreezer?: boolean;
-  windowsUnit?: number;
-  blindsShutters?: number;
-  extractorHood?: boolean;
-  showerDescaling?: boolean;
-  cabinetInterior?: boolean;
-  bedLinenLaundry?: boolean;
-  ecoProducts?: boolean;
-  machineFloorSqm?: number;
-  trashBinCount?: number;
-  customDuration?: number;
-}
-
-export interface CleaningOptions {
-  rooms: number;
-  bathrooms: number;
-  balconies?: number;
-  storageUnits?: number;
-  carpets?: number;
-  furniture?: number;
-  ovenInterior?: boolean;
-  fridgeFreezer?: boolean;
-  windowsUnit?: number;
-  blindsShutters?: number;
-  extractorHood?: boolean;
-  showerDescaling?: boolean;
-  cabinetInterior?: boolean;
-  bedLinenLaundry?: boolean;
-  ecoProducts?: boolean;
-  machineFloorSqm?: number;
-  trashBinCount?: number;
-}
-
-export interface RegularCleaningOptions {
-  rooms: number;
-  bathrooms: number;
-  ironingHours?: number;
-  laundryHours?: number;
-  ovenLevel?: "low" | "medium" | "high";
-  cabinetCount?: number;
-  cabinetOrganize?: boolean;
-  fridgeClean?: boolean;
-  fridgeOrganize?: boolean;
-  windowCount?: number;
-  customDuration?: number;
-}
-
-export type MovingLevel = "standard" | "large" | "commercial";
-
-export interface MovingOptions {
-  level: MovingLevel;
-  hours: number;
-  helpers: number;
-  withAssembly?: boolean;
-  assemblyHours?: number;
-  withHydraulicLift?: boolean;
-  liftHours?: number;
-  originPostal: string;
-  destinationPostal: string;
-  withPackaging?: boolean;
-  withCleaning?: boolean;
-  floorFrom?: string;
-  accessFrom?: string;
-  floorTo?: string;
-  accessTo?: string;
-  freeParking?: boolean;
-}
-
-export interface CarDetailingOptions {
-  size: "S" | "M" | "L" | "XL";
-  dirtLevel: "medium" | "high" | "extreme";
-  hasPets?: boolean;
-  ceramicCoating?: boolean;
-  servicePostal: string;
-}
-
-export interface GardeningOptions {
-  gardenSize: "small" | "medium" | "large";
-  mowingArea?: number;       // sqm
-  hedgeMeters?: number;
-  plantingHours?: number;
-  weedingHours?: number;
-  wasteBags?: number;
-}
-
-export interface WashingOptions {
-  material: "stone" | "concrete" | "wood" | "composite" | "glass";
-  areaSqm: number;
-  isFacade?: boolean;
-}
-
-export interface GutterOptions {
-  floors: 1 | 2 | 3;
-  gutterLength: "standard" | "medium" | "xl";
-}
-
-export function getEOTPrice(opts: EOTOptions, zone: ZoneInfo): number {
-  if (opts.rooms === 0 && opts.bathrooms === 0) return PRICES.baseCallOut;
-
-  const duration = calculateEOTDuration_v2(opts);
-  const basePrice = PRICES.eotBase[opts.rooms as keyof typeof PRICES.eotBase] || PRICES.eotBase[5];
-
-  const extraBaths = Math.max(0, opts.bathrooms - 1);
-  let total = basePrice + extraBaths * PRICES.bathroomEOTPrice;
-
-  total += (opts.balconies ?? 0) * PRICES.balconyPrice;
-  total += (opts.storageUnits ?? 0) * PRICES.storagePrice;
-  total += (opts.carpets ?? 0) * PRICES.carpetPrice;
-  total += (opts.furniture ?? 0) * PRICES.furniturePrice;
-
-  if (opts.ovenInterior) total += PRICES.ovenInteriorPrice;
-  if (opts.fridgeFreezer) total += PRICES.fridgeFreezerPrice;
-  if (opts.windowsUnit) total += opts.windowsUnit * PRICES.windowUnitPrice;
-  if (opts.blindsShutters) total += opts.blindsShutters * PRICES.blindsUnitPrice;
-  if (opts.extractorHood) total += PRICES.extractorHoodPrice;
-  if (opts.showerDescaling) total += PRICES.showerDescalingPrice;
-  if (opts.cabinetInterior) total += PRICES.cabinetInteriorPrice;
-  if (opts.bedLinenLaundry) total += PRICES.bedLinenLaundryPrice;
-  if (opts.ecoProducts) total += PRICES.ecoProductsPrice;
-  if (opts.trashBinCount) total += opts.trashBinCount * PRICES.trashBinPrice;
-  if (opts.machineFloorSqm && opts.machineFloorSqm > 0) {
-    const billableSqm = Math.max(30, opts.machineFloorSqm);
-    total += PRICES.machineFloorSetup + billableSqm * PRICES.machineFloorRate;
-  }
-
-  if (opts.customDuration && opts.customDuration > duration) {
-    const extraHours = opts.customDuration - duration;
-    total += extraHours * PRICES.deepHourly;
-  }
-
-  return applyZone(total, zone);
-}
-
-export function getDeepCleaningPrice(opts: CleaningOptions, zone: ZoneInfo): number {
-  if (opts.rooms === 0 && opts.bathrooms === 0) return PRICES.baseCallOut;
-
-  const duration = calculateCleaningDuration_v2("deep", opts);
-  let total = duration * PRICES.deepHourly;
-
-  total += (opts.balconies ?? 0) * PRICES.balconyPrice;
-  total += (opts.storageUnits ?? 0) * PRICES.storagePrice;
-  total += (opts.carpets ?? 0) * PRICES.carpetPrice;
-  total += (opts.furniture ?? 0) * PRICES.furniturePrice;
-
-  if (opts.ovenInterior) total += PRICES.ovenInteriorPrice;
-  if (opts.fridgeFreezer) total += PRICES.fridgeFreezerPrice;
-  if (opts.windowsUnit) total += opts.windowsUnit * PRICES.windowUnitPrice;
-  if (opts.blindsShutters) total += opts.blindsShutters * PRICES.blindsUnitPrice;
-  if (opts.extractorHood) total += PRICES.extractorHoodPrice;
-  if (opts.showerDescaling) total += PRICES.showerDescalingPrice;
-  if (opts.cabinetInterior) total += PRICES.cabinetInteriorPrice;
-  if (opts.bedLinenLaundry) total += PRICES.bedLinenLaundryPrice;
-  if (opts.ecoProducts) total += PRICES.ecoProductsPrice;
-  if (opts.trashBinCount) total += opts.trashBinCount * PRICES.trashBinPrice;
-  if (opts.machineFloorSqm && opts.machineFloorSqm > 0) {
-    const billableSqm = Math.max(30, opts.machineFloorSqm);
-    total += PRICES.machineFloorSetup + billableSqm * PRICES.machineFloorRate;
-  }
-
-  return applyZone(total, zone);
-}
-
-export function getRegularCleaningPrice(opts: RegularCleaningOptions, zone: ZoneInfo): number {
-  let baseHours = opts.rooms * 0.75 + opts.bathrooms * 0.5;
-  baseHours = Math.ceil(baseHours * 2) / 2;
-
-  if (opts.customDuration && opts.customDuration > baseHours) {
-    baseHours = opts.customDuration;
-  }
-
-  let hours = baseHours;
-
-  if (opts.ironingHours) hours += opts.ironingHours;
-  if (opts.laundryHours) hours += opts.laundryHours;
-  if (opts.ovenLevel) {
-    if (opts.ovenLevel === "low") hours += 0.5;
-    else if (opts.ovenLevel === "medium") hours += 0.65;
-    else if (opts.ovenLevel === "high") hours += 0.85;
-  }
-  if (opts.cabinetCount) {
-    hours += opts.cabinetCount * 0.5;
-    if (opts.cabinetOrganize) hours += opts.cabinetCount * 0.5;
-  }
-  if (opts.fridgeClean) {
-    hours += 0.5;
-    if (opts.fridgeOrganize) hours += 0.5;
-  }
-  if (opts.windowCount) {
-    hours += opts.windowCount * 0.05;
-  }
-
-  if (hours <= 0) return PRICES.baseCallOut;
-
-  const price = hours * PRICES.regularHourly;
-  return applyZone(price, zone);
-}
-
-export function getCoordinatesForZip(zipStr: string): { lat: number; lng: number } | null {
-  const cleanZip = zipStr.trim().replace(/\s/g, "");
-  const zip = parseInt(cleanZip, 10);
-  if (isNaN(zip)) return null;
-
-  const baseZurich = { lat: 47.3769, lng: 8.5417 };      // Zurich center (8000)
-  const baseSchaffhausen = { lat: 47.6973, lng: 8.6349 }; // Schaffhausen center (8200)
-  const baseWinterthur = { lat: 47.5022, lng: 8.7247 };   // Winterthur center (8400)
-
-  if (zip >= 8000 && zip <= 8099) {
-    const offsetFactor = (zip - 8000) * 0.001;
-    return { lat: 47.3769 + Math.sin(offsetFactor) * 0.02, lng: 8.5417 + Math.cos(offsetFactor) * 0.02 };
-  }
-  if (zip >= 8100 && zip <= 8199) {
-    const offsetFactor = (zip - 8100) * 0.001;
-    return { lat: 47.4200 + Math.sin(offsetFactor) * 0.03, lng: 8.5100 + Math.cos(offsetFactor) * 0.03 };
-  }
-  if (zip >= 8300 && zip <= 8399) {
-    const offsetFactor = (zip - 8300) * 0.001;
-    return { lat: 47.4000 + Math.sin(offsetFactor) * 0.03, lng: 8.6500 + Math.cos(offsetFactor) * 0.03 };
-  }
-  if (zip >= 8600 && zip <= 8699) {
-    const offsetFactor = (zip - 8600) * 0.001;
-    return { lat: 47.3000 + Math.sin(offsetFactor) * 0.03, lng: 8.7000 + Math.cos(offsetFactor) * 0.03 };
-  }
-  if (zip >= 8200 && zip <= 8239) {
-    const offsetFactor = (zip - 8200) * 0.002;
-    return { lat: 47.6973 + Math.sin(offsetFactor) * 0.015, lng: 8.6349 + Math.cos(offsetFactor) * 0.015 };
-  }
-  if (zip >= 8400 && zip <= 8416) {
-    const offsetFactor = (zip - 8400) * 0.004;
-    return { lat: 47.5022 + Math.sin(offsetFactor) * 0.012, lng: 8.7247 + Math.cos(offsetFactor) * 0.012 };
-  }
-  if (zip >= 8417 && zip <= 8499) {
-    const offsetFactor = (zip - 8417) * 0.002;
-    return { lat: 47.5200 + Math.sin(offsetFactor) * 0.02, lng: 8.7500 + Math.cos(offsetFactor) * 0.02 };
-  }
-
-  if (zipStr.startsWith('80') || zipStr.startsWith('81') || zipStr.startsWith('83') || zipStr.startsWith('86')) {
-    return baseZurich;
-  }
-  if (zipStr.startsWith('82')) {
-    return baseSchaffhausen;
-  }
-  if (zipStr.startsWith('84')) {
-    return baseWinterthur;
-  }
-
-  return null;
-}
-
-export function getHaversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371; // Earth radius in km
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-}
-
-export function calculateGasolineAndDistance(zip1: string, zip2: string) {
-  const coord1 = getCoordinatesForZip(zip1);
-  const coord2 = getCoordinatesForZip(zip2);
-  if (!coord1 || !coord2) return { distance: 0, cost: 0, distanceText: "—", costText: "— CHF" };
-
-  const cleanZip1 = zip1.trim().replace(/\s/g, "");
-  const cleanZip2 = zip2.trim().replace(/\s/g, "");
-
-  let distance = 0;
-  if (cleanZip1 === cleanZip2) {
-    distance = 1.5; // default trip distance within same postcode
-  } else {
-    const lineDistance = getHaversineDistance(coord1.lat, coord1.lng, coord2.lat, coord2.lng);
-    distance = lineDistance * 1.3; // converter multiplier for road distance
-  }
-
-  // Gasoline cost dynamic calculator: 0.15 CHF/km round-trip
-  const cost = distance * 2 * 0.15;
-  return {
-    distance,
-    cost,
-    distanceText: `${distance.toFixed(1)} km`,
-    costText: `${cost.toFixed(2)} CHF`
-  };
-}
-
-export function getStairSurcharge(floor: string | undefined, access: string | undefined, helpers: number): number {
-  if (access !== 'Stairs') return 0;
-  if (!floor) return 0;
-  switch (floor) {
-    case 'Basement': return 25;
-    case '0': return 0;
-    case '1': return 15;
-    case '2': return 35;
-    case '3': return 60;
-    case '4': return 90;
-    case '5': return 125;
-    case '6+': return 165;
-    default: return 0;
-  }
-}
-
-export function getMovingPrice(opts: MovingOptions): number {
-  // Labor hour rates: 1->60, 2->120, 3->175, 4->225
-  let laborRate = 120;
-  if (opts.helpers === 1) laborRate = 60;
-  else if (opts.helpers === 2) laborRate = 120;
-  else if (opts.helpers === 3) laborRate = 175;
-  else if (opts.helpers === 4) laborRate = 225;
-  else if (opts.helpers > 4) {
-    laborRate = 225 + (opts.helpers - 4) * 50;
-  }
-
-  const laborCost = opts.hours * laborRate;
-
-  let gasolineCost = 0;
-  const gasInfo = calculateGasolineAndDistance(opts.originPostal, opts.destinationPostal);
-  if (gasInfo.cost > 0) {
-    gasolineCost = gasInfo.cost;
-  }
-
-  let extrasCost = 0;
-  if (opts.withAssembly) {
-    extrasCost += (opts.assemblyHours ?? 0) * 80.00;
-  }
-  if (opts.withHydraulicLift) {
-    extrasCost += (opts.liftHours ?? 1) * 150.00; // Hourly rate
-  }
-  if (opts.withPackaging) {
-    extrasCost += 45.00; // Flat fee as per design specifications
-  }
-
-  // Stair carrying fees
-  extrasCost += getStairSurcharge(opts.floorFrom, opts.accessFrom, opts.helpers);
-  extrasCost += getStairSurcharge(opts.floorTo, opts.accessTo, opts.helpers);
-
-  // Parking fees (not free parking = paid/public parking)
-  if (opts.freeParking === false) {
-    extrasCost += 30.00; // 30 CHF parking allowance surcharge
-  }
-
-  return Math.round((laborCost + gasolineCost + extrasCost) * 10) / 10;
-}
-
-export function getCarDetailingPrice(opts: CarDetailingOptions): number {
-  let price = PRICES.carSize[opts.size];
-
-  price += PRICES.carDirtSurcharge[opts.dirtLevel];
-
-  if (opts.hasPets) price += PRICES.carPets;
-  if (opts.ceramicCoating) price += PRICES.carCeramic;
-
-  const zone = detectZone(opts.servicePostal);
-  if (zone.zone === "zurich" && opts.servicePostal.startsWith("80")) {
-    price *= PRICES.carMetroMultiplier;
-  }
-
-  return Math.round(price * 100) / 100;
-}
-
-export function getGardeningPrice(opts: GardeningOptions, zone: ZoneInfo): number {
-  let total = PRICES.gardenBase[opts.gardenSize];
-  total += (opts.mowingArea ?? 0) * PRICES.gardenMowingPerSqm;
-  total += (opts.hedgeMeters ?? 0) * PRICES.gardenHedgePerMeter;
-  total += (opts.plantingHours ?? 0) * PRICES.gardenPlantingPerHour;
-  total += (opts.weedingHours ?? 0) * PRICES.gardenWeedingPerHour;
-  total += (opts.wasteBags ?? 0) * PRICES.gardenWastePerBag;
-  return applyZone(total, zone);
-}
-
-export function getPressureWashingPrice(opts: WashingOptions, zone: ZoneInfo): number {
-  const rate = PRICES.washMaterial[opts.material];
-  let total = opts.areaSqm * rate;
-  if (opts.isFacade) total *= PRICES.washFacadeFactor;
-  return applyZone(total, zone);
-}
-
-export function getGutterPrice(opts: GutterOptions, zone: ZoneInfo): number {
-  let total = PRICES.gutterFloors[opts.floors];
-  if (opts.gutterLength === "medium") total += PRICES.gutterMediumSurcharge;
-  if (opts.gutterLength === "xl") total += PRICES.gutterXLSurcharge;
-  return applyZone(total, zone);
-}
-
-export function calculateCleaningDuration_v2(
-  type: "regular" | "deep",
-  opts: CleaningOptions
-): number {
-  const { rooms, bathrooms, balconies = 0, storageUnits = 0, carpets = 0, furniture = 0 } = opts;
-
-  if (type === "regular") {
-    const raw = rooms * 0.75 + bathrooms * 0.5;
-    return Math.ceil(raw * 2) / 2;
-  }
-
-  let hours = rooms * 1.25 + bathrooms * 0.75;
-  hours += balconies * 0.5;
-  hours += storageUnits * 0.5;
-  hours += carpets * 0.75;
-  hours += furniture * 0.5;
-
-  if (opts.ovenInterior) hours += 0.5;
-  if (opts.fridgeFreezer) hours += 0.5;
-  if (opts.windowsUnit) hours += opts.windowsUnit * 0.25;
-  if (opts.blindsShutters) hours += opts.blindsShutters * 0.33;
-  if (opts.extractorHood) hours += 0.33;
-  if (opts.showerDescaling) hours += 0.5;
-  if (opts.cabinetInterior) hours += 0.5;
-  if (opts.bedLinenLaundry) hours += 0.33;
-  if (opts.trashBinCount) hours += opts.trashBinCount * 0.25;
-  if (opts.machineFloorSqm && opts.machineFloorSqm > 0) {
-    hours += Math.ceil((opts.machineFloorSqm / 60) * 2) / 2;
-  }
-
-  return Math.ceil(hours * 2) / 2;
-}
-
-export function calculateEOTDuration_v2(opts: CleaningOptions): number {
-  const { rooms, bathrooms, balconies = 0, storageUnits = 0, carpets = 0, furniture = 0 } = opts;
-
-  const roomMap: Record<number, number> = { 1: 4.5, 2: 7.5, 3: 10.5, 4: 16.5 };
-  let base = rooms >= 4 ? 22.5 : (roomMap[rooms] ?? 22.5);
-
-  if (rooms === 3 && bathrooms >= 2) base = 12.5;
-
-  const extraBaths = Math.max(0, bathrooms - 1);
-  let hours = base + extraBaths * 0.75;
-
-  hours += balconies * 0.5;
-  hours += storageUnits * 0.5;
-  hours += carpets * 0.75;
-  hours += furniture * 0.5;
-
-  if (opts.ovenInterior) hours += 0.5;
-  if (opts.fridgeFreezer) hours += 0.5;
-  if (opts.windowsUnit) hours += opts.windowsUnit * 0.25;
-  if (opts.blindsShutters) hours += opts.blindsShutters * 0.33;
-  if (opts.extractorHood) hours += 0.33;
-  if (opts.showerDescaling) hours += 0.5;
-  if (opts.cabinetInterior) hours += 0.5;
-  if (opts.bedLinenLaundry) hours += 0.33;
-  if (opts.trashBinCount) hours += opts.trashBinCount * 0.25;
-  if (opts.machineFloorSqm && opts.machineFloorSqm > 0) {
-    hours += Math.ceil((opts.machineFloorSqm / 60) * 2) / 2;
-  }
-
-  return Math.max(4.0, Math.ceil(hours * 2) / 2);
-}
-
-const MOCK_REVIEWS = [
-    { name: 'Sarah', rating: 5, comment: 'So fast! I built my cleaning bundle in under 2 minutes. Easiest quote ever.' },
-    { name: 'Thomas', rating: 5, comment: 'The visual upload is genius. No more explaining over the phone. Very smooth experience!' },
-    { name: 'Elena', rating: 5, comment: 'I love how clear the pricing is. Great to see everything calculated instantly!' },
-    { name: 'Marc', rating: 4, comment: 'Very professional interface. Simple, quick, and Swiss quality throughout.' }
-];
-
-
+import { PRICES, Zone, ZoneInfo, detectZone, applyZone, EOTOptions, CleaningOptions, RegularCleaningOptions, MovingLevel, MovingOptions, CarDetailingOptions, GardeningOptions, WashingOptions, GutterOptions, getEOTPrice, getDeepCleaningPrice, getRegularCleaningPrice, getCoordinatesForZip, getHaversineDistance, calculateGasolineAndDistance, getStairSurcharge, getMovingPrice, getCarDetailingPrice, getGardeningPrice, getPressureWashingPrice, getGutterPrice, calculateCleaningDuration_v2, calculateEOTDuration_v2, calculateDetailedServicePrice, repriceCart } from '../src/domain/pricing';
+export type { Zone, ZoneInfo, EOTOptions, CleaningOptions, RegularCleaningOptions, MovingLevel, MovingOptions, CarDetailingOptions, GardeningOptions, WashingOptions, GutterOptions, PriceCartItem } from '../src/domain/pricing';
+export { PRICES, detectZone, applyZone, getEOTPrice, getDeepCleaningPrice, getRegularCleaningPrice, getCoordinatesForZip, getHaversineDistance, calculateGasolineAndDistance, getStairSurcharge, getMovingPrice, getCarDetailingPrice, getGardeningPrice, getPressureWashingPrice, getGutterPrice, calculateCleaningDuration_v2, calculateEOTDuration_v2, calculateDetailedServicePrice, repriceCart } from '../src/domain/pricing';
 
 // --- Reusable UI Components ---
 
@@ -1738,6 +1141,14 @@ const fallbackTranslations: Record<string, { fr: string; it: string; pt: string 
 
 const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, setCart }) => {
   const { t, language } = useTranslation();
+  const bookingText = {
+    de: { save: 'Ihre Anfrage konnte nicht gespeichert werden. Bitte erneut versuchen oder Kraken kontaktieren.', file: 'Jede Datei darf höchstens 20 MB gross sein.', upload: 'Der Upload ist fehlgeschlagen. Bitte erneut versuchen.' },
+    en: { save: 'Your request could not be saved. Please retry or contact Kraken.', file: 'Each file must be at most 20 MB.', upload: 'The upload failed. Please try again.' },
+    fr: { save: 'Votre demande n’a pas pu être enregistrée. Réessayez ou contactez Kraken.', file: 'Chaque fichier doit faire au maximum 20 Mo.', upload: 'Le téléversement a échoué. Veuillez réessayer.' },
+    it: { save: 'Non è stato possibile salvare la richiesta. Riprova o contatta Kraken.', file: 'Ogni file deve essere al massimo di 20 MB.', upload: 'Il caricamento non è riuscito. Riprova.' },
+    es: { save: 'No se pudo guardar tu solicitud. Inténtalo de nuevo o contacta con Kraken.', file: 'Cada archivo debe ocupar como máximo 20 MB.', upload: 'No se pudo subir el archivo. Inténtalo de nuevo.' },
+    pt: { save: 'Não foi possível guardar o seu pedido. Tente novamente ou contacte a Kraken.', file: 'Cada ficheiro pode ter no máximo 20 MB.', upload: 'Não foi possível carregar o ficheiro. Tente novamente.' },
+  }[language] || { save: 'Your request could not be saved. Please retry or contact Kraken.', file: 'Each file must be at most 20 MB.', upload: 'The upload failed. Please try again.' };
 
   const mt = (en: string, es: string, de: string = en, fr: string = en, it: string = en, pt: string = en) => {
       if (language === 'es') return es;
@@ -2288,11 +1699,16 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   // Step state for the contact / booking modal
   const [currentStep, setCurrentStep] = useState(1);
   const [draftDocId, setDraftDocId] = useState<string | null>(null);
+  const [bookingError, setBookingError] = useState<string | null>(null);
+  const [pdfExporting, setPdfExporting] = useState(false);
+  const [pdfExportError, setPdfExportError] = useState<string | null>(null);
+  const pdfExportPending = useRef(false);
+  const draftSaving = useRef(false);
   const [submittedRequestData, setSubmittedRequestData] = useState<any | null>(null);
   const [paymentCompletedBooking, setPaymentCompletedBooking] = useState<any | null>(null);
 
   const saveDraftToFirestore = async (stepNum: number) => {
-    if (!email || !email.includes('@')) return;
+    if (!email || !email.includes('@')) throw new Error('A valid email is required.');
 
     try {
       if (!auth.currentUser) {
@@ -2304,16 +1720,19 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         }
       }
 
-      const currentUid = auth.currentUser?.uid || 'anonymous_client';
+      const currentUid = auth.currentUser?.uid;
+      if (!currentUid) throw new Error(bookingText.save);
       let idToUse = draftDocId;
       if (!idToUse) {
         idToUse = doc(collection(db, 'maintenance_requests')).id;
-        setDraftDocId(idToUse);
+
       }
 
       const fullPhone = `${phonePrefix} ${phone}`.trim();
       const fullAddress = [address, `${postcode} ${city}`].filter(Boolean).join(', ');
       
+      const requestRef = doc(db, 'maintenance_requests', idToUse);
+      const existing = draftDocId ? await getDoc(requestRef) : null;
       const draftPayload = sanitizeFirestoreData({
         id: idToUse,
         userId: currentUid,
@@ -2322,7 +1741,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         date: selectedDate || new Date().toISOString().split('T')[0],
         status: 'Draft' as const,
         priority: 'Low' as const,
-        amount: grandTotal || 0,
+        amount: 0,
+        estimatedAmount: grandTotal || 0,
+        postcode,
         email: email.trim(),
         phone: fullPhone,
         address: fullAddress,
@@ -2336,17 +1757,17 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
           type: item.type || '',
           title: item.title || item.type || '',
           price: item.calculatedPrice || item.price || 0,
-          details: item
+          details: item.details || {}
         })),
-        createdAt: serverTimestamp(),
+        createdAt: existing?.exists() ? existing.data().createdAt : serverTimestamp(),
         updatedAt: serverTimestamp()
       });
 
-      const requestRef = doc(db, 'maintenance_requests', idToUse);
       await setDoc(requestRef, draftPayload, { merge: true });
-      console.log("Draft successfully recorded in Firestore:", idToUse);
+      setDraftDocId(idToUse);
+      return idToUse;
     } catch (err) {
-      console.error("Failed to auto-save consultation draft to Firestore:", err);
+      throw err;
     }
   };
 
@@ -2357,7 +1778,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
     }
   }, [isContactModalOpen]);
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
+    if (draftSaving.current) return;
+    setBookingError(null);
     const requiredMsg = t('consultation.form.error.required');
     const newErrors: Record<string, string> = {};
 
@@ -2377,8 +1800,10 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
-      saveDraftToFirestore(currentStep);
-      setCurrentStep(prev => prev + 1);
+      draftSaving.current = true;
+      try { await saveDraftToFirestore(currentStep); setCurrentStep(prev => prev + 1); }
+      catch (error) { setBookingError(t('consultation.alert.gatewayError', { error: (error as Error).message })); }
+      finally { draftSaving.current = false; }
     } else {
       const firstError = document.querySelector('.shake');
       if (firstError) {
@@ -2485,6 +1910,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
     if (savedData) {
         try {
             const data = JSON.parse(savedData);
+            if (!data.savedAt || Date.now() - data.savedAt > 24 * 60 * 60 * 1000) { localStorage.removeItem(PERSISTENCE_KEY); return; }
             if (data.name) setClientName(data.name);
             if (data.email) setEmail(data.email);
             if (data.phonePrefix) setPhonePrefix(data.phonePrefix);
@@ -2531,8 +1957,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         address,
         postcode,
         city,
-        notes,
-        accessMethod,
+        savedAt: Date.now(),
         date: selectedDate,
         time: selectedTime,
         terms: isTermsAgreed,
@@ -2864,239 +2289,6 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
       }
   };
 
-  const calculateDetailedServicePrice = (type: string, details: any, zone: ZoneInfo, fallbackPostal: string): number => {
-      const activePostal = details.zipCode || details.fromZip || fallbackPostal || '8200';
-      const currentZone = detectZone(activePostal);
-
-      switch (type) {
-          case 'daily-cleaning': {
-              const opts: RegularCleaningOptions = {
-                  rooms: details.bedrooms || 0,
-                  bathrooms: details.bathrooms || 0,
-                  ironingHours: details.ironing ? (details.ironingHours || 0) : 0,
-                  laundryHours: details.laundry ? (details.laundryHours || 0) : 0,
-                  ovenLevel: details.oven ? (details.ovenGrease === 'Low' ? 'low' : details.ovenGrease === 'Medium' ? 'medium' : 'high') as "low"|"medium"|"high" : undefined,
-                  cabinetCount: details.cabinets ? 1 : 0,
-                  cabinetOrganize: details.cabinets ? details.cabinetOrganize : undefined,
-                  fridgeClean: details.fridge,
-                  fridgeOrganize: details.fridge ? details.fridgeOrganize : undefined,
-                  windowCount: details.windowCount || 0,
-                  customDuration: details.duration
-              };
-              return getRegularCleaningPrice(opts, currentZone);
-          }
-          case 'end-of-tenancy': {
-              const opts: EOTOptions = {
-                  rooms: details.roomsCount || 0,
-                  bathrooms: details.bathroomsCount || 0,
-                  balconies: details.balconyCount || 0,
-                  storageUnits: details.storageCount || 0,
-                  carpets: details.carpetCount || 0,
-                  furniture: details.furnitureCount || 0,
-                  customDuration: details.duration
-              };
-              return getEOTPrice(opts, currentZone);
-          }
-          case 'deep-cleaning': {
-              const opts: CleaningOptions = {
-                  rooms: details.bedrooms || 0,
-                  bathrooms: details.bathrooms || 0,
-                  balconies: details.balconyCount || 0,
-                  storageUnits: details.storageCount || 0,
-                  carpets: details.carpetCount || 0,
-                  furniture: details.furnitureCount || 0
-              };
-              return getDeepCleaningPrice(opts, currentZone);
-          }
-          case 'moving': {
-              const opts: MovingOptions = {
-                  level: (details.serviceLevel === 'Standard' ? 'standard' : details.serviceLevel === 'Large' ? 'large' : 'commercial') as MovingLevel,
-                  hours: details.duration || 3,
-                  helpers: details.moversCount || 0,
-                  withAssembly: details.assembly,
-                  assemblyHours: details.assemblyHours || 0,
-                  withHydraulicLift: details.hydraulicLift,
-                  liftHours: details.hydraulicLiftHours || 0,
-                  originPostal: details.fromZip || '',
-                  destinationPostal: details.toZip || '',
-                  withPackaging: details.packaging,
-                  floorFrom: details.floorFrom || '0',
-                  accessFrom: details.accessFrom || 'Lift',
-                  floorTo: details.floorTo || '0',
-                  accessTo: details.accessTo || 'Lift',
-                  freeParking: details.freeParking !== false
-              };
-              return getMovingPrice(opts);
-          }
-          case 'gardening': {
-              if (details.size === 'XL') return 0; // Inquiry based
-              
-              const baseMap: Record<string, number> = { 'Small': 140, 'Medium': 260, 'Large': 480 };
-              const basePrice = baseMap[details.size || 'Medium'] || 260;
-              
-              const conditionMults: Record<string, number> = { 'Cuidado': 1.0, 'Descuidado': 1.3, 'Muy descuidado': 1.6 };
-              const conditionMultiplier = conditionMults[details.condition || 'Cuidado'] || 1.0;
-              
-              const freqMults: Record<string, number> = { 'Única': 1.0, 'Mensual': 0.90, 'Temporal': 0.95 };
-              const frequencyMultiplier = freqMults[details.frequency || 'Única'] || 1.0;
-              
-              let addonsPrice = 0;
-              if (details.mowing && details.features?.lawn) {
-                  const sqm = parseFloat(details.lawnSqm) || 0;
-                  addonsPrice += Math.max(60, sqm * 0.35);
-              }
-              
-              if (details.features?.hedges && (details.hedgeMeters || 0) > 0) {
-                  addonsPrice += (details.hedgeMeters || 0) * 15;
-              }
-              
-              if (details.features?.trees && (details.treePruningHours || 0) > 0) {
-                  addonsPrice += (details.treePruningHours || 0) * 45;
-              }
-              
-              if (details.lawnTreatment && details.features?.lawn) {
-                  addonsPrice += 90;
-              }
-              
-              if (details.cleanup) {
-                  addonsPrice += 120;
-              }
-              
-              if (details.greenWaste) {
-                  const bags = parseInt(details.greenWasteBags) || 0;
-                  addonsPrice += bags > 0 ? bags * 18 : 50;
-              }
-              
-              let accessCharge = 0;
-              if (details.accessMachine === false) {
-                  accessCharge = 30;
-              }
-              
-              const calculatedTotal = (basePrice * conditionMultiplier + addonsPrice + accessCharge) * frequencyMultiplier;
-              return applyZone(calculatedTotal, currentZone);
-          }
-          case 'exterior-cleaning': {
-              let calculatedTotal = 0;
-              const matRates: Record<string, number> = {
-                  'Stone': 9, 'Concrete': 7, 'Wood': 12, 'Composite': 8, 'Glass': 11, 'Glass (Ext. Windows)': 11
-              };
-              const surfTypeMults: Record<string, number> = {
-                  'Driveway / Path': 1.0, 'Decking / Patio': 1.0, 'Facade / Walls': 1.2
-              };
-              const severityMults: Record<string, number> = {
-                  'Ligero': 1.0, 'Moderado': 1.15, 'Musgo / Algas': 1.25, 'Moss / Algae': 1.25
-              };
-
-              if (details.surfaces && details.surfaces.length > 0) {
-                  details.surfaces.forEach((s: any) => {
-                      const area = parseFloat(s.areaSqm) || 0;
-                      const matRate = matRates[s.material] || 9;
-                      const surfMult = surfTypeMults[s.surfaceType] || 1.0;
-                      const sevMult = severityMults[s.severity] || 1.0;
-                      let surfaceCost = area * matRate * surfMult * sevMult;
-                      if (s.moldSealing) {
-                          surfaceCost += area * 4;
-                      }
-                      calculatedTotal += surfaceCost;
-                  });
-              } else {
-                  const area = parseFloat(details.approxSize) || 0;
-                  const matRate = matRates[details.material] || 9;
-                  const surfMult = surfTypeMults[details.surface] || 1.0;
-                  calculatedTotal += area * matRate * surfMult;
-              }
-
-              if (details.stainRemoval) {
-                  calculatedTotal += 50;
-              }
-              if (details.noUtilityAccess) {
-                  calculatedTotal += 60;
-              }
-
-              return applyZone(calculatedTotal, currentZone);
-          }
-          case 'car-detailing': {
-              let totalSum = 0;
-              let hasMobile = false;
-
-              if (details.vehicles && details.vehicles.length > 0) {
-                  details.vehicles.forEach((v: any) => {
-                      const baseMap: Record<string, number> = { 'S': 140, 'M': 190, 'L': 240, 'XL': 290 };
-                      const baseSizePrice = baseMap[v.category || 'M'] || 190;
-                      
-                      const coverageMults: Record<string, number> = { 'Interior': 0.6, 'Exterior': 0.55, 'Full': 1.0 };
-                      const coverageMultiplier = coverageMults[v.coverage || 'Full'] || 1.0;
-                      
-                      const dirtSurcharges: Record<string, number> = { 'Minimum': 0, 'Medium': 0, 'High': 30, 'Extreme': 60 };
-                      const dirtSurcharge = dirtSurcharges[v.dirtLevel || 'Minimum'] || 0;
-                      
-                      let extraProblems = 0;
-                      if (v.hasHeadlights) extraProblems += 80;
-                      if (v.hasScratches) extraProblems += 120;
-                      if (v.hasOdor) extraProblems += 70;
-                      if (v.hasUpholstery) extraProblems += 50;
-                      if (v.hasPets) extraProblems += 60;
-
-                      let ceramicPrice = 0;
-                      if (v.ceramicYears === '3 Years') ceramicPrice = 1000;
-
-                      let vehiclePrice = (baseSizePrice * coverageMultiplier) + dirtSurcharge + extraProblems + ceramicPrice;
-
-                      if (activePostal.startsWith('80')) {
-                          vehiclePrice *= 1.2;
-                      }
-
-                      totalSum += vehiclePrice;
-                      if (v.locationType === 'Mobile') {
-                          hasMobile = true;
-                      }
-                  });
-              }
-
-              if (hasMobile) {
-                  totalSum += 30;
-              }
-
-              return totalSum;
-          }
-          case 'gutter-cleaning': {
-              const heightMap: Record<string, number> = { '1 Story': 180, '2 Stories': 290, '3+ Stories': 450 };
-              const baseHeight = heightMap[details.buildingHeight] || 180;
-              
-              const lengthMap: Record<string, number> = { 'Standard (<20m)': 0, 'Large (20-50m)': 40, 'XL (>50m)': 90 };
-              const lengthCharge = lengthMap[details.lengthCategory] || 0;
-              
-              const conditionMap: Record<string, number> = { 'Ligero': 0, 'Obstruido': 40, 'Plantas creciendo': 80, 'No sé': 0 };
-              const conditionCharge = conditionMap[details.condition] || 0;
-              
-              let extraCharges = 0;
-              if (details.downspoutFlush) extraCharges += 40;
-              if (details.repairNeeded) extraCharges += 45;
-
-              const calculatedTotal = baseHeight + lengthCharge + conditionCharge + extraCharges;
-              return applyZone(calculatedTotal, currentZone);
-          }
-          case 'waste-management': {
-              if (details.hasHazardous) return 0;
-              let draftTotal = 80;
-              const items = details.items || {};
-              draftTotal += (items.sofa || 0) * 45;
-              draftTotal += (items.mattress || 0) * 35;
-              draftTotal += (items.appliance || 0) * 55;
-              draftTotal += (items.boxes || 0) * 8;
-              
-              if (details.accessStyle === 'Stairs') {
-                  draftTotal += (details.stairsFloorCount || 0) * 20;
-              }
-              if (details.needsCertificate) {
-                  draftTotal *= 1.1;
-              }
-              return draftTotal;
-          }
-          default: return 0;
-      }
-  };
-
   const getEstimatedPrice = () => {
       if (!activeModal) return 0;
       
@@ -3352,119 +2544,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   const currentPostcode = postcode || '8200';
   const checkoutZone = detectZone(currentPostcode);
 
-  const revaluedCart = cart.map(item => {
-      const itemConfig = item.details || {};
-      let revaluedPrice = item.price || 0;
-
-      if (item.type === 'comic-book') {
-          if (hasServices) {
-              revaluedPrice = 0; // Comic is free when bought with a service
-          } else {
-              revaluedPrice = item.price || 15.00; // Normal price
-          }
-      } else {
-          switch (item.type) {
-              case 'end-of-tenancy': {
-                  const opts: EOTOptions = {
-                      rooms: itemConfig.roomsCount || 0,
-                      bathrooms: itemConfig.bathroomsCount || 0,
-                      balconies: itemConfig.balconyCount || 0,
-                      storageUnits: itemConfig.storageCount || 0,
-                      carpets: itemConfig.carpetCount || 0,
-                      furniture: itemConfig.furnitureCount || 0,
-                      ovenInterior: itemConfig.ovenInterior,
-                      fridgeFreezer: itemConfig.fridgeFreezer,
-                      windowsUnit: itemConfig.windowsUnit,
-                      blindsShutters: itemConfig.blindsShutters,
-                      extractorHood: itemConfig.extractorHood,
-                      showerDescaling: itemConfig.showerDescaling,
-                      cabinetInterior: itemConfig.cabinetInterior,
-                      bedLinenLaundry: itemConfig.bedLinenLaundry,
-                      ecoProducts: itemConfig.ecoProducts,
-                      machineFloorSqm: itemConfig.machineFloorSqm,
-                      trashBinCount: itemConfig.trashBinCount,
-                      customDuration: itemConfig.duration
-                  };
-                  revaluedPrice = getEOTPrice(opts, checkoutZone);
-                  break;
-              }
-              case 'deep-cleaning': {
-                  const opts: CleaningOptions = {
-                      rooms: itemConfig.bedrooms || 0,
-                      bathrooms: itemConfig.bathrooms || 0,
-                      balconies: itemConfig.balconyCount || 0,
-                      storageUnits: itemConfig.storageCount || 0,
-                      carpets: itemConfig.carpetCount || 0,
-                      furniture: itemConfig.furnitureCount || 0,
-                      ovenInterior: itemConfig.ovenInterior,
-                      fridgeFreezer: itemConfig.fridgeFreezer,
-                      windowsUnit: itemConfig.windowsUnit,
-                      blindsShutters: itemConfig.blindsShutters,
-                      extractorHood: itemConfig.extractorHood,
-                      showerDescaling: itemConfig.showerDescaling,
-                      cabinetInterior: itemConfig.cabinetInterior,
-                      bedLinenLaundry: itemConfig.bedLinenLaundry,
-                      ecoProducts: itemConfig.ecoProducts,
-                      machineFloorSqm: itemConfig.machineFloorSqm,
-                      trashBinCount: itemConfig.trashBinCount
-                  };
-                  revaluedPrice = getDeepCleaningPrice(opts, checkoutZone);
-                  break;
-              }
-              case 'daily-cleaning': {
-                  const opts: RegularCleaningOptions = {
-                      rooms: itemConfig.bedrooms || 0,
-                      bathrooms: itemConfig.bathrooms || 0,
-                      ironingHours: itemConfig.ironing ? (itemConfig.ironingHours || 0) : 0,
-                      laundryHours: itemConfig.laundry ? (itemConfig.laundryHours || 0) : 0,
-                      ovenLevel: itemConfig.oven ? (itemConfig.ovenGrease === 'Low' ? 'low' : itemConfig.ovenGrease === 'Medium' ? 'medium' : 'high') as "low"|"medium"|"high" : undefined,
-                      cabinetCount: itemConfig.cabinets ? 1 : 0,
-                      cabinetOrganize: itemConfig.cabinets ? itemConfig.cabinetOrganize : undefined,
-                      fridgeClean: itemConfig.fridge,
-                      fridgeOrganize: itemConfig.fridge ? itemConfig.fridgeOrganize : undefined,
-                      windowCount: itemConfig.windowCount || 0,
-                      customDuration: itemConfig.duration
-                  };
-                  revaluedPrice = getRegularCleaningPrice(opts, checkoutZone);
-                  break;
-              }
-              case 'moving': {
-                  const opts: MovingOptions = {
-                      level: (itemConfig.serviceLevel === 'Standard' ? 'standard' : itemConfig.serviceLevel === 'Large' ? 'large' : 'commercial') as MovingLevel,
-                      hours: itemConfig.duration || 3,
-                      helpers: itemConfig.moversCount || 0,
-                      withAssembly: itemConfig.assembly,
-                      assemblyHours: itemConfig.assemblyHours || 0,
-                      withHydraulicLift: itemConfig.hydraulicLift,
-                      liftHours: itemConfig.hydraulicLiftHours || 0,
-                      originPostal: itemConfig.fromZip || currentPostcode,
-                      destinationPostal: itemConfig.toZip || currentPostcode,
-                      withPackaging: itemConfig.packaging,
-                      floorFrom: itemConfig.floorFrom || '0',
-                      accessFrom: itemConfig.accessFrom || 'Lift',
-                      floorTo: itemConfig.floorTo || '0',
-                      accessTo: itemConfig.accessTo || 'Lift',
-                      freeParking: itemConfig.freeParking !== false
-                  };
-                  revaluedPrice = getMovingPrice(opts);
-                  break;
-              }
-              case 'car-detailing':
-              case 'gardening':
-              case 'exterior-cleaning':
-              case 'gutter-cleaning':
-              case 'waste-management': {
-                  revaluedPrice = calculateDetailedServicePrice(item.type, itemConfig, checkoutZone, currentPostcode);
-                  break;
-              }
-          }
-      }
-
-      return {
-          ...item,
-          price: revaluedPrice
-      };
-  });
+  const revaluedCart = repriceCart<CartItem>(cart, currentPostcode);
 
   const mainCount = revaluedCart.filter(item => mainServices.includes(item.type)).length;
   const addCount = revaluedCart.filter(item => additionalServicesList.includes(item.type)).length;
@@ -3516,8 +2596,18 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   const grandTotal = quoteComposition.costs.total > 0 ? quoteComposition.costs.total : (servicesSubtotal + travelFee);
   const totalDuration = revaluedCart.reduce((acc, item) => acc + (item.duration || 0), 0);
 
-  const handleDirectPDFExport = () => {
-      generateQuotePDF({
+  const exportQuotePdf = async (options: GeneratorOptions) => {
+    if (pdfExportPending.current) return;
+    pdfExportPending.current = true;
+    setPdfExporting(true);
+    setPdfExportError(null);
+    try { await downloadQuotePdf(options); }
+    catch { setPdfExportError(quotePdfStatusText(language, 'error')); }
+    finally { pdfExportPending.current = false; setPdfExporting(false); }
+  };
+
+  const handleDirectPDFExport = async () => {
+      await exportQuotePdf({
           cart: revaluedCart,
           grandTotal,
           travelFee,
@@ -3551,9 +2641,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
       });
   };
 
-  const handleSuccessPDFExport = () => {
+  const handleSuccessPDFExport = async () => {
       if (!submittedRequestData) return;
-      generateQuotePDF({
+      await exportQuotePdf({
           cart: revaluedCart,
           grandTotal: submittedRequestData.depositAmount + submittedRequestData.remainingBalance || grandTotal,
           travelFee: travelFee,
@@ -3636,6 +2726,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
           }
       }
 
+      if (!auth.currentUser) { setBookingError(bookingText.upload); return; }
+      if (selectedFiles.some(file => file.size > 20 * 1024 * 1024)) { setBookingError(bookingText.file); return; }
       setFiles(prev => [...prev, ...selectedFiles]);
 
       selectedFiles.forEach((file) => {
@@ -3653,7 +2745,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
           const today = new Date().toISOString().split('T')[0];
           const cleanFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-          const storageRef = ref(storage, `solicitudes/${today}/${uniqueId}_${cleanFileName}`);
+          const storageRef = ref(storage, `solicitudes/${auth.currentUser!.uid}/${today}/${uniqueId}_${cleanFileName}`);
           const uploadTask = uploadBytesResumable(storageRef, file);
 
           uploadTask.on('state_changed', 
@@ -3691,272 +2783,35 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
       });
   };
 
-  // Handle Payment Return
+  // A browser redirect is a hint; only a server-verified persisted transaction proves payment.
   useEffect(() => {
     const processReturn = async () => {
-        const params = new URLSearchParams(window.location.search);
-        const paymentStatus = params.get('payment');
-        
-        if (paymentStatus === 'success' || paymentStatus === 'invoice') {
-            const savedBooking = localStorage.getItem('pending_booking');
-            if (savedBooking) {
-                try {
-                    const booking = JSON.parse(savedBooking);
-                    // Prevent duplicate processing if page is refreshed
-                    localStorage.removeItem('pending_booking');
-                    
-                    setPaymentCompletedBooking(booking);
-                    setCart([]);
-                    
-                    console.log(`Processing ${paymentStatus} payment for:`, booking.clientName);
-                    const isInvoice = paymentStatus === 'invoice';
-
-                    // Firestore document update
-                    const docId = booking.id;
-                    if (docId) {
-                        try {
-                            const updatedPayment = {
-                                method: booking.payment?.method || (isInvoice ? 'bank_transfer' : 'card'),
-                                gateway: booking.payment?.gateway || (isInvoice ? 'manual' : 'payrexx'),
-                                last4: '',
-                                brand: '',
-                                cardholderName: booking.clientName || '',
-                                expiryMonth: '',
-                                expiryYear: '',
-                                transactionId: isInvoice ? 'invoice_bank_transfer' : 'paid_via_gateway',
-                                amountCharged: booking.depositAmount || 0,
-                                currency: 'CHF',
-                                status: isInvoice ? 'pending' : 'captured',
-                                billingPostal: booking.address?.split(',').pop()?.trim()?.split(' ')?.[0] || ''
-                            };
-
-                            const updatedTimestamps = {
-                                formSubmittedAt: booking.timestamps?.formSubmittedAt || new Date().toISOString(),
-                                priceCalculatedAt: booking.timestamps?.priceCalculatedAt || new Date().toISOString(),
-                                depositCapturedAt: isInvoice ? null : new Date().toISOString(),
-                                lastUpdatedAt: new Date().toISOString(),
-                                requestedServiceDate: booking.date || '',
-                                requestedServiceTime: booking.time || 'flexible'
-                            };
-
-                            await updateDoc(doc(db, 'maintenance_requests', docId), sanitizeFirestoreData({
-                                status: isInvoice ? 'Pending' : 'In Progress',
-                                payment: updatedPayment,
-                                timestamps: updatedTimestamps,
-                                updatedAt: serverTimestamp()
-                            }));
-                            console.log("Successfully updated Firestore payment status for doc:", docId);
-                        } catch (updateError) {
-                            console.error("Failed to update Firestore request status on return:", updateError);
-                        }
-                    }
-                    
-                    // 1. Send Webhook
-                    const hookData = new FormData();
-                    hookData.append('clientName', booking.clientName);
-                    hookData.append('email', booking.email);
-                    hookData.append('phone', booking.phone);
-                    hookData.append('address', booking.address);
-                    hookData.append('notes', booking.notes);
-                    hookData.append('date', booking.date);
-                    hookData.append('time', booking.time);
-                    hookData.append('totalPrice', booking.totalPrice.toFixed(2));
-                    hookData.append('bookingMode', booking.bookingMode);
-                    hookData.append('services', JSON.stringify(booking.services));
-                    hookData.append('transactionId', isInvoice ? 'invoice_bank_transfer' : 'paid_via_gateway');
-                    hookData.append('payment_status', isInvoice ? 'PENDING' : 'PAID');
-                    
-                    let computedDepositAmt: number;
-                    if (typeof booking.depositAmount === 'number') {
-                        computedDepositAmt = booking.depositAmount;
-                    } else if (booking.depositAmount && !isNaN(Number(booking.depositAmount))) {
-                        computedDepositAmt = Number(booking.depositAmount);
-                    } else {
-                        const totalVal = Number(booking.totalPrice) || 0;
-                        const isDirect = String(booking.bookingMode).toLowerCase() === 'direct';
-                        computedDepositAmt = isDirect ? (totalVal * 0.15) : 15;
-                    }
-                    const computedRemainingAmt = Math.max(0, (Number(booking.totalPrice) || 0) - computedDepositAmt);
-                    const preferredLanguage = localStorage.getItem('kraken_preferred_lang') || 'en';
-                    const rawPhotos = booking.photoUrls || booking.files || [];
-                    const safePhotoUrls = Array.isArray(rawPhotos)
-                        ? rawPhotos.map((item: any) => typeof item === 'string' ? item : (item?.url || item?.name || ''))
-                        : [];
-                    const photoUrlsStr = JSON.stringify(safePhotoUrls);
-                    const pdfUrlStr = booking.pdfUrl || '';
-
-                    hookData.append('deposit_amount', computedDepositAmt.toFixed(2));
-                    hookData.append('remaining_amount', computedRemainingAmt.toFixed(2));
-                    hookData.append('language', preferredLanguage);
-                    hookData.append('photo_urls', photoUrlsStr);
-                    hookData.append('pdf_url', pdfUrlStr);
-
-                    // Build Email HTML & Subject in German
-                    const clientNameVal = booking.clientName || 'Kunde';
-                    const isPrecisionMode = String(booking.bookingMode).toLowerCase() === 'precision';
-                    const totalPriceFormatted = (Number(booking.totalPrice) || 0).toFixed(2);
-                    const depositAmtFormatted = computedDepositAmt.toFixed(2);
-                    const remainingAmtFormatted = computedRemainingAmt.toFixed(2);
-                    const transactionIdVal = isInvoice ? 'invoice_bank_transfer' : 'paid_via_gateway';
-                    const dateVal = booking.date || '';
-                    const timeVal = booking.time || '';
-                    const servicesFormatted = Array.isArray(booking.services)
-                        ? booking.services.map((s: any) => typeof s === 'string' ? s : (s.type ? s.type.replace(/-/g, ' ').toUpperCase() : (s.title || s.name || ''))).filter(Boolean).join(', ')
-                        : String(booking.services || '');
-
-                    const emailSubject = isPrecisionMode
-                        ? 'Kraken - Wir haben Ihre Anfrage erhalten'
-                        : 'Kraken - Ihre Buchung ist bestätigt';
-
-                    const emailHtml = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${emailSubject}</title>
-</head>
-<body style="margin: 0; padding: 0; background-color: #eef3f8; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1e293b;">
-  <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #eef3f8; padding: 20px 0;">
-    <tr>
-      <td align="center">
-        <table role="presentation" width="600" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; width: 100%; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-          <tr>
-            <td align="center" style="background-color: #ffffff; padding: 24px 20px; border-bottom: 1px solid #e2e8f0;">
-              <img src="https://dl.dropboxusercontent.com/scl/fi/9xl037889qyoi5zl81kpq/logo-kraken-azul.webp?rlkey=trx6j4riif60qng86jrf2k3hv" alt="Kraken Logo" width="180" style="display: block; width: 180px; max-width: 180px; height: auto; border: 0;" />
-            </td>
-          </tr>
-          <tr>
-            <td align="center" style="padding: 0;">
-              <img src="https://dl.dropboxusercontent.com/scl/fi/4c6e3bo9e8osy0ztv8esp/ChatGPT-Image-Jul-19-2026-04_10_10-AM.png?rlkey=x6uepdaucmg9tmqdvxhk7uzis" alt="Kraken Banner" width="600" style="display: block; width: 100%; max-width: 600px; height: auto; border: 0;" />
-            </td>
-          </tr>
-          <tr>
-            <td style="padding: 32px 28px;">
-              <h2 style="margin: 0 0 16px 0; color: #0a2472; font-size: 20px; font-weight: 700;">Hallo ${clientNameVal},</h2>
-              ${isPrecisionMode ? `
-              <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.6; color: #334155;">
-                Wir haben Ihre Gebühr von CHF 15 erhalten. Wir erstellen nun Ihr genaues Angebot nach der Auswertung Ihrer Anfrage.
-              </p>
-              <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 14px 16px; border-radius: 6px; margin-bottom: 24px;">
-                <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #92400e; font-weight: 600;">
-                  Wichtige Information: Die CHF 15 sind nicht erstattungsfähig, werden jedoch zu 100% abgezogen, wenn Sie das Angebot annehmen.
-                </p>
-              </div>
-              ` : `
-              <p style="margin: 0 0 20px 0; font-size: 15px; line-height: 1.6; color: #334155;">
-                Ihr Termin ist reserviert und bestätigt. Vielen Dank für Ihre Anzahlung.
-              </p>
-              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 24px; border-collapse: separate; overflow: hidden;">
-                <tr>
-                  <td style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 14px; font-weight: 600; color: #475569;">Gesamtbetrag</td>
-                  <td align="right" style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 14px; font-weight: 700; color: #0f172a;">CHF ${totalPriceFormatted}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 14px; font-weight: 600; color: #475569;">Anzahlung 15% bezahlt</td>
-                  <td align="right" style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0; font-size: 14px; font-weight: 700; color: #16a34a;">CHF ${depositAmtFormatted}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 12px 16px; font-size: 14px; font-weight: 600; color: #475569;">Restbetrag <span style="font-size: 12px; font-weight: normal; color: #64748b;">(fällig nach der Arbeit)</span></td>
-                  <td align="right" style="padding: 12px 16px; font-size: 14px; font-weight: 700; color: #0a2472;">CHF ${remainingAmtFormatted}</td>
-                </tr>
-              </table>
-              <p style="margin: -12px 0 24px 0; font-size: 13px; color: #64748b; font-style: italic;">
-                Zusätzliche Stunden: CHF 90 pro Stunde.
-              </p>
-              `}
-              <h3 style="margin: 0 0 12px 0; color: #0a2472; font-size: 16px; font-weight: 700; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px;">Details Ihrer Anfrage</h3>
-              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 24px;">
-                <tr>
-                  <td style="padding: 8px 0; font-size: 14px; color: #64748b; width: 140px; vertical-align: top; font-weight: 600;">Dienstleistung:</td>
-                  <td style="padding: 8px 0; font-size: 14px; color: #0f172a; font-weight: 500;">${servicesFormatted}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; font-size: 14px; color: #64748b; vertical-align: top; font-weight: 600;">Datum & Uhrzeit:</td>
-                  <td style="padding: 8px 0; font-size: 14px; color: #0f172a; font-weight: 500;">${dateVal} ${timeVal}</td>
-                </tr>
-                <tr>
-                  <td style="padding: 8px 0; font-size: 14px; color: #64748b; vertical-align: top; font-weight: 600;">Referenz:</td>
-                  <td style="padding: 8px 0; font-size: 14px; color: #0f172a; font-weight: 500;">${transactionIdVal}</td>
-                </tr>
-              </table>
-              ${pdfUrlStr ? `
-              <div style="text-align: center; margin: 28px 0 12px 0;">
-                <a href="${pdfUrlStr}" target="_blank" style="background-color: #0a2472; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-weight: 700; font-size: 14px; display: inline-block;">
-                  PDF herunterladen
-                </a>
-              </div>
-              ` : ''}
-            </td>
-          </tr>
-          <tr>
-            <td align="center" style="background-color: #0a2472; padding: 24px 20px; color: #ffffff; text-align: center;">
-              <p style="margin: 0 0 6px 0; font-size: 14px; font-weight: 700; color: #ffffff;">
-                Kraken Properties und Facilities Management
-              </p>
-              <p style="margin: 0; font-size: 13px; color: #cbd5e1;">
-                <a href="mailto:kai@krakenpfm.ch" style="color: #ffffff; text-decoration: underline;">kai@krakenpfm.ch</a> . <a href="https://krakenpfm.ch" target="_blank" style="color: #ffffff; text-decoration: underline;">krakenpfm.ch</a>
-              </p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`;
-
-                    const hookPayload: Record<string, any> = { source: 'Consultation Booking Payment' };
-                    hookData.forEach((val, key) => { hookPayload[key] = val; });
-                    sendLead(hookPayload);
-
-                    // 2. Send Email Notification
-                    const serviceList = booking.services.map((i: any) => i.type.replace(/-/g, ' ').toUpperCase()).join(', ');
-                    const concept = booking.bookingMode === 'direct' ? 'Express Booking Deposit (15%)' : 'Precision Media Quote';
-
-                    emailjs.send(SERVICE_ID, TEMPLATE_ID, {
-                        from_name: booking.clientName,
-                        service_address: booking.address,
-                        amount_to_pay: isInvoice ? "CHF " + booking.totalPrice.toFixed(2) + " (Invoiced / Bank Transfer)" : booking.depositAmount.toFixed(2) + " CHF",
-                        service_type: concept + (isInvoice ? " - Bank Transfer / Factura" : ""),
-                        from_email: booking.email,
-                        phone_number: booking.phone,
-                        total_price: `CHF ${booking.totalPrice.toFixed(2)}`,
-                        preferred_date: booking.date,
-                        preferred_time: booking.time,
-                        payment_status: isInvoice ? 'PENDING_INVOICE' : 'PAID',
-                        transaction_id: isInvoice ? 'INVOICE_BANK_TRANSFER' : 'GATEWAY_PAYMENT',
-                        services_list: serviceList
-                    }, PUBLIC_KEY)
-                    .then(() => {
-                        if (isInvoice) {
-                            alert(t('consultation.alert.invoiceSuccess'));
-                        } else {
-                            alert(t('consultation.alert.paymentSuccess'));
-                        }
-                        // Clean URL
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                    })
-                    .catch((error) => {
-                        console.error("EmailJS Error after payment:", error);
-                        alert(t('consultation.alert.emailError'));
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                    });
-                } catch (e) {
-                    console.error("Failed to process pending booking", e);
-                }
-            }
-        } else if (paymentStatus === 'failed' || paymentStatus === 'cancel') {
-            alert(t('consultation.alert.paymentFailed'));
-            window.history.replaceState({}, document.title, window.location.pathname);
+      const params = new URLSearchParams(window.location.search);
+      const status = params.get('payment');
+      if (status === 'success' || status === 'invoice') {
+        let pending: any = null;
+        try { pending = JSON.parse(localStorage.getItem('pending_booking') || 'null'); } catch {}
+        const id = params.get('booking') || pending?.id;
+        let persisted: any = null;
+        if (id && /^[A-Za-z0-9_-]{1,128}$/.test(id)) {
+          try {
+            await auth.authStateReady();
+            if (auth.currentUser) { const result = await getDoc(doc(db, 'maintenance_requests', id)); if (result.exists()) persisted = result.data(); }
+          } catch { /* Keep an honest pending state when the booking cannot be read. */ }
         }
+        const verified = persisted?.payment?.status === 'captured' && persisted.payment.verified === true && persisted.payment.transactionId;
+        if (pending || persisted) {
+          setPaymentCompletedBooking({ ...(pending || persisted), payment: verified ? persisted.payment : { status: 'pending', verified: false } });
+          if (verified) { setCart([]); localStorage.removeItem('pending_booking'); }
+        }
+        params.delete('payment');
+        window.history.replaceState({}, document.title, window.location.pathname + (params.size ? '?' + params.toString() : '') + window.location.hash);
+      } else if (status === 'failed' || status === 'cancel' || status === 'cancelled') {
+        setBookingError(t('consultation.alert.paymentFailed'));
+      }
     };
-    processReturn();
+    void processReturn();
   }, []);
-
-  useEffect(() => {
-    // Expose the function globally for debugging or external calls if needed
-    (window as any).ejecutarReservaYpago = ejecutarReservaYpago;
-  }, [clientName, email, phone, address, postcode, city, notes, accessMethod, selectedDate, selectedTime, bookingMode, isTermsAgreed, cart, files, isSubmitting]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -4005,6 +2860,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         }
 
         setIsSubmitting(true);
+        setBookingError(null);
         const amount = calculateDeposit();
         const mode = bookingMode!;
         const concept = onlyComics 
@@ -4078,17 +2934,20 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
             expiryMonth: '',
             expiryYear: '',
             transactionId: '',
-            amountCharged: amount,
+            amountCharged: 0,
+            verified: false,
             currency: 'CHF',
             status: 'pending' as const,
             billingPostal: postcode || ''
         };
 
         const currentUid = auth.currentUser?.uid;
+        if (!currentUid) throw new Error(bookingText.save);
         if (currentUid) {
             try {
                 console.log("Saving booking to Firestore with rich fields...");
                 const requestRef = doc(db, 'maintenance_requests', newDocId);
+                const existing = draftDocId ? await getDoc(requestRef) : null;
                 
                 const payload = sanitizeFirestoreData({
                     id: newDocId,
@@ -4097,8 +2956,10 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     service: serviceList.trim().substring(0, 100) || 'FACILITY MAINTENANCE',
                     date: selectedDate || new Date().toISOString().split('T')[0],
                     status: 'Pending' as const,
-                    priority: 'High' as const,
-                    amount: grandTotal,
+                    priority: existing?.exists() ? existing.data().priority : 'Medium',
+                    amount: 0,
+                    estimatedAmount: grandTotal,
+                    postcode,
                     email: email,
                     phone: fullPhone,
                     address: fullAddress,
@@ -4110,18 +2971,16 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     time: timeWindow,
                     services: revaluedCart,
                     // Advanced schema fields
-                    payment,
                     mediaAttachments,
-                    timestamps,
                     scheduling,
-                    createdAt: serverTimestamp(),
+                    createdAt: existing?.exists() ? existing.data().createdAt : serverTimestamp(),
                     updatedAt: serverTimestamp()
                 });
 
-                await setDoc(requestRef, payload);
+                await setDoc(requestRef, payload, { merge: true });
                 console.log("Successfully created Firestore request document ID:", newDocId);
             } catch (fsError) {
-                console.error("Firestore submission failed (non-blocking for checkout):", fsError);
+                throw new Error(bookingText.save);
             }
         }
 
@@ -4174,18 +3033,11 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
         console.log("Creating Payrexx Transaction via Server...");
 
-        const payload = {
-            amount,
-            currency: 'CHF',
-            title: concept,
-            description: dynamicDescription,
-            clientName,
-            email: email
-        };
+        const payload = { bookingId: newDocId };
+        const sessionToken = await auth.currentUser!.getIdToken();
 
         let response;
         let data;
-        let primaryErrorMsg = "";
 
         // Standardized request function that handles parsing and non-JSON checks
         const makeRequest = async (url: string) => {
@@ -4193,6 +3045,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionToken}`,
                 },
                 body: JSON.stringify(payload),
             });
@@ -4217,31 +3070,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
             response = result.res;
             data = result.data;
         } catch (err: any) {
-            console.warn("Primary API endpoint request resulted in an error, trying fail-safe absolute Cloud Run router. Error:", err.message);
-            primaryErrorMsg = err.message;
-
-            // Automatically detect the Cloud Run target region of this project
-            let fallbackHost = 'https://another-star-kraken-properties-988352680203.us-west1.run.app';
-            if (typeof window !== 'undefined' && (window.location.hostname.includes('dev-') || window.location.port)) {
-                fallbackHost = 'https://another-star-kraken-properties-988352680203.us-west1.run.app';
-            }
-            
-            const fallbackUrl = `${fallbackHost}/api/payrexx/create-gateway`;
-            
-            try {
-                console.log(`Connecting to secure absolute server backend (CORS): ${fallbackUrl}`);
-                const result = await makeRequest(fallbackUrl);
-                response = result.res;
-                data = result.data;
-            } catch (fallbackErr: any) {
-                console.error("Fallback absolute API request failed too:", fallbackErr);
-                setPayrexxError({
-                    message: `Server Connection Issue: Payrexx handler could not process the response. Details: ${fallbackErr.message} (Primary endpoint returned: ${primaryErrorMsg})`,
-                    dataToSave: bookingData
-                });
-                setIsSubmitting(false);
-                return;
-            }
+            console.error("Payment API request failed:", err);
+            setPayrexxError({
+                message: `Payment service unavailable: ${err.message}`,
+                dataToSave: bookingData
+            });
+            setIsSubmitting(false);
+            return;
         }
 
         const formattedId = `KPM-${(selectedDate || new Date().toISOString().split('T')[0]).replace(/-/g, '').substring(0, 8)}`;
@@ -4268,18 +3103,20 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
         if (data && data.success && data.link) {
             console.log("Payrexx Transaction created successfully. Storing link for success screen.", data.link);
+            bookingData.totalPrice = data.total;
+            bookingData.depositAmount = data.amount;
             localStorage.setItem('pending_booking', JSON.stringify(bookingData));
-            setSubmittedRequestData({ ...successDetailsPayload, payrexxLink: data.link });
+            setSubmittedRequestData({ ...successDetailsPayload, grandTotal: data.total, depositAmount: data.amount, remainingBalance: data.total - data.amount, payrexxLink: data.link });
             setIsSubmitting(false);
         } else {
-            console.warn("Payrexx Transaction creation failed. Booking is saved in database.", data ? data.error : 'No response');
+            setBookingError(data?.error || t('consultation.alert.paymentFailed'));
             setSubmittedRequestData({ ...successDetailsPayload, payrexxLink: null });
             setIsSubmitting(false);
         }
 
     } catch (error: any) {
         console.error("Error in ejecutarReservaYpago:", error);
-        alert(t('consultation.alert.gatewayError', { error: error.message }));
+        setBookingError(t('consultation.alert.gatewayError', { error: error.message }));
         setIsSubmitting(false);
     }
   };
@@ -4306,77 +3143,17 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   }
 
   return (
-    <div className="min-h-screen bg-white pt-24 md:pt-40 pb-20 font-sans text-gray-800">
+    <div className="min-h-screen bg-white pt-24 md:pt-32 pb-20 font-sans text-gray-800">
       <div className="container mx-auto px-4 md:px-6 max-w-7xl">
+        {bookingError && <p role="alert" className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-800">{bookingError}</p>}
         
-        {/* --- Header & Mascot Dialogue & Reviews --- */}
-        <div className="relative mb-16 flex flex-col lg:flex-row items-center justify-between gap-8 py-6 md:py-8">
-          
-          <div className="relative z-10 flex-1 text-left">
-              <h1 className="text-3xl md:text-5xl font-black text-[#001D3D] mb-3 leading-tight tracking-tight uppercase">
-                  {t('consultation.title.part1')} <span className="text-[#007bff]">{t('consultation.title.part2')}</span>
-              </h1>
-              
-              {/* Integrated Reviews Badge in Title Section */}
-              <div className="flex flex-wrap items-center justify-start gap-2.5 mb-5 select-none">
-                  <div className="flex items-center gap-2 bg-slate-100/80 px-3.5 py-2 rounded-2xl border border-gray-200/60 backdrop-blur-sm">
-                      <div className="flex gap-0.5">
-                          {[...Array(5)].map((_, i) => (
-                              <StarIcon key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                          ))}
-                      </div>
-                      <span className="text-sm font-black text-[#001D3D] tracking-tight">5/5</span>
-                      <span className="text-[10px] text-[#001D3D]/70 font-bold uppercase tracking-wider">{t('consultation.reviews.verified')}</span>
-                  </div>
-                  <div className="bg-[#001D3D] text-white text-[10px] font-black uppercase tracking-widest px-3.5 py-2 rounded-full border border-black/5 shadow-sm shadow-gray-100">
-                      ✨ {t('consultation.handover.guarantee')}
-                  </div>
-              </div>
-
-              <p className="text-sm md:text-base text-gray-500 max-w-2xl font-medium">
-                  {t('consultation.subtitle')}
-              </p>
-          </div>
-          
-          <div className="relative z-10 w-full lg:w-auto flex justify-center shrink-0 mt-6 lg:mt-0">
-              {/* Premium Reviews Card */}
-              <div className="bg-white border border-gray-200/50 p-5 rounded-[1.5rem] w-full sm:w-80 shadow-md relative overflow-hidden flex flex-col justify-between">
-                  <div className="flex items-center justify-between mb-2 pb-2 border-b border-gray-100">
-                      <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">{t('consultation.testimonials.title')}</span>
-                      <div className="flex items-center gap-1.5 bg-blue-50 text-blue-600 px-2.5 py-0.5 rounded-lg text-[8px] font-black border border-blue-100">
-                          <span className="relative flex h-1.5 w-1.5">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>
-                          </span> 
-                          {t('consultation.testimonials.live')}
-                      </div>
-                  </div>
-                    
-                    {/* Vertical Reviews Scroller */}
-                    <div className="h-20 overflow-hidden relative">
-                        <div className="animate-scroll-reviews">
-                            {[...MOCK_REVIEWS, ...MOCK_REVIEWS].map((review, idx) => (
-                                <div key={idx} className="h-20 flex flex-col justify-center py-1">
-                                    <div className="flex items-center gap-1.5 mb-0.5">
-                                        <span className="font-semibold text-gray-800 text-xs">{review.name}</span>
-                                        <div className="flex gap-0.5">
-                                            {[...Array(review.rating)].map((_, i) => (
-                                                <StarIcon key={i} className="w-2.5 h-2.5 text-yellow-400 fill-yellow-400" />
-                                            ))}
-                                        </div>
-                                    </div>
-                                    <p className="text-[11.5px] text-gray-600 italic font-medium leading-snug line-clamp-2">
-                                        "{t(`consultation.feedback.${review.name.toLowerCase()}`) || review.comment}"
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-                        {/* Fades */}
-                        <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-white to-transparent z-10 pointer-events-none"></div>
-                        <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none"></div>
-                    </div>
-                </div>
-            </div>
+        <div className="relative mb-6 md:mb-10 py-2 md:py-4">
+          <h1 className="text-3xl md:text-5xl font-black text-[#001D3D] mb-3 leading-tight tracking-tight uppercase">
+            {t('consultation.title.part1')} <span className="text-[#007bff]">{t('consultation.title.part2')}</span>
+          </h1>
+          <p className="text-sm md:text-base text-gray-500 max-w-2xl font-medium">
+            {t('consultation.subtitle')}
+          </p>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-10 lg:items-start">
@@ -4385,7 +3162,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
             <div id="wizard-container" className="w-full lg:w-2/3 pb-24 lg:pb-0">
                 
                 {/* Dynamic Page Wizard Stepper Progress Bar */}
-                <div className="mb-10 bg-white border border-gray-100 p-6 rounded-3xl shadow-sm">
+                <div className="mb-6 md:mb-10 bg-white border border-gray-100 p-4 sm:p-6 rounded-3xl shadow-sm">
                     {/* Desktop Horizontal Block Stepper */}
                     <div className="hidden md:flex items-center justify-between relative w-full gap-4">
                         {/* Connecting line running behind the steps */}
@@ -5745,7 +4522,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                         <div className="border-3 border-dashed border-gray-100 bg-white rounded-[2rem] p-10 text-center relative hover:border-[#007bff] hover:bg-blue-50/30 transition-all duration-300 group">
                             <input 
-                                type="file" 
+                                type="file"
+                                accept="image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif,video/mp4,video/quicktime,application/pdf,application/zip,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.heic,.heif,.mov,.docx"
+                                aria-label={mt('Add reference files (optional)', 'Añadir archivos de referencia (opcional)', 'Referenzdateien hinzufügen (optional)', 'Ajouter des fichiers de référence (facultatif)', 'Aggiungi file di riferimento (facoltativo)', 'Adicionar ficheiros de referência (opcional)')}
                                 multiple 
                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
                                 onChange={(e) => { 
@@ -5761,12 +4540,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             <p className="font-black text-xl text-[#002D5B] mb-1.5">
                                 {t('consultation.upload.precise')}
                             </p>
-                            <p className="text-sm text-gray-400 font-bold tracking-tight">{t('consultation.upload.help')}</p>
-                            
-                            <div className="mt-4 inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider border border-blue-100 shadow-2xs select-none">
-                                <span className="text-[#007bff]">✨</span>
-                                {t('consultation.upload.accuracyBonus')}
-                            </div>
+                            <p className="text-sm text-gray-400 font-bold tracking-tight">{mt('20 MiB per file · 250 MiB total · Optional', '20 MiB por archivo · 250 MiB en total · Opcional', '20 MiB pro Datei · 250 MiB insgesamt · Optional', '20 MiB par fichier · 250 MiB au total · Facultatif', '20 MiB per file · 250 MiB totali · Facoltativo', '20 MiB por ficheiro · 250 MiB no total · Opcional')}</p>
                             
                             {files.length > 0 && (
                                 <div className="mt-8 text-left max-w-lg mx-auto space-y-4 relative z-20">
@@ -5916,7 +4690,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         <div className="lg:hidden p-6 flex items-center justify-between cursor-pointer border-b border-gray-100 hover:bg-gray-50 transition-colors" onClick={(e) => { if((e.target as HTMLElement).tagName !== 'BUTTON') setMobileSummaryOpen(!isMobileSummaryOpen); }}>
                             <div className="flex flex-col">
                                 <span className="text-[9px] text-gray-400 font-black uppercase tracking-widest mb-0.5">{t('consultation.estimatedTotal')}</span>
-                                <span className="text-3xl font-black text-[#002D5B]">CHF {grandTotal.toFixed(2)}</span>
+                                <span className="text-3xl font-black text-[#002D5B]">{cart.length > 0 ? `CHF ${grandTotal.toFixed(2)}` : '—'}</span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <button onClick={() => setContactModalOpen(true)} disabled={cart.length === 0} className="bg-[#007bff] text-white px-8 py-3 rounded-2xl font-black text-sm shadow-xl shadow-blue-200/50 hover:bg-blue-600 disabled:opacity-50 transition-all">{t('consultation.book')}</button>
@@ -6374,7 +5148,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                     <div className="flex justify-between items-end mb-8 px-2">
                                         <span className="text-gray-400 font-black text-[10px] uppercase tracking-widest">{t('consultation.estimatedTotal')}</span>
-                                        <span className="text-4xl font-black text-[#002D5B] tracking-tighter">CHF {grandTotal.toFixed(2)}</span>
+                                        <span className="text-4xl font-black text-[#002D5B] tracking-tighter">{cart.length > 0 ? `CHF ${grandTotal.toFixed(2)}` : '—'}</span>
                                     </div>
                                     <div className="bg-blue-50 text-blue-800 text-[11px] p-4 rounded-xl mb-8 flex gap-3 leading-relaxed font-bold border border-blue-100">
                                         <InfoIcon className="w-5 h-5" />
@@ -6385,11 +5159,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     <button
                                         type="button"
                                         onClick={handleDirectPDFExport}
-                                        disabled={cart.length === 0}
+                                        aria-busy={pdfExporting}
+                                        disabled={cart.length === 0 || pdfExporting}
                                         className="mt-3 w-full bg-slate-100 hover:bg-slate-200 disabled:opacity-50 text-[#002D5B] font-extrabold py-4 rounded-[1.5rem] border border-slate-200 transition-all text-xs uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer"
                                     >
-                                        📄 {language === 'es' ? 'Exportar Estimación en PDF' : (language === 'de' || language === 'de-CH') ? 'Kostenvoranschlag als PDF exportieren' : language === 'fr' ? 'Exporter le devis en PDF' : language === 'it' ? 'Esporta preventivo in PDF' : language === 'pt' ? 'Exportar orçamento em PDF' : 'Export Estimate as PDF'}
+                                        📄 {pdfExporting ? quotePdfStatusText(language, 'loading') : language === 'es' ? 'Exportar Estimación en PDF' : (language === 'de' || language === 'de-CH') ? 'Kostenvoranschlag als PDF exportieren' : language === 'fr' ? 'Exporter le devis en PDF' : language === 'it' ? 'Esporta preventivo in PDF' : language === 'pt' ? 'Exportar orçamento em PDF' : 'Export Estimate as PDF'}
                                     </button>
+                                    {pdfExportError && <p role="alert" className="mt-2 text-sm font-bold text-red-700">{pdfExportError}</p>}
                                 </div>
                             </div>
                         </div>
@@ -6533,63 +5309,20 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
               </div>
 
               <div className="space-y-4 relative z-10 text-left">
-                {/* Option 1: Sandbox success */}
-                <button 
-                  type="button"
-                  onClick={() => {
-                    const dataWithSuccess = {
-                      ...payrexxError.dataToSave,
-                      payment: {
-                        ...(payrexxError.dataToSave.payment || {}),
-                        status: 'captured' as const,
-                        method: 'card' as const,
-                        gateway: 'payrexx' as const,
-                        transactionId: 'paid_via_gateway'
-                      },
-                      timestamps: {
-                        ...(payrexxError.dataToSave.timestamps || {}),
-                        depositCapturedAt: new Date().toISOString()
-                      }
-                    };
-                    localStorage.setItem('pending_booking', JSON.stringify(dataWithSuccess));
-                    setPayrexxError(null);
-                    window.location.search = '?payment=success';
-                  }}
-                  className="w-full p-5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-95 text-white rounded-[2rem] text-left transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-lg shadow-emerald-500/20 group relative overflow-hidden"
-                >
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full translate-x-8 -translate-y-8 group-hover:scale-125 transition-transform"></div>
-                  <div className="flex items-start gap-4">
-                    <span className="text-2xl pt-0.5">🚀</span>
-                    <div>
-                      <h4 className="font-black text-sm uppercase tracking-wide">{t('payment.bypass.title')}</h4>
-                      <p className="text-xs text-emerald-100 mt-1 leading-snug">
-                        {t('payment.bypass.desc')}
-                      </p>
-                    </div>
-                  </div>
-                </button>
-
                 {/* Option 2: Wire Transfer / Invoice */}
                 <button 
                   type="button"
-                  onClick={() => {
-                    const dataWithInvoice = {
-                      ...payrexxError.dataToSave,
-                      payment: {
-                        ...(payrexxError.dataToSave.payment || {}),
-                        status: 'pending' as const,
-                        method: 'bank_transfer' as const,
-                        gateway: 'manual' as const,
-                        transactionId: 'invoice_bank_transfer'
-                      },
-                      timestamps: {
-                        ...(payrexxError.dataToSave.timestamps || {}),
-                        depositCapturedAt: null
-                      }
-                    };
-                    localStorage.setItem('pending_booking', JSON.stringify(dataWithInvoice));
-                    setPayrexxError(null);
-                    window.location.search = '?payment=invoice';
+                  onClick={async () => {
+                    try {
+                      const booking = payrexxError.dataToSave;
+                      await updateDoc(doc(db, 'maintenance_requests', booking.id), { requestedPaymentMethod: 'bank_transfer', updatedAt: serverTimestamp() });
+                      localStorage.setItem('pending_booking', JSON.stringify({ ...booking, payment: { status: 'pending', verified: false } }));
+                      setPayrexxError(null);
+                      const url = new URL(window.location.href);
+                      url.searchParams.set('payment', 'invoice');
+                      url.searchParams.set('booking', booking.id);
+                      window.location.assign(url.pathname + url.search + url.hash);
+                    } catch { setBookingError(t('consultation.alert.paymentFailed')); }
                   }}
                   className="w-full p-5 bg-[#002D5B] hover:bg-[#001D3B] text-white rounded-[2rem] text-left transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-lg shadow-[#002D5B]/20 group relative overflow-hidden"
                 >
@@ -9553,11 +8286,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                     <button
                                         onClick={handleSuccessPDFExport}
-                                        className="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white py-3.5 rounded-[1.5rem] font-bold text-xs uppercase tracking-widest text-center shadow-md transition-all duration-300 cursor-pointer flex items-center justify-center gap-2"
+                                        disabled={pdfExporting}
+                                        aria-busy={pdfExporting}
+                                        className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 active:scale-[0.98] text-white py-3.5 rounded-[1.5rem] font-bold text-xs uppercase tracking-widest text-center shadow-md transition-all duration-300 cursor-pointer flex items-center justify-center gap-2"
                                         type="button"
                                     >
-                                        📄 {language === 'es' ? 'Descargar Presupuesto PDF' : (language === 'de' || language === 'de-CH') ? 'Offerte als PDF herunterladen' : language === 'fr' ? 'Télécharger le devis en PDF' : language === 'it' ? 'Scarica preventivo in PDF' : language === 'pt' ? 'Descarregar orçamento em PDF' : 'Download Estimate as PDF'}
+                                        📄 {pdfExporting ? quotePdfStatusText(language, 'loading') : language === 'es' ? 'Descargar Presupuesto PDF' : (language === 'de' || language === 'de-CH') ? 'Offerte als PDF herunterladen' : language === 'fr' ? 'Télécharger le devis en PDF' : language === 'it' ? 'Scarica preventivo in PDF' : language === 'pt' ? 'Descarregar orçamento em PDF' : 'Download Estimate as PDF'}
                                     </button>
+                                    {pdfExportError && <p role="alert" className="mt-2 text-sm font-bold text-red-700">{pdfExportError}</p>}
 
                                     <button
                                         onClick={() => setContactModalOpen(false)}
@@ -9635,6 +8371,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     </div>
 
                     <div className="flex-1 overflow-y-auto px-6 pb-6 custom-scrollbar min-h-0 bg-white">
+                        {bookingError && <p role="alert" className="my-4 rounded-xl bg-red-50 p-4 text-sm text-red-800">{bookingError}</p>}
                         {/* STEP 1: Horario & Identity */}
                         {currentStep === 1 && (
                             <div className="space-y-6 animate-fade-in">
@@ -9919,7 +8656,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                 {t('consultation.tooltip.estimateExplain')}
                                             </div>
                                         </div>
-                                        <span className="font-black text-lg">CHF {grandTotal.toFixed(2)}</span>
+                                        <span className="font-black text-lg">{cart.length > 0 ? `CHF ${grandTotal.toFixed(2)}` : '—'}</span>
                                     </div>
 
                                     <div className="bg-white p-6 rounded-3xl mb-8 border-2 border-[#007bff] shadow-md shadow-blue-500/5">
@@ -9974,7 +8711,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             {t('consultation.estimatedProjectTotal')}
                                         </p>
                                         <p className="text-base font-black text-slate-800">
-                                            CHF {grandTotal.toFixed(2)}
+                                            {cart.length > 0 ? `CHF ${grandTotal.toFixed(2)}` : '—'}
                                         </p>
                                     </div>
                                     <div className="w-px h-8 bg-gray-200"></div>

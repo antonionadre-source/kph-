@@ -147,7 +147,7 @@ export const getServiceLinkForMunicipality = (municipalitySlug: string, serviceS
 };
 
 export const isRouteValid = (path: string): boolean => {
-  const cleanPath = path.split("?")[0];
+  const cleanPath = path.split(/[?#]/)[0];
   if (PATH_TO_PAGE_MAP[cleanPath]) {
     return true;
   }
@@ -200,7 +200,7 @@ export const isRouteValid = (path: string): boolean => {
 };
 
 export const parsePath = (path: string) => {
-  const cleanPath = path.split("?")[0];
+  const cleanPath = path.split(/[?#]/)[0];
   if (PATH_TO_PAGE_MAP[cleanPath]) {
     return { page: PATH_TO_PAGE_MAP[cleanPath], cityId: "", serviceId: "" };
   }

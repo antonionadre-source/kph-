@@ -1,38 +1,37 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, useRef, FormEvent } from 'react';
 import { motion } from 'motion/react';
-import { 
-  Check, 
-  MapPin, 
-  Clock, 
-  Phone, 
-  Mail, 
-  Coins, 
-  CreditCard, 
-  PhoneCall, 
-  ShieldCheck, 
-  Languages, 
-  FileText, 
-  Upload, 
-  ArrowRight, 
-  Sparkles, 
+import {
+  Check,
+  MapPin,
+  Clock,
+  Phone,
+  Mail,
+  Coins,
+  CreditCard,
+  PhoneCall,
+  ShieldCheck,
+  Languages,
+  FileText,
+  Upload,
+  ArrowRight,
+  Sparkles,
   AlertCircle,
   Briefcase,
   Users,
   Award,
   ChevronRight
 } from 'lucide-react';
-import emailjs from '@emailjs/browser';
+import emailjs, { EMAIL_SERVICE_ID as SERVICE_ID, EMAIL_TEMPLATE_ID as TEMPLATE_ID, EMAIL_PUBLIC_KEY as PUBLIC_KEY } from './emailClient';
 import { useTranslation } from '../i18n';
-import { db, auth, storage, sanitizeFirestoreData } from './firebase';
-import { doc, setDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { db, sanitizeFirestoreData } from './firebase';
+import { doc, getDoc, setDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { withPortalTimeout } from './portalIdentity';
+import { attachmentText } from './attachmentText';
+import { externalSubmissionsEnabled } from './integrationConfig';
 
-import { sendLead } from './leadWebhook';
-import { uploadFilesToStorage } from './fileUploadHelper';
+import { postWebhook, MAKE_WEBHOOK_URL } from './leadWebhook';
+import { uploadFilesToStorage, ensureUploadUser, validateCvAttachment } from './fileUploadHelper';
 
-const SERVICE_ID = 'service_aiv15bc';
-const TEMPLATE_ID = 'template_aktj7t9';
-const PUBLIC_KEY = 'sH5K84ChHyssJrarm';
 
 interface CareersPageProps {
   onNavigate: (page: string) => void;
@@ -48,7 +47,7 @@ const CurriculumsConfetti: React.FC = () => {
     const rotateDir = Math.random() > 0.5 ? 1 : -1;
     const rotateAmount = (180 + Math.random() * 540) * rotateDir;
     const variant = i % 6; // 6 distinct CV item visual styles
-    
+
     return { id: i, left, delay, duration, size, rotateAmount, variant };
   });
 
@@ -1080,7 +1079,7 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -1092,31 +1091,24 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
     certificates: '',
     languages: '',
     message: '',
-    cvName: '', 
+    cvName: '',
   });
 
   const [cvFile, setCvFile] = useState<File | null>(null);
-  const [cvDataUrl, setCvDataUrl] = useState<string>('');
+  const submissionRef = useRef<{ id: string; fingerprint: string; attempted: boolean } | null>(null);
+  const [deliveryNotice, setDeliveryNotice] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      setCvFile(file);
-      setFormData(prev => ({ ...prev, cvName: file.name }));
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (typeof reader.result === 'string') {
-          setCvDataUrl(reader.result);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setCvFile(file); setFormData(previous => ({ ...previous, cvName: file.name }));
+    try { validateCvAttachment(file); setError(null); }
+    catch { setError(attachmentText(language, 'invalid')); }
   };
 
   const handleSelectJob = (jobTitle: string) => {
@@ -1140,134 +1132,52 @@ const CareersPage: React.FC<CareersPageProps> = ({ onNavigate }) => {
     setIsLoading(true);
 
     try {
-      // 1. Ensure user is authenticated anonymously if not signed in
-      if (!auth.currentUser) {
-        try {
-          const { signInAnonymously } = await import('firebase/auth');
-          await signInAnonymously(auth);
-        } catch (authErr) {
-          console.warn("Could not sign in anonymously prior to job application submission:", authErr);
-        }
+      if (!formData.name.trim() || formData.name.trim().length > 150 || !formData.phone.trim() || formData.phone.length > 50 || !formData.position.trim() || formData.position.length > 150 || formData.message.length > 10000) throw new Error('application/invalid');
+      if (cvFile) validateCvAttachment(cvFile);
+      const currentUid = await ensureUploadUser();
+      const cvStorageResult = await uploadFilesToStorage(cvFile ? [cvFile] : [], { directory: 'job_applications' });
+      if (cvFile && (cvStorageResult.fileCount !== 1 || cvStorageResult.errors.length || !cvStorageResult.fileUrl)) throw new Error('attachment/upload-failed');
+      const fingerprint = JSON.stringify([currentUid, formData, cvFile?.name, cvFile?.size, cvFile?.lastModified]);
+      if (submissionRef.current?.fingerprint !== fingerprint) submissionRef.current = { id: doc(collection(db, 'job_applications')).id, fingerprint, attempted: false };
+      const application = submissionRef.current!;
+      const appRef = doc(db, 'job_applications', application.id);
+      let alreadySaved = false;
+      if (application.attempted) {
+        try { alreadySaved = (await withPortalTimeout(getDoc(appRef))).exists(); } catch { /* Retry the same document, never invent another ID. */ }
       }
-
-      const currentUid = auth.currentUser?.uid || 'anonymous_applicant';
-
-      // 2. Upload CV file directly to Firebase Storage under solicitudes/AAAA-MM-DD/timestamp-nombrearchivo if present
-      const cvStorageResult = cvFile
-        ? await uploadFilesToStorage([cvFile])
-        : { fileUrl: '', fileUrls: '', fileName: '', fileCount: 0 };
-      
-      const firebaseStorageCvUrl = cvStorageResult.fileUrl;
-
-      // Safe fallback if Firebase Storage URL was not obtained
-      let safeCvData = cvDataUrl || '';
-      if (!firebaseStorageCvUrl && safeCvData && safeCvData.length > 650000) {
-        console.warn("CV base64 string exceeds 650KB; truncating inline payload to prevent Firestore 1MB limit.");
-        safeCvData = `[CV attached: ${cvFile ? cvFile.name : 'File'} (${Math.round((cvFile?.size || 0) / 1024)} KB)]`;
-      }
-
-      const finalCvLink = firebaseStorageCvUrl || safeCvData;
-
-      // 3. Save application to Firestore collection 'job_applications'
-      const newAppId = doc(collection(db, 'job_applications')).id;
-      const appRef = doc(db, 'job_applications', newAppId);
-
       const firestorePayload = {
-        id: newAppId,
-        userId: currentUid,
-        name: formData.name.trim() || 'Candidate',
-        phone: formData.phone.trim() || 'N/A',
-        position: formData.position || 'General Applicant',
-        region: formData.region || 'Schaffhausen',
-        permit: formData.permit || 'Ja',
-        startDate: formData.startDate || 'Immediato',
-        pensum: formData.pensum || 'Full-time / Part-time',
-        certificates: formData.certificates || '',
-        languages: formData.languages || '',
-        message: formData.message || '',
-        cvName: cvFile ? cvFile.name : (formData.cvName || ''),
-        cvData: finalCvLink,
-        cvUrl: firebaseStorageCvUrl || '',
-        cvType: cvFile ? cvFile.type : '',
-        status: 'Pending' as const,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
+        id: application.id, userId: currentUid, name: formData.name.trim(), phone: formData.phone.trim(),
+        position: formData.position.trim(), region: formData.region, permit: formData.permit,
+        startDate: formData.startDate, pensum: formData.pensum, certificates: formData.certificates,
+        languages: formData.languages, message: formData.message.trim(),
+        cvName: cvStorageResult.fileName, cvData: '', cvUrl: cvStorageResult.fileUrl,
+        cvType: cvStorageResult.files[0]?.contentType || '',
+        status: 'Pending' as const, createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
       };
-
-      // Helper for promise timeouts
-      const withTimeout = <T,>(promise: Promise<T>, ms: number, fallback: T): Promise<T> => {
-        return Promise.race([
-          promise,
-          new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms))
+      application.attempted = true;
+      if (!alreadySaved) await withPortalTimeout(setDoc(appRef, sanitizeFirestoreData(firestorePayload)));
+      // Firestore is the primary receipt. Notifications are optional, after persistence.
+      if (externalSubmissionsEnabled) {
+        const outcomes = await Promise.allSettled([
+          withPortalTimeout(postWebhook(MAKE_WEBHOOK_URL, {
+            ...formData, type: 'JOB_APPLICATION_V2', source: 'Careers Application Form', languageUsed: language,
+            fileUrl: cvStorageResult.fileUrl, fileUrls: cvStorageResult.fileUrls,
+            fileName: cvStorageResult.fileName, fileCount: cvStorageResult.fileCount,
+          }), 5000),
+          withPortalTimeout(emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+            from_name: formData.name.trim(), phone_number: formData.phone.trim(), services_interest: formData.position,
+            message: formData.message.trim(), cv_url: cvStorageResult.fileUrl, cv_name: cvStorageResult.fileName,
+          }, PUBLIC_KEY), 5000),
         ]);
-      };
-
-      const firestorePromise = withTimeout(
-        setDoc(appRef, sanitizeFirestoreData(firestorePayload))
-          .then(() => true)
-          .catch(fsErr => {
-            console.error("Firestore job application creation error:", fsErr);
-            return false;
-          }),
-        7000,
-        false
-      );
-
-      // 4. Send Lead Webhook
-      sendLead({
-        type: 'JOB_APPLICATION_V2',
-        ...formData,
-        cvName: cvFile ? cvFile.name : (formData.cvName || ''),
-        languageUsed: language,
-        source: 'Careers Application Form',
-        fileUrl: cvStorageResult.fileUrl,
-        fileUrls: cvStorageResult.fileUrls,
-        fileName: cvStorageResult.fileName || (cvFile ? cvFile.name : ''),
-        fileCount: cvFile ? 1 : 0
-      });
-
-      // 5. Format rich message for EmailJS with timeout
-      const emailPromise = withTimeout(
-        emailjs.send(SERVICE_ID, TEMPLATE_ID, {
-          from_name: formData.name,
-          from_email: 'N/A',
-          phone_number: formData.phone,
-          services_interest: `JOB_APPLICATION: ${formData.position}`,
-          message: `New applicant for: ${formData.position}
-Name: ${formData.name}
-Phone/WhatsApp: ${formData.phone}
-Region: ${formData.region}
-Work Permit: ${formData.permit}
-Earliest Start: ${formData.startDate}
-Pensum: ${formData.pensum}
-License/Certificates: ${formData.certificates || 'N/A'}
-Languages: ${formData.languages || 'N/A'}
-Message: ${formData.message || 'N/A'}
-CV Filename: ${formData.cvName || 'None'}
-Language: ${language}`.trim(),
-          property_address: 'N/A'
-        }, PUBLIC_KEY)
-          .then(() => true)
-          .catch(emErr => {
-            console.warn("EmailJS send error:", emErr);
-            return false;
-          }),
-        5000,
-        false
-      );
-
-      await Promise.allSettled([firestorePromise, webhookPromise, emailPromise]);
-
+        if (outcomes.some(outcome => outcome.status === 'rejected')) setDeliveryNotice(attachmentText(language, 'saved'));
+      }
       setIsSubmitted(true);
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch (err) {
-      console.error('Submission encountered an unexpected error:', err);
-      // Fallback transition to submission screen if candidate tried to submit
-      setIsSubmitted(true);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } finally {
-      setIsLoading(false);
-    }
+    } catch (error: any) {
+      const attachmentFailure = String(error?.code || error?.message || '').startsWith('attachment/');
+      const invalidAttachment = /attachment\/(unsupported|too-large|empty)/.test(String(error?.message || ''));
+      setError(attachmentFailure ? attachmentText(language, invalidAttachment ? 'invalid' : 'failed') : t.errorMsg);
+    } finally { setIsLoading(false); }
   };
 
   if (isSubmitted) {
@@ -1280,8 +1190,9 @@ Language: ${language}`.trim(),
           </div>
           <h2 className="text-3xl font-black text-[#002D5B] mb-4 uppercase tracking-tight">{t.successTitle}</h2>
           <p className="text-gray-500 font-medium mb-10 leading-relaxed">
-            {t.successText}
+            {attachmentText(language, 'stored')}
           </p>
+          {deliveryNotice && <p role="status" className="text-sm text-amber-800 mb-5">{deliveryNotice}</p>}
           <button
             onClick={() => onNavigate('home')}
             className="bg-[#002D5B] text-white px-12 py-4 rounded-full font-black text-xs uppercase tracking-widest hover:bg-[#001D3D] transition-all shadow-xl hover:shadow-2xl active:scale-95"
@@ -1296,15 +1207,15 @@ Language: ${language}`.trim(),
   return (
     <main className="bg-slate-50 selection:bg-blue-500/30 text-[#020617] pt-28 pb-24">
       <div className="container mx-auto px-4 md:px-6 max-w-6xl">
-        
+
         {/* --- 1. HERO PRINCIPAL --- */}
         <div id="careers-hero-container" className="relative rounded-[3rem] overflow-hidden bg-[#001D3D] text-white p-8 md:p-16 shadow-2xl mb-12 animate-fade-in min-h-[480px] flex items-center">
           {/* Static Background Image occupying the DIV completely */}
           <div id="careers-hero-bg-wrapper" className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-[#001D3D]">
-            <img 
+            <img
               id="careers-hero-bg-image"
-              src="/kai-jul16-interview.webp" 
-              alt="Kraken Careers Background" 
+              src="/kai-jul16-interview.webp"
+              alt="Kraken Careers Background"
               className="absolute right-0 top-0 w-full md:w-[50%] h-full object-cover z-0"
               referrerPolicy="no-referrer"
               onError={(e) => {
@@ -1318,7 +1229,7 @@ Language: ${language}`.trim(),
             {/* Desktop: Smooth transition from solid blue behind the text to transparency over the image */}
             {/* The overlay is restricted to the left 65%, fading to 100% transparency so the right portion of the image is completely unfiltered and sharp */}
             <div className="absolute inset-y-0 left-0 w-full md:w-[65%] bg-gradient-to-r from-[#001D3D] via-[#001D3D] to-transparent z-10 md:block hidden pointer-events-none" />
-            
+
             {/* Mobile: Clean overlay to guarantee legibility of the white text over the background image, with absolutely NO blur or dulling filters */}
             <div className="absolute inset-0 bg-gradient-to-b from-[#001D3D] via-[#001D3D]/75 to-transparent z-10 md:hidden block pointer-events-none" />
           </div>
@@ -1326,7 +1237,7 @@ Language: ${language}`.trim(),
           {/* Subtle glowing orbs */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none z-0" />
           <div className="absolute bottom-0 left-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none z-0" />
-          
+
           <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12 w-full">
             <div className="max-w-2xl text-left">
               <span className="inline-block bg-[#007AFF]/20 text-blue-300 font-black text-[10px] uppercase tracking-[0.3em] px-4 py-2 rounded-full mb-6">
@@ -1341,15 +1252,15 @@ Language: ${language}`.trim(),
               <p className="text-sm md:text-base text-slate-300 font-medium leading-relaxed mb-10 max-w-xl">
                 {t.heroIntro}
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4">
-                <button 
+                <button
                   onClick={() => scrollToSection('open-positions')}
                   className="bg-[#007AFF] text-white hover:bg-[#005bb7] px-8 py-4 rounded-full font-black text-xs uppercase tracking-widest shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                 >
                   <Briefcase className="w-4 h-4" /> {t.btnViewPositions}
                 </button>
-                <button 
+                <button
                   onClick={() => scrollToSection('application-form')}
                   className="border-2 border-white/30 hover:border-white text-white hover:bg-white/10 px-8 py-4 rounded-full font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                 >
@@ -1429,7 +1340,7 @@ Language: ${language}`.trim(),
             {/* Left: Antonio's Personal Story */}
             <div className="lg:col-span-5 bg-gradient-to-b from-white to-slate-100 p-8 md:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col justify-between relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full -mr-16 -mt-16 group-hover:scale-125 transition-transform duration-700 pointer-events-none" />
-              
+
               <div className="relative z-10">
                 <span className="bg-[#002D5B] text-white text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full mb-6 inline-block">
                   {t.storyBadge}
@@ -1454,7 +1365,7 @@ Language: ${language}`.trim(),
             {/* Right: What it means specifically */}
             <div className="lg:col-span-7 flex flex-col justify-between">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
+
                 {/* Promise 1 */}
                 <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
                   <div className="w-10 h-10 bg-blue-50 text-[#007AFF] rounded-2xl flex items-center justify-center mb-4 shadow-inner">
@@ -1646,7 +1557,7 @@ Language: ${language}`.trim(),
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            
+
             {/* Card 1: Offene Stelle (ACTIVA) */}
             <div className="bg-white border-2 border-[#007AFF] rounded-[2.5rem] p-8 shadow-md relative flex flex-col justify-between hover:shadow-xl transition-all group">
               <div className="absolute top-6 right-6 flex items-center gap-2">
@@ -1671,7 +1582,7 @@ Language: ${language}`.trim(),
                 </p>
               </div>
 
-              <button 
+              <button
                 onClick={() => handleSelectJob(t.job1Title)}
                 className="w-full bg-[#002D5B] hover:bg-[#007AFF] text-white font-black py-4 rounded-xl text-xs uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2"
               >
@@ -1698,7 +1609,7 @@ Language: ${language}`.trim(),
                 </p>
               </div>
 
-              <button 
+              <button
                 onClick={() => handleSelectJob(`${t.job2Title} (${t.jobPoolBadge})`)}
                 className="w-full border-2 border-[#002D5B] hover:bg-[#002D5B] text-[#002D5B] hover:text-white font-black py-4 rounded-xl text-xs uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2"
               >
@@ -1725,7 +1636,7 @@ Language: ${language}`.trim(),
                 </p>
               </div>
 
-              <button 
+              <button
                 onClick={() => handleSelectJob(`${t.job3Title} (${t.jobPoolBadge})`)}
                 className="w-full border-2 border-[#002D5B] hover:bg-[#002D5B] text-[#002D5B] hover:text-white font-black py-4 rounded-xl text-xs uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2"
               >
@@ -1752,7 +1663,7 @@ Language: ${language}`.trim(),
                 </p>
               </div>
 
-              <button 
+              <button
                 onClick={() => handleSelectJob(`${t.job4Title} (${t.jobSpontaneousBadge})`)}
                 className="w-full border-2 border-dashed border-[#002D5B] hover:bg-[#002D5B] text-[#002D5B] hover:text-white font-black py-4 rounded-xl text-xs uppercase tracking-widest transition-all cursor-pointer flex items-center justify-center gap-2"
               >
@@ -1775,7 +1686,7 @@ Language: ${language}`.trim(),
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
-            
+
             {/* Step 1 */}
             <div className="relative">
               <div className="text-5xl font-black text-[#007AFF]/20 mb-4">01</div>
@@ -1818,7 +1729,7 @@ Language: ${language}`.trim(),
 
         {/* --- 6. CIERRE Y FORMULARIO --- */}
         <div id="application-form" className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start scroll-mt-24 text-left">
-          
+
           {/* Left Block: WhatsApp and Info */}
           <div className="lg:col-span-5 space-y-8">
             <div className="bg-gradient-to-b from-white to-slate-100 p-8 md:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
@@ -1833,7 +1744,7 @@ Language: ${language}`.trim(),
               </p>
 
               {/* Direct WhatsApp Action Button */}
-              <a 
+              <a
                 href={`https://wa.me/41774505705?text=Hallo%20Antonio%2C%20ich%20interessiere%20mich%20f%C3%BCr%20eine%20Stelle%20bei%20Kraken%20PFM%20und%20m%C3%B6chte%20mich%20gerne%20bewerben.%20(Sprache%3A%20${language})`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -1858,33 +1769,34 @@ Language: ${language}`.trim(),
           {/* Right Block: Application Form */}
           <div className="lg:col-span-7 bg-white p-8 md:p-12 rounded-[3rem] border border-slate-100 shadow-xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
-            
+
             <div className="relative z-10">
               <h3 className="text-2xl md:text-3xl font-black text-[#002D5B] mb-8 uppercase tracking-tight">
                 {t.formTitle}
               </h3>
-              
+
               {error && (
                 <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-2xl mb-8 text-xs font-bold uppercase tracking-tight">
                   {error}
                 </div>
               )}
-              
+
               <form onSubmit={handleSubmit} className="space-y-6 text-xs md:text-sm">
-                
+                <fieldset disabled={isLoading} className="contents">
+
                 {/* Name */}
                 <div className="space-y-2">
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
                     {t.lblFullName} <span className="text-red-500">*</span>
                   </label>
-                  <input 
-                    name="name" 
-                    required 
+                  <input
+                    name="name"
+                    required
                     type="text"
                     placeholder={t.placeholderFullName}
-                    className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all" 
-                    onChange={handleInputChange} 
-                    value={formData.name} 
+                    className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all"
+                    onChange={handleInputChange}
+                    maxLength={150} value={formData.name}
                   />
                 </div>
 
@@ -1893,14 +1805,14 @@ Language: ${language}`.trim(),
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
                     {t.lblPhone} <span className="text-red-500">*</span>
                   </label>
-                  <input 
-                    name="phone" 
-                    required 
+                  <input
+                    name="phone"
+                    required
                     type="tel"
                     placeholder={t.placeholderPhone}
-                    className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all" 
-                    onChange={handleInputChange} 
-                    value={formData.phone} 
+                    className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all"
+                    onChange={handleInputChange}
+                    maxLength={50} value={formData.phone}
                   />
                 </div>
 
@@ -1910,11 +1822,11 @@ Language: ${language}`.trim(),
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
                       {t.lblDesiredPosition} <span className="text-red-500">*</span>
                     </label>
-                    <select 
-                      name="position" 
-                      required 
+                    <select
+                      name="position"
+                      required
                       className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-xs md:text-sm transition-all cursor-pointer"
-                      value={formData.position} 
+                      value={formData.position}
                       onChange={handleInputChange}
                     >
                       <option value="Mitarbeiter:in Reinigung & Umzugsreinigung (m/w/d)">{LOCALIZED_CONTENT.de.job1Title}</option>
@@ -1929,11 +1841,11 @@ Language: ${language}`.trim(),
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
                       {t.lblRegion} <span className="text-red-500">*</span>
                     </label>
-                    <select 
-                      name="region" 
-                      required 
+                    <select
+                      name="region"
+                      required
                       className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-xs md:text-sm transition-all cursor-pointer"
-                      value={formData.region} 
+                      value={formData.region}
                       onChange={handleInputChange}
                     >
                       <option value="Schaffhausen">Schaffhausen</option>
@@ -1950,11 +1862,11 @@ Language: ${language}`.trim(),
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
                       {t.lblWorkPermit} <span className="text-red-500">*</span>
                     </label>
-                    <select 
-                      name="permit" 
-                      required 
+                    <select
+                      name="permit"
+                      required
                       className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-xs md:text-sm transition-all cursor-pointer"
-                      value={formData.permit} 
+                      value={formData.permit}
                       onChange={handleInputChange}
                     >
                       <option value="Ja">{t.optPermitYes}</option>
@@ -1968,14 +1880,14 @@ Language: ${language}`.trim(),
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
                       {t.lblStart} <span className="text-red-500">*</span>
                     </label>
-                    <input 
-                      name="startDate" 
-                      required 
-                      type="text" 
+                    <input
+                      name="startDate"
+                      required
+                      type="text"
                       placeholder={t.placeholderStart}
-                      className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all" 
-                      onChange={handleInputChange} 
-                      value={formData.startDate} 
+                      className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all"
+                      onChange={handleInputChange}
+                      value={formData.startDate}
                     />
                   </div>
                 </div>
@@ -1986,10 +1898,10 @@ Language: ${language}`.trim(),
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
                       {t.lblPensum} <span className="text-slate-300 font-bold">({t.optionalField})</span>
                     </label>
-                    <select 
-                      name="pensum" 
+                    <select
+                      name="pensum"
                       className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-xs md:text-sm transition-all cursor-pointer"
-                      value={formData.pensum} 
+                      value={formData.pensum}
                       onChange={handleInputChange}
                     >
                       <option value="Stundenbasis">{t.optPensumHourly}</option>
@@ -2005,13 +1917,13 @@ Language: ${language}`.trim(),
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
                       {t.lblCertificates} <span className="text-slate-300 font-bold">({t.optionalField})</span>
                     </label>
-                    <input 
-                      name="certificates" 
-                      type="text" 
+                    <input
+                      name="certificates"
+                      type="text"
                       placeholder={t.placeholderCertificates}
-                      className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all" 
-                      onChange={handleInputChange} 
-                      value={formData.certificates} 
+                      className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all"
+                      onChange={handleInputChange}
+                      value={formData.certificates}
                     />
                   </div>
                 </div>
@@ -2021,13 +1933,13 @@ Language: ${language}`.trim(),
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
                     {t.lblLanguages} <span className="text-slate-300 font-bold">({t.optionalField})</span>
                   </label>
-                  <input 
-                    name="languages" 
-                    type="text" 
+                  <input
+                    name="languages"
+                    type="text"
                     placeholder={t.placeholderLanguages}
-                    className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all" 
-                    onChange={handleInputChange} 
-                    value={formData.languages} 
+                    className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all"
+                    onChange={handleInputChange}
+                    value={formData.languages}
                   />
                 </div>
 
@@ -2037,11 +1949,11 @@ Language: ${language}`.trim(),
                     {t.lblCV} <span className="text-slate-300 font-bold">({t.optionalField})</span>
                   </label>
                   <div className="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:bg-slate-50 hover:border-[#007AFF] transition-all relative group/upload cursor-pointer">
-                    <input 
-                      type="file" 
-                      accept=".pdf,.doc,.docx" 
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
-                      onChange={handleFileChange} 
+                    <input
+                      type="file"
+                      accept=".pdf,.docx"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      onChange={handleFileChange}
                     />
                     <div className="flex flex-col items-center justify-center gap-2">
                       <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-[#007AFF] group-hover/upload:scale-110 transition-transform">
@@ -2052,36 +1964,39 @@ Language: ${language}`.trim(),
                       ) : (
                         <>
                           <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">{t.cvPlaceholder}</span>
-                          <span className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">{t.cvLimits}</span>
+                          <span className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">PDF / DOCX · 20 MiB</span>
                         </>
                       )}
                     </div>
                   </div>
                 </div>
 
+                {cvFile && <button type="button" className="text-blue-700 underline font-bold" onClick={() => { setCvFile(null); setFormData(previous => ({ ...previous, cvName: '' })); setError(null); }}>{attachmentText(language, 'remove')}</button>}
+
                 {/* Message / Erzähl uns kurz von dir */}
                 <div className="space-y-2">
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest">
                     {t.lblAboutYou} <span className="text-slate-300 font-bold">({t.optionalField})</span>
                   </label>
-                  <textarea 
-                    name="message" 
-                    rows={4} 
+                  <textarea
+                    name="message"
+                    rows={4}
                     placeholder={t.placeholderAboutYou}
-                    className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all" 
-                    onChange={handleInputChange} 
-                    value={formData.message}
+                    className="w-full p-4 bg-slate-50 border border-slate-100 rounded-xl focus:border-[#007AFF] focus:bg-white outline-none font-bold text-sm transition-all"
+                    onChange={handleInputChange}
+                    maxLength={10000} value={formData.message}
                   />
                 </div>
 
                 {/* Submit button */}
-                <button 
-                  type="submit" 
-                  disabled={isLoading} 
+                <button
+                  type="submit"
+                  disabled={isLoading}
                   className="w-full bg-[#002D5B] text-white font-black py-5 rounded-2xl shadow-xl hover:bg-black transition-all disabled:opacity-70 mt-4 uppercase tracking-widest text-xs cursor-pointer active:scale-98"
                 >
                   {isLoading ? t.btnSubmitting : t.btnSubmit}
                 </button>
+                </fieldset>
               </form>
             </div>
           </div>

@@ -17,7 +17,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
       text: t('about.origin.panel1'),
     },
     {
-      img: "https://www.dropbox.com/scl/fi/v9rl4rzdkpy8y2v2k352n/sobre-nosotros-reunion-consultoria-propiedad.webp?rlkey=qqb33nbu8phd4hyvk0xq24hyz&st=8q61jn1c&raw=1",
+      img: "/kai-calendar/optimized/about/consultancy-768.webp",
       text: t('about.origin.panel2'),
     },
     {
@@ -248,7 +248,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
                   <p className="text-gray-500 text-sm leading-relaxed">{t('about.people.text')}</p>
                 </div>
                 <div className="rounded-2xl overflow-hidden h-64">
-                  <img src="https://www.dropbox.com/scl/fi/jo3ar4ywy65ky6ay2molj/sobre-nosotros-reunion-equipo-kraken.webp?rlkey=wgi6e93v50jws0g3e7newgkvg&st=evc871gu&raw=1" alt="Kraken Team" className="w-full h-full object-cover" loading="lazy" referrerPolicy="no-referrer" />
+                  <img src="/kai-calendar/optimized/about/team-768.webp" alt="Kraken Team" className="w-full h-full object-cover" loading="lazy" referrerPolicy="no-referrer" />
                 </div>
               </div>
 

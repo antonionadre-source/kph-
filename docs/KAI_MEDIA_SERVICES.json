@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-21",
+  "assets": [
+    {
+      "id": "windows",
+      "kind": "new-ai-generated-service-illustration",
+      "provider": "built-in image_gen",
+      "sourceOriginal": "assets-source/kai-services/windows.png",
+      "originalBytes": 2437882,
+      "originalSha256": "be90c2f48e47af1740053b3f589f597df5f8c61af06eeebe498c10538e20eb33",
+      "variants": {
+        "1440": {
+          "src": "/kai-services/windows-1440.webp",
+          "width": 1440,
+          "height": 960,
+          "bytes": 146684,
+          "format": "WEBP",
+          "sha256": "930756bb4ff1667ee0fe0c37479705a1ab7db72d1901db3782471bc2f307d457"
+        },
+        "768": {
+          "src": "/kai-services/windows.webp",
+          "width": 768,
+          "height": 512,
+          "bytes": 61194,
+          "format": "WEBP",
+          "sha256": "27fd912f52bb3c2f07e5e10200873e3523436c27c6bbe7adf26fa8cd3c4120d0"
+        },
+        "480": {
+          "src": "/kai-services/windows-480.webp",
+          "width": 480,
+          "height": 320,
+          "bytes": 31264,
+          "format": "WEBP",
+          "sha256": "fc13bc1cdea75275f5f727233bc8daac1cc9b612cda07920b8d4467a7c7f9c71"
+        }
+      }
+    },
+    {
+      "id": "upholstery",
+      "kind": "new-ai-generated-service-illustration",
+      "provider": "built-in image_gen",
+      "sourceOriginal": "assets-source/kai-services/upholstery.png",
+      "originalBytes": 2650353,
+      "originalSha256": "e28e2b7f4e787203fae34c2309ec81d70565d9abdbd50addba0e989dd4f9f0e7",
+      "variants": {
+        "1440": {
+          "src": "/kai-services/upholstery-1440.webp",
+          "width": 1440,
+          "height": 960,
+          "bytes": 191474,
+          "format": "WEBP",
+          "sha256": "fd97af003e6fd34a1c54e8e145b990cbe9e340e0e5e6f9061bd4d5966976ceae"
+        },
+        "768": {
+          "src": "/kai-services/upholstery.webp",
+          "width": 768,
+          "height": 512,
+          "bytes": 75570,
+          "format": "WEBP",
+          "sha256": "606fc396c33045d6fbcaccb772b08870ea7c28227e4085730c092e70a87dd384"
+        },
+        "480": {
+          "src": "/kai-services/upholstery-480.webp",
+          "width": 480,
+          "height": 320,
+          "bytes": 34924,
+          "format": "WEBP",
+          "sha256": "7b5b173d0d62ac2037a978d1c5c06a479cdbaaaff56e99661ffd92d220b76d11"
+        }
+      }
+    },
+    {
+      "id": "moving",
+      "kind": "new-ai-generated-service-illustration",
+      "provider": "built-in image_gen",
+      "sourceOriginal": "assets-source/kai-services/moving.png",
+      "originalBytes": 2628995,
+      "originalSha256": "55844f18bc3e3b98a9a13d5df8a5d4cd856dac68c00926a20d0dfc7c6fd62ad6",
+      "variants": {
+        "1440": {
+          "src": "/kai-services/moving-1440.webp",
+          "width": 1440,
+          "height": 960,
+          "bytes": 177160,
+          "format": "WEBP",
+          "sha256": "5e12afb3d2f3d88f58440f0d39ac3291370067ca1d7230d2569b19e97b2d23da"
+        },
+        "768": {
+          "src": "/kai-services/moving.webp",
+          "width": 768,
+          "height": 512,
+          "bytes": 71328,
+          "format": "WEBP",
+          "sha256": "a3e22da3b635968c439f64d2caa1b7daa7aa1e297c82db443a5dd80d5aa178e4"
+        },
+        "480": {
+          "src": "/kai-services/moving-480.webp",
+          "width": 480,
+          "height": 320,
+          "bytes": 34652,
+          "format": "WEBP",
+          "sha256": "034eac99f5d7020c04dbd38984fab04598995ecbfde195d36a1f17fddc680a10"
+        }
+      }
+    },
+    {
+      "id": "floor-care",
+      "kind": "new-ai-generated-service-illustration",
+      "provider": "built-in image_gen",
+      "sourceOriginal": "assets-source/kai-services/floor-care.png",
+      "originalBytes": 2376149,
+      "originalSha256": "473ec7327c0405041dc11fbb40d5936acd6f7562c28a847a35661e8f8ea5fe1b",
+      "variants": {
+        "1440": {
+          "src": "/kai-services/floor-care-1440.webp",
+          "width": 1440,
+          "height": 960,
+          "bytes": 152646,
+          "format": "WEBP",
+          "sha256": "10d3d456d81ef189adecaec50ab0833dab1d11876b4f8490fa59d60a09921f06"
+        },
+        "768": {
+          "src": "/kai-services/floor-care.webp",
+          "width": 768,
+          "height": 512,
+          "bytes": 64874,
+          "format": "WEBP",
+          "sha256": "05a8dd5dc76d64bf851ad43fb6e1fcd545d086bb1420ba1cfbd633c79f66be15"
+        },
+        "480": {
+          "src": "/kai-services/floor-care-480.webp",
+          "width": 480,
+          "height": 320,
+          "bytes": 32100,
+          "format": "WEBP",
+          "sha256": "647d36703266e4deefeb729c8d03c256edadaa835bc24681562e4707bfa39a45"
+        }
+      }
+    },
+    {
+      "id": "thurgau",
+      "kind": "new-ai-generated-service-illustration",
+      "provider": "built-in image_gen",
+      "sourceOriginal": "assets-source/kai-services/thurgau.png",
+      "originalBytes": 2929382,
+      "originalSha256": "1c49492a57cd4e5c8e811a7f0d18c4ea45e67354a22068828ca638e94eb9fd29",
+      "variants": {
+        "1440": {
+          "src": "/kai-services/thurgau-1440.webp",
+          "width": 1440,
+          "height": 960,
+          "bytes": 250852,
+          "format": "WEBP",
+          "sha256": "8151f844ce49a19aa3c351ab765c63d60d245a8670c9541308ff831482830792"
+        },
+        "768": {
+          "src": "/kai-services/thurgau.webp",
+          "width": 768,
+          "height": 512,
+          "bytes": 98468,
+          "format": "WEBP",
+          "sha256": "4fbf0d480bb8e3add80c18ecbb3f7fa81fe9231872848203d90dd404feeec4a5"
+        },
+        "480": {
+          "src": "/kai-services/thurgau-480.webp",
+          "width": 480,
+          "height": 320,
+          "bytes": 46452,
+          "format": "WEBP",
+          "sha256": "9ab3e9a576ddb555137fd6f24044a99829f0d0006161d576bdeefa46db569836"
+        }
+      }
+    }
+  ]
+}

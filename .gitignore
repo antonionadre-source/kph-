@@ -29,3 +29,10 @@ dist-ssr
 *.sln
 *.sw?
 
+
+# Local image audit environment
+.venv-assets/
+
+# Vercel local linkage and generated CDN assets
+.vercel/
+public/assets/
