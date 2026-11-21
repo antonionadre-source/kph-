@@ -63,3 +63,7 @@ borrador y no se crean usuarios, datos, mensajes ni pagos productivos.
 
 Guías: docs/DESIGN_2026-11-21.md, docs/CODEX_SETUP.md, docs/INTEGRATIONS.md,
 docs/BACKEND_SECURITY.md, docs/VERCEL_SETUP.md, docs/CATALOG_MEDIA.json, docs/TRANSIT_REFERENCE.md y docs/KAI_MEDIA.md.
+
+[Preview del rediseño](https://kpfm-2iyuijdf0-antonionadre2-5701s-projects.vercel.app):
+**READY** sobre `2987d40`, con SSO. [CI de ese código](https://github.com/antonionadre2-dev/kph-/actions/runs/44918828609):
+**success**. La producción se mantiene.

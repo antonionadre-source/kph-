@@ -1,8 +1,9 @@
 # Kraken PFM en Vercel — 21 de noviembre de 2026
 
-La revisión de portada, portal, backend e imágenes está publicada como
-[Preview de Vercel](https://kpfm-c9yyqi0ak-antonionadre2-5701s-projects.vercel.app), estado **READY**, con el código
-`9a8c783`. Usa Express + Vite sobre Node.js 24, API y assets por CDN.
+El rediseño completo, limpieza y mudanzas con Transit L3H2/L3H3, portal y medios
+están publicados como [Preview de Vercel](https://kpfm-2iyuijdf0-antonionadre2-5701s-projects.vercel.app),
+estado **READY**, con el código `2987d40`. Usa Express + Vite sobre Node.js 24,
+API y assets por CDN.
 La protección de acceso Vercel se mantiene; el navegador confirmó la pantalla de
 inicio de sesión. La revisión funcional completa se probó localmente con emuladores.
 
@@ -11,7 +12,8 @@ inicio de sesión. La revisión funcional completa se probó localmente con emul
 | Destino | Estado comprobado |
 | --- | --- |
 | Preview anterior | [kpfm-m1oddj90p](https://kpfm-m1oddj90p-antonionadre2-5701s-projects.vercel.app), `dpl_6yv836BqyBvcB5P9563Lo6ZWhgbS`, commit `10fbb52`, READY |
-| Entrega ampliada | [Preview](https://kpfm-c9yyqi0ak-antonionadre2-5701s-projects.vercel.app), `dpl_ENAdNLZ3fphHcbuztKFcz17NNFGA`, commit `9a8c783`, READY |
+| Entrega ampliada anterior | [Preview](https://kpfm-c9yyqi0ak-antonionadre2-5701s-projects.vercel.app), `dpl_ENAdNLZ3fphHcbuztKFcz17NNFGA`, commit `9a8c783`, READY |
+| Rediseño y Transit L3 | [Preview](https://kpfm-2iyuijdf0-antonionadre2-5701s-projects.vercel.app), `dpl_38pcTb8bJgR9Cn8NUawEUNXTm1Tw`, commit `2987d40`, READY |
 | Producción existente | `dpl_Ac9XCUhdt8EQnxtvgmMf6c5BQYMc` y dominio `krakenpfm.ch`, sin sustituir |
 | PR | [#1 en borrador](https://github.com/antonionadre-source/kph-/pull/1), sin fusionar |
 
@@ -19,7 +21,7 @@ El proyecto Vercel existente es `kpfm` (`prj_vkZiyfkHn6SLHf1ViysGRbPy0WXz`). La
 CLI comprobó acceso de propietario al equipo del proyecto. La protección de Preview
 SSO sigue en `all_except_custom_domains`: abrirla exige una sesión autorizada y puede
 requerir MFA. No se desactiva ni se elude esa protección. READY acredita que el
-adaptador terminó la publicación anterior; las páginas y `/api/health` remotos
+adaptador terminó esta publicación; las páginas y `/api/health` remotos
 siguen sin verificación funcional autenticada documentada.
 
 El preset global del proyecto sigue siendo Vite. `vercel.json` selecciona Express
@@ -184,3 +186,17 @@ Referencias oficiales consultadas: [Express en Vercel](https://vercel.com/docs/f
 [vercel.json](https://vercel.com/docs/project-configuration/vercel-json),
 [adaptador Express](https://github.com/vercel/vercel/blob/main/packages/express/src/build.ts)
 y [API de Vite](https://vite.dev/guide/api-javascript.html#vitedevserver).
+
+## Validación del rediseño y mudanzas
+
+[CI sobre 2987d40](https://github.com/antonionadre2-dev/kph-/actions/runs/44918828609):
+**success**. Incluye typecheck, build:vercel, las suites completas y Emulator Suite.
+La Preview conserva SSO; no se generó un bypass. La API de Vercel confirma que la
+producción sigue en `dpl_Ac9XCUhdt8EQnxtvgmMf6c5BQYMc` después de publicar.
+
+La revisión visual y funcional se hizo en la compilación local: nueve anchos de
+320 a 1920 px, seis idiomas, catálogo, contacto, registro/perfil y guardado reales
+demo. La Transit tiene 144 comprobaciones de idioma/techo/inventario/ancho sin
+desbordamientos; el contacto conserva la variante y el inventario elegidos.
+Las medidas son referencias Ford identificadas de 2017, no mediciones de la unidad
+actual; véase `TRANSIT_REFERENCE.md`.
