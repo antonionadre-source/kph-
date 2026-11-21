@@ -1,18 +1,17 @@
 # Kraken PFM en Vercel — 21 de noviembre de 2026
 
-La aplicación se prepara como Express + Vite sobre Node.js 24, con API, SEO por
-ruta/idioma, redirecciones y 404. La publicación anterior de Preview está READY,
-pero **todavía no representa la ampliación actual** de portada, portal, backend e
-imágenes. La nueva build ya pasó las pruebas locales. **Publicación de esta revisión:
-consultar registro de despliegue tras la publicación.** La URL y el hash se
-incorporarán al registrar esa publicación; no se atribuyen a la Preview anterior.
+La revisión de portada, portal, backend e imágenes está publicada como
+[Preview de Vercel](https://kpfm-c9yyqi0ak-antonionadre2-5701s-projects.vercel.app), estado **READY**, con el código
+`9a8c783`. Usa Express + Vite sobre Node.js 24, API y assets por CDN.
+La protección de acceso Vercel se mantiene; el navegador confirmó la pantalla de
+inicio de sesión. La revisión funcional completa se probó localmente con emuladores.
 
 ## Publicación y acceso
 
 | Destino | Estado comprobado |
 | --- | --- |
 | Preview anterior | [kpfm-m1oddj90p](https://kpfm-m1oddj90p-antonionadre2-5701s-projects.vercel.app), `dpl_6yv836BqyBvcB5P9563Lo6ZWhgbS`, commit `10fbb52`, READY |
-| Entrega ampliada | Build local verificada; publicación de esta revisión: consultar registro de despliegue tras la publicación |
+| Entrega ampliada | [Preview](https://kpfm-c9yyqi0ak-antonionadre2-5701s-projects.vercel.app), `dpl_ENAdNLZ3fphHcbuztKFcz17NNFGA`, commit `9a8c783`, READY |
 | Producción existente | `dpl_Ac9XCUhdt8EQnxtvgmMf6c5BQYMc` y dominio `krakenpfm.ch`, sin sustituir |
 | PR | [#1 en borrador](https://github.com/antonionadre-source/kph-/pull/1), sin fusionar |
 
@@ -116,9 +115,9 @@ Resultados finales locales del 21 de noviembre: `npm ci` terminó con salida 0
 Auth/Firestore/Storage Emulator Suite real pasaron **7/7**, incluyendo Admin,
 transferencia con dos identidades y pagos simulados.
 
-La CI está implementada en `.github/workflows/verify.yml`, con Node 24, Java 21,
-instalación reproducible, tipos, build, suites y emuladores. Su primera ejecución
-en GitHub sigue pendiente; no se presenta como un check remoto ya aprobado.
+La [CI de GitHub](https://github.com/antonionadre2-dev/kph-/actions/runs/44908677518) terminó **success** sobre `9a8c783`: Node 24,
+Java 21, instalación reproducible, tipos, build, suites y emuladores reales.
+El registro verificable está en [PUBLICATION_2026-11-21.json](PUBLICATION_2026-11-21.json).
 
 La QA local de navegador comprobó la portada sin overflow horizontal en nueve
 anchos (320, 360, 390, 414, 768, 1024, 1280, 1440 y 1920 px), seis idiomas y chat

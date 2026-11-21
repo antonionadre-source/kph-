@@ -33,8 +33,9 @@ estas medidas no son una puntuación Lighthouse.
 La arquitectura React/Vite/Express conserva rutas, API y SEO por idioma. Vercel usa
 Express y assets CDN. Preview fuerza Firebase demo y bloquea proveedores reales
 aunque herede claves; no aloja emuladores remotos. La Preview 10fbb52 es anterior
-a estos cambios. **Publicación de esta revisión: consultar registro de despliegue
-en `docs/VERCEL_SETUP.md`.** La protección SSO y la producción se conservan.
+a estos cambios. La [nueva Preview](https://kpfm-c9yyqi0ak-antonionadre2-5701s-projects.vercel.app) está **READY** sobre `9a8c783`;
+el acceso está protegido por Vercel. Registro en `docs/VERCEL_SETUP.md`.
+La producción se conserva.
 
 Validación local del 21 de noviembre de 2026:
 
@@ -47,7 +48,7 @@ Validación local del 21 de noviembre de 2026:
   chat fallback, registro/perfil reales demo, datos propios/tercero oculto,
   staff con claim real, paginación 25→46 y mensajes.
 
-CI Node 24/Java 21/emuladores está implementada; primera ejecución GitHub pendiente.
+[CI Node 24/Java 21/emuladores](https://github.com/antonionadre2-dev/kph-/actions/runs/44908677518): **success** sobre `9a8c783`.
 Quedan acceso Firebase del propietario, configuración Auth/Admin/claims,
 migración de notas, reglas/índices en la **base nombrada** y Storage, además de
 sandbox Payrexx y cuentas/destinos Gemini/EmailJS/Make. `firebase.production.example.json`

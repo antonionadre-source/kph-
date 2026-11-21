@@ -157,9 +157,9 @@ El arranque manual de la web con Admin de emulador está en
 [CODEX_SETUP.md](CODEX_SETUP.md). Las suites HTTP y Vercel requieren la build fresca
 y pasaron 2/2 y 4/4 respectivamente. `npm ci` (436 paquetes), typecheck,
 `build:vercel` y `npm test` terminaron con salida 0; `npm audit` reportó cero
-hallazgos en todas las severidades. CI Node 24/Java 21/emuladores está implementada,
-pendiente de su primera ejecución en GitHub. Publicación de esta revisión:
-consultar registro en [VERCEL_SETUP.md](VERCEL_SETUP.md).
+hallazgos en todas las severidades. La [CI Node 24/Java 21/emuladores](https://github.com/antonionadre2-dev/kph-/actions/runs/44908677518)
+terminó success sobre `9a8c783`. La [Preview](https://kpfm-c9yyqi0ak-antonionadre2-5701s-projects.vercel.app) está READY y protegida
+por autenticación Vercel. Registro en [VERCEL_SETUP.md](VERCEL_SETUP.md).
 
 ## Acceso necesario y puesta en servicio pendiente
 

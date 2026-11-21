@@ -21,8 +21,8 @@ carpeta de Descargas, que es la referencia para continuar. `origin` corresponde 
 [repositorio original](https://github.com/antonionadre-source/kph-). La rama es
 `codex/local-migration-2026-11-20`; el [PR #1](https://github.com/antonionadre-source/kph-/pull/1)
 permanece en borrador. La revisión comenzó en HEAD `7986211`; la entrega ampliada
-posterior ya está compilada y verificada localmente. Publicación de esta revisión:
-consultar registro de despliegue en [VERCEL_SETUP.md](VERCEL_SETUP.md). No se ha
+posterior está compilada y publicada como [Preview protegida](https://kpfm-c9yyqi0ak-antonionadre2-5701s-projects.vercel.app)
+READY, código `9a8c783`. Registro en [VERCEL_SETUP.md](VERCEL_SETUP.md). No se ha
 fusionado el PR ni sustituido la producción de `krakenpfm.ch`.
 
 La Preview publicada anteriormente corresponde a `10fbb52` y no representa estos
@@ -151,11 +151,11 @@ Resultados finales locales del 21 de noviembre de 2026:
 | Servidor y Vercel | 2/2 HTTP y 4/4 de compatibilidad/aislamiento Preview |
 | Reglas e integración Firebase | 7/7 sobre emuladores reales Auth/Firestore/Storage, transacciones Admin, doble identidad y Payrexx simulado |
 | `npm audit` | 0 hallazgos: 0 críticos, altos, moderados y bajos |
-| CI | Implementada en `.github/workflows/verify.yml`; primera ejecución GitHub pendiente |
+| CI | [GitHub Actions](https://github.com/antonionadre2-dev/kph-/actions/runs/44908677518) success sobre `9a8c783`, incluidos emuladores reales |
 
 La CI configura Node 24 y Java 21, instala el lock, comprueba tipos/build/suites y
-arranca emuladores del proyecto demo para reglas. El resultado local no se presenta
-como un check remoto de GitHub aprobado antes de su primera ejecución.
+arranca emuladores del proyecto demo para reglas. La ejecución remota citada
+terminó correctamente, además de las comprobaciones locales.
 
 La revisión de navegador comprobó la portada sin desbordamiento horizontal a
 320, 360, 390, 414, 768, 1024, 1280, 1440 y 1920 px; los seis idiomas y el fallback

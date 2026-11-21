@@ -32,9 +32,11 @@ Rama: codex/local-migration-2026-11-20.
 Fork: https://github.com/antonionadre2-dev/kph-
 Original: https://github.com/antonionadre-source/kph-
 PR borrador: https://github.com/antonionadre-source/kph-/pull/1
-La revisión comenzó en HEAD 7986211. Publicación de esta revisión: consultar
-registro de despliegue en docs/VERCEL_SETUP.md. La Preview anterior 10fbb52 está
-desactualizada y conserva SSO/MFA. No se fusionó el PR ni se sustituyó producción.
+Código de aplicación: 9a8c7835f9f3c361bdedb4e4761f003baa5a15b2.
+Preview READY: https://kpfm-c9yyqi0ak-antonionadre2-5701s-projects.vercel.app
+Protegida por inicio de sesión Vercel; la Preview anterior 10fbb52 es histórica.
+Registro: docs/VERCEL_SETUP.md y docs/PUBLICATION_2026-11-21.json.
+No se fusionó el PR ni se sustituyó producción.
 
 Preview permite revisar diseño/navegación, pero no aloja emuladores Firebase.
 Su loopback no es una base compartida remota. Falta acceso del propietario a
@@ -50,7 +52,8 @@ Resultados locales finales: npm ci (436 paquetes), typecheck, build:vercel y npm
 test terminaron con salida 0. Pasaron 43 unidades (portal 18/backend 7/PDF 6
 incluidas), 16 formularios, 12 subidas, servidor 2/2, Vercel 4/4 y emuladores 7/7.
 Npm audit reporta cero vulnerabilidades en todas las severidades. CI Node 24,
-Java 21 y emuladores implementada; primera ejecución GitHub pendiente.
+Java 21 y emuladores: success sobre 9a8c783.
+https://github.com/antonionadre2-dev/kph-/actions/runs/44908677518
 QA: portada sin overflow en nueve anchos de 320 a 1920 px, seis idiomas, chat
 fallback, registro/perfil reales demo, datos propios y tercero oculto, staff real,
 paginación 25→46 y mensajes. No certifica servicios comerciales de producción.
