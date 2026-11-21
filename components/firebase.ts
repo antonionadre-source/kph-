@@ -1,10 +1,8 @@
 import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 import { getStorage, connectStorageEmulator } from 'firebase/storage';
-import firebaseConfig from '../firebase-applet-config.json';
-import { app, auth, usingFirebaseEmulators, connectEmulatorOnce, emulatorHost } from './firebaseAuth';
+import { app, auth, usingFirebaseEmulators, connectEmulatorOnce, emulatorHost, firebaseDatabaseId } from './firebaseAuth';
 export { auth, usingFirebaseEmulators };
-const env: Partial<ImportMetaEnv> = import.meta.env ?? {};
-export const db = getFirestore(app, usingFirebaseEmulators ? '(default)' : (env.VITE_FIREBASE_DATABASE_ID || firebaseConfig.firestoreDatabaseId));
+export const db = getFirestore(app, firebaseDatabaseId);
 export const storage = getStorage(app);
 if (usingFirebaseEmulators) {
   connectEmulatorOnce('firestore', () => connectFirestoreEmulator(db, emulatorHost, 8080));

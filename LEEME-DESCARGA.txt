@@ -49,8 +49,8 @@ emuladores no selecciona esa base; no se ha desplegado ninguna regla real.
 Payrexx TEST, Gemini, EmailJS y Make necesitan cuentas y destinos autorizados.
 
 Resultados locales finales: npm ci (436 paquetes), typecheck, build:vercel y npm
-test terminaron con salida 0. Pasaron 43 unidades (portal 18/backend 7/PDF 6
-incluidas), 16 formularios, 12 subidas, servidor 2/2, Vercel 4/4 y emuladores 7/7.
+test terminaron con salida 0. Pasaron 44 unidades (portal 18/backend 8/PDF 6
+incluidas), 16 formularios, 12 subidas, servidor 2/2, Vercel 5/5 y emuladores 7/7.
 Npm audit reporta cero vulnerabilidades en todas las severidades. CI Node 24,
 Java 21 y emuladores: success sobre 9a8c783.
 https://github.com/antonionadre2-dev/kph-/actions/runs/44908677518
@@ -66,3 +66,8 @@ Para repetir: npm run build:vercel y npm test; con emuladores, npm run test:rule
 No pongas claves privadas en el chat, Git ni variables VITE_*.
 No se crearon usuarios, pagos, mensajes ni solicitudes productivos.
 Estados y accesos por proveedor: docs/INTEGRATIONS.md.
+
+Ampliación de conexión Preview: soporte staging preparado y probado en una copia
+aislada, sin modificar la Preview local visible. Contrato en .env.example y
+docs/INTEGRATIONS.md. Falta instalar/autorizar Firebase con la cuenta propietaria;
+no hay una conexión remota activa ni se han creado recursos de nube.

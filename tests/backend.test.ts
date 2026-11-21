@@ -1,10 +1,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
+import { deleteApp as deleteAdminApp } from 'firebase-admin/app';
 import express from 'express';
 import { createServer } from 'node:http';
 import { encodePayrexxQuery, verifyPayrexxWebhook, paymentHandlers } from '../server/payments.ts';
-import { HttpError } from '../server/firebaseAdmin.ts';
+import { HttpError, previewAdminSettings, adminServices, authenticatedUser } from '../server/firebaseAdmin.ts';
 import { calculateBookingQuote } from '../src/domain/bookingQuote.ts';
 import { validateChat, createRateLimiter } from '../server/chatPolicy.ts';
 import { escapeHtml, languageFromRequest } from '../server/html.ts';
@@ -177,4 +178,46 @@ test('draft transfer client retains proof only for recoverable retry and reports
     return Response.json({ success: true, movedIds: [], skippedIds: [] });
   });
   assert.equal(lastPage.notice, 'draftTransferMoved'); assert.equal(lastPage.pending, null);
+});
+
+test('Preview Admin accepts only explicit matching staging credentials and database, never inherited production/ADC', async () => {
+  const projectId = 'kraken-preview-test';
+  const account = { project_id: projectId, client_email: `test@${projectId}.iam.gserviceaccount.com`, private_key: 'inert-test-fixture' };
+  const environment = {
+    VERCEL_ENV: 'preview', FIREBASE_PREVIEW_STAGING_ENABLED: 'true', FIREBASE_STAGING_PROJECT_ID: projectId,
+    VITE_FIREBASE_DATABASE_ID: 'staging-records', FIREBASE_STAGING_SERVICE_ACCOUNT_JSON: JSON.stringify(account),
+    FIREBASE_ADMIN_PROJECT_ID: 'vivid-kite-477020-h6', FIREBASE_ADMIN_DATABASE_ID: 'production-db',
+    FIREBASE_SERVICE_ACCOUNT_JSON: JSON.stringify({ project_id: 'vivid-kite-477020-h6' }), GOOGLE_APPLICATION_CREDENTIALS: '/does-not-exist/production.json',
+  };
+  const selected = previewAdminSettings(environment)!;
+  assert.equal(selected.projectId, projectId); assert.equal(selected.databaseId, 'staging-records');
+  for (const changes of [
+    { FIREBASE_PREVIEW_STAGING_ENABLED: 'false' }, { FIREBASE_STAGING_PROJECT_ID: 'vivid-kite-477020-h6' },
+    { FIREBASE_STAGING_PROJECT_ID: 'demo-kraken-pfm' }, { VITE_FIREBASE_DATABASE_ID: '' },
+    { FIREBASE_STAGING_SERVICE_ACCOUNT_JSON: '' }, { FIREBASE_STAGING_SERVICE_ACCOUNT_JSON: '{invalid' },
+    { FIREBASE_STAGING_SERVICE_ACCOUNT_JSON: JSON.stringify({ ...account, project_id: 'vivid-kite-477020-h6' }) },
+    { FIREBASE_STAGING_SERVICE_ACCOUNT_JSON: JSON.stringify({ ...account, client_email: 'test@vivid-kite-477020-h6.iam.gserviceaccount.com' }) },
+    { FIREBASE_AUTH_EMULATOR_HOST: '127.0.0.1:9099' }, { FIRESTORE_EMULATOR_HOST: '127.0.0.1:8080' },
+  ]) assert.throws(() => previewAdminSettings({ ...environment, ...changes }), error => error instanceof HttpError && error.status === 503);
+  assert.equal(previewAdminSettings({ VERCEL_ENV: 'production' }), null);
+  const keys = [...Object.keys(environment), 'FIREBASE_AUTH_EMULATOR_HOST', 'FIRESTORE_EMULATOR_HOST', 'FIREBASE_STORAGE_EMULATOR_HOST'];
+  const original = Object.fromEntries(keys.map(key => [key, process.env[key]]));
+  try {
+    process.env.VERCEL_ENV = 'preview'; delete process.env.FIREBASE_PREVIEW_STAGING_ENABLED;
+    assert.throws(adminServices, error => error instanceof HttpError && error.status === 503);
+    await assert.rejects(authenticatedUser({ headers: { authorization: 'Bearer inert-proof' } } as any), error => error instanceof HttpError && error.status === 503);
+    const { privateKey } = crypto.generateKeyPairSync('rsa', { modulusLength: 1024, privateKeyEncoding: { type: 'pkcs8', format: 'pem' }, publicKeyEncoding: { type: 'spki', format: 'pem' } });
+    Object.assign(process.env, environment, { FIREBASE_STAGING_SERVICE_ACCOUNT_JSON: JSON.stringify({ ...account, private_key: privateKey }) });
+    delete process.env.FIREBASE_SERVICE_ACCOUNT_JSON; delete process.env.GOOGLE_APPLICATION_CREDENTIALS;
+    for (const key of ['FIREBASE_AUTH_EMULATOR_HOST', 'FIRESTORE_EMULATOR_HOST', 'FIREBASE_STORAGE_EMULATOR_HOST']) delete process.env[key];
+    const services = adminServices();
+    try {
+      assert.equal(services.auth.app.options.projectId, projectId);
+      assert.equal(services.db.databaseId, 'staging-records');
+      delete process.env.FIREBASE_STAGING_SERVICE_ACCOUNT_JSON;
+      assert.throws(adminServices, error => error instanceof HttpError && error.status === 503, 'Even a cached staging app cannot bypass the required credential');
+    } finally { await deleteAdminApp(services.auth.app); }
+  } finally {
+    for (const key of keys) { if (original[key] === undefined) delete process.env[key]; else process.env[key] = original[key]; }
+  }
 });

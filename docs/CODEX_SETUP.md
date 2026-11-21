@@ -146,9 +146,9 @@ Resultados finales locales del 21 de noviembre de 2026:
 | `npm run typecheck` | Salida 0 |
 | `npm run build:vercel` | Salida 0 |
 | `npm test` | Salida 0 en todas las suites |
-| Unidades | 43/43, incluidas 18 del portal, 7 de backend y 6 de PDF |
+| Unidades | 43/43, incluidas 18 del portal, 8 de backend y 6 de PDF |
 | Formularios y subidas | 16/16 de entrega y 12/12 de subidas, con canales inertes |
-| Servidor y Vercel | 2/2 HTTP y 4/4 de compatibilidad/aislamiento Preview |
+| Servidor y Vercel | 2/2 HTTP y 5/5 de compatibilidad/aislamiento Preview |
 | Reglas e integración Firebase | 7/7 sobre emuladores reales Auth/Firestore/Storage, transacciones Admin, doble identidad y Payrexx simulado |
 | `npm audit` | 0 hallazgos: 0 críticos, altos, moderados y bajos |
 | CI | [GitHub Actions](https://github.com/antonionadre2-dev/kph-/actions/runs/44908677518) success sobre `9a8c783`, incluidos emuladores reales |

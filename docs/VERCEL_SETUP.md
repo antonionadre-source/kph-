@@ -62,7 +62,7 @@ caché inmutable. El servidor autónomo sólo publica los assets compilados, no
 
 ## Aislamiento de Preview
 
-En toda build sin `VERCEL_ENV=production`, `build:vercel` fuerza:
+Por defecto, en toda build sin `VERCEL_ENV=production`, `build:vercel` fuerza:
 
 | Variable | Valor |
 | --- | --- |
@@ -72,11 +72,17 @@ En toda build sin `VERCEL_ENV=production`, `build:vercel` fuerza:
 | `VITE_API_URL` | Vacío, Express del mismo origen |
 | `VITE_EMAILJS_*` y `VITE_MAKE_*_WEBHOOK_URL` | Vacíos |
 
+Existe un opt-in explícito para Firebase remoto de **staging**, con proyecto
+separado, configuración web completa y Admin privado coincidente. Su contrato
+está en [INTEGRATIONS.md](INTEGRATIONS.md).
+No se ha configurado ni conectado todavía; la Preview predeterminada permanece
+emulada. Los demás proveedores continúan bloqueados incluso con ese opt-in.
+
 Express también bloquea Payrexx/Gemini cuando `VERCEL_ENV=preview`, incluso si
 hereda claves y `ALLOW_EXTERNAL_INTEGRATIONS=true`. Kai responde con el fallback
 local. En otros entornos, las llamadas reales requieren opt-in explícito.
 
-Firebase emulador apunta a loopback del navegador visitante. Vercel no aloja esos
+En la Preview predeterminada, Firebase emulador apunta a loopback del navegador visitante. Vercel no aloja esos
 emuladores ni dispone de una base demo remota: la Preview permite revisar páginas,
 idiomas, recursos, navegación y API de fallback. **No acredita registro, panel,
 reservas o archivos remotos funcionando.** Esos recorridos se prueban localmente
@@ -109,8 +115,8 @@ cero llamadas externas pese a claves heredadas ficticias. Payrexx y fetch son
 inertes. Estas cuatro pruebas se incluyen en `npm test`.
 
 Resultados finales locales del 21 de noviembre: `npm ci` terminó con salida 0
-(436 paquetes), typecheck 0, `build:vercel` 0 y `npm test` 0. Pasaron 43 unidades
-(incluidas 18 del portal, 7 de backend y 6 de PDF), 16 escenarios de formularios,
+(436 paquetes), typecheck 0, `build:vercel` 0 y `npm test` 0. Pasaron 44 unidades
+(incluidas 18 del portal, 8 de backend y 6 de PDF), 16 escenarios de formularios,
 12 de subidas, **2/2 de servidor y 4/4 de Vercel**. Las reglas e integración sobre
 Auth/Firestore/Storage Emulator Suite real pasaron **7/7**, incluyendo Admin,
 transferencia con dos identidades y pagos simulados.

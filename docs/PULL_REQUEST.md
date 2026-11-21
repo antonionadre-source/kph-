@@ -40,8 +40,8 @@ La producción se conserva.
 Validación local del 21 de noviembre de 2026:
 
 - `npm ci`: 436 paquetes, salida 0; typecheck, build:vercel y npm test: salida 0.
-- 43 unidades (portal 18, backend 7 y PDF 6 incluidas), 16 formularios, 12 subidas,
-  servidor 2/2, Vercel 4/4 y reglas/Auth/Firestore/Storage reales en emuladores 7/7.
+- 44 unidades (portal 18, backend 8 y PDF 6 incluidas), 16 formularios, 12 subidas,
+  servidor 2/2, Vercel 5/5 y reglas/Auth/Firestore/Storage reales en emuladores 7/7.
 - `npm audit`: cero hallazgos de todas las severidades tras corregir los dos
   críticos iniciales, retirar Jimp sin uso y fijar dependencias transitivas.
 - Navegador: portada sin overflow en nueve anchos de 320 a 1920 px, seis idiomas,
@@ -58,3 +58,12 @@ no se desplegaron reglas reales, no se fusionó el PR y no se sustituyó producc
 
 Guías: `docs/CODEX_SETUP.md`, `docs/INTEGRATIONS.md`, `docs/BACKEND_SECURITY.md`,
 `docs/VERCEL_SETUP.md`, `docs/ASSET_AUDIT.md` y `docs/KAI_MEDIA.md`.
+
+La Preview admite ahora un opt-in de Firebase staging con proyecto separado,
+configuración web completa y base explícita. Auth, Firestore y Storage comparten
+el destino; Admin exige un secreto coincidente de staging y rechaza credenciales
+productivas heredadas/ADC. Sin opt-in conserva emuladores y los demás proveedores
+continúan bloqueados. La conexión remota está pendiente de autorización del
+propietario: no se han creado recursos ni configurado secretos. Typecheck, build
+y suites completas pasan en una copia aislada (44 unidades, backend 8, Vercel 5),
+preservando abierta la Preview local del usuario.

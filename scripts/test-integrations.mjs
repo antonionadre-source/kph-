@@ -6,8 +6,9 @@ import { build } from 'esbuild';
 async function loadBoundary(entry, env = {}, hostname = 'localhost', responseStatus = 200, options = {}) {
   const calls = [];
   const sdkStub = `
-    export const initializeApp = config => { globalThis.record('initialize', config); return {}; };
-    export const getApps = () => []; export const getApp = () => ({});
+    export const initializeApp = config => { globalThis.record('initialize', config); return { options: config }; };
+    export const getApps = () => globalThis.existingFirebaseConfig ? [{ options: globalThis.existingFirebaseConfig }] : [];
+    export const getApp = () => ({ options: globalThis.existingFirebaseConfig });
     export const getAuth = () => ({}); export const getFirestore = (app, id) => { globalThis.record('database', id); return {}; };
     export const getStorage = () => ({});
     export const connectAuthEmulator = (auth, url) => globalThis.record('auth', url);
@@ -31,6 +32,7 @@ async function loadBoundary(entry, env = {}, hostname = 'localhost', responseSta
   vm.runInNewContext(result.outputFiles[0].text, {
     module, exports: module.exports,
     record: (...args) => calls.push(args),
+    existingFirebaseConfig: options.existingAppConfig,
     ...(!options.nodeRuntime ? { window: { SSR: options.mockSsr, location: { hostname, href: `http://${hostname}/kontakt` } } } : {}),
     console: { warn() {}, error() {}, log() {} },
     AbortController, AbortSignal, setTimeout, clearTimeout, URL,
@@ -54,6 +56,28 @@ assert.equal(production.api.usingFirebaseEmulators, false);
 assert.equal(production.calls.some(c => ['auth', 'firestore', 'storage'].includes(c[0])), false);
 const explicitProduction = await loadBoundary('components/firebase.ts', { VITE_FIREBASE_MODE: 'production' });
 assert.equal(explicitProduction.api.usingFirebaseEmulators, false);
+
+const stagingConfig = {
+  DEV: false, PROD: true, VITE_FIREBASE_MODE: 'staging', VITE_FIREBASE_PROJECT_ID: 'kraken-preview-test',
+  VITE_FIREBASE_API_KEY: 'isolated-staging-public-key', VITE_FIREBASE_APP_ID: '1:123456:web:abc123',
+  VITE_FIREBASE_AUTH_DOMAIN: 'kraken-preview-test.firebaseapp.com', VITE_FIREBASE_STORAGE_BUCKET: 'kraken-preview-test.firebasestorage.app',
+  VITE_FIREBASE_DATABASE_ID: 'staging-records',
+};
+const staging = await loadBoundary('components/firebase.ts', stagingConfig, 'preview.example.test');
+assert.equal(staging.api.usingFirebaseEmulators, false);
+const initializedStaging = staging.calls.find(c => c[0] === 'initialize')[1];
+assert.equal(initializedStaging.projectId, stagingConfig.VITE_FIREBASE_PROJECT_ID);
+assert.equal(initializedStaging.authDomain, stagingConfig.VITE_FIREBASE_AUTH_DOMAIN);
+assert.equal(initializedStaging.storageBucket, stagingConfig.VITE_FIREBASE_STORAGE_BUCKET);
+assert.equal(staging.calls.find(c => c[0] === 'database')[1], 'staging-records');
+assert.equal(staging.calls.some(c => ['auth', 'firestore', 'storage'].includes(c[0])), false);
+await assert.rejects(loadBoundary('components/firebase.ts', stagingConfig, 'preview.example.test', 200, { existingAppConfig: { ...initializedStaging, projectId: 'vivid-kite-477020-h6' } }), /Existing Firebase app/);
+await assert.rejects(loadBoundary('components/firebase.ts', stagingConfig, 'preview.example.test', 200, { existingAppConfig: { ...initializedStaging, storageBucket: 'vivid-kite-477020-h6.firebasestorage.app' } }), /Existing Firebase app/);
+for (const field of ['VITE_FIREBASE_PROJECT_ID', 'VITE_FIREBASE_API_KEY', 'VITE_FIREBASE_APP_ID', 'VITE_FIREBASE_AUTH_DOMAIN', 'VITE_FIREBASE_STORAGE_BUCKET', 'VITE_FIREBASE_DATABASE_ID']) {
+  await assert.rejects(loadBoundary('components/firebase.ts', { ...stagingConfig, [field]: '' }, 'preview.example.test'), /Staging/);
+}
+const stagingSsr = await loadBoundary('components/firebase.ts', { VITE_FIREBASE_MODE: 'staging', DEV: false }, 'preview.example.test', 200, { mockSsr: true });
+assert.equal(stagingSsr.api.usingFirebaseEmulators, true);
 
 // Direct Node/tsx imports have no Vite environment or browser globals. The same
 // source must import safely, keep submissions blocked and use only the demo app.

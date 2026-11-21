@@ -31,6 +31,32 @@ test('preview build overrides inherited live Firebase and submission configurati
   assert.equal(vercelBuildEnvironment({ VERCEL_ENV: 'production', VITE_FIREBASE_MODE: 'production' }).VITE_FIREBASE_MODE, 'production');
 });
 
+test('remote staging Preview requires explicit opt-in and complete separate Firebase configuration', () => {
+  const projectId = 'kraken-preview-test';
+  const configured = {
+    VERCEL_ENV: 'preview', FIREBASE_PREVIEW_STAGING_ENABLED: 'true', FIREBASE_STAGING_PROJECT_ID: projectId,
+    VITE_FIREBASE_API_KEY: 'isolated-staging-public-key', VITE_FIREBASE_APP_ID: '1:123456:web:abc123',
+    VITE_FIREBASE_AUTH_DOMAIN: `${projectId}.firebaseapp.com`, VITE_FIREBASE_STORAGE_BUCKET: `${projectId}.firebasestorage.app`,
+    VITE_FIREBASE_DATABASE_ID: 'staging-records', VITE_ENABLE_EXTERNAL_SUBMISSIONS: 'true', VITE_ENABLE_DEMO_DATA: 'true',
+    VITE_MAKE_LEAD_WEBHOOK_URL: 'https://example.invalid/live-hook', VITE_API_URL: 'https://example.invalid/production',
+  };
+  const selected = vercelBuildEnvironment(configured);
+  assert.equal(selected.VITE_FIREBASE_MODE, 'staging'); assert.equal(selected.VITE_FIREBASE_PROJECT_ID, projectId);
+  assert.equal(selected.VITE_FIREBASE_DATABASE_ID, 'staging-records');
+  assert.equal(selected.VITE_ENABLE_EXTERNAL_SUBMISSIONS, 'false'); assert.equal(selected.VITE_ENABLE_DEMO_DATA, 'false');
+  assert.equal(selected.VITE_MAKE_LEAD_WEBHOOK_URL, ''); assert.equal(selected.VITE_API_URL, '');
+  assert.equal(vercelBuildEnvironment({ ...configured, FIREBASE_PREVIEW_STAGING_ENABLED: 'false' }).VITE_FIREBASE_MODE, 'emulator');
+  assert.throws(() => vercelBuildEnvironment({ ...configured, VERCEL_ENV: undefined }), /VERCEL_ENV=preview/);
+  for (const value of ['vivid-kite-477020-h6', 'demo-kraken-pfm', '']) assert.throws(() => vercelBuildEnvironment({ ...configured, FIREBASE_STAGING_PROJECT_ID: value }), /separate/);
+  for (const key of ['VITE_FIREBASE_API_KEY', 'VITE_FIREBASE_APP_ID', 'VITE_FIREBASE_AUTH_DOMAIN', 'VITE_FIREBASE_STORAGE_BUCKET', 'VITE_FIREBASE_DATABASE_ID']) {
+    assert.throws(() => vercelBuildEnvironment({ ...configured, [key]: '' }), /Staging/);
+  }
+  assert.throws(() => vercelBuildEnvironment({ ...configured, VITE_FIREBASE_AUTH_DOMAIN: 'vivid-kite-477020-h6.firebaseapp.com' }), /authDomain/);
+  assert.throws(() => vercelBuildEnvironment({ ...configured, VITE_FIREBASE_STORAGE_BUCKET: 'vivid-kite-477020-h6.firebasestorage.app' }), /storageBucket/);
+  const original = JSON.parse(readFileSync(path.join(root, 'firebase-applet-config.json'), 'utf8'));
+  assert.throws(() => vercelBuildEnvironment({ ...configured, VITE_FIREBASE_API_KEY: original.apiKey }), /original Firebase API key/);
+});
+
 test('Vercel publishes frontend bundles without exposing the server HTML or bundle as static files', () => {
   const scratch = mkdtempSync(path.join(tmpdir(), 'kraken-vercel-assets-'));
   try {

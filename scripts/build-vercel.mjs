@@ -1,12 +1,15 @@
-import { cpSync, existsSync, rmSync } from 'node:fs';
+import { cpSync, existsSync, rmSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { stagingProjectId, stagingWebConfig } from '../src/firebaseStaging.ts';
+
+const originalConfig = JSON.parse(readFileSync(new URL('../firebase-applet-config.json', import.meta.url), 'utf8'));
 
 export function vercelBuildEnvironment(environment) {
   if (environment.VERCEL_ENV === 'production') return { ...environment };
   // VITE_* are embedded at build time; a remote Preview must not select real services.
-  return {
+  const isolated = {
     ...environment,
     VITE_FIREBASE_MODE: 'emulator',
     VITE_ENABLE_EXTERNAL_SUBMISSIONS: 'false',
@@ -17,6 +20,20 @@ export function vercelBuildEnvironment(environment) {
     VITE_EMAILJS_PUBLIC_KEY: '',
     VITE_MAKE_LEAD_WEBHOOK_URL: '',
     VITE_MAKE_EMAIL_WEBHOOK_URL: '',
+  };
+  if (environment.FIREBASE_PREVIEW_STAGING_ENABLED !== 'true') return isolated;
+  if (environment.VERCEL_ENV !== 'preview') throw new Error('Staging opt-in requires VERCEL_ENV=preview.');
+  const projectId = stagingProjectId(environment.FIREBASE_STAGING_PROJECT_ID);
+  const config = stagingWebConfig({ ...environment, VITE_FIREBASE_PROJECT_ID: projectId }, originalConfig.apiKey);
+  return {
+    ...isolated,
+    VITE_FIREBASE_MODE: 'staging',
+    VITE_FIREBASE_PROJECT_ID: config.projectId,
+    VITE_FIREBASE_API_KEY: config.apiKey,
+    VITE_FIREBASE_APP_ID: config.appId,
+    VITE_FIREBASE_AUTH_DOMAIN: config.authDomain,
+    VITE_FIREBASE_STORAGE_BUCKET: config.storageBucket,
+    VITE_FIREBASE_DATABASE_ID: config.databaseId,
   };
 }
 

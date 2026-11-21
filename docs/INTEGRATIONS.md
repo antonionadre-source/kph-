@@ -46,14 +46,64 @@ tras cambiar valores. Las variables de proceso prevalecen sobre los archivos.
 `VITE_FIREBASE_MODE=production` selecciona explícitamente el proyecto real y exige
 recompilar. En una build remota ordinaria sin override también se puede seleccionar
 la configuración pública original: no publicar una build sin revisar el destino.
-`build:vercel` fuerza emulador y envíos desactivados en Preview; Express bloquea
-Payrexx/Gemini en Preview aunque herede claves y opt-in.
+`build:vercel` usa emulador por defecto en Preview; sólo el opt-in de staging
+descrito abajo permite Firebase remoto de pruebas. Los envíos siguen desactivados
+y Express bloquea Payrexx/Gemini en Preview aunque herede claves y opt-in.
 
-La Preview remota apunta al loopback del navegador para Firebase. No incorpora
+La Preview predeterminada apunta al loopback del navegador para Firebase. No incorpora
 emuladores alojados ni una base compartida: login, panel, borradores y archivos no
 son funcionalidad remota certificada de esa Preview. Se prueban localmente con la
 suite real. Para un entorno remoto de pruebas hace falta un backend de pruebas
 alcanzable y configurado deliberadamente.
+
+## Preview con Firebase staging: soporte preparado, sin conectar todavía
+
+No se ha creado proyecto, configurado credenciales ni desplegado reglas remotas.
+El plugin Firebase aún no estaba autorizado y la CLI no tenía cuentas al realizar
+la última comprobación. La Preview visible actual conserva su configuración; estos
+cambios de fuente no la conectan automáticamente.
+
+Para un proyecto de pruebas autorizado, configurar **sólo el entorno Preview** de
+Vercel y recompilar/republicar deliberadamente:
+
+```dotenv
+FIREBASE_PREVIEW_STAGING_ENABLED=true
+FIREBASE_STAGING_PROJECT_ID=<id-del-proyecto-de-pruebas>
+VITE_FIREBASE_API_KEY=<configuracion-publica-de-esa-app>
+VITE_FIREBASE_APP_ID=<app-id-web-de-esa-app>
+VITE_FIREBASE_AUTH_DOMAIN=<id-del-proyecto-de-pruebas>.firebaseapp.com
+VITE_FIREBASE_STORAGE_BUCKET=<bucket-de-ese-proyecto>
+VITE_FIREBASE_DATABASE_ID=<id-explicito-o-(default)>
+FIREBASE_STAGING_SERVICE_ACCOUNT_JSON=<secreto-privado-en-Vercel>
+```
+
+Hay un único flag y selector de proyecto staging. El builder deriva
+`VITE_FIREBASE_MODE=staging` y `VITE_FIREBASE_PROJECT_ID`; no es necesario duplicar
+el selector en `FIREBASE_ADMIN_PROJECT_ID`. La configuración pública completa se
+copia de la **misma app Firebase staging**. La validación offline no demuestra la
+pertenencia de una API key o appId arbitrarios: el propietario debe comprobarlos.
+
+La build rechaza el proyecto original `vivid-kite-477020-h6`, cualquier `demo-*`,
+configuración incompleta y la API key original. AuthDomain debe ser el dominio
+Firebase del proyecto (`.firebaseapp.com` o `.web.app`); bucket debe ser su bucket
+predeterminado (`.firebasestorage.app` o `.appspot.com`). El ID de base debe estar
+explícito y coincidir con las reglas/índices preparados para staging. Auth,
+Firestore y Storage no usan fallbacks del proyecto original en este modo.
+
+Admin Preview exige el mismo flag/proyecto/base y la cuenta específica de
+`FIREBASE_STAGING_SERVICE_ACCOUNT_JSON`, con `project_id` y email de cuenta de
+servicio correspondientes a staging. Ignora `FIREBASE_SERVICE_ACCOUNT_JSON`,
+`GOOGLE_APPLICATION_CREDENTIALS`, `FIREBASE_ADMIN_PROJECT_ID` y
+`FIREBASE_ADMIN_DATABASE_ID` heredados. Rechaza cualquier host de emulador. Sin
+configuración coherente devuelve 503; no intenta Admin productivo ni ADC.
+La credencial privada nunca lleva prefijo `VITE_` ni se publica en Git o el chat.
+
+Incluso con Firebase staging, Payrexx, Gemini, EmailJS, Make y la siembra demo
+siguen bloqueados en Preview. El servidor conserva el fallback de Kai. Hace falta
+habilitar Auth/proveedores y dominios, revisar la base/bucket/reglas/índices y
+configurar credenciales en ese proyecto mediante acceso autorizado; este soporte
+no crea recursos ni demuestra que una conexión remota ya funcione. Firebase
+[recomienda separar proyectos por entorno](https://firebase.google.com/docs/projects/dev-workflows/general-best-practices).
 
 ## Identidad, solicitudes y formularios
 
@@ -129,8 +179,8 @@ npm run test:unit
 
 Las pruebas de límites usan SDKs/fetch inertes. Los 16 escenarios de entrega
 comprueban recibo primario, fallos parciales, CV, autenticación y reintento. Los 12
-de subidas comprueban rutas/propietario, MIME/tamaño y errores. Pasaron las 43
-unidades, incluidas 18 del portal, 7 de backend y 6 de PDF, además de las
+de subidas comprueban rutas/propietario, MIME/tamaño y errores. Pasaron las 44
+unidades, incluidas 18 del portal, 8 de backend y 6 de PDF, además de las
 regresiones de precios, firma, chat, idioma y calendario.
 
 Con Java 21, iniciar emuladores en otra terminal y ejecutar las siete pruebas reales
@@ -155,7 +205,7 @@ replay. No requieren autenticación CLI productiva.
 
 El arranque manual de la web con Admin de emulador está en
 [CODEX_SETUP.md](CODEX_SETUP.md). Las suites HTTP y Vercel requieren la build fresca
-y pasaron 2/2 y 4/4 respectivamente. `npm ci` (436 paquetes), typecheck,
+y pasaron 2/2 y 5/5 respectivamente. `npm ci` (436 paquetes), typecheck,
 `build:vercel` y `npm test` terminaron con salida 0; `npm audit` reportó cero
 hallazgos en todas las severidades. La [CI Node 24/Java 21/emuladores](https://github.com/antonionadre2-dev/kph-/actions/runs/44908677518)
 terminó success sobre `9a8c783`. La [Preview](https://kpfm-c9yyqi0ak-antonionadre2-5701s-projects.vercel.app) está READY y protegida
