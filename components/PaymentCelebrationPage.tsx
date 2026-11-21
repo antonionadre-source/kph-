@@ -148,21 +148,21 @@ export const PaymentCelebrationPage: React.FC<PaymentCelebrationPageProps> = ({ 
   }, []);
 
   return (
-    <main className="kraken-page kraken-workflow bg-[#f4f8f8] px-5 py-12 text-[#082b45] sm:py-20">
-      <section className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-[#dce6e8] bg-white" aria-labelledby="payment-status-title">
+    <main className="kraken-page kraken-workflow bg-[#f3f7fc] px-5 py-12 text-[#032b59] sm:py-20">
+      <section className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-[#dce5f0] bg-white" aria-labelledby="payment-status-title">
         <div className="grid gap-8 p-7 sm:p-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-center lg:gap-12">
           <div>
             <p className="kraken-eyebrow">Kraken PFM</p>
-            <div className={`mt-6 inline-flex h-14 w-14 items-center justify-center rounded-full ${awaitingVerification ? 'bg-amber-50 text-amber-700' : 'bg-[#e8f4f1] text-[#087f73]'}`} aria-hidden="true">{awaitingVerification ? <Clock3 className="h-7 w-7" /> : <Check className="h-7 w-7" />}</div>
+            <div className={`mt-6 inline-flex h-14 w-14 items-center justify-center rounded-full ${awaitingVerification ? 'bg-amber-50 text-amber-700' : 'bg-[#e8f4f1] text-[#1464ad]'}`} aria-hidden="true">{awaitingVerification ? <Clock3 className="h-7 w-7" /> : <Check className="h-7 w-7" />}</div>
             <h1 id="payment-status-title" className="kraken-heading mt-5">{awaitingVerification ? pendingText[0] : (isDirect ? tLocal.paymentCompleted : tLocal.thankYouPayment)}</h1>
             <p className="kraken-description">{awaitingVerification ? pendingText[1] : (isDirect ? tLocal.serviceBooked : tLocal.precisionReview)}</p>
-            <p className="mt-5 text-sm font-medium text-[#087f73]">{awaitingVerification ? pendingText[2] : tLocal.confirmationSent}</p>
+            <p className="mt-5 text-sm font-medium text-[#1464ad]">{awaitingVerification ? pendingText[2] : tLocal.confirmationSent}</p>
           </div>
-          <div className="flex items-center justify-center rounded-2xl bg-[#f4f8f8] p-7"><img src="/kai-calendar/optimized/kai/mascota-kraken-homepage-320.webp" alt="Kai — Kraken PFM" width="320" height="320" className="h-auto w-full max-w-64 object-contain" /></div>
+          <div className="flex items-center justify-center rounded-2xl bg-[#f3f7fc] p-7"><img src="/kai-calendar/optimized/kai/mascota-kraken-homepage-320.webp" alt="Kai — Kraken PFM" width="320" height="320" className="h-auto w-full max-w-64 object-contain" /></div>
         </div>
-        <div className="grid gap-7 border-t border-[#dce6e8] p-7 sm:grid-cols-2 sm:p-10">
-          <div className="flex gap-4"><div className="mt-1 text-[#087f73]" aria-hidden="true">{isDirect ? <Calendar className="h-5 w-5" /> : <ClipboardCheck className="h-5 w-5" />}</div><div><h2 className="text-lg font-semibold">{awaitingVerification ? pendingText[0] : isDirect ? tLocal.bookingConfirmed : tLocal.reviewInProgress}</h2><p className="mt-2 text-base leading-relaxed text-[#526574]">{awaitingVerification ? pendingText[1] : isDirect ? tLocal.bookingConfirmedDesc : tLocal.reviewInProgressDesc}</p></div></div>
-          <div className="flex gap-4"><Headphones className="mt-1 h-5 w-5 shrink-0 text-[#087f73]" aria-hidden="true" /><div><h2 className="text-lg font-semibold">{isDirect ? tLocal.supportAvailable : tLocal.contactSoon}</h2><p className="mt-2 text-base leading-relaxed text-[#526574]">{isDirect ? tLocal.supportAvailableDesc : tLocal.contactSoonDesc}</p></div></div>
+        <div className="grid gap-7 border-t border-[#dce5f0] p-7 sm:grid-cols-2 sm:p-10">
+          <div className="flex gap-4"><div className="mt-1 text-[#1464ad]" aria-hidden="true">{isDirect ? <Calendar className="h-5 w-5" /> : <ClipboardCheck className="h-5 w-5" />}</div><div><h2 className="text-lg font-semibold">{awaitingVerification ? pendingText[0] : isDirect ? tLocal.bookingConfirmed : tLocal.reviewInProgress}</h2><p className="mt-2 text-base leading-relaxed text-[#50647c]">{awaitingVerification ? pendingText[1] : isDirect ? tLocal.bookingConfirmedDesc : tLocal.reviewInProgressDesc}</p></div></div>
+          <div className="flex gap-4"><Headphones className="mt-1 h-5 w-5 shrink-0 text-[#1464ad]" aria-hidden="true" /><div><h2 className="text-lg font-semibold">{isDirect ? tLocal.supportAvailable : tLocal.contactSoon}</h2><p className="mt-2 text-base leading-relaxed text-[#50647c]">{isDirect ? tLocal.supportAvailableDesc : tLocal.contactSoonDesc}</p></div></div>
           <div className="sm:col-span-2"><button onClick={onBackHome} className="kraken-button kraken-primary w-full sm:w-auto">{tLocal.backToDashboard}<ArrowRight className="h-4 w-4" /></button></div>
         </div>
       </section>

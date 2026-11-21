@@ -373,7 +373,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
   ];
 
   return (
-    <div id="review-invite-page" className="kraken-feedback min-h-screen bg-[#f4f8f8] text-[#082b45] flex flex-col items-center py-8 sm:py-12 px-4">
+    <div id="review-invite-page" className="kraken-feedback min-h-screen bg-[#f3f7fc] text-[#032b59] flex flex-col items-center py-8 sm:py-12 px-4">
       {/* Confetti Animation Layer */}
       {isSubmitted && rating >= 4 && (
         <div className="absolute inset-0 z-50 pointer-events-none overflow-hidden">
@@ -400,7 +400,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
 
       {/* Language Switcher at the top left/right */}
       <div className="mb-8 flex w-full max-w-2xl items-center justify-between gap-3">
-        <div className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto rounded-xl border border-[#dce6e8] bg-white p-1">
+        <div className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto rounded-xl border border-[#dce5f0] bg-white p-1">
           {languageOptions.map((opt) => (
             <button
               key={opt.code}
@@ -408,8 +408,8 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
               onClick={() => setActiveLang(opt.code)}
               className={`kraken-control min-h-11 min-w-11 shrink-0 px-3 py-2 text-sm font-semibold rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
                 activeLang === opt.code
-                  ? 'bg-[#087f73] text-white font-semibold'
-                  : 'text-[#526574] hover:text-[#082b45] bg-transparent hover:bg-[#f4f8f8]'
+                  ? 'bg-[#1464ad] text-white font-semibold'
+                  : 'text-[#50647c] hover:text-[#032b59] bg-transparent hover:bg-[#f3f7fc]'
               }`}
               title={opt.label}
             >
@@ -422,7 +422,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
         <button
           aria-label={texts.backHome}
           onClick={() => onNavigate('home')}
-          className="kraken-control min-h-11 min-w-11 w-10 h-10 rounded-full bg-white border border-[#dce6e8] shadow-sm flex items-center justify-center text-[#526574] hover:text-[#526574] hover:border-[#dce6e8] transition-all text-base cursor-pointer shrink-0"
+          className="kraken-control min-h-11 min-w-11 w-10 h-10 rounded-full bg-white border border-[#dce5f0] shadow-sm flex items-center justify-center text-[#50647c] hover:text-[#50647c] hover:border-[#dce5f0] transition-all text-base cursor-pointer shrink-0"
         >
           ✕
         </button>
@@ -449,19 +449,19 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
               referrerPolicy="no-referrer"
             />
           </motion.div>
-          <span className="bg-[#eef7f5] text-[#087f73] border border-[#c8dedb] text-sm font-semibold  px-3 py-1 rounded-full  mb-2">
+          <span className="bg-[#edf4fd] text-[#1464ad] border border-[#c9dbef] text-sm font-semibold  px-3 py-1 rounded-full  mb-2">
             {texts.badge}
           </span>
-          <h2 className="text-2xl md:text-3xl font-semibold text-[#082b45]  leading-tight">
+          <h2 className="text-2xl md:text-3xl font-semibold text-[#032b59]  leading-tight">
             {texts.title}
           </h2>
-          <p className="mt-3 max-w-lg text-base leading-relaxed text-[#526574]">
+          <p className="mt-3 max-w-lg text-base leading-relaxed text-[#50647c]">
             {texts.subtitle}
           </p>
         </div>
 
         {/* Main interactive container - white themed, professional shadow */}
-        <div id="review-card-interactive" className="kraken-panel bg-white border border-[#dce6e8] rounded-3xl p-5 sm:p-8 shadow-sm text-left">
+        <div id="review-card-interactive" className="kraken-panel bg-white border border-[#dce5f0] rounded-3xl p-5 sm:p-8 shadow-sm text-left">
           <AnimatePresence mode="wait">
             {!isSubmitted ? (
               // STEP 1: RATING AND COMMENTS
@@ -475,13 +475,13 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
               >
                 {/* Authorization Barrier */}
                 {!user ? (
-                  <div className="border border-[#dce6e8] bg-[#f4f8f8] rounded-2xl p-5 text-center space-y-4">
-                    <p className="text-base text-[#526574] leading-relaxed font-semibold">
+                  <div className="border border-[#dce5f0] bg-[#f3f7fc] rounded-2xl p-5 text-center space-y-4">
+                    <p className="text-base text-[#50647c] leading-relaxed font-semibold">
                       {texts.loginPrompt}
                     </p>
                     <button
                       onClick={handleGoogleLogin}
-                      className="kraken-control min-h-11 min-w-11 w-full flex items-center justify-center gap-3 bg-white hover:bg-[#f4f8f8] text-[#526574] font-semibold py-2.5 px-4 rounded-xl transition-all shadow-sm border border-[#dce6e8] hover:border-[#dce6e8]  text-base cursor-pointer"
+                      className="kraken-control min-h-11 min-w-11 w-full flex items-center justify-center gap-3 bg-white hover:bg-[#f3f7fc] text-[#50647c] font-semibold py-2.5 px-4 rounded-xl transition-all shadow-sm border border-[#dce5f0] hover:border-[#dce5f0]  text-base cursor-pointer"
                     >
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -501,7 +501,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                            activeLang === 'de' || activeLang === 'de-CH' ? '🚨 Popup blockiert' :
                            '🚨 Popup Blocked'}
                         </p>
-                        <p className="text-sm text-[#526574] font-semibold leading-relaxed">
+                        <p className="text-sm text-[#50647c] font-semibold leading-relaxed">
                           {activeLang === 'es' ? 'Tu navegador bloqueó la ventana de Google por estar dentro de un marco de vista previa (iframe). Permite las ventanas emergentes en tu navegador, o simplemente haz clic en el botón de abajo para abrir la aplicación directamente en una pestaña nueva.' :
                            activeLang === 'pt' ? 'O seu navegador bloqueou a janela do Google por estar dentro de uma moldura de visualização (iframe). Permita pop-ups no seu navegador, ou simplesmente clique no botão abaixo para abrir a aplicação diretamente num novo separador.' :
                            activeLang === 'fr' ? 'Votre navigateur a bloqué la fenêtre Google car elle se trouve dans un cadre d\'aperçu (iframe). Autorisez les fenêtres pop-up dans votre navigateur, ou cliquez simplement sur le bouton ci-dessous pour ouvrir l\'application directement dans un nouvel onglet.' :
@@ -513,7 +513,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                           href={window.location.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex w-full items-center justify-center gap-1.5 bg-[#087f73] hover:bg-sky-600 text-[#082b45] font-semibold py-2.5 px-3 rounded-xl transition-all shadow-sm text-sm cursor-pointer"
+                          className="inline-flex w-full items-center justify-center gap-1.5 bg-[#1464ad] hover:bg-sky-600 text-[#032b59] font-semibold py-2.5 px-3 rounded-xl transition-all shadow-sm text-sm cursor-pointer"
                         >
                           🌐 {activeLang === 'es' ? 'Abrir en Nueva Pestaña' :
                                activeLang === 'pt' ? 'Abrir num Novo Separador' :
@@ -529,17 +529,17 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                   </div>
                 ) : (
                   // User logged in header
-                  <div className="flex items-center justify-between border-b border-[#dce6e8] pb-3">
+                  <div className="flex items-center justify-between border-b border-[#dce5f0] pb-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-sky-400 to-emerald-400 flex items-center justify-center font-semibold text-sm text-[#082b45]">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-sky-400 to-blue-400 flex items-center justify-center font-semibold text-sm text-[#032b59]">
                         {user.name.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="text-sm text-[#526574] font-semibold  ">{texts.welcomeBack}</p>
-                        <p className="text-base font-semibold text-[#082b45]">{user.name}</p>
+                        <p className="text-sm text-[#50647c] font-semibold  ">{texts.welcomeBack}</p>
+                        <p className="text-base font-semibold text-[#032b59]">{user.name}</p>
                       </div>
                     </div>
-                    <span className="text-sm text-emerald-600 font-semibold bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-full">
+                    <span className="text-sm text-blue-600 font-semibold bg-blue-50 border border-blue-100 px-2.5 py-0.5 rounded-full">
                       ✓ Cliente Verificado
                     </span>
                   </div>
@@ -547,7 +547,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
 
                 {/* Rating Stars Selection */}
                 <div className="space-y-3">
-                  <label className="block text-sm font-semibold text-[#526574]  ">
+                  <label className="block text-sm font-semibold text-[#50647c]  ">
                     {texts.starsLabel}
                   </label>
                   <div className="flex flex-col items-center md:items-start gap-2">
@@ -585,7 +585,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                           initial={{ opacity: 0, x: -5 }}
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: 5 }}
-                          className="text-sm font-semibold text-[#087f73]"
+                          className="text-sm font-semibold text-[#1464ad]"
                         >
                           {getStarLabel(hoveredRating || rating)}
                         </motion.p>
@@ -596,7 +596,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
 
                 {/* TagBadges */}
                 <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-[#526574]  ">
+                  <label className="block text-sm font-semibold text-[#50647c]  ">
                     {texts.tagsLabel}
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -619,8 +619,8 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                           }}
                           className={`kraken-control min-h-11 min-w-11 px-3 py-1.5 rounded-xl text-base font-semibold transition-all cursor-pointer border ${
                             isSelected
-                              ? 'bg-[#eef7f5] text-[#087f73] border-[#c8dedb] font-semibold'
-                              : 'bg-[#f4f8f8] text-[#526574] border-[#dce6e8] hover:border-[#dce6e8] hover:bg-[#f4f8f8]'
+                              ? 'bg-[#edf4fd] text-[#1464ad] border-[#c9dbef] font-semibold'
+                              : 'bg-[#f3f7fc] text-[#50647c] border-[#dce5f0] hover:border-[#dce5f0] hover:bg-[#f3f7fc]'
                           }`}
                         >
                           {tag} {isSelected && '✓'}
@@ -639,7 +639,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                     value={comment}
                     disabled={!user}
                     onChange={(e) => setComment(e.target.value)}
-                    className="kraken-field w-full bg-white border border-[#dce6e8] rounded-2xl px-4 py-3 text-base text-[#082b45] focus:outline-none focus:border-sky-500 focus:bg-white placeholder:text-[#526574] disabled:opacity-50 transition-all font-medium"
+                    className="kraken-field w-full bg-white border border-[#dce5f0] rounded-2xl px-4 py-3 text-base text-[#032b59] focus:outline-none focus:border-sky-500 focus:bg-white placeholder:text-[#50647c] disabled:opacity-50 transition-all font-medium"
                   />
                 </div>
 
@@ -654,8 +654,8 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                     disabled={isSubmitting || !user || rating === 0}
                     className={`kraken-control min-h-11 min-w-11 w-full font-semibold py-3 px-6 rounded-2xl transition-all shadow-md text-base select-none   ${
                       isSubmitting || !user || rating === 0
-                        ? 'bg-[#f4f8f8] text-[#526574] cursor-not-allowed border border-[#dce6e8]'
-                        : 'bg-[#087f73] text-white font-semibold  cursor-pointer hover:scale-[1.01]'
+                        ? 'bg-[#f3f7fc] text-[#50647c] cursor-not-allowed border border-[#dce5f0]'
+                        : 'bg-[#1464ad] text-white font-semibold  cursor-pointer hover:scale-[1.01]'
                     }`}
                   >
                     {isSubmitting ? texts.submitting : texts.submitBtn}
@@ -671,22 +671,22 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                 transition={{ type: 'spring', duration: 0.5 }}
                 className="text-center space-y-6 py-4"
               >
-                <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto text-3xl">
+                <div className="w-16 h-16 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center mx-auto text-3xl">
                   {rating >= 4 ? '🎉' : '❤️'}
                 </div>
 
                 <div className="space-y-2">
-                  <h3 className="text-xl font-semibold text-emerald-600">
+                  <h3 className="text-xl font-semibold text-blue-600">
                     {texts.successTitle}
                   </h3>
-                  <p className="text-base text-[#526574] font-semibold">
+                  <p className="text-base text-[#50647c] font-semibold">
                     {rating >= 4 ? texts.positiveHeader : texts.negativeHeader}
                   </p>
                 </div>
 
                 <div className={`rounded-2xl p-4 text-base leading-relaxed max-w-md mx-auto ${
                   rating >= 4
-                    ? 'bg-emerald-50/50 border border-emerald-100 text-emerald-800'
+                    ? 'bg-blue-50/50 border border-blue-100 text-blue-800'
                     : 'bg-amber-50/60 border border-amber-100 text-amber-800'
                 }`}>
                   {rating >= 4 ? texts.positiveBody : texts.negativeBody}
@@ -698,7 +698,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
                       href={OFFICIAL_GOOGLE_REVIEW_LINK}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center gap-2 bg-[#087f73] hover:bg-[#06695f] text-white font-semibold py-3.5 px-6 rounded-2xl transition-colors text-base   hover:scale-[1.02]"
+                      className="w-full inline-flex items-center justify-center gap-2 bg-[#1464ad] hover:bg-[#0c4f92] text-white font-semibold py-3.5 px-6 rounded-2xl transition-colors text-base   hover:scale-[1.02]"
                     >
                       {texts.googleCta}
                     </a>
@@ -706,7 +706,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
 
                   <button
                     onClick={() => onNavigate('home')}
-                    className="kraken-control min-h-11 min-w-11 w-full bg-white border border-[#dce6e8] hover:bg-[#f4f8f8] hover:border-[#dce6e8] text-[#526574] font-semibold py-2.5 px-6 rounded-xl transition-all text-base   cursor-pointer"
+                    className="kraken-control min-h-11 min-w-11 w-full bg-white border border-[#dce5f0] hover:bg-[#f3f7fc] hover:border-[#dce5f0] text-[#50647c] font-semibold py-2.5 px-6 rounded-xl transition-all text-base   cursor-pointer"
                   >
                     {texts.backHome}
                   </button>
@@ -716,7 +716,7 @@ const ReviewInvitePage: React.FC<{ onNavigate: (page: string) => void }> = ({ on
           </AnimatePresence>
         </div>
 
-        <p className="text-sm text-[#526574] font-semibold mt-6">
+        <p className="text-sm text-[#50647c] font-semibold mt-6">
           {texts.footerNote}
         </p>
       </div>

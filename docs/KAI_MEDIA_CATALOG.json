@@ -692,5 +692,7 @@
         }
       }
     }
-  ]
+  ],
+  "supersededBy": "docs/KAI_BRAND_V3_ASSETS.json",
+  "catalogStatus": "Historical source/variant record; current public variants are rebuilt from Kai v3 sources."
 }

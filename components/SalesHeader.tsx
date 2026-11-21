@@ -36,10 +36,10 @@ export default function SalesHeader({ onNavigate, currentPage }: { onNavigate: (
   const links = [[copy.services,'/services'],[copy.business,'/commercial'],[copy.coverage,'/einsatzgebiete']];
   const languages = (id:string) => <label htmlFor={id}><span className="sr-only">{copy.language}</span><select id={id} value={language} onChange={event => setLanguage(event.target.value as Language)} className="kraken-language" aria-label={copy.language}>{Object.entries(LANGUAGE_NAMES).map(([key,label]) => <option key={key} value={key}>{label}</option>)}</select></label>;
   return <>
-    <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-3 z-[150] bg-white p-3 text-[#082b45]">{skipLabels[language.split('-')[0]] || skipLabels.de}</a>
+    <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-3 z-[150] bg-white p-3 text-[#032b59]">{skipLabels[language.split('-')[0]] || skipLabels.de}</a>
     <header className="kraken-header">
       <div className="kraken-container kraken-header-inner">
-        <a href="/" onClick={event => go(event,'/')} aria-label="Kraken PFM" className="kraken-brand"><img src="/kai-calendar/optimized/brand/logo-blue-480.webp" width="480" height="206" alt="Kraken Properties and Facilities Management" /></a>
+        <a href="/" onClick={event => go(event,'/')} lang="en" aria-label="Kraken PFM — Properties and Facilities Management" className="kraken-brand kraken-brand-lockup min-w-0 gap-2 sm:gap-3"><img src="/kai-calendar/optimized/brand/logo-blue-480.webp" width="480" height="206" alt="Kraken PFM" className="kraken-brand-image" style={{ width: 'clamp(4.5rem, 10vw, 9rem)' }} /><span className="kraken-brand-descriptor max-w-[5.5rem] text-xs font-medium leading-tight sm:max-w-[9rem] sm:text-sm">Properties and Facilities Management</span></a>
         <nav className="kraken-navigation" aria-label={navigationLabels[language.split('-')[0]] || navigationLabels.de}>{links.map(([label,path]) => <a key={path} href={path} onClick={event => go(event,path)} aria-current={activePages[path]?.includes(currentPage) ? 'page' : undefined}>{label}</a>)}</nav>
         <div className="kraken-header-actions">
           <div className="kraken-header-language">{languages('header-language')}</div>
@@ -50,7 +50,7 @@ export default function SalesHeader({ onNavigate, currentPage }: { onNavigate: (
       </div>
       {open && <div id="mobile-navigation" className="kraken-mobile-nav" ref={panel} role="dialog" aria-modal="true" aria-label={copy.menu}>
         <nav>{links.map(([label,path]) => <a key={path} href={path} onClick={event => go(event,path)} aria-current={activePages[path]?.includes(currentPage) ? 'page' : undefined}>{label}</a>)}<a href={user ? '/dashboard' : '/login'} onClick={event => go(event,user ? '/dashboard' : '/login')}>{copy.account}</a></nav>
-        <div className="kraken-mobile-nav-actions">{languages('menu-language')}<button className="kraken-button kraken-primary" onClick={() => {setOpen(false);onNavigate('/quote');}}>{copy.quote}</button><a href="tel:+41774505705" className="kraken-button kraken-secondary"><Phone size={17} aria-hidden="true" />+41 77 450 57 05</a><button type="button" className="min-h-11 text-sm font-semibold text-[#526574]" onClick={() => {setOpen(false);toggle.current?.focus();}}>{copy.close}</button></div>
+        <div className="kraken-mobile-nav-actions">{languages('menu-language')}<button className="kraken-button kraken-primary" onClick={() => {setOpen(false);onNavigate('/quote');}}>{copy.quote}</button><a href="tel:+41774505705" className="kraken-button kraken-secondary"><Phone size={17} aria-hidden="true" />+41 77 450 57 05</a><button type="button" className="min-h-11 text-sm font-semibold text-[#50647c]" onClick={() => {setOpen(false);toggle.current?.focus();}}>{copy.close}</button></div>
       </div>}
     </header>
   </>;

@@ -14,6 +14,8 @@ parser.add_argument('--calendar-only', action='store_true')
 parser.add_argument('--existing-only', action='store_true')
 parser.add_argument('--services-only', action='store_true')
 args = parser.parse_args()
+if (DOC/'KAI_BRAND_V3_ASSETS.json').exists():
+    raise SystemExit('Kai v3 is current. Rebuild with scripts/media/build-kai-brand-v3.py; this earlier pipeline is historical.')
 
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 def info(path, url=None):

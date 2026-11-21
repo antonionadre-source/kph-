@@ -11,9 +11,9 @@ const copy = {
 
 export function AccountIntro({ language, mode }: { language: string; mode: 'login' | 'register' }) {
   const text = copy[language.split('-')[0] as keyof typeof copy] || copy.de;
-  return <aside className="kraken-auth-intro hidden lg:flex min-w-0 flex-col justify-center gap-7 rounded-3xl bg-[#eef7f5] p-8 xl:p-10">
+  return <aside className="kraken-auth-intro hidden lg:flex min-w-0 flex-col justify-center gap-7 rounded-3xl bg-[#edf4fd] p-8 xl:p-10">
     <img src="/mascota-kraken-homepage-800.webp" width="192" height="192" alt="" loading="lazy" decoding="async" style={{ width: 192, height: 192, maxWidth: '100%' }} className="object-contain" />
-    <div><p className="mb-3 text-sm font-semibold text-[#087f73]">Kraken PFM</p><h2 className="max-w-sm text-3xl font-semibold leading-tight text-[#082b45]">{mode === 'login' ? text.loginTitle : text.registerTitle}</h2><p className="mt-4 max-w-sm text-base leading-relaxed text-[#526574]">{mode === 'login' ? text.loginBody : text.registerBody}</p></div>
-    <ul className="space-y-3 text-base text-[#082b45]">{text.items.map(item => <li key={item} className="flex items-center gap-3"><span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#087f73]" />{item}</li>)}</ul>
+    <div><p className="mb-3 text-sm font-semibold text-[#1464ad]">Kraken PFM</p><h2 className="max-w-sm text-3xl font-semibold leading-tight text-[#032b59]">{mode === 'login' ? text.loginTitle : text.registerTitle}</h2><p className="mt-4 max-w-sm text-base leading-relaxed text-[#50647c]">{mode === 'login' ? text.loginBody : text.registerBody}</p></div>
+    <ul className="space-y-3 text-base text-[#032b59]">{text.items.map(item => <li key={item} className="flex items-center gap-3"><span aria-hidden="true" className="h-2 w-2 rounded-full bg-[#1464ad]" />{item}</li>)}</ul>
   </aside>;
 }

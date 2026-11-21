@@ -483,7 +483,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
           }}
         />
       )}
-      <header className="kraken-page-intro border-b border-[#dce6e8] bg-white py-12 sm:py-20"><div className="kraken-container"><p className="kraken-eyebrow">Kraken PFM</p><h1 className="kraken-heading mt-3" itemProp="name">{t('blog.title')}</h1><p className="kraken-description max-w-2xl">{t('blog.subtitle')}</p></div></header>
+      <header className="kraken-page-intro border-b border-[#dce5f0] bg-white py-12 sm:py-20"><div className="kraken-container"><p className="kraken-eyebrow">Kraken PFM</p><h1 className="kraken-heading mt-3" itemProp="name">{t('blog.title')}</h1><p className="kraken-description max-w-2xl">{t('blog.subtitle')}</p></div></header>
 
       {/* Main Content Area */}
       <section className="container mx-auto px-6 py-16">
@@ -495,12 +495,12 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
             <motion.aside
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="space-y-6 lg:sticky lg:top-28 bg-white p-6 rounded-2xl border border-[#dce6e8] shadow-sm"
+              className="space-y-6 lg:sticky lg:top-28 bg-white p-6 rounded-2xl border border-[#dce5f0] shadow-sm"
               id="blog-sidebar"
             >
               {/* Search bar */}
               <div className="space-y-2">
-                <label className="text-sm font-semibold normal-case tracking-normal text-[#526574]">
+                <label className="text-sm font-semibold normal-case tracking-normal text-[#50647c]">
                   {currentLang === 'es' ? 'Buscar' : currentLang === 'de' ? 'Suchen' : 'Search'}
                 </label>
                 <div className="relative">
@@ -511,11 +511,11 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                     placeholder={filterTrans.searchPlaceholder}
                     className="w-full text-sm font-semibold bg-slate-50 border border-slate-250 hover:bg-slate-100/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#002D5B]/25 rounded-2xl py-3.5 pl-10 pr-4 transition-all"
                   />
-                  <Search className="w-4 h-4 text-[#526574] absolute left-3.5 top-3.5" />
+                  <Search className="w-4 h-4 text-[#50647c] absolute left-3.5 top-3.5" />
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery('')}
-                      className="absolute right-3.5 top-3.5 text-[#526574] hover:text-slate-600"
+                      className="absolute right-3.5 top-3.5 text-[#50647c] hover:text-slate-600"
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -527,7 +527,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
 
               {/* Categories selection list */}
               <div className="space-y-3">
-                <h3 className="text-sm font-semibold normal-case tracking-normal text-[#526574]">
+                <h3 className="text-sm font-semibold normal-case tracking-normal text-[#50647c]">
                   {filterTrans.categoriesTitle}
                 </h3>
                 <div className="flex flex-col gap-1">
@@ -539,13 +539,13 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                     }}
                     className={`w-full flex justify-between items-center px-4 py-3 rounded-xl font-bold text-sm transition-all text-left ${
                       selectedCategory === 'all'
-                        ? 'bg-[#082b45] text-white shadow-xs'
+                        ? 'bg-[#032b59] text-white shadow-xs'
                         : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                     }`}
                   >
                     <span>{selectedCategoryTrans.all}</span>
                     <span className={`text-sm px-2 py-0.5 rounded-full font-semibold ${
-                      selectedCategory === 'all' ? 'bg-[#082b45] text-amber-400' : 'bg-slate-100 text-[#526574]'
+                      selectedCategory === 'all' ? 'bg-[#032b59] text-amber-400' : 'bg-slate-100 text-[#50647c]'
                     }`}>
                       {articles.length}
                     </span>
@@ -563,13 +563,13 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                         }}
                         className={`w-full flex justify-between items-center px-4 py-3 rounded-xl font-bold text-sm transition-all text-left ${
                           selectedCategory === catKey
-                            ? 'bg-[#082b45] text-white shadow-xs'
+                            ? 'bg-[#032b59] text-white shadow-xs'
                             : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                         }`}
                       >
                         <span className="truncate max-w-[170px]">{selectedCategoryTrans[catKey]}</span>
                         <span className={`text-sm px-2 py-0.5 rounded-full font-semibold ${
-                          selectedCategory === catKey ? 'bg-[#082b45] text-amber-400' : 'bg-slate-100 text-[#526574]'
+                          selectedCategory === catKey ? 'bg-[#032b59] text-amber-400' : 'bg-slate-100 text-[#50647c]'
                         }`}>
                           {count}
                         </span>
@@ -584,7 +584,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
               {/* Tag Cloud */}
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-sm font-semibold normal-case tracking-normal text-[#526574]">
+                  <h3 className="text-sm font-semibold normal-case tracking-normal text-[#50647c]">
                     {filterTrans.tagsTitle}
                   </h3>
                   {activeTag && (
@@ -636,10 +636,10 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
             {/* Right Pane: dynamic list of filtered blog posts */}
             <div className="space-y-8">
               {/* Filter feedback chips */}
-              <div className="flex flex-wrap items-center justify-between gap-3 text-sm bg-white p-4 rounded-2xl border border-[#dce6e8] shadow-2xs">
-                <div className="flex items-center gap-2 font-bold text-[#526574]">
+              <div className="flex flex-wrap items-center justify-between gap-3 text-sm bg-white p-4 rounded-2xl border border-[#dce5f0] shadow-2xs">
+                <div className="flex items-center gap-2 font-bold text-[#50647c]">
                   <span>{filterTrans.showingAll}</span>
-                  <span className="bg-[#082b45]/5 text-[#082b45] px-3 py-1 rounded-full text-sm font-semibold">
+                  <span className="bg-[#032b59]/5 text-[#032b59] px-3 py-1 rounded-full text-sm font-semibold">
                     {filteredArticles.length}
                   </span>
                 </div>
@@ -672,22 +672,22 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="bg-white rounded-3xl p-12 text-center border border-[#dce6e8] shadow-xs max-w-xl mx-auto space-y-6"
+                    className="bg-white rounded-3xl p-12 text-center border border-[#dce5f0] shadow-xs max-w-xl mx-auto space-y-6"
                   >
-                    <div className="w-16 h-16 bg-slate-50 text-[#526574] rounded-full flex items-center justify-center text-3xl mx-auto border border-dashed border-slate-200">
+                    <div className="w-16 h-16 bg-slate-50 text-[#50647c] rounded-full flex items-center justify-center text-3xl mx-auto border border-dashed border-slate-200">
                       🔍
                     </div>
                     <div className="space-y-2">
                       <h3 className="text-lg font-semibold text-slate-800">
                         {filterTrans.noResultsTitle}
                       </h3>
-                      <p className="text-sm text-[#526574] leading-relaxed font-bold px-4">
+                      <p className="text-sm text-[#50647c] leading-relaxed font-bold px-4">
                         {filterTrans.noResultsDesc}
                       </p>
                     </div>
                     <button
                       onClick={handleClearFilters}
-                      className="px-6 py-3.5 bg-[#082b45] hover:bg-slate-800 text-white rounded-2xl font-bold text-sm normal-case tracking-normal transition-all shadow-sm"
+                      className="px-6 py-3.5 bg-[#032b59] hover:bg-slate-800 text-white rounded-2xl font-bold text-sm normal-case tracking-normal transition-all shadow-sm"
                     >
                       {filterTrans.resetBtn}
                     </button>
@@ -703,7 +703,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ delay: index * 0.05, duration: 0.4 }}
                         whileHover={{ y: -6 }}
-                        className="bg-white rounded-3xl overflow-hidden shadow-xs hover:shadow-sm border border-[#dce6e8] transition-all duration-300 flex flex-col justify-between"
+                        className="bg-white rounded-3xl overflow-hidden shadow-xs hover:shadow-sm border border-[#dce5f0] transition-all duration-300 flex flex-col justify-between"
                         id={`article-card-${article.id}`}
                         itemScope
                         itemType="https://schema.org/BlogPosting"
@@ -730,7 +730,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
 
                           {/* Meta & Info */}
                           <div className="p-6 pb-4">
-                            <div className="flex items-center gap-4 text-sm text-[#526574] font-bold mb-3">
+                            <div className="flex items-center gap-4 text-sm text-[#50647c] font-bold mb-3">
                               <span className="flex items-center gap-1">
                                 <Calendar className="w-3.5 h-3.5" />
                                 <time itemProp="datePublished" dateTime="2026-06-02">{article.date}</time>
@@ -742,13 +742,13 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                             </div>
 
                             <h2
-                              className="text-lg font-semibold text-slate-900 leading-snug mb-2 hover:text-[#087f73] transition-colors line-clamp-2"
+                              className="text-lg font-semibold text-slate-900 leading-snug mb-2 hover:text-[#1464ad] transition-colors line-clamp-2"
                               itemProp="headline"
                             >
                               {article.title}
                             </h2>
 
-                            <p className="text-[#526574] text-sm font-bold leading-relaxed line-clamp-3 mb-4" itemProp="description">
+                            <p className="text-[#50647c] text-sm font-bold leading-relaxed line-clamp-3 mb-4" itemProp="description">
                               {article.excerpt}
                             </p>
 
@@ -766,7 +766,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                                     className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-sm font-semibold normal-case tracking-wide transition-all ${
                                       isTagActive
                                         ? 'bg-amber-100 text-amber-800'
-                                        : 'bg-slate-50 text-[#526574] hover:bg-slate-100 hover:text-slate-800'
+                                        : 'bg-slate-50 text-[#50647c] hover:bg-slate-100 hover:text-slate-800'
                                     }`}
                                     title={`${filterTrans.tagTitle}: ${tagsTrans[tagKey] || tagKey}`}
                                   >
@@ -782,7 +782,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                         <div className="p-6 pt-0 border-t border-slate-50 mt-2">
                           <button
                             onClick={() => handleArticleClick(article.id)}
-                            className="w-full mt-4 flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-blue-50 hover:bg-[#087f73] text-[#087f73] hover:text-white font-semibold text-sm normal-case tracking-normal transition-all duration-300 group"
+                            className="w-full mt-4 flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-blue-50 hover:bg-[#1464ad] text-[#1464ad] hover:text-white font-semibold text-sm normal-case tracking-normal transition-all duration-300 group"
                             id={`article-btn-${article.id}`}
                           >
                             <BookOpen className="w-4 h-4 transition-transform group-hover:scale-110" />
@@ -835,7 +835,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
               <motion.div
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="max-w-4xl mx-auto bg-white rounded-3xl border border-[#dce6e8] shadow-sm overflow-hidden p-6 md:p-12 relative"
+                className="max-w-4xl mx-auto bg-white rounded-3xl border border-[#dce5f0] shadow-sm overflow-hidden p-6 md:p-12 relative"
                 id="article-detail-view"
                 itemScope
                 itemType="https://schema.org/BlogPosting"
@@ -849,7 +849,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                 {/* Back Button */}
                 <button
                   onClick={handleBackToList}
-                  className="inline-flex items-center gap-2 text-sm font-semibold normal-case tracking-normal text-[#526574] hover:text-[#087f73] transition-colors mb-8 cursor-pointer normal-case bg-slate-50 hover:bg-slate-100 px-4 py-2.5 rounded-xl border border-[#dce6e8]"
+                  className="inline-flex items-center gap-2 text-sm font-semibold normal-case tracking-normal text-[#50647c] hover:text-[#1464ad] transition-colors mb-8 cursor-pointer normal-case bg-slate-50 hover:bg-slate-100 px-4 py-2.5 rounded-xl border border-[#dce5f0]"
                   id="back-to-blog-btn"
                 >
                   <ArrowLeft className="w-4 h-4" />
@@ -858,7 +858,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
 
                 {/* Article Header Details */}
                 <div className="mb-6">
-                  <span className="inline-block bg-blue-50 text-[#087f73] font-semibold text-sm normal-case tracking-normal px-3.5 py-1.5 rounded-full mb-4">
+                  <span className="inline-block bg-blue-50 text-[#1464ad] font-semibold text-sm normal-case tracking-normal px-3.5 py-1.5 rounded-full mb-4">
                     {article.category}
                   </span>
                   <h1 className="text-3xl md:text-5xl font-semibold text-slate-900 leading-tight mb-6" itemProp="headline">
@@ -866,13 +866,13 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                   </h1>
 
                   {/* Author & Info Meta row */}
-                  <div className="flex flex-wrap items-center gap-6 py-4 border-y border-[#dce6e8] text-sm md:text-sm text-[#526574] mb-8">
+                  <div className="flex flex-wrap items-center gap-6 py-4 border-y border-[#dce5f0] text-sm md:text-sm text-[#50647c] mb-8">
                     <span className="flex items-center gap-2" itemProp="author" itemScope itemType="https://schema.org/Person">
-                      <div className="w-8 h-8 rounded-full bg-blue-100 text-[#087f73] font-bold flex items-center justify-center text-sm">
+                      <div className="w-8 h-8 rounded-full bg-blue-100 text-[#1464ad] font-bold flex items-center justify-center text-sm">
                         {article.author.slice(0, 1)}
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-[#526574] normal-case tracking-normal">{t('blog.author')}</p>
+                        <p className="text-sm font-bold text-[#50647c] normal-case tracking-normal">{t('blog.author')}</p>
                         <p className="font-bold text-slate-800" itemProp="name">{article.author}</p>
                       </div>
                     </span>
@@ -881,7 +881,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                         <Calendar className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-[#526574] normal-case tracking-normal">{t('blog.published')}</p>
+                        <p className="text-sm font-bold text-[#50647c] normal-case tracking-normal">{t('blog.published')}</p>
                         <p className="font-bold text-slate-800">
                           <time itemProp="datePublished" dateTime="2026-06-02">{article.date}</time>
                         </p>
@@ -892,7 +892,7 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                         <Clock className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-[#526574] normal-case tracking-normal">{t('blog.readTime')}</p>
+                        <p className="text-sm font-bold text-[#50647c] normal-case tracking-normal">{t('blog.readTime')}</p>
                         <p className="font-bold text-slate-800">{article.readTime}</p>
                       </div>
                     </span>
@@ -927,17 +927,17 @@ const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                 {/* Text Paragraph Paragraph Grid */}
                 <div className="prose max-w-none text-slate-600 text-base md:text-lg leading-relaxed space-y-6" itemProp="articleBody">
                   {article.paragraphs.map((p, pIndex) => (
-                    <p key={pIndex} className="first-letter:text-2xl first-letter:font-bold first-letter:text-[#087f73]">
+                    <p key={pIndex} className="first-letter:text-2xl first-letter:font-bold first-letter:text-[#1464ad]">
                       {p}
                     </p>
                   ))}
                 </div>
 
                 {/* Footer Handback navigation inside detail card */}
-                <div className="mt-12 pt-8 border-t border-[#dce6e8] flex items-center justify-between">
+                <div className="mt-12 pt-8 border-t border-[#dce5f0] flex items-center justify-between">
                   <button
                     onClick={handleBackToList}
-                    className="inline-flex items-center gap-2 text-sm font-semibold normal-case tracking-normal text-[#526574] hover:text-[#087f73] transition-colors"
+                    className="inline-flex items-center gap-2 text-sm font-semibold normal-case tracking-normal text-[#50647c] hover:text-[#1464ad] transition-colors"
                   >
                     <ArrowLeft className="w-4 h-4" />
                     {t('blog.backToBlog')}

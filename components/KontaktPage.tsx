@@ -326,9 +326,9 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
   };
 
   if (isSubmitted) {
-    return <main className="kraken-page kraken-workflow bg-[#f4f8f8] py-16 sm:py-24">
-      <section className="mx-auto max-w-xl rounded-2xl border border-[#dce6e8] bg-white p-7 text-center sm:p-12" role="status">
-        <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#e8f4f1] text-[#087f73]"><CheckIcon className="h-7 w-7" /></div>
+    return <main className="kraken-page kraken-workflow bg-[#f3f7fc] py-16 sm:py-24">
+      <section className="mx-auto max-w-xl rounded-2xl border border-[#dce5f0] bg-white p-7 text-center sm:p-12" role="status">
+        <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-[#e8f4f1] text-[#1464ad]"><CheckIcon className="h-7 w-7" /></div>
         <h1 className="kraken-heading">{d.thankYouTitle}</h1>
         <p className="kraken-description mb-8">{d.successDesc}</p>
         <button onClick={() => onNavigate('home')} className="kraken-button kraken-primary">{d.backToHome}</button>
@@ -337,8 +337,8 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
   }
 
   return (
-    <main className="kraken-page kraken-workflow bg-[#f4f8f8] text-[#082b45]">
-      <header className="kraken-page-intro border-b border-[#dce6e8] bg-white py-12 sm:py-20">
+    <main className="kraken-page kraken-workflow bg-[#f3f7fc] text-[#032b59]">
+      <header className="kraken-page-intro border-b border-[#dce5f0] bg-white py-12 sm:py-20">
         <div className="kraken-container max-w-6xl">
           <p className="kraken-eyebrow">Kraken PFM</p>
           <h1 className="kraken-heading mt-3">{d.heroTitle}</h1>
@@ -346,27 +346,27 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
         </div>
       </header>
       <div className="kraken-container grid max-w-6xl gap-8 py-10 sm:py-14 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:gap-12">
-        <section className="min-w-0 rounded-2xl border border-[#dce6e8] bg-white p-6 sm:p-9" aria-labelledby="contact-form-heading">
+        <section className="min-w-0 rounded-2xl border border-[#dce5f0] bg-white p-6 sm:p-9" aria-labelledby="contact-form-heading">
           <h2 id="contact-form-heading" className="text-2xl font-semibold tracking-tight">{d.formTitle}</h2>
           {error && <p role="alert" id="contact-form-error" className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-base text-red-800">{error}</p>}
           <form onSubmit={handleSubmit} className="mt-7 space-y-6" aria-describedby={error ? 'contact-form-error' : undefined}>
             <div className="grid gap-6 sm:grid-cols-2">
               <div className="space-y-2">
                 <label htmlFor="contact-name" className="block text-sm font-medium">{d.labelName} <span aria-hidden="true">*</span></label>
-                <input type="text" id="contact-name" name="name" autoComplete="name" required value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} placeholder={d.placeholderName} className="min-h-12 w-full rounded-xl border border-[#c4d4d8] bg-white px-4 py-3 text-base text-[#082b45] placeholder:text-[#71828c] focus:border-[#087f73] focus:ring-2 focus:ring-[#087f73]/15" />
+                <input type="text" id="contact-name" name="name" autoComplete="name" required value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} placeholder={d.placeholderName} className="min-h-12 w-full rounded-xl border border-[#c4d4d8] bg-white px-4 py-3 text-base text-[#032b59] placeholder:text-[#71828c] focus:border-[#1464ad] focus:ring-2 focus:ring-[#1464ad]/15" />
               </div>
               <div className="space-y-2">
                 <label htmlFor="contact-email" className="block text-sm font-medium">{d.labelEmailForm} <span aria-hidden="true">*</span></label>
-                <input type="email" id="contact-email" name="email" autoComplete="email" required value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} placeholder={d.placeholderEmail} className="min-h-12 w-full rounded-xl border border-[#c4d4d8] bg-white px-4 py-3 text-base text-[#082b45] placeholder:text-[#71828c] focus:border-[#087f73] focus:ring-2 focus:ring-[#087f73]/15" />
+                <input type="email" id="contact-email" name="email" autoComplete="email" required value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} placeholder={d.placeholderEmail} className="min-h-12 w-full rounded-xl border border-[#c4d4d8] bg-white px-4 py-3 text-base text-[#032b59] placeholder:text-[#71828c] focus:border-[#1464ad] focus:ring-2 focus:ring-[#1464ad]/15" />
               </div>
             </div>
             <div className="space-y-2">
               <label htmlFor="contact-subject" className="block text-sm font-medium">{d.labelSubject}</label>
-              <input type="text" id="contact-subject" name="subject" value={formData.subject} onChange={e => setFormData({ ...formData, subject: e.target.value })} placeholder={d.placeholderSubject} className="min-h-12 w-full rounded-xl border border-[#c4d4d8] bg-white px-4 py-3 text-base text-[#082b45] placeholder:text-[#71828c] focus:border-[#087f73] focus:ring-2 focus:ring-[#087f73]/15" />
+              <input type="text" id="contact-subject" name="subject" value={formData.subject} onChange={e => setFormData({ ...formData, subject: e.target.value })} placeholder={d.placeholderSubject} className="min-h-12 w-full rounded-xl border border-[#c4d4d8] bg-white px-4 py-3 text-base text-[#032b59] placeholder:text-[#71828c] focus:border-[#1464ad] focus:ring-2 focus:ring-[#1464ad]/15" />
             </div>
             <div className="space-y-2">
               <label htmlFor="contact-message" className="block text-sm font-medium">{d.labelMessage} <span aria-hidden="true">*</span></label>
-              <textarea id="contact-message" name="message" required rows={6} value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })} placeholder={d.placeholderMessage} className="w-full resize-y rounded-xl border border-[#c4d4d8] bg-white px-4 py-3 text-base leading-relaxed text-[#082b45] placeholder:text-[#71828c] focus:border-[#087f73] focus:ring-2 focus:ring-[#087f73]/15" />
+              <textarea id="contact-message" name="message" required rows={6} value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })} placeholder={d.placeholderMessage} className="w-full resize-y rounded-xl border border-[#c4d4d8] bg-white px-4 py-3 text-base leading-relaxed text-[#032b59] placeholder:text-[#71828c] focus:border-[#1464ad] focus:ring-2 focus:ring-[#1464ad]/15" />
             </div>
             <button type="submit" disabled={isLoading} className="kraken-button kraken-primary w-full sm:w-auto">{isLoading ? d.btnSending : d.btnSend}</button>
           </form>
@@ -377,10 +377,10 @@ const KontaktPage: React.FC<KontaktPageProps> = ({ onNavigate }) => {
             <p className="kraken-description">{d.contactInfoDesc}</p>
           </div>
           <dl className="space-y-6">
-            <div className="flex gap-4"><PhoneIcon className="mt-1 h-5 w-5 shrink-0 text-[#087f73]" /><div><dt className="text-sm text-[#526574]">{d.labelPhone}</dt><dd><a href="tel:+41774505705" className="inline-flex min-h-11 items-center text-lg font-medium hover:underline">+41 77 450 57 05</a></dd></div></div>
-            <div className="flex gap-4"><MailIcon className="mt-1 h-5 w-5 shrink-0 text-[#087f73]" /><div className="min-w-0"><dt className="text-sm text-[#526574]">{d.labelEmail}</dt><dd><a href="mailto:kai@krakenpfm.ch" className="inline-flex min-h-11 items-center break-all text-lg font-medium hover:underline">kai@krakenpfm.ch</a></dd></div></div>
-            <div className="flex gap-4"><MapPinIcon className="mt-1 h-5 w-5 shrink-0 text-[#087f73]" /><div><dt className="text-sm text-[#526574]">{d.labelAddress}</dt><dd className="mt-2 text-base leading-relaxed">Seewadelstrasse 3<br />8203 Schaffhausen</dd></div></div>
-            <div className="flex gap-4"><ClockIcon className="mt-1 h-5 w-5 shrink-0 text-[#087f73]" /><div><dt className="text-sm text-[#526574]">{d.labelHours}</dt><dd className="mt-2 text-base leading-relaxed">{d.valHoursDays}<br />{d.valHoursTime}</dd></div></div>
+            <div className="flex gap-4"><PhoneIcon className="mt-1 h-5 w-5 shrink-0 text-[#1464ad]" /><div><dt className="text-sm text-[#50647c]">{d.labelPhone}</dt><dd><a href="tel:+41774505705" className="inline-flex min-h-11 items-center text-lg font-medium hover:underline">+41 77 450 57 05</a></dd></div></div>
+            <div className="flex gap-4"><MailIcon className="mt-1 h-5 w-5 shrink-0 text-[#1464ad]" /><div className="min-w-0"><dt className="text-sm text-[#50647c]">{d.labelEmail}</dt><dd><a href="mailto:kai@krakenpfm.ch" className="inline-flex min-h-11 items-center break-all text-lg font-medium hover:underline">kai@krakenpfm.ch</a></dd></div></div>
+            <div className="flex gap-4"><MapPinIcon className="mt-1 h-5 w-5 shrink-0 text-[#1464ad]" /><div><dt className="text-sm text-[#50647c]">{d.labelAddress}</dt><dd className="mt-2 text-base leading-relaxed">Seewadelstrasse 3<br />8203 Schaffhausen</dd></div></div>
+            <div className="flex gap-4"><ClockIcon className="mt-1 h-5 w-5 shrink-0 text-[#1464ad]" /><div><dt className="text-sm text-[#50647c]">{d.labelHours}</dt><dd className="mt-2 text-base leading-relaxed">{d.valHoursDays}<br />{d.valHoursTime}</dd></div></div>
           </dl>
         </aside>
       </div>

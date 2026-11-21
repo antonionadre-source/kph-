@@ -120,26 +120,26 @@ const OptionCard: React.FC<{
             onClick={onClick}
             className={`p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300 flex items-center gap-4 relative group select-none ${
                 isGreenHighlight
-                ? 'border-[#dce6e8] border-l-[5px] border-l-emerald-500 bg-emerald-50/15 shadow-md '
+                ? 'border-[#dce5f0] border-l-[5px] border-l-blue-500 bg-blue-50/15 shadow-md '
                 : selected
-                  ? 'border-[#087f73] bg-[#eef7f5] shadow-md '
-                  : 'border-[#dce6e8] bg-white hover:border-[#dce6e8] hover:shadow-sm'
+                  ? 'border-[#1464ad] bg-[#edf4fd] shadow-md '
+                  : 'border-[#dce5f0] bg-white hover:border-[#dce5f0] hover:shadow-sm'
             } ${gridCols}`}
         >
             <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-transform duration-300 ${
-                isGreenHighlight ? 'bg-emerald-50 border border-emerald-100/60 text-emerald-600' : selected ? 'bg-white shadow-sm' : 'bg-[#f4f8f8]'
+                isGreenHighlight ? 'bg-blue-50 border border-blue-100/60 text-blue-600' : selected ? 'bg-white shadow-sm' : 'bg-[#f3f7fc]'
             }`}>
                 {typeof icon === 'string' ? icon : icon}
             </div>
             <div className="flex-1">
                 <div className="flex justify-between items-start gap-1.5">
-                    <h4 className={`font-semibold text-lg ${isGreenHighlight ? 'text-emerald-800' : selected ? 'text-[#087f73]' : 'text-[#082b45]'}`}>{title}</h4>
-                    {price && <span className={`text-sm font-semibold ${isGreenHighlight ? 'text-emerald-600' : selected ? 'text-[#087f73]' : 'text-[#526574]'}`}>{price}</span>}
+                    <h4 className={`font-semibold text-lg ${isGreenHighlight ? 'text-blue-800' : selected ? 'text-[#1464ad]' : 'text-[#032b59]'}`}>{title}</h4>
+                    {price && <span className={`text-sm font-semibold ${isGreenHighlight ? 'text-blue-600' : selected ? 'text-[#1464ad]' : 'text-[#50647c]'}`}>{price}</span>}
                 </div>
-                {description && <p className="text-base text-[#526574] leading-tight mt-0.5">{description}</p>}
+                {description && <p className="text-base text-[#50647c] leading-tight mt-0.5">{description}</p>}
             </div>
             {selected && (
-                <div className={`absolute -top-2 -right-2 text-white p-1 rounded-full shadow-sm animate-fade-in ${isGreenHighlight ? 'bg-emerald-500' : 'bg-[#087f73]'}`}>
+                <div className={`absolute -top-2 -right-2 text-white p-1 rounded-full shadow-sm animate-fade-in ${isGreenHighlight ? 'bg-blue-500' : 'bg-[#1464ad]'}`}>
                     <CheckIcon className="w-3.5 h-3.5" />
                 </div>
             )}
@@ -175,42 +175,42 @@ const CounterCard: React.FC<{
     return (
         <div className={`kraken-quantity-card p-4 rounded-2xl grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3 transition-all group ${
             isGreenHighlight
-                ? 'border border-[#dce6e8] border-l-[5px] border-l-emerald-500 bg-white/70 shadow-sm '
-                : 'border-2 border-[#dce6e8] bg-white hover:border-[#dce6e8]'
+                ? 'border border-[#dce5f0] border-l-[5px] border-l-blue-500 bg-white/70 shadow-sm '
+                : 'border-2 border-[#dce5f0] bg-white hover:border-[#dce5f0]'
         }`}>
             <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-transform ${
                 isGreenHighlight
-                    ? 'bg-emerald-50 border border-emerald-100/60'
-                    : 'bg-[#f4f8f8]'
+                    ? 'bg-blue-50 border border-blue-100/60'
+                    : 'bg-[#f3f7fc]'
             }`}>
                 {icon}
             </div>
             <div className="min-w-0">
-                <div className="font-semibold text-base text-[#082b45]">{label}</div>
+                <div className="font-semibold text-base text-[#032b59]">{label}</div>
                 {finalSubLabel && (
                     <div className={`text-sm mt-0.5 font-semibold ${
                         isGreenHighlight
-                            ? 'text-emerald-600 font-semibold'
-                            : 'text-[#526574]'
+                            ? 'text-blue-600 font-semibold'
+                            : 'text-[#50647c]'
                     }`}>
                         {finalSubLabel}
                     </div>
                 )}
             </div>
-            <div className="col-span-2 flex items-center justify-end gap-3 border-t border-[#dce6e8] pt-3">
+            <div className="col-span-2 flex items-center justify-end gap-3 border-t border-[#dce5f0] pt-3">
                 <button aria-label={`${workflowAction(language, 'decrease')} ${label}`} type="button"
                     onClick={(e) => { e.preventDefault(); onChange(Math.max(min, value - step)); }}
-                    className="kraken-control min-h-11 min-w-11 w-8 h-8 rounded-full bg-white border border-[#dce6e8] text-[#526574] flex items-center justify-center hover:border-[#087f73] hover:text-[#087f73] transition-colors shadow-sm "
+                    className="kraken-control min-h-11 min-w-11 w-8 h-8 rounded-full bg-white border border-[#dce5f0] text-[#50647c] flex items-center justify-center hover:border-[#1464ad] hover:text-[#1464ad] transition-colors shadow-sm "
                 >
                     <MinusIcon className="w-3.5 h-3.5" />
                 </button>
-                <span className="font-semibold w-12 text-center text-[#082b45] text-base">{value}{suffix}</span>
+                <span className="font-semibold w-12 text-center text-[#032b59] text-base">{value}{suffix}</span>
                 <button aria-label={`${workflowAction(language, 'increase')} ${label}`} type="button"
                     onClick={(e) => { e.preventDefault(); onChange(max !== undefined ? Math.min(max, value + step) : value + step); }}
                     className={`kraken-control min-h-11 min-w-11 w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-sm ${
                         isGreenHighlight
-                            ? 'bg-emerald-500 hover:bg-emerald-600 text-white border border-emerald-500'
-                            : 'bg-white border border-[#dce6e8] text-[#526574] hover:border-[#087f73] hover:text-[#087f73]'
+                            ? 'bg-blue-500 hover:bg-blue-600 text-white border border-blue-500'
+                            : 'bg-white border border-[#dce5f0] text-[#50647c] hover:border-[#1464ad] hover:text-[#1464ad]'
                     }`}
                 >
                     <PlusIcon className="w-3.5 h-3.5" />
@@ -247,46 +247,46 @@ const ExtraBentoCard: React.FC<{
     return (
         <div className={`kraken-extra-card w-52 shrink-0 p-4 rounded-2xl border transition-all duration-300 bg-white/95 flex flex-col justify-between min-h-56 snap-center select-none ${
             isSelected
-                ? 'border-[#dce6e8] border-l-[5px] border-l-emerald-500 shadow-md '
-                : 'border border-[#dce6e8] hover:border-[#dce6e8]'
+                ? 'border-[#dce5f0] border-l-[5px] border-l-blue-500 shadow-md '
+                : 'border border-[#dce5f0] hover:border-[#dce5f0]'
         }`}>
             <div className="flex-1 flex flex-col justify-between">
                 <div className="flex justify-between items-start">
                     <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-xl shrink-0 border transition-transform duration-300 ${
-                        isSelected ? 'bg-emerald-50 border-emerald-100' : `${iconBg} ${iconBorder}`
-                    } ${isSelected ? 'text-emerald-600' : iconColor}`}>
+                        isSelected ? 'bg-blue-50 border-blue-100' : `${iconBg} ${iconBorder}`
+                    } ${isSelected ? 'text-blue-600' : iconColor}`}>
                         {icon}
                     </div>
                 </div>
 
                 <div className="mt-3 flex-1 flex flex-col justify-end min-w-0">
-                    <div className={`font-semibold text-base leading-snug ${isSelected ? 'text-emerald-800' : 'text-[#082b45]'}`}>
+                    <div className={`font-semibold text-base leading-snug ${isSelected ? 'text-blue-800' : 'text-[#032b59]'}`}>
                         {label}
                     </div>
-                    <div className={`text-sm font-semibold mt-1 leading-normal ${isSelected ? 'text-emerald-600' : 'text-[#526574]'}`}>
+                    <div className={`text-sm font-semibold mt-1 leading-normal ${isSelected ? 'text-blue-600' : 'text-[#50647c]'}`}>
                         {finalSubLabel}
                     </div>
                 </div>
             </div>
 
             <div className={`flex items-center justify-between mt-2 pt-2 border-t ${
-                isSelected ? 'border-emerald-50' : 'border-slate-50'
+                isSelected ? 'border-blue-50' : 'border-slate-50'
             }`}>
                 <button aria-label={`${workflowAction(language, 'decrease')} ${label}`}
                     onClick={(e) => { e.preventDefault(); onChange(Math.max(0, value - 1)); }}
-                    className="kraken-control min-h-11 min-w-11 w-8 h-8 rounded-full bg-[#f4f8f8] hover:bg-[#f4f8f8] text-[#526574] flex items-center justify-center border border-[#dce6e8] transition-colors shadow-2xs "
+                    className="kraken-control min-h-11 min-w-11 w-8 h-8 rounded-full bg-[#f3f7fc] hover:bg-[#f3f7fc] text-[#50647c] flex items-center justify-center border border-[#dce5f0] transition-colors shadow-2xs "
                 >
                     <MinusIcon className="w-3 h-3" />
                 </button>
-                <span className={`font-semibold text-sm w-8 text-center ${isSelected ? 'text-emerald-600' : 'text-[#082b45]'}`}>
+                <span className={`font-semibold text-sm w-8 text-center ${isSelected ? 'text-blue-600' : 'text-[#032b59]'}`}>
                     {value}
                 </span>
                 <button aria-label={`${workflowAction(language, 'increase')} ${label}`}
                     onClick={(e) => { e.preventDefault(); onChange(value + 1); }}
                     className={`kraken-control min-h-11 min-w-11 w-8 h-8 rounded-full flex items-center justify-center transition-colors shadow-2xs ${
                         isSelected
-                            ? 'bg-emerald-500 hover:bg-emerald-600 text-white'
-                            : 'bg-[#f4f8f8] hover:bg-[#f4f8f8] text-[#526574] border border-[#dce6e8]'
+                            ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                            : 'bg-[#f3f7fc] hover:bg-[#f3f7fc] text-[#50647c] border border-[#dce5f0]'
                     }`}
                 >
                     <PlusIcon className="w-3 h-3" />
@@ -304,21 +304,21 @@ const CounterInput: React.FC<{
 }> = ({ label, value, onChange, min = 0 }) => {
   const { language } = useTranslation();
   return (
-    <div className="flex items-center justify-between bg-[#f4f8f8] p-3 rounded-xl border border-[#dce6e8]">
-        <span className="text-sm font-semibold text-[#526574]">{label}</span>
+    <div className="flex items-center justify-between bg-[#f3f7fc] p-3 rounded-xl border border-[#dce5f0]">
+        <span className="text-sm font-semibold text-[#50647c]">{label}</span>
         <div className="flex shrink-0 items-center gap-3">
             <button aria-label={`${workflowAction(language, 'decrease')} ${label}`}
                 type="button"
                 onClick={() => onChange(Math.max(min, value - 1))}
-                className="kraken-control min-h-11 min-w-11 w-7 h-7 rounded-full bg-white border border-[#dce6e8] text-[#526574] flex items-center justify-center hover:border-emerald-500 hover:text-emerald-500 transition-colors shadow-sm "
+                className="kraken-control min-h-11 min-w-11 w-7 h-7 rounded-full bg-white border border-[#dce5f0] text-[#50647c] flex items-center justify-center hover:border-blue-500 hover:text-blue-500 transition-colors shadow-sm "
             >
                 <MinusIcon className="w-3 h-3" />
             </button>
-            <span className="font-semibold w-8 text-center text-[#082b45] text-sm">{value}</span>
+            <span className="font-semibold w-8 text-center text-[#032b59] text-sm">{value}</span>
             <button aria-label={`${workflowAction(language, 'increase')} ${label}`}
                 type="button"
                 onClick={() => onChange(value + 1)}
-                className="kraken-control min-h-11 min-w-11 w-7 h-7 rounded-full bg-white border border-[#dce6e8] text-[#526574] flex items-center justify-center hover:border-emerald-500 hover:text-emerald-500 transition-colors shadow-sm "
+                className="kraken-control min-h-11 min-w-11 w-7 h-7 rounded-full bg-white border border-[#dce5f0] text-[#50647c] flex items-center justify-center hover:border-blue-500 hover:text-blue-500 transition-colors shadow-sm "
             >
                 <PlusIcon className="w-3.5 h-3.5" />
             </button>
@@ -367,20 +367,20 @@ const SuccessModal: React.FC<{
         <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
             <Confetti />
             <div className="bg-white rounded-3xl shadow-sm w-full max-w-md p-8 relative flex flex-col items-center text-center overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-32 bg-[#eef7f5] rounded-b-[50%] -z-0 transform -translate-y-16 "></div>
+                <div className="absolute top-0 left-0 w-full h-32 bg-[#edf4fd] rounded-b-[50%] -z-0 transform -translate-y-16 "></div>
                 <div className="relative z-10 animate-bounce-in">
                     <img src={mascotImageUrl} alt="Celebrating Mascot" className="w-32 h-32 object-contain mx-auto mb-6 drop-shadow-xl" />
                 </div>
-                <h3 className="text-2xl font-semibold text-[#082b45] mb-2 relative z-10">{t('consultation.success.title')}</h3>
-                <p className="text-[#526574] mb-6 leading-relaxed relative z-10 font-medium">{t('consultation.success.quoteSent')}</p>
+                <h3 className="text-2xl font-semibold text-[#032b59] mb-2 relative z-10">{t('consultation.success.title')}</h3>
+                <p className="text-[#50647c] mb-6 leading-relaxed relative z-10 font-medium">{t('consultation.success.quoteSent')}</p>
 
                 {!user && (
-                    <div className="w-full mb-6 bg-[#eef7f5] border border-[#c8dedb] rounded-2xl p-4 text-left flex flex-col gap-3 animate-fade-in relative z-20">
+                    <div className="w-full mb-6 bg-[#edf4fd] border border-[#c9dbef] rounded-2xl p-4 text-left flex flex-col gap-3 animate-fade-in relative z-20">
                         <div className="flex gap-3">
                             <span className="text-xl shrink-0">💡</span>
                             <div>
-                                <p className="font-semibold text-base text-[#082b45] mb-0.5">{t('consultation.sync.title')}</p>
-                                <p className="text-base text-[#526574] font-semibold leading-normal">
+                                <p className="font-semibold text-base text-[#032b59] mb-0.5">{t('consultation.sync.title')}</p>
+                                <p className="text-base text-[#50647c] font-semibold leading-normal">
                                     {t('consultation.sync.desc')}
                                 </p>
                             </div>
@@ -391,7 +391,7 @@ const SuccessModal: React.FC<{
                                     onClose();
                                     onNavigate('register');
                                 }}
-                                className="kraken-control min-h-11 flex-1 bg-[#087f73] text-white py-2 px-3 rounded-xl font-semibold text-base hover:bg-[#087f73] transition-all text-center cursor-pointer"
+                                className="kraken-control min-h-11 flex-1 bg-[#1464ad] text-white py-2 px-3 rounded-xl font-semibold text-base hover:bg-[#1464ad] transition-all text-center cursor-pointer"
                             >
                                 {t('register.button')}
                             </button>
@@ -400,7 +400,7 @@ const SuccessModal: React.FC<{
                                     onClose();
                                     onNavigate('login');
                                 }}
-                                className="kraken-control min-h-11 flex-1 bg-white text-[#082b45] border border-[#dce6e8] py-2 px-3 rounded-xl font-semibold text-base hover:bg-[#f4f8f8] transition-all text-center cursor-pointer"
+                                className="kraken-control min-h-11 flex-1 bg-white text-[#032b59] border border-[#dce5f0] py-2 px-3 rounded-xl font-semibold text-base hover:bg-[#f3f7fc] transition-all text-center cursor-pointer"
                             >
                                 {t('login.button')}
                             </button>
@@ -410,7 +410,7 @@ const SuccessModal: React.FC<{
 
                 <button
                     onClick={onClose}
-                    className="kraken-control min-h-11 w-full bg-[#082b45] text-white py-4 rounded-2xl font-semibold text-lg shadow-sm relative z-10 hover:bg-[#082b45] transition-all transform "
+                    className="kraken-control min-h-11 w-full bg-[#032b59] text-white py-4 rounded-2xl font-semibold text-lg shadow-sm relative z-10 hover:bg-[#032b59] transition-all transform "
                 >
                     {t('consultation.success.button')}
                 </button>
@@ -432,14 +432,14 @@ const ModalOverlay: React.FC<{
   useDialogFocus(true, dialogRef, closeRef, onClose);
   const closeLabel = ({ de: 'Schließen', en: 'Close', fr: 'Fermer', it: 'Chiudi', es: 'Cerrar', pt: 'Fechar' } as Record<string, string>)[language.split('-')[0]] || 'Close';
   return (
-    <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label={title} className="kraken-overlay fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-6 bg-[#082b45]/45 backdrop-blur-sm animate-fade-in">
+    <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label={title} className="kraken-overlay fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-6 bg-[#032b59]/45 backdrop-blur-sm animate-fade-in">
         <div className={`kraken-dialog bg-white rounded-3xl shadow-sm w-full min-w-0 flex flex-col max-h-[92dvh] overflow-hidden transition-all duration-300 ${
             size === 'xl' ? 'max-w-5xl' : size === 'lg' ? 'max-w-3xl' : size === 'sm' ? 'max-w-md' : 'max-w-lg'
         }`}>
-            <div className="kraken-dialog-header px-4 sm:px-6 py-4 border-b border-[#dce6e8] flex justify-between items-center gap-3 bg-white shrink-0">
-                <h3 className="text-lg font-semibold text-[#082b45]">{title}</h3>
-                <button ref={closeRef} type="button" aria-label={closeLabel} onClick={onClose} className="kraken-control min-h-11 min-w-11 p-2 hover:bg-[#f4f8f8] rounded-full transition-colors">
-                    <XMarkIcon className="w-5 h-5 text-[#526574]" />
+            <div className="kraken-dialog-header px-4 sm:px-6 py-4 border-b border-[#dce5f0] flex justify-between items-center gap-3 bg-white shrink-0">
+                <h3 className="text-lg font-semibold text-[#032b59]">{title}</h3>
+                <button ref={closeRef} type="button" aria-label={closeLabel} onClick={onClose} className="kraken-control min-h-11 min-w-11 p-2 hover:bg-[#f3f7fc] rounded-full transition-colors">
+                    <XMarkIcon className="w-5 h-5 text-[#50647c]" />
                 </button>
             </div>
             {noScroll ? (
@@ -496,7 +496,7 @@ const BookingCalendar: React.FC<{ selectedDate: string; onChange: (date: string)
             const isSelected = selectedDate === dateStr;
             const isToday = date.getTime() === today.getTime();
             days.push(
-                <button key={d} onClick={(e) => !isPast && handleSelect(e, d)} disabled={isPast} type="button" className={`kraken-calendar-day kraken-control min-h-11 min-w-11 h-11 w-11 p-0 rounded-xl flex items-center justify-center text-base font-medium transition-all ${isSelected ? 'bg-[#082b45] text-white shadow-md' : 'hover:bg-[#eef7f5] text-[#526574]'} ${isPast ? 'text-[#526574] cursor-not-allowed hover:bg-transparent' : ''} ${isToday && !isSelected ? 'text-[#082b45] font-semibold ring-1 ring-[#082b45]' : ''}`}>
+                <button key={d} onClick={(e) => !isPast && handleSelect(e, d)} disabled={isPast} type="button" className={`kraken-calendar-day kraken-control min-h-11 min-w-11 h-11 w-11 p-0 rounded-xl flex items-center justify-center text-base font-medium transition-all ${isSelected ? 'bg-[#032b59] text-white shadow-md' : 'hover:bg-[#edf4fd] text-[#50647c]'} ${isPast ? 'text-[#50647c] cursor-not-allowed hover:bg-transparent' : ''} ${isToday && !isSelected ? 'text-[#032b59] font-semibold ring-1 ring-[#032b59]' : ''}`}>
                     {d}
                 </button>
             );
@@ -504,15 +504,15 @@ const BookingCalendar: React.FC<{ selectedDate: string; onChange: (date: string)
         return days;
     }
     return (
-        <div className={`kraken-calendar overflow-x-auto bg-white rounded-xl border p-2 transition-all duration-300 ${hasError ? 'border-red-500 bg-red-50/30' : 'border-[#dce6e8]'}`}>
+        <div className={`kraken-calendar overflow-x-auto bg-white rounded-xl border p-2 transition-all duration-300 ${hasError ? 'border-red-500 bg-red-50/30' : 'border-[#dce5f0]'}`}>
             <div className="min-w-[308px]">
             <div className="flex justify-between items-center mb-3">
-                <button aria-label={workflowAction(language, 'previousMonth')} onClick={handlePrev} type="button" className="kraken-control min-h-11 min-w-11 p-1 hover:bg-[#f4f8f8] rounded-full"><ChevronDownIcon className="w-3.5 h-3.5 rotate-90" /></button>
-                <span className="font-semibold text-[#082b45] text-sm">{viewDate.toLocaleDateString(language, { month: 'long', year: 'numeric' })}</span>
-                <button aria-label={workflowAction(language, 'nextMonth')} onClick={handleNext} type="button" className="kraken-control min-h-11 min-w-11 p-1 hover:bg-[#f4f8f8] rounded-full"><ChevronDownIcon className="w-3.5 h-3.5 -rotate-90" /></button>
+                <button aria-label={workflowAction(language, 'previousMonth')} onClick={handlePrev} type="button" className="kraken-control min-h-11 min-w-11 p-1 hover:bg-[#f3f7fc] rounded-full"><ChevronDownIcon className="w-3.5 h-3.5 rotate-90" /></button>
+                <span className="font-semibold text-[#032b59] text-sm">{viewDate.toLocaleDateString(language, { month: 'long', year: 'numeric' })}</span>
+                <button aria-label={workflowAction(language, 'nextMonth')} onClick={handleNext} type="button" className="kraken-control min-h-11 min-w-11 p-1 hover:bg-[#f3f7fc] rounded-full"><ChevronDownIcon className="w-3.5 h-3.5 -rotate-90" /></button>
             </div>
             <div className="grid grid-cols-7 gap-0 mb-1">
-                {Array.from({ length: 7 }, (_, day) => new Date(2024, 0, 7 + day).toLocaleDateString(language, { weekday: 'short' })).map((day, index) => <div key={index} className="text-center text-sm font-medium text-[#526574]">{day}</div>)}
+                {Array.from({ length: 7 }, (_, day) => new Date(2024, 0, 7 + day).toLocaleDateString(language, { weekday: 'short' })).map((day, index) => <div key={index} className="text-center text-sm font-medium text-[#50647c]">{day}</div>)}
             </div>
             <div className="grid grid-cols-7 gap-0 justify-items-center">{renderDays()}</div>
             </div>
@@ -529,7 +529,7 @@ const TimePicker: React.FC<{ selectedTime: string; onChange: (time: string) => v
     return (
         <div className={`grid grid-cols-4 sm:grid-cols-5 gap-1.5 mt-1.5 p-2 rounded-xl transition-all duration-300 ${hasError ? 'bg-red-50 border-2 border-red-500' : ''}`}>
             {slots.map(time => (
-                <button key={time} type="button" onClick={() => onChange(time)} className={`kraken-time-slot px-2 kraken-control min-h-11 min-w-11 py-1.5 rounded-lg text-base font-semibold border transition-all ${selectedTime === time ? 'bg-[#082b45] text-white border-[#082b45] shadow-md' : 'bg-white text-[#526574] border-[#dce6e8] hover:border-[#087f73] hover:text-[#087f73]'}`}>
+                <button key={time} type="button" onClick={() => onChange(time)} className={`kraken-time-slot px-2 kraken-control min-h-11 min-w-11 py-1.5 rounded-lg text-base font-semibold border transition-all ${selectedTime === time ? 'bg-[#032b59] text-white border-[#032b59] shadow-md' : 'bg-white text-[#50647c] border-[#dce5f0] hover:border-[#1464ad] hover:text-[#1464ad]'}`}>
                     {time}
                 </button>
             ))}
@@ -1486,21 +1486,21 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
               const vehicles = config.vehicles || [];
               if (vehicles.length > 0) {
                   return (
-                      <div className="space-y-2 mt-2 pl-4 border-l-2 border-[#c8dedb] ml-1">
+                      <div className="space-y-2 mt-2 pl-4 border-l-2 border-[#c9dbef] ml-1">
                           {vehicles.map((v: any, vIdx: number) => (
                               <div key={vIdx} className="space-y-1">
-                                  <div className="text-sm font-semibold text-[#087f73] flex items-center gap-1.5">
+                                  <div className="text-sm font-semibold text-[#1464ad] flex items-center gap-1.5">
                                       <span>🚗</span>
                                       <span>{t('services.car.title')} #{vIdx + 1}</span>
                                   </div>
                                   <div className="flex flex-wrap gap-1">
                                       {v.category && (
-                                          <span className="inline-flex items-center gap-1 bg-[#eef7f5] border border-[#c8dedb] text-[#087f73] px-1.5 py-0.5 rounded text-sm font-semibold">
+                                          <span className="inline-flex items-center gap-1 bg-[#edf4fd] border border-[#c9dbef] text-[#1464ad] px-1.5 py-0.5 rounded text-sm font-semibold">
                                               {v.category}
                                           </span>
                                       )}
                                       {v.coverage && (
-                                          <span className="inline-flex items-center gap-1 bg-[#f4f8f8] border border-[#dce6e8] text-[#526574] px-1.5 py-0.5 rounded text-sm font-semibold">
+                                          <span className="inline-flex items-center gap-1 bg-[#f3f7fc] border border-[#dce5f0] text-[#50647c] px-1.5 py-0.5 rounded text-sm font-semibold">
                                               {v.coverage === 'Full' || (v.coverage || '').includes('FULL') || (v.coverage || '').includes('100%') ? 'Full Treatment' : (v.coverage || '').includes('INTERIOR') || (v.coverage || '').includes('60%') ? 'Interior Only' : 'Exterior Only'}
                                           </span>
                                       )}
@@ -1510,7 +1510,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                           </span>
                                       )}
                                       {v.location && (
-                                          <span className="inline-flex items-center gap-1 bg-teal-50 border border-teal-100 text-teal-800 px-1.5 py-0.5 rounded text-sm font-semibold">
+                                          <span className="inline-flex items-center gap-1 bg-blue-50 border border-blue-100 text-blue-800 px-1.5 py-0.5 rounded text-sm font-semibold">
                                               📍 {v.location}
                                           </span>
                                       )}
@@ -1539,7 +1539,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
               const surfaces = config.surfaces || [];
               if (surfaces.length > 0) {
                   return (
-                      <div className="space-y-2 mt-2 pl-4 border-l-2 border-[#c8dedb] ml-1">
+                      <div className="space-y-2 mt-2 pl-4 border-l-2 border-[#c9dbef] ml-1">
                           <div className="text-sm font-semibold text-blue-850 flex items-center gap-1.5">
                               <span>💧</span>
                               <span>{t('services.exterior.title')}</span>
@@ -1547,14 +1547,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                           <div className="space-y-1.5">
                               {surfaces.map((s: any, sIdx: number) => (
                                   <div key={sIdx} className="flex flex-wrap gap-1 items-center">
-                                      <span className="text-sm text-[#526574] font-semibold">#{sIdx+1}:</span>
-                                      <span className="inline-flex items-center gap-1 bg-[#eef7f5] border border-[#c8dedb] text-[#087f73] px-1.5 py-0.5 rounded text-sm font-semibold">
+                                      <span className="text-sm text-[#50647c] font-semibold">#{sIdx+1}:</span>
+                                      <span className="inline-flex items-center gap-1 bg-[#edf4fd] border border-[#c9dbef] text-[#1464ad] px-1.5 py-0.5 rounded text-sm font-semibold">
                                           {s.surfaceType}
                                       </span>
-                                      <span className="inline-flex items-center gap-1 bg-[#f4f8f8] border border-[#dce6e8] text-[#526574] px-1.5 py-0.5 rounded text-sm font-semibold">
+                                      <span className="inline-flex items-center gap-1 bg-[#f3f7fc] border border-[#dce5f0] text-[#50647c] px-1.5 py-0.5 rounded text-sm font-semibold">
                                           {s.material}
                                       </span>
-                                      <span className="inline-flex items-center gap-1 bg-[#f4f8f8] border border-[#dce6e8] text-[#526574] px-1.5 py-0.5 rounded text-sm font-semibold">
+                                      <span className="inline-flex items-center gap-1 bg-[#f3f7fc] border border-[#dce5f0] text-[#50647c] px-1.5 py-0.5 rounded text-sm font-semibold">
                                           {s.areaSqm} m²
                                       </span>
                                       {s.moldSealing && (
@@ -1601,15 +1601,15 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
               break;
           }
           default:
-              return <div className="text-sm text-[#526574] font-medium leading-relaxed pl-10 border-l-2 border-[#c8dedb] ml-3">{item.description || t('consultation.serviceSelected')}</div>;
+              return <div className="text-sm text-[#50647c] font-medium leading-relaxed pl-10 border-l-2 border-[#c9dbef] ml-3">{item.description || t('consultation.serviceSelected')}</div>;
       }
 
       return (
-          <div className="flex flex-wrap gap-1 mt-1.5 pl-4 border-l-2 border-[#c8dedb] ml-1">
+          <div className="flex flex-wrap gap-1 mt-1.5 pl-4 border-l-2 border-[#c9dbef] ml-1">
               {pills.map((pill, idx) => (
                   <span
                       key={idx}
-                      className="inline-flex items-center gap-1.5 bg-[#f4f8f8] border border-[#dce6e8] text-[#526574] px-2.5 py-1 rounded-xl text-sm font-semibold shadow-sm hover:bg-[#f4f8f8] transition-colors"
+                      className="inline-flex items-center gap-1.5 bg-[#f3f7fc] border border-[#dce5f0] text-[#50647c] px-2.5 py-1 rounded-xl text-sm font-semibold shadow-sm hover:bg-[#f3f7fc] transition-colors"
                   >
                       {pill.icon && <span className="text-sm">{pill.icon}</span>}
                       <span>{pill.label}</span>
@@ -3167,15 +3167,15 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   }
 
   return (
-    <div className="kraken-workflow min-h-screen bg-[#f4f8f8] pt-8 md:pt-10 pb-12 text-[#082b45]">
+    <div className="kraken-workflow min-h-screen bg-[#f3f7fc] pt-8 md:pt-10 pb-12 text-[#032b59]">
       <div className="container mx-auto px-4 md:px-6 max-w-7xl">
         {bookingError && <p role="alert" className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-800">{bookingError}</p>}
 
         <div className="kraken-workflow-heading mb-7 max-w-3xl">
-          <h1 className="text-3xl md:text-4xl font-semibold text-[#082b45] mb-4 leading-tight">
-            {t('consultation.title.part1')} <span className="text-[#087f73]">{t('consultation.title.part2')}</span>
+          <h1 className="text-3xl md:text-4xl font-semibold text-[#032b59] mb-4 leading-tight">
+            {t('consultation.title.part1')} <span className="text-[#1464ad]">{t('consultation.title.part2')}</span>
           </h1>
-          <p className="text-base md:text-base text-[#526574] max-w-2xl font-medium">
+          <p className="text-base md:text-base text-[#50647c] max-w-2xl font-medium">
             {t('consultation.subtitle')}
           </p>
         </div>
@@ -3186,7 +3186,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
             <div id="wizard-container" className="kraken-workflow-main min-w-0 w-full">
 
                 {/* Dynamic Page Wizard Stepper Progress Bar */}
-                <div className="kraken-stepper mb-6 bg-white border border-[#dce6e8] p-4 sm:p-5 rounded-2xl">
+                <div className="kraken-stepper mb-6 bg-white border border-[#dce5f0] p-4 sm:p-5 rounded-2xl">
                     {/* Desktop Horizontal Block Stepper */}
                     <div className="hidden md:flex items-center justify-between relative w-full gap-4">
                         {/* Connecting line running behind the steps */}
@@ -3213,7 +3213,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     }}
                                     className={`relative z-10 flex items-center gap-3 bg-white px-3 py-2 rounded-2xl cursor-pointer select-none transition-all duration-300 border ${
                                         isActive
-                                            ? 'border-[#c8dedb] shadow-sm bg-[#eef7f5]'
+                                            ? 'border-[#c9dbef] shadow-sm bg-[#edf4fd]'
                                             : 'border-transparent'
                                     }`}
                                     style={{ flex: '1 1 0%' }}
@@ -3221,15 +3221,15 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     {/* Circle Icon */}
                                     <div className="shrink-0">
                                         {isCompleted ? (
-                                            <div className="w-9 h-9 rounded-full bg-emerald-500 border-2 border-white text-white flex items-center justify-center font-semibold text-sm shadow-md animate-scale-up">
+                                            <div className="w-9 h-9 rounded-full bg-blue-500 border-2 border-white text-white flex items-center justify-center font-semibold text-sm shadow-md animate-scale-up">
                                                 ✓
                                             </div>
                                         ) : isActive ? (
-                                            <div className="w-9 h-9 rounded-full bg-[#087f73] border-2 border-white ring-4 ring-[#c8dedb]/80 text-white flex items-center justify-center font-semibold text-sm shadow-md ">
+                                            <div className="w-9 h-9 rounded-full bg-[#1464ad] border-2 border-white ring-4 ring-[#c9dbef]/80 text-white flex items-center justify-center font-semibold text-sm shadow-md ">
                                                 {s.num}
                                             </div>
                                         ) : (
-                                            <div className="w-9 h-9 rounded-full bg-white border-2 border-[#dce6e8] text-[#526574] flex items-center justify-center font-semibold text-sm">
+                                            <div className="w-9 h-9 rounded-full bg-white border-2 border-[#dce5f0] text-[#50647c] flex items-center justify-center font-semibold text-sm">
                                                 {s.num}
                                             </div>
                                         )}
@@ -3238,12 +3238,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     {/* Text Content */}
                                     <div className="flex flex-col text-left">
                                         <span className={`text-sm font-semibold leading-none mb-1 ${
-                                            isActive ? 'text-[#082b45]' : isCompleted ? 'text-emerald-700' : 'text-[#526574]'
+                                            isActive ? 'text-[#032b59]' : isCompleted ? 'text-blue-700' : 'text-[#50647c]'
                                         }`}>
                                             {s.num}. {s.label}
                                         </span>
                                         <span className={`text-sm font-semibold leading-none ${
-                                            isCompleted ? 'text-emerald-500' : isActive ? 'text-[#087f73]' : 'text-[#526574]'
+                                            isCompleted ? 'text-blue-500' : isActive ? 'text-[#1464ad]' : 'text-[#50647c]'
                                         }`}>
                                             {isCompleted ? mt('Completed', 'Completado', 'Abgeschlossen') : isActive ? mt('Current', 'Actual', 'Aktiv') : mt('Pending', 'Pendiente', 'Ausstehend')}
                                         </span>
@@ -3261,7 +3261,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             <div className="absolute left-[30px] right-[30px] top-1/2 h-0.5 bg-gray-200 -translate-y-1/2 z-0">
                                 {/* Completed Green segment */}
                                 <div
-                                    className="absolute left-0 top-0 h-full bg-emerald-500 transition-all duration-200"
+                                    className="absolute left-0 top-0 h-full bg-blue-500 transition-all duration-200"
                                     style={{
                                         width: activeWizardStep > 1
                                             ? activeWizardStep === 2 ? '33.33%' : activeWizardStep === 3 ? '66.66%' : '100%'
@@ -3270,7 +3270,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                 />
                                 {/* Active Blue segment */}
                                 <div
-                                    className="absolute top-0 h-full bg-[#087f73] transition-all duration-200"
+                                    className="absolute top-0 h-full bg-[#1464ad] transition-all duration-200"
                                     style={{
                                         left: activeWizardStep === 2 ? '33.33%' : activeWizardStep === 3 ? '66.66%' : '0%',
                                         width: activeWizardStep === 2 || activeWizardStep === 3 ? '33.33%' : '0%'
@@ -3293,10 +3293,10 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         }}
                                         className={`kraken-control min-h-11 min-w-11 relative z-10 w-9 h-9 rounded-full flex items-center justify-center font-semibold text-base shadow-md transition-all duration-300 focus:outline-none ${
                                             isCompleted
-                                                ? 'bg-emerald-500 text-white border-2 border-white ring-2 ring-emerald-100'
+                                                ? 'bg-blue-500 text-white border-2 border-white ring-2 ring-blue-100'
                                                 : isActive
-                                                    ? 'bg-[#087f73] text-white border-2 border-white ring-4 ring-[#c8dedb]'
-                                                    : 'bg-white text-[#526574] border-2 border-[#dce6e8]'
+                                                    ? 'bg-[#1464ad] text-white border-2 border-white ring-4 ring-[#c9dbef]'
+                                                    : 'bg-white text-[#50647c] border-2 border-[#dce5f0]'
                                         }`}
                                     >
                                         {isCompleted ? '✓' : stepNum}
@@ -3319,7 +3319,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     <span
                                         key={s.num}
                                         className={`${
-                                            isCompleted ? 'text-emerald-600' : isActive ? 'text-[#087f73]' : 'text-[#526574]'
+                                            isCompleted ? 'text-blue-600' : isActive ? 'text-[#1464ad]' : 'text-[#50647c]'
                                         }`}
                                     >
                                         {s.label}
@@ -3329,13 +3329,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         </div>
                     </div>
 
-                    <p className="sm:hidden mt-4 text-center text-base font-semibold text-[#082b45]">{[t('consultation.wizard.location'), t('consultation.wizard.service'), t('consultation.wizard.extras'), t('consultation.wizard.photos')][activeWizardStep - 1]}</p>
+                    <p className="sm:hidden mt-4 text-center text-base font-semibold text-[#032b59]">{[t('consultation.wizard.location'), t('consultation.wizard.service'), t('consultation.wizard.extras'), t('consultation.wizard.photos')][activeWizardStep - 1]}</p>
                     {/* Centered Step Capsule (Matching first image horizontal line) */}
                     <div className="relative flex items-center justify-center mt-6">
                         <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-[#dce6e8]"></div>
+                            <div className="w-full border-t border-[#dce5f0]"></div>
                         </div>
-                        <div className="relative bg-white px-5 py-1 rounded-full border border-[#dce6e8] text-sm font-semibold text-[#526574] shadow-sm">
+                        <div className="relative bg-white px-5 py-1 rounded-full border border-[#dce5f0] text-sm font-semibold text-[#50647c] shadow-sm">
                             {(() => {
                                 if (language === 'de' || language === 'de-CH') return `Schritt ${activeWizardStep} von 4`;
                                 if (language === 'fr') return `Étape ${activeWizardStep} sur 4`;
@@ -3352,47 +3352,47 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                 {activeWizardStep === 1 && (
                     <div id="step-1-location" className={`kraken-panel p-5 sm:p-6 rounded-2xl border-2 transition-all duration-300 relative overflow-hidden bg-white animate-fade-in ${
                         postcode && postcode.length === 4
-                            ? 'border-[#082b45] shadow-sm '
-                            : 'border-[#082b45]/20 shadow-sm'
+                            ? 'border-[#032b59] shadow-sm '
+                            : 'border-[#032b59]/20 shadow-sm'
                     }`}>
                         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl pointer-events-none"></div>
 
                         <div className="flex items-center gap-4 mb-6">
-                            <span className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl font-semibold bg-[#082b45] text-white shadow-md">1</span>
+                            <span className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl font-semibold bg-[#032b59] text-white shadow-md">1</span>
                             <div>
-                                <h3 className="text-xl font-semibold text-[#082b45]">{t('consultation.step1.title')}</h3>
-                                <p className="text-base font-semibold mt-0.5 text-[#526574]">{t('consultation.step1.subtitle')}</p>
+                                <h3 className="text-xl font-semibold text-[#032b59]">{t('consultation.step1.title')}</h3>
+                                <p className="text-base font-semibold mt-0.5 text-[#50647c]">{t('consultation.step1.subtitle')}</p>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div className="md:col-span-1">
-                                <label htmlFor="consultationpage-field-1" className="kraken-label block text-sm font-semibold mb-1.5 ml-1 text-[#526574]">{t('consultation.step1.street')}</label>
+                                <label htmlFor="consultationpage-field-1" className="kraken-label block text-sm font-semibold mb-1.5 ml-1 text-[#50647c]">{t('consultation.step1.street')}</label>
                                 <input id="consultationpage-field-1"
                                     type="text"
                                     placeholder="e.g. Seewadelstrasse 3"
-                                    className="kraken-field w-full p-4 bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl focus:border-[#082b45] focus:ring-2 focus:ring-[#c8dedb] outline-none font-semibold text-base shadow-sm transition-all text-[#082b45]"
+                                    className="kraken-field w-full p-4 bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl focus:border-[#032b59] focus:ring-2 focus:ring-[#c9dbef] outline-none font-semibold text-base shadow-sm transition-all text-[#032b59]"
                                     value={address}
                                     onChange={(e) => setAddress(e.target.value)}
                                 />
                             </div>
                             <div>
-                                <label htmlFor="consultationpage-field-2" className="kraken-label block text-sm font-semibold mb-1.5 ml-1 text-[#526574]">{t('consultation.step1.postcode')}</label>
+                                <label htmlFor="consultationpage-field-2" className="kraken-label block text-sm font-semibold mb-1.5 ml-1 text-[#50647c]">{t('consultation.step1.postcode')}</label>
                                 <input id="consultationpage-field-2"
                                     type="text"
                                     maxLength={4}
                                     placeholder="e.g. 8001"
-                                    className="kraken-field w-full p-4 bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl focus:border-[#082b45] focus:ring-2 focus:ring-[#c8dedb] outline-none font-semibold text-base shadow-sm transition-all text-[#082b45] font-sans"
+                                    className="kraken-field w-full p-4 bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl focus:border-[#032b59] focus:ring-2 focus:ring-[#c9dbef] outline-none font-semibold text-base shadow-sm transition-all text-[#032b59] font-sans"
                                     value={postcode}
                                     onChange={(e) => handlePostcodeChange(e.target.value)}
                                 />
                             </div>
                             <div>
-                                <label htmlFor="consultationpage-field-3" className="kraken-label block text-sm font-semibold mb-1.5 ml-1 text-[#526574]">{t('consultation.step1.city')}</label>
+                                <label htmlFor="consultationpage-field-3" className="kraken-label block text-sm font-semibold mb-1.5 ml-1 text-[#50647c]">{t('consultation.step1.city')}</label>
                                 <input id="consultationpage-field-3"
                                     type="text"
                                     placeholder="e.g. Zürich"
-                                    className="kraken-field w-full p-4 bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl focus:border-[#082b45] focus:ring-2 focus:ring-[#c8dedb] outline-none font-semibold text-base shadow-sm transition-all text-[#082b45]"
+                                    className="kraken-field w-full p-4 bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl focus:border-[#032b59] focus:ring-2 focus:ring-[#c9dbef] outline-none font-semibold text-base shadow-sm transition-all text-[#032b59]"
                                     value={city}
                                     onChange={(e) => setCity(e.target.value)}
                                 />
@@ -3400,15 +3400,15 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         </div>
 
                         {/* Zone Surcharge Indicator */}
-                        <div className="mt-6 pt-5 border-t border-dashed border-[#dce6e8] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="mt-6 pt-5 border-t border-dashed border-[#dce5f0] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-[#eef7f5] text-[#087f73] flex items-center justify-center text-lg shadow-sm font-semibold animate-float">
+                                <div className="w-10 h-10 rounded-xl bg-[#edf4fd] text-[#1464ad] flex items-center justify-center text-lg shadow-sm font-semibold animate-float">
                                     📍
                                 </div>
                                 <div>
-                                    <span className="text-sm font-semibold text-[#526574]">{t('consultation.step1.billingRegion')}</span>
+                                    <span className="text-sm font-semibold text-[#50647c]">{t('consultation.step1.billingRegion')}</span>
                                     <div className="flex items-center gap-2 mt-0.5">
-                                        <span className="font-semibold text-sm text-[#082b45]">
+                                        <span className="font-semibold text-sm text-[#032b59]">
                                             {postcode && postcode.length === 4
                                                 ? detectZone(postcode).label
                                                 : t('consultation.step1.waitingLocation')
@@ -3431,11 +3431,11 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             </div>
 
                             {postcode && postcode.length === 4 ? (
-                                <div className="bg-[#eef7f5] border border-[#c8dedb] text-[#087f73] px-4 py-3 rounded-2xl text-sm font-semibold max-w-sm leading-relaxed shrink-0 flex items-center gap-2.5">
+                                <div className="bg-[#edf4fd] border border-[#c9dbef] text-[#1464ad] px-4 py-3 rounded-2xl text-sm font-semibold max-w-sm leading-relaxed shrink-0 flex items-center gap-2.5">
                                     <span className="">✨</span> {t('consultation.step1.unlocked')}
                                 </div>
                             ) : (
-                                <div className="bg-[#eef7f5] border border-[#c8dedb] text-[#087f73] px-4 py-3 rounded-2xl text-sm font-semibold max-w-sm leading-relaxed shrink-0">
+                                <div className="bg-[#edf4fd] border border-[#c9dbef] text-[#1464ad] px-4 py-3 rounded-2xl text-sm font-semibold max-w-sm leading-relaxed shrink-0">
                                     ℹ️ {t('consultation.step1.locked')}
                                 </div>
                             )}
@@ -3448,14 +3448,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     <div id="step-2-services" className="space-y-8 animate-fade-in">
                         {!activeModal || !['end-of-tenancy', 'deep-cleaning', 'daily-cleaning', 'moving'].includes(activeModal) ? (
                             <>
-                                <div className="flex flex-col gap-1 border-b border-[#dce6e8] pb-4 mb-6">
+                                <div className="flex flex-col gap-1 border-b border-[#dce5f0] pb-4 mb-6">
                                     <div className="flex items-center gap-3">
-                                        <span className="bg-[#082b45] text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl font-semibold shadow-md">2</span>
-                                        <h3 className="text-xl font-semibold text-[#082b45] ">
+                                        <span className="bg-[#032b59] text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl font-semibold shadow-md">2</span>
+                                        <h3 className="text-xl font-semibold text-[#032b59] ">
                                             {t('consultation.step2.title')}
                                         </h3>
                                     </div>
-                                    <p className="text-base font-semibold text-[#526574] mt-1 pl-13">
+                                    <p className="text-base font-semibold text-[#50647c] mt-1 pl-13">
                                         {t('consultation.step2.subtitle')}
                                     </p>
                                 </div>
@@ -3535,10 +3535,10 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         openServiceModal(service.idAsEnum);
                                                     }
                                                 }}
-                                                className={`p-5 rounded-2xl border-2 transition-all duration-300 relative overflow-hidden flex flex-col justify-between cursor-pointer group select-none min-h-[150px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#087f73] ${
+                                                className={`p-5 rounded-2xl border-2 transition-all duration-300 relative overflow-hidden flex flex-col justify-between cursor-pointer group select-none min-h-[150px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1464ad] ${
                                                     isSelected
-                                                        ? 'bg-[#eef7f5] border-[#087f73] shadow-sm ring-4 ring-[#087f73]/10'
-                                                        : 'bg-[#eef7f5] border-white/10 shadow-sm shadow-[#002d5b]/10 hover:border-white/20 hover:shadow-sm hover:shadow-[#002d5b]/20'
+                                                        ? 'bg-[#edf4fd] border-[#1464ad] shadow-sm ring-4 ring-[#1464ad]/10'
+                                                        : 'bg-[#edf4fd] border-white/10 shadow-sm shadow-[#002d5b]/10 hover:border-white/20 hover:shadow-sm hover:shadow-[#002d5b]/20'
                                                 }`}
                                             >
                                                 {/* Checked state circle indicator */}
@@ -3555,10 +3555,10 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                 </div>
 
                                                 <div className="space-y-0.5 my-1 text-left z-10 mt-auto">
-                                                    <h4 className="font-semibold text-[#082b45] text-[15px] md:text-base leading-tight group-hover:text-[#087f73] transition-colors">
+                                                    <h4 className="font-semibold text-[#032b59] text-[15px] md:text-base leading-tight group-hover:text-[#1464ad] transition-colors">
                                                         {t(service.title)}
                                                     </h4>
-                                                    <p className="text-base md:text-base font-semibold text-[#526574]">
+                                                    <p className="text-base md:text-base font-semibold text-[#50647c]">
                                                         {t(service.subtitle)}
                                                     </p>
                                                 </div>
@@ -3573,29 +3573,29 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                 </div>
                             </>
                         ) : (
-                            <div className="bg-white rounded-3xl p-6 md:p-8 border-2 border-[#dce6e8] shadow-sm animate-fade-in space-y-6">
-                                <div className="flex items-center justify-between border-b border-[#dce6e8] pb-4 mb-2">
+                            <div className="bg-white rounded-3xl p-6 md:p-8 border-2 border-[#dce5f0] shadow-sm animate-fade-in space-y-6">
+                                <div className="flex items-center justify-between border-b border-[#dce5f0] pb-4 mb-2">
                                     <button
                                         onClick={closeActiveService}
-                                        className="kraken-control min-h-11 min-w-11 flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f4f8f8] hover:bg-[#f4f8f8] text-base font-semibold text-[#082b45] transition-all cursor-pointer shadow-sm"
+                                        className="kraken-control min-h-11 min-w-11 flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f3f7fc] hover:bg-[#f3f7fc] text-base font-semibold text-[#032b59] transition-all cursor-pointer shadow-sm"
                                     >
                                         ← {t('consultation.backToServices')}
                                     </button>
                                     <div className="flex items-center gap-2">
-                                        <span className="text-sm font-semibold text-[#526574] bg-[#f4f8f8] px-3 py-1 rounded-full border border-[#dce6e8]">
+                                        <span className="text-sm font-semibold text-[#50647c] bg-[#f3f7fc] px-3 py-1 rounded-full border border-[#dce5f0]">
                                             {t('consultation.label.config')}
                                         </span>
                                     </div>
                                 </div>
 
                                 <div className="space-y-1">
-                                    <h3 className="text-2xl font-semibold text-[#082b45] ">
+                                    <h3 className="text-2xl font-semibold text-[#032b59] ">
                                         {activeModal === 'end-of-tenancy' && t('services.endOfTenancy.title')}
                                         {activeModal === 'deep-cleaning' && t('services.deepCleaning.title')}
                                         {activeModal === 'daily-cleaning' && t('services.dailyCleaning.title')}
                                         {activeModal === 'moving' && t('services.movingFurniture.title')}
                                     </h3>
-                                    <p className="text-base font-semibold text-[#526574]">
+                                    <p className="text-base font-semibold text-[#50647c]">
                                         {activeModal === 'end-of-tenancy' && t('consultation.service.eot.sub')}
                                         {activeModal === 'deep-cleaning' && t('consultation.service.deep.sub')}
                                         {activeModal === 'daily-cleaning' && t('consultation.service.daily.sub')}
@@ -3606,13 +3606,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                 <button
                                     type="button"
                                     onClick={() => setShowInclusionsModal(activeModal as ServiceType)}
-                                    className="kraken-control min-h-11 w-full flex items-center justify-between p-4 bg-[#eef7f5] hover:bg-blue-100/90 border border-[#c8dedb] rounded-2xl text-[#087f73] transition-all group shadow-2xs cursor-pointer my-1"
+                                    className="kraken-control min-h-11 w-full flex items-center justify-between p-4 bg-[#edf4fd] hover:bg-blue-100/90 border border-[#c9dbef] rounded-2xl text-[#1464ad] transition-all group shadow-2xs cursor-pointer my-1"
                                 >
                                     <div className="flex items-center gap-3">
-                                        <InfoIcon className="w-5 h-5 text-[#087f73] shrink-0" />
+                                        <InfoIcon className="w-5 h-5 text-[#1464ad] shrink-0" />
                                         <span className="text-sm font-semibold">{t('consultation.whatsIncluded')}</span>
                                     </div>
-                                    <ChevronRightIcon className="w-4 h-4 text-[#087f73] shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                                    <ChevronRightIcon className="w-4 h-4 text-[#1464ad] shrink-0 group-hover:translate-x-0.5 transition-transform" />
                                 </button>
 
                                 {/* --- Inline configuration content based on activeModal --- */}
@@ -3634,13 +3634,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             <CounterCard icon="🚿" label={t('consultation.label.bathrooms')} value={config.bathroomsCount} onChange={(v) => { const b = Math.max(0,v); const d = calculateEOTDuration(config.roomsCount, b, config.balconyCount, config.storageCount, config.carpetCount, config.furnitureCount); setConfig({ ...config, bathroomsCount: b, duration: d }); }} />
                                         </div>
 
-                                        <div className="bg-[#eef7f5] p-5 rounded-2xl border border-[#c8dedb]">
+                                        <div className="bg-[#edf4fd] p-5 rounded-2xl border border-[#c9dbef]">
                                             <div className="flex justify-between items-center mb-3">
-                                                <label className="kraken-label text-sm font-semibold text-[#082b45] flex items-center gap-2">
-                                                    <ClockIcon className="w-5 h-5 text-[#087f73]" />
+                                                <label className="kraken-label text-sm font-semibold text-[#032b59] flex items-center gap-2">
+                                                    <ClockIcon className="w-5 h-5 text-[#1464ad]" />
                                                     <span>{t('consultation.label.manualIncrease')}</span>
                                                 </label>
-                                                <span className="font-semibold text-[#087f73] text-xl">{formatTotalHours(getActiveTotalHours())}</span>
+                                                <span className="font-semibold text-[#1464ad] text-xl">{formatTotalHours(getActiveTotalHours())}</span>
                                             </div>
                                             <input
                                                 type="range"
@@ -3649,18 +3649,18 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                 step="0.5"
                                                 value={getActiveTotalHours()}
                                                 onChange={(e) => setConfig({ ...config, duration: parseFloat(e.target.value) })}
-                                                className="kraken-field w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-[#087f73]"
+                                                className="kraken-field w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-[#1464ad]"
                                             />
-                                            <p className="text-base text-[#526574] text-left mt-2.5 font-medium">{t('consultation.label.manualIncreaseDesc', { rate: PRICES.deepHourly.toFixed(2) })}</p>
+                                            <p className="text-base text-[#50647c] text-left mt-2.5 font-medium">{t('consultation.label.manualIncreaseDesc', { rate: PRICES.deepHourly.toFixed(2) })}</p>
                                         </div>
 
                                         <div className="space-y-3 pt-2">
                                             <div className="flex justify-between items-center px-1">
-                                                <label className="kraken-label text-sm font-semibold text-[#082b45]">{t('consultation.label.extras')}</label>
+                                                <label className="kraken-label text-sm font-semibold text-[#032b59]">{t('consultation.label.extras')}</label>
                                                 <button
                                                     type="button"
                                                     onClick={() => setShowInclusionsModal(activeModal as ServiceType)}
-                                                    className="kraken-control min-h-11 min-w-11 text-base font-semibold text-[#087f73] hover:underline"
+                                                    className="kraken-control min-h-11 min-w-11 text-base font-semibold text-[#1464ad] hover:underline"
                                                 >
                                                     {t('consultation.label.seeAll')}
                                                 </button>
@@ -3732,7 +3732,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         aria-label={`Go to section ${dotIdx + 1}`}
                                                         className={`kraken-control min-h-11 min-w-11 transition-all duration-300 rounded-full cursor-pointer ${
                                                             extrasActiveDot === dotIdx
-                                                                ? 'w-4 h-1.5 bg-[#087f73]'
+                                                                ? 'w-4 h-1.5 bg-[#1464ad]'
                                                                 : 'w-1.5 h-1.5 bg-gray-200 hover:bg-gray-300'
                                                         }`}
                                                     />
@@ -3764,8 +3764,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         )}
 
                                         <div className="space-y-3">
-                                            <label className="kraken-label block text-sm font-semibold text-[#526574] pl-1">{t('consultation.label.frequency')}</label>
-                                            <p className="text-base text-[#526574] pl-1 font-semibold mb-1">{language === 'es' ? 'Selecciona la frecuencia y el alcance del servicio.' : 'Select the frequency and scope of the service.'}</p>
+                                            <label className="kraken-label block text-sm font-semibold text-[#50647c] pl-1">{t('consultation.label.frequency')}</label>
+                                            <p className="text-base text-[#50647c] pl-1 font-semibold mb-1">{language === 'es' ? 'Selecciona la frecuencia y el alcance del servicio.' : 'Select the frequency and scope of the service.'}</p>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                 {['One-Time', 'Every 3 Months', 'Every 4 Months', 'Every 6 Months', 'Every Year'].map(f => {
                                                     const textHelper = getFrequencyTranslations(f, language);
@@ -3778,11 +3778,11 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         const numStr = f === 'Every 3 Months' ? '3' : f === 'Every 4 Months' ? '4' : f === 'Every 6 Months' ? '6' : '17';
                                                         const labelStr = f === 'Every Year' ? 'JUL' : 'M';
                                                         return (
-                                                            <div className="w-10 h-10 bg-white rounded-lg border border-[#dce6e8] shadow-2xs overflow-hidden flex flex-col items-center">
-                                                                <div className="bg-red-500 w-full h-2.5 border-b border-red-500 text-sm font-semibold text-[#082b45] text-center flex items-center justify-center ">
+                                                            <div className="w-10 h-10 bg-white rounded-lg border border-[#dce5f0] shadow-2xs overflow-hidden flex flex-col items-center">
+                                                                <div className="bg-red-500 w-full h-2.5 border-b border-red-500 text-sm font-semibold text-[#032b59] text-center flex items-center justify-center ">
                                                                     {labelStr}
                                                                 </div>
-                                                                <div className="flex-1 flex items-center justify-center font-semibold text-[#082b45] text-sm leading-none">
+                                                                <div className="flex-1 flex items-center justify-center font-semibold text-[#032b59] text-sm leading-none">
                                                                     {numStr}
                                                                 </div>
                                                             </div>
@@ -3805,11 +3805,11 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                         {config.frequency !== 'One-Time' && (
                                             <div className="animate-fade-in">
-                                                <label htmlFor="consultationpage-field-4" className="kraken-label block text-sm font-semibold text-[#526574] pl-1 mb-2">{t('consultation.label.preferredRecurrence')}</label>
+                                                <label htmlFor="consultationpage-field-4" className="kraken-label block text-sm font-semibold text-[#50647c] pl-1 mb-2">{t('consultation.label.preferredRecurrence')}</label>
                                                 <input id="consultationpage-field-4"
                                                     type="text"
                                                     placeholder={language === 'es' ? 'e.g., Primer lunes del mes, o cada día 15...' : 'e.g., First Monday, or every 15th...'}
-                                                    className="kraken-field w-full p-4 bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl outline-none focus:ring-2 focus:ring-[#087f73] focus:bg-white text-base font-semibold text-[#526574] transition-all"
+                                                    className="kraken-field w-full p-4 bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl outline-none focus:ring-2 focus:ring-[#1464ad] focus:bg-white text-base font-semibold text-[#50647c] transition-all"
                                                     value={config.recurringDayPreference || ''}
                                                     onChange={(e) => setConfig({...config, recurringDayPreference: e.target.value})}
                                                 />
@@ -3821,13 +3821,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             <CounterCard icon="🚿" label={t('consultation.label.baths')} value={config.bathrooms || 0} onChange={(v) => { const b = Math.max(0,v); const d = calculateCleaningDuration('deep-cleaning', config.bedrooms, b, config.balconyCount, config.storageCount, config.carpetCount, config.furnitureCount); setConfig({ ...config, bathrooms: b, duration: d }); }} />
                                         </div>
 
-                                        <div className="bg-[#f4f8f8] p-5 rounded-2xl border border-[#dce6e8]">
+                                        <div className="bg-[#f3f7fc] p-5 rounded-2xl border border-[#dce5f0]">
                                             <div className="flex justify-between items-center mb-2">
-                                                <label className="kraken-label text-sm font-semibold text-[#526574] flex items-center gap-2">
-                                                    <ClockIcon className="w-4 h-4 text-[#087f73]" />
+                                                <label className="kraken-label text-sm font-semibold text-[#50647c] flex items-center gap-2">
+                                                    <ClockIcon className="w-4 h-4 text-[#1464ad]" />
                                                     <span>{t('consultation.label.manualIncrease')}</span>
                                                 </label>
-                                                <span className="font-semibold text-[#087f73] text-lg">{formatTotalHours(getActiveTotalHours())}</span>
+                                                <span className="font-semibold text-[#1464ad] text-lg">{formatTotalHours(getActiveTotalHours())}</span>
                                             </div>
                                             <input
                                                 type="range"
@@ -3836,18 +3836,18 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                 step="0.5"
                                                 value={getActiveTotalHours()}
                                                 onChange={(e) => setConfig({ ...config, duration: parseFloat(e.target.value) })}
-                                                className="kraken-field w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-[#087f73]"
+                                                className="kraken-field w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-[#1464ad]"
                                             />
-                                            <p className="text-base text-[#526574] text-center mt-2 font-semibold italic">{t('consultation.label.manualIncreaseDesc', { rate: PRICES.deepHourly.toFixed(2) })}</p>
+                                            <p className="text-base text-[#50647c] text-center mt-2 font-semibold italic">{t('consultation.label.manualIncreaseDesc', { rate: PRICES.deepHourly.toFixed(2) })}</p>
                                         </div>
 
                                         <div className="space-y-3 pt-2">
                                             <div className="flex justify-between items-center px-1">
-                                                <label className="kraken-label text-sm font-semibold text-[#082b45]">{t('consultation.label.extras')}</label>
+                                                <label className="kraken-label text-sm font-semibold text-[#032b59]">{t('consultation.label.extras')}</label>
                                                 <button
                                                     type="button"
                                                     onClick={() => setShowInclusionsModal(activeModal as ServiceType)}
-                                                    className="kraken-control min-h-11 min-w-11 text-base font-semibold text-[#087f73] hover:underline"
+                                                    className="kraken-control min-h-11 min-w-11 text-base font-semibold text-[#1464ad] hover:underline"
                                                 >
                                                     {t('consultation.label.seeAll')}
                                                 </button>
@@ -3919,7 +3919,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         aria-label={`Go to section ${dotIdx + 1}`}
                                                         className={`kraken-control min-h-11 min-w-11 transition-all duration-300 rounded-full cursor-pointer ${
                                                             extrasActiveDot === dotIdx
-                                                                ? 'w-4 h-1.5 bg-[#087f73]'
+                                                                ? 'w-4 h-1.5 bg-[#1464ad]'
                                                                 : 'w-1.5 h-1.5 bg-gray-200 hover:bg-gray-300'
                                                         }`}
                                                     />
@@ -3942,7 +3942,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         )}
 
                                         <div className="space-y-3">
-                                            <label className="kraken-label block text-sm font-semibold text-[#526574] pl-1">{t('consultation.label.frequency')}</label>
+                                            <label className="kraken-label block text-sm font-semibold text-[#50647c] pl-1">{t('consultation.label.frequency')}</label>
                                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                                                 {['Daily', 'Weekly', 'Bi-Weekly', 'Every 4 Weeks', 'More Frequently'].map(f => {
                                                     let freqTitle = f;
@@ -3960,11 +3960,11 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         </div>
 
                                         <div className="animate-fade-in">
-                                            <label htmlFor="consultationpage-field-5" className="kraken-label block text-sm font-semibold text-[#526574] pl-1 mb-2">{t('consultation.label.preferredRecurrence')}</label>
+                                            <label htmlFor="consultationpage-field-5" className="kraken-label block text-sm font-semibold text-[#50647c] pl-1 mb-2">{t('consultation.label.preferredRecurrence')}</label>
                                             <input id="consultationpage-field-5"
                                                 type="text"
                                                 placeholder="e.g., Wednesdays, or Tuesdays & Fridays..."
-                                                className="kraken-field w-full p-4 bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl outline-none focus:ring-2 focus:ring-[#087f73] focus:bg-white text-base font-semibold text-gray-750 transition-all"
+                                                className="kraken-field w-full p-4 bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl outline-none focus:ring-2 focus:ring-[#1464ad] focus:bg-white text-base font-semibold text-gray-750 transition-all"
                                                 value={config.frequencyDetails || ''}
                                                 onChange={(e) => setConfig({...config, frequencyDetails: e.target.value})}
                                             />
@@ -3983,13 +3983,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             <CounterCard icon="🚿" label={t('consultation.label.baths')} value={config.bathrooms} onChange={(v) => setConfig({ ...config, bathrooms: v, duration: calculateCleaningDuration('daily-cleaning', config.bedrooms, v) })} />
                                         </div>
 
-                                        <div className="bg-[#f4f8f8] p-5 rounded-2xl border border-[#dce6e8]">
+                                        <div className="bg-[#f3f7fc] p-5 rounded-2xl border border-[#dce5f0]">
                                             <div className="flex justify-between items-center mb-2">
-                                                <label className="kraken-label text-sm font-semibold text-[#526574] flex items-center gap-2">
-                                                    <ClockIcon className="w-4 h-4 text-[#087f73]" />
+                                                <label className="kraken-label text-sm font-semibold text-[#50647c] flex items-center gap-2">
+                                                    <ClockIcon className="w-4 h-4 text-[#1464ad]" />
                                                     <span>{mt('Duration', 'Duración', 'Dauer', 'Durée', 'Durata', 'Duração')}</span>
                                                 </label>
-                                                <span className="font-semibold text-[#087f73] text-lg">{formatTotalHours(getActiveTotalHours())}</span>
+                                                <span className="font-semibold text-[#1464ad] text-lg">{formatTotalHours(getActiveTotalHours())}</span>
                                             </div>
                                             <input
                                                 type="range"
@@ -4009,23 +4009,23 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     const newBase = Math.max(0.5, selectedTotal - extra);
                                                     setConfig({ ...config, duration: newBase });
                                                 }}
-                                                className="kraken-field w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-[#087f73]"
+                                                className="kraken-field w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer accent-[#1464ad]"
                                             />
-                                            <p className="text-base text-[#526574] text-center mt-2.5 font-semibold italic">{t('consultation.label.estimatedDurationDesc', 'Duration bar includes all selected extra tasks.')}</p>
+                                            <p className="text-base text-[#50647c] text-center mt-2.5 font-semibold italic">{t('consultation.label.estimatedDurationDesc', 'Duration bar includes all selected extra tasks.')}</p>
                                         </div>
 
                                         <div className="space-y-4 pt-2">
-                                            <label className="kraken-label block text-sm font-semibold text-[#526574] pl-1">{t('consultation.label.extras')}</label>
+                                            <label className="kraken-label block text-sm font-semibold text-[#50647c] pl-1">{t('consultation.label.extras')}</label>
 
                                             {/* 1. Ironing Service */}
                                             <div className="space-y-3">
                                                 <OptionCard icon="👔" title={t('consultation.label.ironingService', 'Ironing Service')} description={t('consultation.label.ironingServiceDesc', 'Add ironing to your routine')} selected={config.ironing} onClick={() => setConfig({...config, ironing: !config.ironing})} isExtra={true} />
                                                 {config.ironing && (
-                                                    <div className="bg-[#f4f8f8] p-5 rounded-2xl border-2 border-[#087f73] space-y-4 animate-fade-in shadow-xs">
+                                                    <div className="bg-[#f3f7fc] p-5 rounded-2xl border-2 border-[#1464ad] space-y-4 animate-fade-in shadow-xs">
                                                         <CounterCard icon="⏰" label={t('consultation.label.manualIncrease')} value={config.ironingHours} step={0.5} onChange={(v) => setConfig({...config, ironingHours: v})} min={0.5} />
                                                         <div>
-                                                            <label htmlFor="consultationpage-field-6" className="kraken-label block text-sm font-semibold text-[#526574] mb-2 pl-1">{t('consultation.label.instructions', 'Instructions')}</label>
-                                                            <textarea id="consultationpage-field-6" placeholder="e.g., Shirts on hangers, linens folded..." className="kraken-field w-full p-4 bg-white border border-[#dce6e8] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#087f73]" value={config.ironingNotes} onChange={(e) => setConfig({...config, ironingNotes: e.target.value})}></textarea>
+                                                            <label htmlFor="consultationpage-field-6" className="kraken-label block text-sm font-semibold text-[#50647c] mb-2 pl-1">{t('consultation.label.instructions', 'Instructions')}</label>
+                                                            <textarea id="consultationpage-field-6" placeholder="e.g., Shirts on hangers, linens folded..." className="kraken-field w-full p-4 bg-white border border-[#dce5f0] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#1464ad]" value={config.ironingNotes} onChange={(e) => setConfig({...config, ironingNotes: e.target.value})}></textarea>
                                                         </div>
                                                     </div>
                                                 )}
@@ -4035,9 +4035,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             <div className="space-y-3">
                                                 <OptionCard icon="🧺" title={t('consultation.label.laundryService', 'Laundry Service')} description={t('consultation.label.laundryServiceDesc', 'Wash, Dry, or Both')} selected={config.laundry} onClick={() => setConfig({...config, laundry: !config.laundry})} isExtra={true} />
                                                 {config.laundry && (
-                                                    <div className="bg-[#f4f8f8] p-5 rounded-2xl border-2 border-[#087f73] space-y-4 animate-fade-in shadow-xs">
+                                                    <div className="bg-[#f3f7fc] p-5 rounded-2xl border-2 border-[#1464ad] space-y-4 animate-fade-in shadow-xs">
                                                         <div>
-                                                            <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3 pl-1">{t('consultation.label.serviceType', 'Service Type')}</label>
+                                                            <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3 pl-1">{t('consultation.label.serviceType', 'Service Type')}</label>
                                                             <div className="grid grid-cols-3 gap-2">
                                                                 {['Wash Only', 'Dry Only', 'Wash & Dry'].map(ty => {
                                                                     let lType = ty;
@@ -4045,7 +4045,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                                     else if (ty === 'Dry Only') lType = t('laundry.Dry Only', 'Dry Only');
                                                                     else if (ty === 'Wash & Dry') lType = t('laundry.Wash & Dry', 'Wash & Dry');
                                                                     return (
-                                                                        <button key={ty} type="button" onClick={() => setConfig({...config, laundryType: ty})} className={`kraken-control min-h-11 min-w-11 p-2.5 rounded-xl text-base font-semibold border-2 transition-all ${config.laundryType === ty ? 'border-[#087f73] bg-white text-[#087f73]' : 'border-transparent bg-white text-[#526574] hover:bg-[#f4f8f8]'}`}>{lType}</button>
+                                                                        <button key={ty} type="button" onClick={() => setConfig({...config, laundryType: ty})} className={`kraken-control min-h-11 min-w-11 p-2.5 rounded-xl text-base font-semibold border-2 transition-all ${config.laundryType === ty ? 'border-[#1464ad] bg-white text-[#1464ad]' : 'border-transparent bg-white text-[#50647c] hover:bg-[#f3f7fc]'}`}>{lType}</button>
                                                                     );
                                                                 })}
                                                             </div>
@@ -4053,8 +4053,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         <CounterCard icon="👕" label={t('consultation.label.clothesCount', 'Number of Clothes')} subLabel={t('consultation.label.clothesCountDesc', 'Approximate items or loads')} value={config.laundryItems} onChange={(v) => setConfig({...config, laundryItems: v})} />
                                                         <CounterCard icon="⏰" label={t('consultation.label.manualIncrease')} value={config.laundryHours} step={1} onChange={(v) => setConfig({...config, laundryHours: v})} min={1} />
                                                         <div>
-                                                            <label htmlFor="consultationpage-field-7" className="kraken-label block text-sm font-semibold text-[#526574] mb-2 pl-1">{t('consultation.label.fabricMethod', 'Fabric & Washing Method')}</label>
-                                                            <textarea id="consultationpage-field-7" placeholder="e.g., Cotton shirts cold wash, delicates air dry..." className="kraken-field w-full p-4 bg-white border border-[#dce6e8] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#087f73]" value={config.laundryNotes} onChange={(e) => setConfig({...config, laundryNotes: e.target.value})}></textarea>
+                                                            <label htmlFor="consultationpage-field-7" className="kraken-label block text-sm font-semibold text-[#50647c] mb-2 pl-1">{t('consultation.label.fabricMethod', 'Fabric & Washing Method')}</label>
+                                                            <textarea id="consultationpage-field-7" placeholder="e.g., Cotton shirts cold wash, delicates air dry..." className="kraken-field w-full p-4 bg-white border border-[#dce5f0] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#1464ad]" value={config.laundryNotes} onChange={(e) => setConfig({...config, laundryNotes: e.target.value})}></textarea>
                                                         </div>
                                                     </div>
                                                 )}
@@ -4064,9 +4064,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             <div className="space-y-3">
                                                 <OptionCard icon="🍳" title={t('consultation.label.ovenCleaning', 'Oven Cleaning')} description={t('consultation.label.ovenCleaningDesc', 'Deep clean inside and out')} selected={config.oven} onClick={() => setConfig({...config, oven: !config.oven})} isExtra={true} />
                                                 {config.oven && (
-                                                    <div className="bg-[#f4f8f8] p-5 rounded-2xl border-2 border-[#087f73] space-y-4 animate-fade-in shadow-xs">
+                                                    <div className="bg-[#f3f7fc] p-5 rounded-2xl border-2 border-[#1464ad] space-y-4 animate-fade-in shadow-xs">
                                                         <div>
-                                                            <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3 pl-1">{t('consultation.label.greaseLevel', 'Grease Level')}</label>
+                                                            <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3 pl-1">{t('consultation.label.greaseLevel', 'Grease Level')}</label>
                                                             <div className="grid grid-cols-3 gap-2">
                                                                 {['Low', 'Medium', 'High'].map(l => {
                                                                     let greaseLabel = l;
@@ -4074,15 +4074,15 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                                     else if (l === 'Medium') greaseLabel = t('grease.Medium', 'Medium');
                                                                     else if (l === 'High') greaseLabel = t('grease.High', 'High');
                                                                     return (
-                                                                        <button key={l} type="button" onClick={() => setConfig({...config, ovenGrease: l})} className={`kraken-control min-h-11 min-w-11 p-2.5 rounded-xl text-base font-semibold border-2 transition-all ${config.ovenGrease === l ? 'border-[#087f73] bg-white text-[#087f73]' : 'border-transparent bg-white text-[#526574] hover:bg-[#f4f8f8]'}`}>{greaseLabel}</button>
+                                                                        <button key={l} type="button" onClick={() => setConfig({...config, ovenGrease: l})} className={`kraken-control min-h-11 min-w-11 p-2.5 rounded-xl text-base font-semibold border-2 transition-all ${config.ovenGrease === l ? 'border-[#1464ad] bg-white text-[#1464ad]' : 'border-transparent bg-white text-[#50647c] hover:bg-[#f3f7fc]'}`}>{greaseLabel}</button>
                                                                     );
                                                                 })}
                                                             </div>
-                                                            <p className="text-base text-[#526574] mt-2 italic pl-1">{t('consultation.label.ovenGreaseDesc', 'Duration adjusts based on grease: Low (30m), Medium (40m), High (50m).')}</p>
+                                                            <p className="text-base text-[#50647c] mt-2 italic pl-1">{t('consultation.label.ovenGreaseDesc', 'Duration adjusts based on grease: Low (30m), Medium (40m), High (50m).')}</p>
                                                         </div>
                                                         <div>
-                                                            <label htmlFor="consultationpage-field-8" className="kraken-label block text-sm font-semibold text-[#526574] mb-2 pl-1">{t('consultation.label.instructions', 'Instructions')}</label>
-                                                            <textarea id="consultationpage-field-8" placeholder="e.g., Double oven, brand details..." className="kraken-field w-full p-4 bg-white border border-[#dce6e8] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#087f73]" value={config.ovenNotes} onChange={(e) => setConfig({...config, ovenNotes: e.target.value})}></textarea>
+                                                            <label htmlFor="consultationpage-field-8" className="kraken-label block text-sm font-semibold text-[#50647c] mb-2 pl-1">{t('consultation.label.instructions', 'Instructions')}</label>
+                                                            <textarea id="consultationpage-field-8" placeholder="e.g., Double oven, brand details..." className="kraken-field w-full p-4 bg-white border border-[#dce5f0] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#1464ad]" value={config.ovenNotes} onChange={(e) => setConfig({...config, ovenNotes: e.target.value})}></textarea>
                                                         </div>
                                                     </div>
                                                 )}
@@ -4092,30 +4092,30 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             <div className="space-y-3">
                                                 <OptionCard icon="🚪" title={t('consultation.label.cabinetCleaning', 'Cabinet Cleaning')} description={t('consultation.slice.cabinetCleaningDesc', 'Interior cleaning & organizing')} selected={config.cabinets} onClick={() => setConfig({...config, cabinets: !config.cabinets})} isExtra={true} />
                                                 {config.cabinets && (
-                                                    <div className="bg-[#f4f8f8] p-5 rounded-2xl border-2 border-[#087f73] space-y-4 animate-fade-in shadow-xs">
+                                                    <div className="bg-[#f3f7fc] p-5 rounded-2xl border-2 border-[#1464ad] space-y-4 animate-fade-in shadow-xs">
                                                         <div>
-                                                            <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3 pl-1">{t('consultation.label.condition', 'Condition')}</label>
+                                                            <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3 pl-1">{t('consultation.label.condition', 'Condition')}</label>
                                                             <div className="grid grid-cols-2 gap-2">
                                                                 {['Empty', 'With Items'].map(c => {
                                                                     let condLabel = c;
                                                                     if (c === 'Empty') condLabel = t('condition.Empty', 'Empty');
                                                                     else if (c === 'With Items') condLabel = t('condition.With Items', 'With Items');
                                                                     return (
-                                                                        <button key={c} type="button" onClick={() => setConfig({...config, cabinetCondition: c})} className={`kraken-control min-h-11 min-w-11 p-2.5 rounded-xl text-base font-semibold border-2 transition-all ${config.cabinetCondition === c ? 'border-[#087f73] bg-white text-[#087f73]' : 'border-transparent bg-white text-[#526574] hover:bg-[#f4f8f8]'}`}>{condLabel}</button>
+                                                                        <button key={c} type="button" onClick={() => setConfig({...config, cabinetCondition: c})} className={`kraken-control min-h-11 min-w-11 p-2.5 rounded-xl text-base font-semibold border-2 transition-all ${config.cabinetCondition === c ? 'border-[#1464ad] bg-white text-[#1464ad]' : 'border-transparent bg-white text-[#50647c] hover:bg-[#f3f7fc]'}`}>{condLabel}</button>
                                                                     );
                                                                 })}
                                                             </div>
                                                         </div>
-                                                        <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-[#dce6e8]">
+                                                        <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-[#dce5f0]">
                                                             <div className="flex flex-col text-left">
                                                                 <span className="text-sm font-semibold text-gray-808">{t('consultation.label.organizeItems', 'Remove & Organize Items')}</span>
-                                                                <span className="text-sm text-[#526574] font-semibold">{t('consultation.label.organizeItemsDesc', 'Increases time (+30m)')}</span>
+                                                                <span className="text-sm text-[#50647c] font-semibold">{t('consultation.label.organizeItemsDesc', 'Increases time (+30m)')}</span>
                                                             </div>
-                                                            <button type="button" onClick={() => setConfig({...config, cabinetOrganize: !config.cabinetOrganize})} className={`kraken-switch w-10 h-5 rounded-full relative transition-colors ${config.cabinetOrganize ? 'bg-[#087f73]' : 'bg-gray-200'}`}><div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${config.cabinetOrganize ? 'translate-x-5' : 'translate-x-0'}`}></div></button>
+                                                            <button type="button" onClick={() => setConfig({...config, cabinetOrganize: !config.cabinetOrganize})} className={`kraken-switch w-10 h-5 rounded-full relative transition-colors ${config.cabinetOrganize ? 'bg-[#1464ad]' : 'bg-gray-200'}`}><div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${config.cabinetOrganize ? 'translate-x-5' : 'translate-x-0'}`}></div></button>
                                                         </div>
                                                         <div>
-                                                            <label htmlFor="consultationpage-field-9" className="kraken-label block text-sm font-semibold text-[#526574] mb-2 pl-1">{t('consultation.label.instructions', 'Instructions')}</label>
-                                                            <textarea id="consultationpage-field-9" placeholder="e.g., Kitchen upper cabinets only..." className="kraken-field w-full p-4 bg-white border border-[#dce6e8] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#087f73]" value={config.cabinetNotes} onChange={(e) => setConfig({...config, cabinetNotes: e.target.value})}></textarea>
+                                                            <label htmlFor="consultationpage-field-9" className="kraken-label block text-sm font-semibold text-[#50647c] mb-2 pl-1">{t('consultation.label.instructions', 'Instructions')}</label>
+                                                            <textarea id="consultationpage-field-9" placeholder="e.g., Kitchen upper cabinets only..." className="kraken-field w-full p-4 bg-white border border-[#dce5f0] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#1464ad]" value={config.cabinetNotes} onChange={(e) => setConfig({...config, cabinetNotes: e.target.value})}></textarea>
                                                         </div>
                                                     </div>
                                                 )}
@@ -4125,30 +4125,30 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             <div className="space-y-3">
                                                 <OptionCard icon="❄️" title={t('consultation.label.fridgeCleaning', 'Fridge Cleaning')} description={t('consultation.label.fridgeCleaningDesc', 'Hygiene & Organization')} selected={config.fridge} onClick={() => setConfig({...config, fridge: !config.fridge})} isExtra={true} />
                                                 {config.fridge && (
-                                                    <div className="bg-[#f4f8f8] p-5 rounded-2xl border-2 border-[#087f73] space-y-4 animate-fade-in shadow-xs">
+                                                    <div className="bg-[#f3f7fc] p-5 rounded-2xl border-2 border-[#1464ad] space-y-4 animate-fade-in shadow-xs">
                                                         <div>
-                                                            <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3 pl-1">{t('consultation.label.condition', 'Condition')}</label>
+                                                            <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3 pl-1">{t('consultation.label.condition', 'Condition')}</label>
                                                             <div className="grid grid-cols-2 gap-2">
                                                                 {['Empty', 'With Items'].map(c => {
                                                                     let condLabel = c;
                                                                     if (c === 'Empty') condLabel = t('condition.Empty', 'Empty');
                                                                     else if (c === 'With Items') condLabel = t('condition.With Items', 'With Items');
                                                                     return (
-                                                                        <button key={c} type="button" onClick={() => setConfig({...config, fridgeCondition: c})} className={`kraken-control min-h-11 min-w-11 p-2.5 rounded-xl text-base font-semibold border-2 transition-all ${config.fridgeCondition === c ? 'border-[#087f73] bg-white text-[#087f73]' : 'border-transparent bg-white text-[#526574] hover:bg-[#f4f8f8]'}`}>{condLabel}</button>
+                                                                        <button key={c} type="button" onClick={() => setConfig({...config, fridgeCondition: c})} className={`kraken-control min-h-11 min-w-11 p-2.5 rounded-xl text-base font-semibold border-2 transition-all ${config.fridgeCondition === c ? 'border-[#1464ad] bg-white text-[#1464ad]' : 'border-transparent bg-white text-[#50647c] hover:bg-[#f3f7fc]'}`}>{condLabel}</button>
                                                                     );
                                                                 })}
                                                             </div>
                                                         </div>
-                                                        <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-[#dce6e8]">
+                                                        <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-[#dce5f0]">
                                                             <div className="flex flex-col text-left">
-                                                                <span className="text-sm font-semibold text-[#526574]">{t('consultation.label.organizeItems', 'Remove & Organize Items')}</span>
-                                                                <span className="text-sm text-[#526574] font-semibold">{t('consultation.label.organizeItemsDesc', 'Increases time (+30m)')}</span>
+                                                                <span className="text-sm font-semibold text-[#50647c]">{t('consultation.label.organizeItems', 'Remove & Organize Items')}</span>
+                                                                <span className="text-sm text-[#50647c] font-semibold">{t('consultation.label.organizeItemsDesc', 'Increases time (+30m)')}</span>
                                                             </div>
-                                                            <button type="button" onClick={() => setConfig({...config, fridgeOrganize: !config.fridgeOrganize})} className={`kraken-switch w-10 h-5 rounded-full relative transition-colors ${config.fridgeOrganize ? 'bg-[#087f73]' : 'bg-gray-200'}`}><div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${config.fridgeOrganize ? 'translate-x-5' : 'translate-x-0'}`}></div></button>
+                                                            <button type="button" onClick={() => setConfig({...config, fridgeOrganize: !config.fridgeOrganize})} className={`kraken-switch w-10 h-5 rounded-full relative transition-colors ${config.fridgeOrganize ? 'bg-[#1464ad]' : 'bg-gray-200'}`}><div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${config.fridgeOrganize ? 'translate-x-5' : 'translate-x-0'}`}></div></button>
                                                         </div>
                                                         <div>
-                                                            <label htmlFor="consultationpage-field-10" className="kraken-label block text-sm font-semibold text-[#526574] mb-2 pl-1">{t('consultation.label.instructions', 'Instructions')}</label>
-                                                            <textarea id="consultationpage-field-10" placeholder="e.g., Freezer defrosting needed..." className="kraken-field w-full p-4 bg-white border border-[#dce6e8] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#087f73]" value={config.fridgeNotes} onChange={(e) => setConfig({...config, fridgeNotes: e.target.value})}></textarea>
+                                                            <label htmlFor="consultationpage-field-10" className="kraken-label block text-sm font-semibold text-[#50647c] mb-2 pl-1">{t('consultation.label.instructions', 'Instructions')}</label>
+                                                            <textarea id="consultationpage-field-10" placeholder="e.g., Freezer defrosting needed..." className="kraken-field w-full p-4 bg-white border border-[#dce5f0] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#1464ad]" value={config.fridgeNotes} onChange={(e) => setConfig({...config, fridgeNotes: e.target.value})}></textarea>
                                                         </div>
                                                     </div>
                                                 )}
@@ -4201,16 +4201,16 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             <button
                                                 type="button"
                                                 onClick={() => setShowMovingInfo(true)}
-                                                className="kraken-control min-h-11 w-full flex items-center justify-center gap-3 p-4 bg-[#eef7f5] border border-[#c8dedb] rounded-[2rem] hover:bg-[#eef7f5] transition-all group animate-fade-in"
+                                                className="kraken-control min-h-11 w-full flex items-center justify-center gap-3 p-4 bg-[#edf4fd] border border-[#c9dbef] rounded-[2rem] hover:bg-[#edf4fd] transition-all group animate-fade-in"
                                             >
-                                                <InfoIcon className="w-5 h-5 text-[#087f73] shrink-0" />
-                                                <span className="text-sm font-semibold text-[#087f73] ">
+                                                <InfoIcon className="w-5 h-5 text-[#1464ad] shrink-0" />
+                                                <span className="text-sm font-semibold text-[#1464ad] ">
                                                     {mt('How our moving service works?', '¿Cómo funciona nuestro servicio de mudanzas?', 'Wie funktioniert unser Umzugsservice?', 'Comment fonctionne notre service de déménagement?', 'Come funziona il nostro servizio traslochi?', 'Como funciona o nosso serviço de mudanças?')}
                                                 </span>
                                             </button>
 
                                             <div className="space-y-2">
-                                                <label className="kraken-label block text-sm font-semibold text-[#526574] pl-1">
+                                                <label className="kraken-label block text-sm font-semibold text-[#50647c] pl-1">
                                                     {mt('What are we moving? / Move Type', '¿Qué vamos a trasladar? / Tipo de mudanza', 'Was zügeln wir? / Umzugsart', 'Que allons-nous déménager? / Type de déménagement', 'Cosa stiamo traslocando? / Tipo trasloco', 'O que vamos mudar? / Tipo de mudança')}
                                                 </label>
                                                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -4225,7 +4225,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                             key={m.id}
                                                             type="button"
                                                             onClick={() => setConfig({...config, moveType: m.id})}
-                                                            className={`kraken-control min-h-11 min-w-11 flex flex-col items-center justify-center p-3 rounded-2xl border transition-all text-center ${config.moveType === m.id ? 'bg-[#087f73] border-[#087f73] text-white shadow-md' : 'bg-white border-[#dce6e8] font-semibold text-base text-[#082b45] hover:bg-[#f4f8f8]'}`}
+                                                            className={`kraken-control min-h-11 min-w-11 flex flex-col items-center justify-center p-3 rounded-2xl border transition-all text-center ${config.moveType === m.id ? 'bg-[#1464ad] border-[#1464ad] text-white shadow-md' : 'bg-white border-[#dce5f0] font-semibold text-base text-[#032b59] hover:bg-[#f3f7fc]'}`}
                                                         >
                                                             <span className="text-lg mb-1">{m.icon}</span>
                                                             <span className="text-sm font-semibold">{m.label}</span>
@@ -4235,17 +4235,17 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             </div>
 
                                             <div className="space-y-3">
-                                                <label className="kraken-label block text-sm font-semibold text-[#526574] pl-1">
+                                                <label className="kraken-label block text-sm font-semibold text-[#50647c] pl-1">
                                                     {mt('Moving Route / Addresses', 'Ruta del traslado / Direcciones', 'Umzugsroute / Adressen', 'Itinéraire du déménagement / Adresses', 'Percorso trasloco / Indirizzi', 'Rota de mudança / Endereços')}
                                                 </label>
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                     <div className="space-y-1.5 text-left">
-                                                        <label className="kraken-label text-sm font-semibold text-[#526574] pl-1">
+                                                        <label className="kraken-label text-sm font-semibold text-[#50647c] pl-1">
                                                             {mt('Origin Point (Zip + Street)', 'Punto de Origen (Zip + Calle)', 'Startpunkt (PLZ + Strasse)', 'Point de départ (Code postal + Rue)', 'Punto di partenza (Cap + Via)', 'Ponto de origem (Cód. Postal + Rua)')}
                                                         </label>
                                                         <div className="flex gap-2">
-                                                            <input type="text" maxLength={4} placeholder={mt('Zip (e.g. 8001)', 'CP (ej. 8001)', 'PLZ (z.B. 8001)', 'NPA (ex. 8001)', 'CAP (es. 8001)', 'Cód. Postal (ex. 8001)')} className={`kraken-field w-24 p-3 bg-[#f4f8f8] border rounded-xl font-semibold text-base focus:ring-1 outline-none ${isFromZipValid ? 'border-emerald-250 focus:ring-emerald-200' : 'border-[#dce6e8] focus:ring-[#c8dedb]'}`} value={config.fromZip || ''} onChange={(e) => setConfig({...config, fromZip: e.target.value})} />
-                                                            <input type="text" placeholder={mt('Street Name & No.', 'Nombre de calle y N.º', 'Strasse & Nr.', 'Rue & N°', 'Via e N.', 'Nome da rua e N.º')} className="kraken-field flex-1 p-3 bg-[#f4f8f8] border border-[#dce6e8] rounded-xl font-semibold text-base focus:ring-1 focus:ring-[#c8dedb] outline-none" value={config.fromAddress || ''} onChange={(e) => setConfig({...config, fromAddress: e.target.value})} />
+                                                            <input type="text" maxLength={4} placeholder={mt('Zip (e.g. 8001)', 'CP (ej. 8001)', 'PLZ (z.B. 8001)', 'NPA (ex. 8001)', 'CAP (es. 8001)', 'Cód. Postal (ex. 8001)')} className={`kraken-field w-24 p-3 bg-[#f3f7fc] border rounded-xl font-semibold text-base focus:ring-1 outline-none ${isFromZipValid ? 'border-blue-250 focus:ring-blue-200' : 'border-[#dce5f0] focus:ring-[#c9dbef]'}`} value={config.fromZip || ''} onChange={(e) => setConfig({...config, fromZip: e.target.value})} />
+                                                            <input type="text" placeholder={mt('Street Name & No.', 'Nombre de calle y N.º', 'Strasse & Nr.', 'Rue & N°', 'Via e N.', 'Nome da rua e N.º')} className="kraken-field flex-1 p-3 bg-[#f3f7fc] border border-[#dce5f0] rounded-xl font-semibold text-base focus:ring-1 focus:ring-[#c9dbef] outline-none" value={config.fromAddress || ''} onChange={(e) => setConfig({...config, fromAddress: e.target.value})} />
                                                         </div>
                                                         {!isFromZipValid && config.fromZip && (
                                                             <p className="text-base text-amber-600 font-semibold pl-1 mt-1 flex items-center gap-1">
@@ -4255,12 +4255,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     </div>
 
                                                     <div className="space-y-1.5 text-left">
-                                                        <label className="kraken-label text-sm font-semibold text-[#526574] pl-1">
+                                                        <label className="kraken-label text-sm font-semibold text-[#50647c] pl-1">
                                                             {mt('Destination Point (Zip + Street)', 'Punto de Destino (Zip + Calle)', 'Zielpunkt (PLZ + Strasse)', 'Point d\'arrivée (Code postal + Rue)', 'Punto di destinazione (Cap + Via)', 'Ponto de destino (Cód. Postal + Rua)')}
                                                         </label>
                                                         <div className="flex gap-2">
-                                                            <input type="text" maxLength={4} placeholder={mt('Zip (e.g. 8002)', 'CP (ej. 8002)', 'PLZ (z.B. 8002)', 'NPA (ex. 8002)', 'CAP (es. 8002)', 'Cód. Postal (ex. 8002)')} className={`kraken-field w-24 p-3 bg-[#f4f8f8] border rounded-xl font-semibold text-base focus:ring-1 outline-none ${isToZipValid ? 'border-emerald-250 focus:ring-emerald-200' : 'border-[#dce6e8] focus:ring-[#c8dedb]'}`} value={config.toZip || ''} onChange={(e) => setConfig({...config, toZip: e.target.value})} />
-                                                            <input type="text" placeholder={mt('Street Name & No.', 'Nombre de calle y N.º', 'Strasse & Nr.', 'Rue & N°', 'Via e N.', 'Nome da rua e N.º')} className="kraken-field flex-1 p-3 bg-[#f4f8f8] border border-[#dce6e8] rounded-xl font-semibold text-base focus:ring-1 focus:ring-[#c8dedb] outline-none" value={config.toAddress || ''} onChange={(e) => setConfig({...config, toAddress: e.target.value})} />
+                                                            <input type="text" maxLength={4} placeholder={mt('Zip (e.g. 8002)', 'CP (ej. 8002)', 'PLZ (z.B. 8002)', 'NPA (ex. 8002)', 'CAP (es. 8002)', 'Cód. Postal (ex. 8002)')} className={`kraken-field w-24 p-3 bg-[#f3f7fc] border rounded-xl font-semibold text-base focus:ring-1 outline-none ${isToZipValid ? 'border-blue-250 focus:ring-blue-200' : 'border-[#dce5f0] focus:ring-[#c9dbef]'}`} value={config.toZip || ''} onChange={(e) => setConfig({...config, toZip: e.target.value})} />
+                                                            <input type="text" placeholder={mt('Street Name & No.', 'Nombre de calle y N.º', 'Strasse & Nr.', 'Rue & N°', 'Via e N.', 'Nome da rua e N.º')} className="kraken-field flex-1 p-3 bg-[#f3f7fc] border border-[#dce5f0] rounded-xl font-semibold text-base focus:ring-1 focus:ring-[#c9dbef] outline-none" value={config.toAddress || ''} onChange={(e) => setConfig({...config, toAddress: e.target.value})} />
                                                         </div>
                                                         {!isToZipValid && config.toZip && (
                                                             <p className="text-base text-amber-600 font-semibold pl-1 mt-1 flex items-center gap-1">
@@ -4273,15 +4273,15 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                                 <div className="space-y-2 text-left">
-                                                    <label className="kraken-label text-sm font-semibold text-[#526574] pl-1">
+                                                    <label className="kraken-label text-sm font-semibold text-[#50647c] pl-1">
                                                         {mt('Access at Origin', 'Acceso en Origen', 'Zugang am Startort', 'Accès au départ', 'Accesso alla partenza', 'Acesso na origem')}
                                                     </label>
                                                     <div className="flex gap-2">
-                                                        <select className="kraken-field w-1/2 p-3 bg-[#f4f8f8] border border-[#dce6e8] rounded-xl font-semibold text-base" value={config.accessFrom} onChange={(e) => setConfig({...config, accessFrom: e.target.value})}>
+                                                        <select className="kraken-field w-1/2 p-3 bg-[#f3f7fc] border border-[#dce5f0] rounded-xl font-semibold text-base" value={config.accessFrom} onChange={(e) => setConfig({...config, accessFrom: e.target.value})}>
                                                             <option value="Lift">{mt('Elevator / Lift', 'Ascensor', 'Aufzug / Lift', 'Ascenseur', 'Ascensore', 'Elevador')}</option>
                                                             <option value="Stairs">{mt('Stairs', 'Escaleras', 'Treppe', 'Escaliers', 'Scale', 'Escadas')}</option>
                                                         </select>
-                                                        <select className="kraken-field w-1/2 p-3 bg-[#f4f8f8] border border-[#dce6e8] rounded-xl font-semibold text-base" value={config.floorFrom} onChange={(e) => setConfig({...config, floorFrom: e.target.value})}>
+                                                        <select className="kraken-field w-1/2 p-3 bg-[#f3f7fc] border border-[#dce5f0] rounded-xl font-semibold text-base" value={config.floorFrom} onChange={(e) => setConfig({...config, floorFrom: e.target.value})}>
                                                             <option value="0">{mt('Ground Floor', 'Planta Baja', 'Erdgeschoss', 'Rez-de-chaussée', 'Piano Terra', 'Rés-do-chão')}</option>
                                                             <option value="1">{mt('1st Floor', '1.º Piso', '1. Stock', '1er étage', '1° Piano', '1.º Andar')}</option>
                                                             <option value="2">{mt('2nd Floor', '2.º Piso', '2. Stock', '2ème étage', '2° Piano', '2.º Andar')}</option>
@@ -4292,15 +4292,15 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                 </div>
 
                                                 <div className="space-y-2 text-left">
-                                                    <label className="kraken-label text-sm font-semibold text-[#526574] pl-1">
+                                                    <label className="kraken-label text-sm font-semibold text-[#50647c] pl-1">
                                                         {mt('Access at Destination', 'Acceso en Destino', 'Zugang am Zielort', 'Accès à l\'arrivée', 'Accesso all\'arrivo', 'Acesso no destino')}
                                                     </label>
                                                     <div className="flex gap-2">
-                                                        <select className="kraken-field w-1/2 p-3 bg-[#f4f8f8] border border-[#dce6e8] rounded-xl font-semibold text-base" value={config.accessTo} onChange={(e) => setConfig({...config, accessTo: e.target.value})}>
+                                                        <select className="kraken-field w-1/2 p-3 bg-[#f3f7fc] border border-[#dce5f0] rounded-xl font-semibold text-base" value={config.accessTo} onChange={(e) => setConfig({...config, accessTo: e.target.value})}>
                                                             <option value="Lift">{mt('Elevator / Lift', 'Ascensor', 'Aufzug / Lift', 'Ascenseur', 'Ascensore', 'Elevador')}</option>
                                                             <option value="Stairs">{mt('Stairs', 'Escaleras', 'Treppe', 'Escaliers', 'Scale', 'Escadas')}</option>
                                                         </select>
-                                                        <select className="kraken-field w-1/2 p-3 bg-[#f4f8f8] border border-[#dce6e8] rounded-xl font-semibold text-base" value={config.floorTo} onChange={(e) => setConfig({...config, floorTo: e.target.value})}>
+                                                        <select className="kraken-field w-1/2 p-3 bg-[#f3f7fc] border border-[#dce5f0] rounded-xl font-semibold text-base" value={config.floorTo} onChange={(e) => setConfig({...config, floorTo: e.target.value})}>
                                                             <option value="0">{mt('Ground Floor', 'Planta Baja', 'Erdgeschoss', 'Rez-de-chaussée', 'Piano Terra', 'Rés-do-chão')}</option>
                                                             <option value="1">{mt('1st Floor', '1.º Piso', '1. Stock', '1er étage', '1° Piano', '1.º Andar')}</option>
                                                             <option value="2">{mt('2nd Floor', '2.º Piso', '2. Stock', '2ème étage', '2° Piano', '2.º Andar')}</option>
@@ -4312,9 +4312,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             </div>
 
                                             <div className="space-y-1.5 text-left">
-                                                <label htmlFor="consultationpage-field-11" className="kraken-label text-sm font-semibold text-[#526574] pl-1">{mt('Parking Situation', 'Situación de Aparcamiento / Parking', 'Parksituation', 'Situation de stationnement', 'Situazione parcheggio', 'Situação do estacionamento')}</label>
+                                                <label htmlFor="consultationpage-field-11" className="kraken-label text-sm font-semibold text-[#50647c] pl-1">{mt('Parking Situation', 'Situación de Aparcamiento / Parking', 'Parksituation', 'Situation de stationnement', 'Situazione parcheggio', 'Situação do estacionamento')}</label>
                                                 <select id="consultationpage-field-11"
-                                                    className="kraken-field w-full p-3 bg-[#f4f8f8] border border-[#dce6e8] rounded-xl font-semibold text-base"
+                                                    className="kraken-field w-full p-3 bg-[#f3f7fc] border border-[#dce5f0] rounded-xl font-semibold text-base"
                                                     value={config.freeParking === false ? 'paid' : 'free'}
                                                     onChange={(e) => setConfig({...config, freeParking: e.target.value === 'free'})}
                                                 >
@@ -4323,20 +4323,20 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                 </select>
                                             </div>
 
-                                            <div className="bg-[#f4f8f8] border border-[#dce6e8] p-4 rounded-2xl font-semibold text-sm text-[#526574] flex flex-col gap-1.5 text-left">
+                                            <div className="bg-[#f3f7fc] border border-[#dce5f0] p-4 rounded-2xl font-semibold text-sm text-[#50647c] flex flex-col gap-1.5 text-left">
                                                 <div className="flex justify-between">
                                                     <span>{mt('Route distance:', 'Distancia de ruta:', 'Routenentfernung:', 'Distance de l\'itinéraire:', 'Distanza del percorso:', 'Distância da rota:')}</span>
-                                                    <span className="font-semibold text-[#082b45]">{gasInfo.distance ? `${gasInfo.distance.toFixed(1)} km` : mt('Calculating...', 'Calculando...', 'Berechnen...', 'Calcul...', 'Calcolo...', 'Calculando...')}</span>
+                                                    <span className="font-semibold text-[#032b59]">{gasInfo.distance ? `${gasInfo.distance.toFixed(1)} km` : mt('Calculating...', 'Calculando...', 'Berechnen...', 'Calcul...', 'Calcolo...', 'Calculando...')}</span>
                                                 </div>
                                                 <div className="flex justify-between">
                                                     <span>{mt('Fuel & transit surcharge:', 'Cargo por gasolina y tránsito:', 'Benzin- & Transitgebühr:', 'Frais d\'essence & transit:', 'Supplemento carburante e transito:', 'Taxa de combustível e trânsito:')}</span>
-                                                    <span className="font-semibold text-[#082b45]">CHF {gasCost.toFixed(2)}</span>
+                                                    <span className="font-semibold text-[#032b59]">CHF {gasCost.toFixed(2)}</span>
                                                 </div>
                                                 {(stairFeeFrom > 0 || stairFeeTo > 0) && (
-                                                    <div className="flex justify-between text-emerald-600 font-semibold">
+                                                    <div className="flex justify-between text-blue-600 font-semibold">
                                                         <span>
                                                             {mt('Stairs Carrying Surcharge:', 'Recargo por transporte de escaleras:', 'Treppenzuschlag (ohne Lift):', 'Supplément pour portage d\'escalier :', 'Supplemento trasporto scale:', 'Sobretaxa de transporte por escadas:')}
-                                                            <span className="text-sm font-medium text-[#526574] block sm:inline sm:ml-1.5">
+                                                            <span className="text-sm font-medium text-[#50647c] block sm:inline sm:ml-1.5">
                                                                 ({stairFeeFrom > 0 ? `${mt('Origin', 'Origen', 'Auszug', 'Départ', 'Partenza', 'Origem')}: +${stairFeeFrom} CHF` : ''}
                                                                 {stairFeeFrom > 0 && stairFeeTo > 0 ? ', ' : ''}
                                                                 {stairFeeTo > 0 ? `${mt('Destination', 'Destino', 'Einzug', 'Arrivée', 'Destinazione', 'Destino')}: +${stairFeeTo} CHF` : ''})
@@ -4346,12 +4346,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     </div>
                                                 )}
                                                 {config.freeParking === false && (
-                                                    <div className="flex justify-between text-emerald-600 font-semibold">
+                                                    <div className="flex justify-between text-blue-600 font-semibold">
                                                         <span>{mt('Paid / Public Zone Parking Fee:', 'Recargo por aparcamiento de pago/métrica:', 'Gebühren für kostenpflichtiges Parken:', 'Frais de parking payant / zone publique :', 'Tariffa parcheggio a pagamento/pubblico:', 'Taxa de estacionamento pago / zona pública:')}</span>
                                                         <span>CHF 30.00</span>
                                                     </div>
                                                 )}
-                                                <div className="flex justify-between font-semibold text-[#082b45] border-t border-[#dce6e8] pt-1.5 mt-1">
+                                                <div className="flex justify-between font-semibold text-[#032b59] border-t border-[#dce5f0] pt-1.5 mt-1">
                                                     <span>{mt(`Labor rate (${movers} movers):`, `Tarifa de mano de obra (${movers} transportistas):`, `Arbeitskosten (${movers} Zügelhelfer):`, `Tarif de main-d'œuvre (${movers} déménageurs):`, `Tariffa manodopera (${movers} traslocatori):`, `Taxa de mão de obra (${movers} ajudantes):`)}</span>
                                                     <span>CHF {laborRate}/h</span>
                                                 </div>
@@ -4363,54 +4363,54 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             </div>
 
                                             <div className="space-y-4 pt-2">
-                                                <label className="kraken-label block text-sm font-semibold text-[#526574] pl-1">
+                                                <label className="kraken-label block text-sm font-semibold text-[#50647c] pl-1">
                                                     {mt('Extras & Accessories', 'Extras del traslado / Accesorios', 'Zusatzleistungen & Zubehör', 'Prestations supplémentaires & Accessoires', 'Extra e accessori', 'Extras e acessórios')}
                                                 </label>
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                     <CounterCard icon="🔧" label={mt('Furniture Disassembly / Assembly', 'Desmontaje / Montaje muebles', 'Möbeldemontage / -montage', 'Démontage / Montage de meubles', 'Smontaggio / Montaggio mobili', 'Desmontagem / Montagem de móveis')} subLabel={mt('+ CHF 80.00/h', '+ CHF 80.00/h', '+ CHF 80.00/Std.', '+ CHF 80.00/h', '+ CHF 80.00/ora', '+ CHF 80.00/h')} value={config.assembly ? config.assemblyHours : 0} onChange={(v) => setConfig({...config, assembly: v > 0, assemblyHours: v})} />
                                                     <CounterCard icon="🏗️" label={mt('External Hydraulic Lift', 'Elevador Hidráulico Externo', 'Aussenlift / Möbellift', 'Monte-meuble hydraulique', 'Elevatore idraulico esterno', 'Elevador hidráulico externo')} subLabel={mt('+ CHF 150.00/h', '+ CHF 150.00/h', '+ CHF 150.00/Std.', '+ CHF 150.00/h', '+ CHF 150.00/ora', '+ CHF 150.00/h')} value={config.hydraulicLift ? config.hydraulicLiftHours : 0} onChange={(v) => setConfig({...config, hydraulicLift: v > 0, hydraulicLiftHours: v})} />
-                                                    <div className="flex items-center justify-between p-4 bg-white rounded-2xl border-2 border-[#dce6e8] hover:border-[#dce6e8]">
+                                                    <div className="flex items-center justify-between p-4 bg-white rounded-2xl border-2 border-[#dce5f0] hover:border-[#dce5f0]">
                                                         <div className="flex flex-col text-left">
-                                                            <span className="text-sm font-semibold text-[#526574]">
+                                                            <span className="text-sm font-semibold text-[#50647c]">
                                                                 {mt('Packaging Material', 'Material de Embalaje', 'Verpackungsmaterial', 'Matériel d\'emballage', 'Materiale da imballaggio', 'Material de embalagem')}
                                                             </span>
-                                                            <span className="text-sm text-[#526574]">
+                                                            <span className="text-sm text-[#50647c]">
                                                                 {mt('+ CHF 45.00 flat fee', '+ CHF 45.00 tarifa fija', '+ CHF 45.00 Pauschale', '+ CHF 45.00 forfait', '+ CHF 45.00 tariffa fissa', '+ CHF 45.00 taxa fixa')}
                                                             </span>
                                                         </div>
-                                                        <button type="button" onClick={() => setConfig({...config, packaging: !config.packaging})} className={`kraken-switch w-10 h-5 rounded-full relative transition-all ${config.packaging ? 'bg-[#087f73]' : 'bg-gray-200'}`}><div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${config.packaging ? 'translate-x-5' : 'translate-x-0'}`}></div></button>
+                                                        <button type="button" onClick={() => setConfig({...config, packaging: !config.packaging})} className={`kraken-switch w-10 h-5 rounded-full relative transition-all ${config.packaging ? 'bg-[#1464ad]' : 'bg-gray-200'}`}><div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${config.packaging ? 'translate-x-5' : 'translate-x-0'}`}></div></button>
                                                     </div>
-                                                    <div className="flex items-center justify-between p-4 bg-white rounded-2xl border-2 border-[#dce6e8] hover:border-[#dce6e8]">
+                                                    <div className="flex items-center justify-between p-4 bg-white rounded-2xl border-2 border-[#dce5f0] hover:border-[#dce5f0]">
                                                         <div className="flex flex-col text-left">
-                                                            <span className="text-sm font-semibold text-[#526574]">
+                                                            <span className="text-sm font-semibold text-[#50647c]">
                                                                 {mt('Basic final cleaning (Home)', 'Limpieza final básica (Hogar)', 'Endreinigung (Wohnung)', 'Nettoyage final de base (Maison)', 'Pulizia finale di base (Casa)', 'Limpeza final básica (Lar)')}
                                                             </span>
-                                                            <span className="text-sm text-[#526574]">
+                                                            <span className="text-sm text-[#50647c]">
                                                                 {mt('+ Bundle rate available', '+ Tarifa combinada disponible', '+ Kombi-Tarif verfügbar', '+ Tarif combiné disponible', '+ Tariffa combinata disponibile', '+ Tarifa combinada disponível')}
                                                             </span>
                                                         </div>
-                                                        <button type="button" onClick={() => setConfig({...config, cleaning: !config.cleaning})} className={`kraken-switch w-10 h-5 rounded-full relative transition-all ${config.cleaning ? 'bg-[#087f73]' : 'bg-gray-200'}`}><div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${config.cleaning ? 'translate-x-5' : 'translate-x-0'}`}></div></button>
+                                                        <button type="button" onClick={() => setConfig({...config, cleaning: !config.cleaning})} className={`kraken-switch w-10 h-5 rounded-full relative transition-all ${config.cleaning ? 'bg-[#1464ad]' : 'bg-gray-200'}`}><div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${config.cleaning ? 'translate-x-5' : 'translate-x-0'}`}></div></button>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div className="space-y-1.5 text-left pt-2">
-                                                <label htmlFor="consultationpage-field-12" className="kraken-label block text-sm font-semibold text-[#526574] pl-1">
+                                                <label htmlFor="consultationpage-field-12" className="kraken-label block text-sm font-semibold text-[#50647c] pl-1">
                                                     {mt('Inventory or important details', 'Inventario o detalles importantes', 'Inventar oder wichtige Details', 'Inventaire ou détails importants', 'Inventario o dettagli importanti', 'Inventário ou importantes detalhes')}
                                                 </label>
-                                                <textarea id="consultationpage-field-12" placeholder={mt('e.g. A 3-seater sofa, large dining table with 6 chairs, 12 cardboard boxes, fragile TV...', 'ej. Un sofá de 3 plazas, mesa de comedor grande con 6 sillas, 12 cajas de cartón, TV frágil...', 'z.B. Ein 3-Sitzer-Sofa, grosser Esstisch mit 6 Stühlen, 12 Kartons, empfindlicher Fernseher...', 'ex. Un canapé 3 places, une grande table à manger avec 6 chaises, 12 cartons, un téléviseur fragile...', 'es. Un divano a 3 posti, tavolo da pranzo grande con 6 sedie, 12 scatole di cartone, TV fragile...', 'ex. Um sofá de 3 lugares, mesa de jantar grande com 6 cadeiras, 12 caixas de cartão, TV frágil...')} className="kraken-field w-full p-4 bg-[#f4f8f8] focus:bg-white border border-[#dce6e8] focus:border-[#087f73] focus:ring-1 rounded-2xl text-base font-semibold font-sans outline-none transition-all" rows={4} value={config.description || ''} onChange={(e) => setConfig({...config, description: e.target.value})} />
+                                                <textarea id="consultationpage-field-12" placeholder={mt('e.g. A 3-seater sofa, large dining table with 6 chairs, 12 cardboard boxes, fragile TV...', 'ej. Un sofá de 3 plazas, mesa de comedor grande con 6 sillas, 12 cajas de cartón, TV frágil...', 'z.B. Ein 3-Sitzer-Sofa, grosser Esstisch mit 6 Stühlen, 12 Kartons, empfindlicher Fernseher...', 'ex. Un canapé 3 places, une grande table à manger avec 6 chaises, 12 cartons, un téléviseur fragile...', 'es. Un divano a 3 posti, tavolo da pranzo grande con 6 sedie, 12 scatole di cartone, TV fragile...', 'ex. Um sofá de 3 lugares, mesa de jantar grande com 6 cadeiras, 12 caixas de cartão, TV frágil...')} className="kraken-field w-full p-4 bg-[#f3f7fc] focus:bg-white border border-[#dce5f0] focus:border-[#1464ad] focus:ring-1 rounded-2xl text-base font-semibold font-sans outline-none transition-all" rows={4} value={config.description || ''} onChange={(e) => setConfig({...config, description: e.target.value})} />
                                             </div>
                                         </div>
                                     );
                                 })()}
 
                                 {/* --- Bottom inline total pricing + save action button layout --- */}
-                                <div className="mt-8 pt-6 border-t border-[#dce6e8] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div className="mt-8 pt-6 border-t border-[#dce5f0] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                     <div className="text-left">
-                                        <div className="text-sm text-[#526574] font-semibold ">{t('consultation.estimatedTotal')}</div>
-                                        <div className="text-3xl font-semibold text-[#082b45] mt-1 flex items-baseline gap-1.5 leading-none">
+                                        <div className="text-sm text-[#50647c] font-semibold ">{t('consultation.estimatedTotal')}</div>
+                                        <div className="text-3xl font-semibold text-[#032b59] mt-1 flex items-baseline gap-1.5 leading-none">
                                             <span>CHF {getEstimatedPrice().toFixed(2)}</span>
-                                            <span className="text-sm text-[#526574] font-semibold ">
+                                            <span className="text-sm text-[#50647c] font-semibold ">
                                                 {language === 'de' || language === 'de-CH' ? 'exkl. MwSt.' :
                                                  language === 'fr' ? 'hors TVA' :
                                                  language === 'it' ? 'escl. IVA' :
@@ -4418,7 +4418,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                  language === 'pt' ? 'sem IVA' : 'excl. VAT'}
                                             </span>
                                         </div>
-                                        <p className="text-base text-[#526574] font-semibold mt-1 max-w-xs leading-relaxed">
+                                        <p className="text-base text-[#50647c] font-semibold mt-1 max-w-xs leading-relaxed">
                                             {mt('Dynamic pricing calculations are exclusive of VAT.', 'El precio total se calcula dinámicamente, excluyendo el IVA.', 'Preiskalkulationen verstehen sich exklusive MwSt.', 'Les calculs de prix dynamiques sont hors TVA.', 'I calcoli dinamici dei prezzi sono esclusi IVA.', 'Os cálculos de preços dinâmicos não incluem IVA.')}
                                         </p>
                                     </div>
@@ -4426,14 +4426,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         <button
                                             type="button"
                                             onClick={closeActiveService}
-                                            className="kraken-control min-h-11 min-w-11 px-6 py-3.5 bg-[#f4f8f8] hover:bg-[#f4f8f8] rounded-2xl text-[#082b45] font-semibold text-base transition-all cursor-pointer border border-[#dce6e8] shadow-sm"
+                                            className="kraken-control min-h-11 min-w-11 px-6 py-3.5 bg-[#f3f7fc] hover:bg-[#f3f7fc] rounded-2xl text-[#032b59] font-semibold text-base transition-all cursor-pointer border border-[#dce5f0] shadow-sm"
                                         >
                                             {mt('Cancel', 'Cancelar', 'Abbrechen', 'Annuler', 'Annulla', 'Cancelar')}
                                         </button>
                                         <button
                                             type="button"
                                             onClick={handleAddToCart}
-                                            className="kraken-control min-h-11 min-w-11 px-8 py-3.5 bg-[#087f73] hover:bg-[#087f73] rounded-2xl text-white font-semibold text-base transition-all shadow-md flex items-center justify-center gap-2.5 cursor-pointer "
+                                            className="kraken-control min-h-11 min-w-11 px-8 py-3.5 bg-[#1464ad] hover:bg-[#1464ad] rounded-2xl text-white font-semibold text-base transition-all shadow-md flex items-center justify-center gap-2.5 cursor-pointer "
                                         >
                                             <span>{editingItemId ? t('consultation.label.updateService') : mt('Add to budget →', 'Añadir al presupuesto →', 'Zum Budget hinzufügen →', 'Ajouter au budget →', 'Aggiungi al preventivo →', 'Adicionar ao orçamento →')}</span>
                                         </button>
@@ -4447,12 +4447,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                 {/* --- Step 3: Choose Additional Services --- */}
                 {activeWizardStep === 3 && (
                     <div className="space-y-8 animate-fade-in">
-                        <div className="flex flex-col gap-1 border-b border-[#dce6e8] pb-4 mb-6">
+                        <div className="flex flex-col gap-1 border-b border-[#dce5f0] pb-4 mb-6">
                             <div className="flex items-center gap-3">
-                                <span className="bg-[#087f73] text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl font-semibold shadow-md">3</span>
-                                <h3 className="text-xl font-semibold text-[#082b45] ">{t('consultation.services.additional')}</h3>
+                                <span className="bg-[#1464ad] text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl font-semibold shadow-md">3</span>
+                                <h3 className="text-xl font-semibold text-[#032b59] ">{t('consultation.services.additional')}</h3>
                             </div>
-                            <p className="text-base font-semibold text-[#526574] mt-1 pl-13">
+                            <p className="text-base font-semibold text-[#50647c] mt-1 pl-13">
                                 {language === 'es' ? 'Añade extras opcionales para complementar tu presupuesto.' : language === 'de' || language === 'de-CH' ? 'Fügen Sie optionale Extras hinzu, um Ihr Angebot zu ergänzen.' : 'Add optional extras to complement your quotation.'}
                             </p>
                         </div>
@@ -4475,17 +4475,17 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         <div className="flex justify-between items-start w-full">
                                             <span className="text-4xl filter drop-shadow-lg transform group-hover:rotate-6 transition-transform duration-200">{service.icon}</span>
                                             <div className="flex items-center gap-2">
-                                                <span className="bg-[#eef7f5] text-[#082b45] text-sm md:text-sm font-semibold px-2.5 py-1 rounded-full shadow-md border border-amber-200 select-none flex items-center gap-1 shrink-0">
+                                                <span className="bg-[#edf4fd] text-[#032b59] text-sm md:text-sm font-semibold px-2.5 py-1 rounded-full shadow-md border border-amber-200 select-none flex items-center gap-1 shrink-0">
                                                     ⏳ {t('services.comingSoon')}
                                                 </span>
                                             </div>
                                         </div>
                                         <div>
-                                            <h4 className="font-semibold text-base text-[#082b45] mb-0.5 ">{t(service.title)}</h4>
+                                            <h4 className="font-semibold text-base text-[#032b59] mb-0.5 ">{t(service.title)}</h4>
                                             <p className="text-white/80 font-semibold text-base leading-snug">{t(service.subtitle)}</p>
                                         </div>
                                     </div>
-                                    <div className="absolute -right-3 -bottom-3 text-[#082b45] opacity-10 text-[90px] group-hover:rotate-12 transition-transform duration-200 pointer-events-none select-none">
+                                    <div className="absolute -right-3 -bottom-3 text-[#032b59] opacity-10 text-[90px] group-hover:rotate-12 transition-transform duration-200 pointer-events-none select-none">
                                         {service.icon}
                                     </div>
                                 </button>
@@ -4497,12 +4497,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                 {/* --- Step 4: Visual Documentation --- */}
                 {activeWizardStep === 4 && (
                     <div className="animate-fade-in">
-                        <div className="flex flex-col gap-1 border-b border-[#dce6e8] pb-4 mb-6">
+                        <div className="flex flex-col gap-1 border-b border-[#dce5f0] pb-4 mb-6">
                             <div className="flex items-center gap-3">
-                                <span className="bg-[#087f73] text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl font-semibold shadow-md">4</span>
-                                <h3 className="text-xl font-semibold text-[#082b45] ">{t('consultation.visualDocumentation')}</h3>
+                                <span className="bg-[#1464ad] text-white w-10 h-10 rounded-xl flex items-center justify-center text-xl font-semibold shadow-md">4</span>
+                                <h3 className="text-xl font-semibold text-[#032b59] ">{t('consultation.visualDocumentation')}</h3>
                             </div>
-                            <p className="text-base font-semibold text-[#526574] mt-1 pl-13">
+                            <p className="text-base font-semibold text-[#50647c] mt-1 pl-13">
                                 {language === 'es' ? 'Sube fotos de tu propiedad para darnos más detalles de las tareas.' : language === 'de' || language === 'de-CH' ? 'Laden Sie Fotos Ihrer Immobilie hoch, um uns mehr Details zu geben.' : 'Upload photos of your property to provide us with extra visual detail.'}
                             </p>
                         </div>
@@ -4525,7 +4525,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             href="https://console.firebase.google.com/project/vivid-kite-477020-h6/authentication/providers"
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-1.5 hover:bg-amber-700 text-[#082b45] font-semibold text-sm px-3.5 py-2.5 rounded-xl transition-all shadow-sm"
+                                            className="inline-flex items-center gap-1.5 hover:bg-amber-700 text-[#032b59] font-semibold text-sm px-3.5 py-2.5 rounded-xl transition-all shadow-sm"
                                             style={{ backgroundColor: '#D97706' }}
                                         >
                                             Habilitar en la Consola de Firebase ↗
@@ -4542,7 +4542,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             </div>
                         )}
 
-                        <div className="border-3 border-dashed border-[#dce6e8] bg-white rounded-[2rem] p-10 text-center relative hover:border-[#087f73] hover:bg-[#eef7f5] transition-all duration-300 group">
+                        <div className="border-3 border-dashed border-[#dce5f0] bg-white rounded-[2rem] p-10 text-center relative hover:border-[#1464ad] hover:bg-[#edf4fd] transition-all duration-300 group">
                             <input
                                 type="file"
                                 accept="image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif,video/mp4,video/quicktime,application/pdf,application/zip,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.heic,.heif,.mov,.docx"
@@ -4556,17 +4556,17 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     }
                                 }}
                             />
-                            <div className="w-20 h-20 bg-[#eef7f5] text-4xl rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm group-hover:rotate-6 transition-transform duration-200 select-none">
+                            <div className="w-20 h-20 bg-[#edf4fd] text-4xl rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm group-hover:rotate-6 transition-transform duration-200 select-none">
                                 📸
                             </div>
-                            <p className="font-semibold text-xl text-[#082b45] mb-1.5">
+                            <p className="font-semibold text-xl text-[#032b59] mb-1.5">
                                 {t('consultation.upload.precise')}
                             </p>
-                            <p className="text-base text-[#526574] font-semibold ">{mt('20 MiB per file · 250 MiB total · Optional', '20 MiB por archivo · 250 MiB en total · Opcional', '20 MiB pro Datei · 250 MiB insgesamt · Optional', '20 MiB par fichier · 250 MiB au total · Facultatif', '20 MiB per file · 250 MiB totali · Facoltativo', '20 MiB por ficheiro · 250 MiB no total · Opcional')}</p>
+                            <p className="text-base text-[#50647c] font-semibold ">{mt('20 MiB per file · 250 MiB total · Optional', '20 MiB por archivo · 250 MiB en total · Opcional', '20 MiB pro Datei · 250 MiB insgesamt · Optional', '20 MiB par fichier · 250 MiB au total · Facultatif', '20 MiB per file · 250 MiB totali · Facoltativo', '20 MiB por ficheiro · 250 MiB no total · Opcional')}</p>
 
                             {files.length > 0 && (
                                 <div className="mt-8 text-left max-w-lg mx-auto space-y-4 relative z-20">
-                                    <h4 className="text-lg font-semibold text-[#526574] pl-1 mb-2">{t('consultation.queue.status')}</h4>
+                                    <h4 className="text-lg font-semibold text-[#50647c] pl-1 mb-2">{t('consultation.queue.status')}</h4>
                                     <div className="space-y-3">
                                         {files.map((file, idx) => {
                                             const uploadState = uploadStates.find(us => us.name === file.name);
@@ -4578,7 +4578,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             return (
                                                 <div
                                                     key={`${file.name}-${idx}`}
-                                                    className="bg-[#f4f8f8] p-4 rounded-2xl border border-[#dce6e8] flex flex-col gap-2 relative group overflow-hidden transition-all duration-300 hover:border-[#c8dedb] hover:shadow-md"
+                                                    className="bg-[#f3f7fc] p-4 rounded-2xl border border-[#dce5f0] flex flex-col gap-2 relative group overflow-hidden transition-all duration-300 hover:border-[#c9dbef] hover:shadow-md"
                                                 >
                                                     {isUploading && (
                                                         <div
@@ -4590,20 +4590,20 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     <div className="flex items-center justify-between gap-4 relative z-10 w-full">
                                                         <div className="flex items-center gap-3 min-w-0">
                                                             <div className={`p-2.5 rounded-xl shrink-0 ${
-                                                                isCompleted ? 'bg-[#eef7f5] text-[#087f73]' :
-                                                                isUploading ? 'bg-[#eef7f5] text-[#087f73]' :
-                                                                isError ? 'bg-red-50 text-red-500' : 'bg-[#f4f8f8] text-[#526574]'
+                                                                isCompleted ? 'bg-[#edf4fd] text-[#1464ad]' :
+                                                                isUploading ? 'bg-[#edf4fd] text-[#1464ad]' :
+                                                                isError ? 'bg-red-50 text-red-500' : 'bg-[#f3f7fc] text-[#50647c]'
                                                             }`}>
                                                                 {isCompleted && <CheckIcon className="w-5 h-5 animate-scale-up" />}
                                                                 {isUploading && (
-                                                                    <span className="inline-block animate-spin w-5 h-5 border-2 border-[#087f73] border-t-transparent rounded-full"></span>
+                                                                    <span className="inline-block animate-spin w-5 h-5 border-2 border-[#1464ad] border-t-transparent rounded-full"></span>
                                                                 )}
                                                                 {isError && <XMarkIcon className="w-5 h-5 text-red-500" />}
                                                                 {!uploadState && <CloudUploadIcon className="w-5 h-5" />}
                                                             </div>
                                                             <div className="truncate text-left">
-                                                                <p className="font-semibold text-base text-[#526574] truncate">{file.name}</p>
-                                                                <p className="font-mono text-base text-[#526574]">
+                                                                <p className="font-semibold text-base text-[#50647c] truncate">{file.name}</p>
+                                                                <p className="font-mono text-base text-[#50647c]">
                                                                     {(file.size / (1024 * 1024)).toFixed(2)} MB • {
                                                                         isCompleted ? t('consultation.upload.ready') :
                                                                         isUploading ? t('consultation.upload.uploading', { progress }) :
@@ -4616,16 +4616,16 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         <button
                                                             type="button"
                                                             onClick={(e) => { e.stopPropagation(); e.preventDefault(); handleFileRemoval(idx); }}
-                                                            className="kraken-control min-h-11 min-w-11 p-1.5 rounded-lg text-[#526574] hover:text-red-500 hover:bg-red-50 transition-all duration-200 shrink-0 cursor-pointer pointer-events-auto relative z-30"
+                                                            className="kraken-control min-h-11 min-w-11 p-1.5 rounded-lg text-[#50647c] hover:text-red-500 hover:bg-red-50 transition-all duration-200 shrink-0 cursor-pointer pointer-events-auto relative z-30"
                                                         >
                                                             <TrashIcon className="w-4 h-4" />
                                                         </button>
                                                     </div>
 
                                                     {isUploading && (
-                                                        <div className="w-full bg-[#f4f8f8] h-1.5 rounded-full overflow-hidden mt-1 relative z-10 ">
+                                                        <div className="w-full bg-[#f3f7fc] h-1.5 rounded-full overflow-hidden mt-1 relative z-10 ">
                                                             <div
-                                                                className="bg-[#087f73] h-full transition-all duration-300"
+                                                                className="bg-[#1464ad] h-full transition-all duration-300"
                                                                 style={{ width: `${progress}%` }}
                                                             ></div>
                                                         </div>
@@ -4647,7 +4647,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                 )}
 
                 {/* --- Step Footer Navigation Controls --- */}
-                <div className="mt-12 flex items-center justify-between border-t border-[#dce6e8] pt-8">
+                <div className="mt-12 flex items-center justify-between border-t border-[#dce5f0] pt-8">
                     {activeWizardStep > 1 ? (
                         <button
                             type="button"
@@ -4658,7 +4658,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     wizardEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
                                 }
                             }}
-                            className="kraken-control min-h-11 min-w-11 px-7 py-3 bg-white hover:bg-[#f4f8f8] border border-[#dce6e8] hover:border-slate-350 rounded-2xl text-[#082b45] font-semibold text-base transition-all shadow-sm cursor-pointer"
+                            className="kraken-control min-h-11 min-w-11 px-7 py-3 bg-white hover:bg-[#f3f7fc] border border-[#dce5f0] hover:border-slate-350 rounded-2xl text-[#032b59] font-semibold text-base transition-all shadow-sm cursor-pointer"
                         >
                             {language === 'es' ? '← Atrás' : language === 'de' || language === 'de-CH' ? '← Zurück' : '← Back'}
                         </button>
@@ -4682,8 +4682,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             disabled={activeWizardStep === 1 && (!postcode || postcode.length !== 4 || !address.trim())}
                             className={`kraken-control min-h-11 min-w-11 px-8 py-3.5 rounded-2xl font-semibold text-base transition-all shadow-md flex items-center gap-2 cursor-pointer ${
                                 activeWizardStep === 1 && (!postcode || postcode.length !== 4 || !address.trim())
-                                    ? 'bg-[#f4f8f8] text-[#526574] border border-[#dce6e8] cursor-not-allowed shadow-none'
-                                    : 'bg-[#082b45] hover:bg-[#082b45] text-white hover:shadow-sm '
+                                    ? 'bg-[#f3f7fc] text-[#50647c] border border-[#dce5f0] cursor-not-allowed shadow-none'
+                                    : 'bg-[#032b59] hover:bg-[#032b59] text-white hover:shadow-sm '
                             }`}
                         >
                             <span>{language === 'es' ? 'Continuar →' : language === 'de' || language === 'de-CH' ? 'Weiter →' : 'Continue →'}</span>
@@ -4695,8 +4695,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             disabled={cart.length === 0}
                             className={`kraken-control min-h-11 min-w-11 px-8 py-3.5 rounded-2xl font-semibold text-base transition-all shadow-md flex items-center gap-2 cursor-pointer ${
                                 cart.length === 0
-                                    ? 'bg-[#f4f8f8] text-[#526574] border border-[#dce6e8] cursor-not-allowed shadow-none'
-                                    : 'bg-emerald-500 hover:bg-emerald-600 text-white hover:shadow-sm '
+                                    ? 'bg-[#f3f7fc] text-[#50647c] border border-[#dce5f0] cursor-not-allowed shadow-none'
+                                    : 'bg-blue-500 hover:bg-blue-600 text-white hover:shadow-sm '
                             }`}
                         >
                             <span>{language === 'es' ? 'Obtener presupuesto final' : language === 'de' || language === 'de-CH' ? 'Offerte anfordern' : 'Get quotation'}</span>
@@ -4708,46 +4708,46 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
             <div className="kraken-workflow-aside kraken-summary min-w-0 w-full lg:sticky lg:top-28">
                 <div className="lg:relative">
-                    <div className="kraken-panel rounded-2xl border border-[#dce6e8] bg-white overflow-hidden">
-                        <div className="lg:hidden p-4 flex flex-wrap items-center justify-between gap-3 cursor-pointer border-b border-[#dce6e8] hover:bg-[#f4f8f8] transition-colors" onClick={(e) => { if((e.target as HTMLElement).tagName !== 'BUTTON') setMobileSummaryOpen(!isMobileSummaryOpen); }}>
+                    <div className="kraken-panel rounded-2xl border border-[#dce5f0] bg-white overflow-hidden">
+                        <div className="lg:hidden p-4 flex flex-wrap items-center justify-between gap-3 cursor-pointer border-b border-[#dce5f0] hover:bg-[#f3f7fc] transition-colors" onClick={(e) => { if((e.target as HTMLElement).tagName !== 'BUTTON') setMobileSummaryOpen(!isMobileSummaryOpen); }}>
                             <div className="flex flex-col">
-                                <span className="text-sm text-[#526574] font-semibold mb-0.5">{t('consultation.estimatedTotal')}</span>
-                                <span className="text-2xl font-semibold text-[#082b45]">{cart.length > 0 ? `CHF ${grandTotal.toFixed(2)}` : '—'}</span>
+                                <span className="text-sm text-[#50647c] font-semibold mb-0.5">{t('consultation.estimatedTotal')}</span>
+                                <span className="text-2xl font-semibold text-[#032b59]">{cart.length > 0 ? `CHF ${grandTotal.toFixed(2)}` : '—'}</span>
                             </div>
                             <div className="flex items-center gap-3">
-                                <button onClick={() => setContactModalOpen(true)} disabled={cart.length === 0} className="kraken-control min-h-11 min-w-11 bg-[#087f73] text-white px-8 py-3 rounded-2xl font-semibold text-base shadow-sm hover:bg-[#087f73] disabled:opacity-50 transition-all">{t('consultation.book')}</button>
-                                <button type="button" aria-label={t('consultation.yourBundle')} aria-expanded={isMobileSummaryOpen} aria-controls="quote-summary-content" onClick={event => { event.stopPropagation(); setMobileSummaryOpen(!isMobileSummaryOpen); }} className={`kraken-control inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl text-[#526574] bg-[#f4f8f8] transition-transform ${isMobileSummaryOpen ? 'rotate-180' : ''}`}><ChevronUpIcon aria-hidden="true" className="w-5 h-5"/></button>
+                                <button onClick={() => setContactModalOpen(true)} disabled={cart.length === 0} className="kraken-control min-h-11 min-w-11 bg-[#1464ad] text-white px-8 py-3 rounded-2xl font-semibold text-base shadow-sm hover:bg-[#1464ad] disabled:opacity-50 transition-all">{t('consultation.book')}</button>
+                                <button type="button" aria-label={t('consultation.yourBundle')} aria-expanded={isMobileSummaryOpen} aria-controls="quote-summary-content" onClick={event => { event.stopPropagation(); setMobileSummaryOpen(!isMobileSummaryOpen); }} className={`kraken-control inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl text-[#50647c] bg-[#f3f7fc] transition-transform ${isMobileSummaryOpen ? 'rotate-180' : ''}`}><ChevronUpIcon aria-hidden="true" className="w-5 h-5"/></button>
                             </div>
                         </div>
 
                         <div id="quote-summary-content" className={`transition-[max-height] duration-200 ease-in-out overflow-hidden ${isMobileSummaryOpen ? 'max-h-[70vh]' : 'max-h-0'} lg:max-h-none lg:block`}>
-                            <div className="hidden lg:block p-5 border-b border-[#dce6e8] bg-[#f4f8f8]">
-                                <h3 className="text-2xl font-semibold text-[#082b45] ">{t('consultation.yourBundle')}</h3>
+                            <div className="hidden lg:block p-5 border-b border-[#dce5f0] bg-[#f3f7fc]">
+                                <h3 className="text-2xl font-semibold text-[#032b59] ">{t('consultation.yourBundle')}</h3>
                             </div>
                             <div className="p-4 sm:p-5">
                                 {/* Visual Stepper Status Checklist inside Right Summary Sidebar */}
-                                <div className="mb-6 bg-[#f4f8f8] border border-[#dce6e8] p-4 rounded-2xl space-y-3">
-                                    <h4 className="text-lg font-semibold text-[#082b45]/60 mb-2">
+                                <div className="mb-6 bg-[#f3f7fc] border border-[#dce5f0] p-4 rounded-2xl space-y-3">
+                                    <h4 className="text-lg font-semibold text-[#032b59]/60 mb-2">
                                         {t('consultation.wizard.status')}
                                     </h4>
 
                                     {/* 1. Location */}
-                                    <div className="flex items-center justify-between text-sm font-semibold text-[#526574]">
-                                        <div className="flex items-center gap-2 text-[#526574]">
+                                    <div className="flex items-center justify-between text-sm font-semibold text-[#50647c]">
+                                        <div className="flex items-center gap-2 text-[#50647c]">
                                             <span>📍</span>
                                             <span>{t('consultation.wizard.location')}</span>
                                         </div>
                                         <div className="flex items-center gap-1.5 font-semibold text-sm">
                                             {postcode && postcode.length === 4 ? (
-                                                <span className="text-emerald-600 flex items-center gap-1">
+                                                <span className="text-blue-600 flex items-center gap-1">
                                                     ✓ {postcode} {city ? `, ${city}` : ''}
                                                 </span>
                                             ) : activeWizardStep === 1 ? (
-                                                <span className="text-[#087f73] ">
+                                                <span className="text-[#1464ad] ">
                                                     ● {t('consultation.wizard.entering')}
                                                 </span>
                                             ) : (
-                                                <span className="text-[#526574]">
+                                                <span className="text-[#50647c]">
                                                     ○
                                                 </span>
                                             )}
@@ -4755,22 +4755,22 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     </div>
 
                                     {/* 2. Main Service */}
-                                    <div className="flex items-center justify-between text-sm font-semibold text-[#526574] border-t border-[#dce6e8] pt-2">
-                                        <div className="flex items-center gap-2 text-[#526574]">
+                                    <div className="flex items-center justify-between text-sm font-semibold text-[#50647c] border-t border-[#dce5f0] pt-2">
+                                        <div className="flex items-center gap-2 text-[#50647c]">
                                             <span>🔑</span>
                                             <span>{t('consultation.wizard.mainService')}</span>
                                         </div>
                                         <div className="flex items-center gap-1.5 font-semibold text-sm">
                                             {cart.some(item => ['end-of-tenancy', 'deep-cleaning', 'daily-cleaning', 'moving'].includes(item.type)) ? (
-                                                <span className="text-emerald-600 flex items-center gap-1">
+                                                <span className="text-blue-600 flex items-center gap-1">
                                                     ✓ {t('consultation.wizard.ready')}
                                                 </span>
                                             ) : activeWizardStep === 2 ? (
-                                                <span className="text-[#087f73] ">
+                                                <span className="text-[#1464ad] ">
                                                     ● {t('consultation.wizard.choosing')}
                                                 </span>
                                             ) : (
-                                                <span className="text-[#526574]">
+                                                <span className="text-[#50647c]">
                                                     ○
                                                 </span>
                                             )}
@@ -4778,22 +4778,22 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     </div>
 
                                     {/* 3. Additional Services */}
-                                    <div className="flex items-center justify-between text-sm font-semibold text-[#526574] border-t border-[#dce6e8] pt-2">
-                                        <div className="flex items-center gap-2 text-[#526574]">
+                                    <div className="flex items-center justify-between text-sm font-semibold text-[#50647c] border-t border-[#dce5f0] pt-2">
+                                        <div className="flex items-center gap-2 text-[#50647c]">
                                             <span>🌿</span>
                                             <span>{t('consultation.services.additional')}</span>
                                         </div>
                                         <div className="flex items-center gap-1.5 font-semibold text-sm">
                                             {cart.some(item => ['gardening', 'exterior-cleaning', 'car-detailing', 'pest-control', 'waste-management', 'gutter-cleaning'].includes(item.type)) ? (
-                                                <span className="text-emerald-600 flex items-center gap-1">
+                                                <span className="text-blue-600 flex items-center gap-1">
                                                     ✓ {t('consultation.wizard.added')}
                                                 </span>
                                             ) : activeWizardStep === 3 ? (
-                                                <span className="text-[#087f73] ">
+                                                <span className="text-[#1464ad] ">
                                                     ● {t('consultation.wizard.choose')}
                                                 </span>
                                             ) : (
-                                                <span className="text-[#526574]">
+                                                <span className="text-[#50647c]">
                                                     ○
                                                 </span>
                                             )}
@@ -4801,22 +4801,22 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     </div>
 
                                     {/* 4. Photos */}
-                                    <div className="flex items-center justify-between text-sm font-semibold text-[#526574] border-t border-[#dce6e8] pt-2">
-                                        <div className="flex items-center gap-2 text-[#526574]">
+                                    <div className="flex items-center justify-between text-sm font-semibold text-[#50647c] border-t border-[#dce5f0] pt-2">
+                                        <div className="flex items-center gap-2 text-[#50647c]">
                                             <span>📸</span>
                                             <span>{t('consultation.wizard.photos')}</span>
                                         </div>
                                         <div className="flex items-center gap-1.5 font-semibold text-sm">
                                             {files.length > 0 ? (
-                                                <span className="text-emerald-600 flex items-center gap-1">
+                                                <span className="text-blue-600 flex items-center gap-1">
                                                     ✓ {files.length} {files.length === 1 ? (language === 'fr' || language === 'en' ? 'Photo' : 'Foto') : (language === 'fr' || language === 'en' ? 'Photos' : language === 'it' ? 'Foto' : 'Fotos')}
                                                 </span>
                                             ) : activeWizardStep === 4 ? (
-                                                <span className="text-[#087f73] ">
+                                                <span className="text-[#1464ad] ">
                                                     ● {t('consultation.wizard.uploading')}
                                                 </span>
                                             ) : (
-                                                <span className="text-[#526574]">
+                                                <span className="text-[#50647c]">
                                                     ○
                                                 </span>
                                             )}
@@ -4826,26 +4826,26 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                 <div className="space-y-3 max-h-none lg:max-h-[50vh] overflow-y-auto custom-scrollbar lg:pr-2">
                                     {revaluedCart.length === 0 ? (
-                                        <div className="text-center py-16 bg-[#f4f8f8] rounded-[2rem] border-2 border-dashed border-[#dce6e8]">
+                                        <div className="text-center py-16 bg-[#f3f7fc] rounded-[2rem] border-2 border-dashed border-[#dce5f0]">
                                             <div className="text-5xl mb-4 opacity-20 filter grayscale">🛒</div>
-                                            <p className="text-[#526574] font-semibold text-base ">{t('consultation.bundle.empty')}</p>
+                                            <p className="text-[#50647c] font-semibold text-base ">{t('consultation.bundle.empty')}</p>
                                         </div>
                                     ) : (
                                         revaluedCart.map((item) => (
                                             <div
                                                 key={item.id}
                                                 onClick={() => handleEditItem(item)}
-                                                className="bg-white p-5 rounded-2xl border border-[#dce6e8] shadow-sm relative group hover:border-[#087f73] hover:shadow-sm transition-all duration-300 cursor-pointer overflow-hidden"
+                                                className="bg-white p-5 rounded-2xl border border-[#dce5f0] shadow-sm relative group hover:border-[#1464ad] hover:shadow-sm transition-all duration-300 cursor-pointer overflow-hidden"
                                             >
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); handleRemoveItem(item.id); }}
-                                                    className="kraken-control min-h-11 min-w-11 absolute top-3 right-3 text-[#526574] hover:text-red-500 lg:opacity-0 group-hover:opacity-100 transition-all p-1.5 hover:bg-red-50 rounded-full z-10"
+                                                    className="kraken-control min-h-11 min-w-11 absolute top-3 right-3 text-[#50647c] hover:text-red-500 lg:opacity-0 group-hover:opacity-100 transition-all p-1.5 hover:bg-red-50 rounded-full z-10"
                                                 >
                                                     <XMarkIcon className="w-3.5 h-3.5" />
                                                 </button>
                                                 <div className="flex items-center gap-3 mb-3">
                                                     <span className="text-3xl filter drop-shadow-sm">{item.type === 'end-of-tenancy' ? '🔑' : item.type === 'daily-cleaning' ? '📅' : item.type === 'moving' ? '📦' : item.type === 'car-detailing' ? '🚗' : item.type === 'gardening' ? '🌿' : item.type === 'exterior-cleaning' ? '💧' : item.type.includes('cleaning') ? '✨' : item.type.includes('pest') ? '🐜' : item.type.includes('waste') ? '🗑️' : item.type.includes('gutter') ? '🍂' : '🔧'}</span>
-                                                    <span className="font-semibold text-[#082b45] text-sm ">
+                                                    <span className="font-semibold text-[#032b59] text-sm ">
                                                         {(() => {
                                                             const map: Record<string, string> = {
                                                                 'end-of-tenancy': 'services.endOfTenancy.title',
@@ -4870,25 +4870,25 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                 <div className="flex justify-between items-center pl-10">
                                                     <div className="flex items-center gap-2">
                                                         {item.duration ? (
-                                                            <span className="text-sm font-semibold text-[#087f73] bg-[#eef7f5] px-2 py-0.5 rounded-lg">
+                                                            <span className="text-sm font-semibold text-[#1464ad] bg-[#edf4fd] px-2 py-0.5 rounded-lg">
                                                                  {formatTotalHours(item.duration)}
                                                             </span>
                                                         ) : null}
-                                                        <span className="text-sm font-semibold text-[#526574] flex items-center gap-1 group-hover:text-[#087f73] transition-colors border-b border-transparent group-hover:border-[#c8dedb]">
+                                                        <span className="text-sm font-semibold text-[#50647c] flex items-center gap-1 group-hover:text-[#1464ad] transition-colors border-b border-transparent group-hover:border-[#c9dbef]">
                                                             <PencilIcon className="w-2.5 h-2.5" /> {t('consultation.bundle.clickToEdit')}
                                                         </span>
                                                     </div>
-                                                    <span className="font-semibold text-[#087f73] text-lg">{item.price ? `CHF ${item.price.toFixed(2)}` : t('consultation.bundle.getFinalQuote')}</span>
+                                                    <span className="font-semibold text-[#1464ad] text-lg">{item.price ? `CHF ${item.price.toFixed(2)}` : t('consultation.bundle.getFinalQuote')}</span>
                                                 </div>
-                                                <div className="absolute inset-0 bg-[#eef7f5] opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity"></div>
+                                                <div className="absolute inset-0 bg-[#edf4fd] opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity"></div>
                                             </div>
                                         ))
                                     )}
                                 </div>
-                                <div className="mt-8 pt-8 border-t border-[#dce6e8] hidden lg:block">
+                                <div className="mt-8 pt-8 border-t border-[#dce5f0] hidden lg:block">
                                     {cart.length > 0 && (
-                                        <div className="mb-6 space-y-2.5 bg-[#f4f8f8] border border-[#dce6e8] p-4 rounded-2xl">
-                                            <div className="text-sm font-semibold text-[#082b45] mb-1">
+                                        <div className="mb-6 space-y-2.5 bg-[#f3f7fc] border border-[#dce5f0] p-4 rounded-2xl">
+                                            <div className="text-sm font-semibold text-[#032b59] mb-1">
                                                 {mt(
                                                     '📊 Cost Breakdown (3-Layer Regime)',
                                                     '📊 Desglose de Costes (Régimen de 3 Capas)',
@@ -4900,31 +4900,31 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             </div>
 
                                             <div className="flex justify-between items-center text-sm">
-                                                <span className="font-semibold text-[#526574]">
+                                                <span className="font-semibold text-[#50647c]">
                                                     {mt('🔨 Execution Costs:', '🔨 Costes de Ejecución:', '🔨 Durchführungskosten:', '🔨 Coûts d\'exécution :', '🔨 Costi di esecuzione:', '🔨 Custos de Execução:')}
                                                 </span>
-                                                <span className="font-semibold text-[#082b45]">CHF {quoteComposition.costs.durchfuehrung.toFixed(2)}</span>
+                                                <span className="font-semibold text-[#032b59]">CHF {quoteComposition.costs.durchfuehrung.toFixed(2)}</span>
                                             </div>
 
                                             <div className="flex justify-between items-center text-sm">
-                                                <span className="font-semibold text-[#526574]">
+                                                <span className="font-semibold text-[#50647c]">
                                                     {mt('📋 Permit Costs:', '📋 Costes de Permisos:', '📋 Bewilligungskosten:', '📋 Coûts de permis :', '📋 Costi dei permessi:', '📋 Custos de Licenças:')}
                                                 </span>
-                                                <span className="font-semibold text-[#082b45]">CHF {quoteComposition.costs.bewilligung.toFixed(2)}</span>
+                                                <span className="font-semibold text-[#032b59]">CHF {quoteComposition.costs.bewilligung.toFixed(2)}</span>
                                             </div>
 
                                             <div className="flex justify-between items-start text-sm">
                                                 <div className="flex flex-col">
-                                                    <span className="font-semibold text-[#526574]">
+                                                    <span className="font-semibold text-[#50647c]">
                                                         {mt('🗑️ Disposal Costs:', '🗑️ Costes de Eliminación:', '🗑️ Entsorgungskosten:', '🗑️ Coûts d\'élimination :', '🗑️ Costi di smaltimento:', '🗑️ Custos de Eliminação:')}
                                                     </span>
                                                     {!hasClearing && (
-                                                        <span className="text-sm font-semibold text-[#526574]">
+                                                        <span className="text-sm font-semibold text-[#50647c]">
                                                             {mt('(No clearing ordered)', '(Sin servicio de vaciado)', '(Keine Räumung bestellt)', '(Pas de débarras commandé)', '(Nessun sgombero ordinato)', '(Sem remoção encomendada)')}
                                                         </span>
                                                     )}
                                                 </div>
-                                                <span className="font-semibold text-[#082b45]">CHF {quoteComposition.costs.entsorgung.toFixed(2)}</span>
+                                                <span className="font-semibold text-[#032b59]">CHF {quoteComposition.costs.entsorgung.toFixed(2)}</span>
                                             </div>
 
                                             {/* Provisional disposal warning note if unknown or provisional */}
@@ -4943,11 +4943,11 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                 </div>
                                             )}
 
-                                            <div className="flex justify-between items-center text-sm border-t border-[#dce6e8] pt-2">
-                                                <span className="font-semibold text-[#526574]">
+                                            <div className="flex justify-between items-center text-sm border-t border-[#dce5f0] pt-2">
+                                                <span className="font-semibold text-[#50647c]">
                                                     {mt('📍 Surcharges (Zone & Index):', '📍 Recargos (Zona e Índice):', '📍 Zuschläge (Zone & Index):', '📍 Suppléments (Zone & Index) :', '📍 Supplementi (Zona & Indice):', '📍 Sobretaxas (Zona & Índice):')}
                                                 </span>
-                                                <span className="font-semibold text-[#082b45]">CHF {quoteComposition.costs.zuschlaege.toFixed(2)}</span>
+                                                <span className="font-semibold text-[#032b59]">CHF {quoteComposition.costs.zuschlaege.toFixed(2)}</span>
                                             </div>
 
                                             {/* Constraints & Feasibility Warnings */}
@@ -5014,22 +5014,22 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                                 return (
                                                     <div key={idx} className={`p-2.5 rounded-xl text-sm font-semibold leading-relaxed border ${
-                                                        c.severity === 'warning' ? 'bg-amber-50 border-amber-200 text-amber-900' : 'bg-[#eef7f5] border-[#c8dedb] text-[#087f73]'
+                                                        c.severity === 'warning' ? 'bg-amber-50 border-amber-200 text-amber-900' : 'bg-[#edf4fd] border-[#c9dbef] text-[#1464ad]'
                                                     }`}>
                                                         <span className="block font-semibold text-sm mb-0.5">{typeLabel}</span>
                                                         <span>{msg}</span>
                                                         {act && (
-                                                            <span className="block text-sm font-normal text-[#526574] mt-1">👉 {act}</span>
+                                                            <span className="block text-sm font-normal text-[#50647c] mt-1">👉 {act}</span>
                                                         )}
                                                     </div>
                                                 );
                                             })}
 
                                             {/* Internal Provenance Detail */}
-                                            <div className="pt-3 border-t border-[#dce6e8] space-y-3">
-                                                <div className="bg-[#f4f8f8] border border-[#dce6e8] rounded-xl p-3.5 space-y-2.5 text-sm font-sans text-[#082b45] shadow-sm">
-                                                    <div className="flex items-center justify-between pb-2 border-b border-[#dce6e8]">
-                                                        <span className="font-semibold text-[#082b45] text-sm flex items-center gap-1.5">
+                                            <div className="pt-3 border-t border-[#dce5f0] space-y-3">
+                                                <div className="bg-[#f3f7fc] border border-[#dce5f0] rounded-xl p-3.5 space-y-2.5 text-sm font-sans text-[#032b59] shadow-sm">
+                                                    <div className="flex items-center justify-between pb-2 border-b border-[#dce5f0]">
+                                                        <span className="font-semibold text-[#032b59] text-sm flex items-center gap-1.5">
                                                             <span>🏛️</span>
                                                             <span>
                                                                 {mt(
@@ -5043,39 +5043,39 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                             </span>
                                                         </span>
                                                         <span className={`px-2.5 py-1 rounded-full text-sm font-semibold ${
-                                                            quoteComposition.entsorgungRegime.confidence === 'VERIFIED' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
-                                                            quoteComposition.entsorgungRegime.confidence === 'REPORTED' ? 'bg-blue-100 text-[#087f73] border border-[#c8dedb]' :
+                                                            quoteComposition.entsorgungRegime.confidence === 'VERIFIED' ? 'bg-blue-100 text-blue-800 border border-blue-200' :
+                                                            quoteComposition.entsorgungRegime.confidence === 'REPORTED' ? 'bg-blue-100 text-[#1464ad] border border-[#c9dbef]' :
                                                             'bg-amber-100 text-amber-800 border border-amber-200'
                                                         }`}>
                                                             {translateConfidence(quoteComposition.entsorgungRegime.confidence, language)}
                                                         </span>
                                                     </div>
 
-                                                    <div className="grid grid-cols-1 gap-2 text-sm text-[#526574] pt-1">
-                                                        <div className="flex justify-between items-baseline pb-1.5 border-b border-[#dce6e8]">
-                                                            <span className="font-semibold text-[#526574]">{mt('Municipality:', 'Municipio:', 'Gemeinde:', 'Municipalité :', 'Comune:', 'Município:')}</span>
-                                                            <span className="font-semibold text-[#082b45] text-right">{quoteComposition.entsorgungRegime.gemeindeName} ({currentPostcode})</span>
+                                                    <div className="grid grid-cols-1 gap-2 text-sm text-[#50647c] pt-1">
+                                                        <div className="flex justify-between items-baseline pb-1.5 border-b border-[#dce5f0]">
+                                                            <span className="font-semibold text-[#50647c]">{mt('Municipality:', 'Municipio:', 'Gemeinde:', 'Municipalité :', 'Comune:', 'Município:')}</span>
+                                                            <span className="font-semibold text-[#032b59] text-right">{quoteComposition.entsorgungRegime.gemeindeName} ({currentPostcode})</span>
                                                         </div>
-                                                        <div className="flex justify-between items-baseline pb-1.5 border-b border-[#dce6e8]">
-                                                            <span className="font-semibold text-[#526574]">{mt('Bulky Waste Model:', 'Modelo Residuos:', 'Sperrgut-Modell:', 'Modèle encombrants :', 'Modello rifiuti:', 'Modelo de Entulho:')}</span>
-                                                            <span className="font-semibold text-[#082b45] text-right">{translateSperrgutModell(quoteComposition.entsorgungRegime.sperrgutModell, language)}</span>
+                                                        <div className="flex justify-between items-baseline pb-1.5 border-b border-[#dce5f0]">
+                                                            <span className="font-semibold text-[#50647c]">{mt('Bulky Waste Model:', 'Modelo Residuos:', 'Sperrgut-Modell:', 'Modèle encombrants :', 'Modello rifiuti:', 'Modelo de Entulho:')}</span>
+                                                            <span className="font-semibold text-[#032b59] text-right">{translateSperrgutModell(quoteComposition.entsorgungRegime.sperrgutModell, language)}</span>
                                                         </div>
-                                                        <div className="flex justify-between items-baseline pb-1.5 border-b border-[#dce6e8]">
-                                                            <span className="font-semibold text-[#526574]">{mt('Collection Point:', 'Punto de Recogida:', 'Annahmestelle:', 'Centre de collecte :', 'Centro di raccolta:', 'Ponto de Recolha:')}</span>
-                                                            <span className="font-semibold text-[#082b45] text-right">{quoteComposition.entsorgungRegime.annahmestelleName || 'k.A.'} ({quoteComposition.entsorgungRegime.annahmestelleDistanzKm || '?'} km)</span>
+                                                        <div className="flex justify-between items-baseline pb-1.5 border-b border-[#dce5f0]">
+                                                            <span className="font-semibold text-[#50647c]">{mt('Collection Point:', 'Punto de Recogida:', 'Annahmestelle:', 'Centre de collecte :', 'Centro di raccolta:', 'Ponto de Recolha:')}</span>
+                                                            <span className="font-semibold text-[#032b59] text-right">{quoteComposition.entsorgungRegime.annahmestelleName || 'k.A.'} ({quoteComposition.entsorgungRegime.annahmestelleDistanzKm || '?'} km)</span>
                                                         </div>
-                                                        <div className="flex justify-between items-baseline pb-1.5 border-b border-[#dce6e8]">
-                                                            <span className="font-semibold text-[#526574]">{mt('Collection Time:', 'Hora Disposición:', 'Bereitstellung:', 'Mise à disposition :', 'Messa a disposition:', 'Horário de Recolha:')}</span>
-                                                            <span className="font-semibold text-[#082b45] text-right">{translateBereitstellung(quoteComposition.entsorgungRegime.bereitstellungUhrzeit, language)}</span>
+                                                        <div className="flex justify-between items-baseline pb-1.5 border-b border-[#dce5f0]">
+                                                            <span className="font-semibold text-[#50647c]">{mt('Collection Time:', 'Hora Disposición:', 'Bereitstellung:', 'Mise à disposition :', 'Messa a disposition:', 'Horário de Recolha:')}</span>
+                                                            <span className="font-semibold text-[#032b59] text-right">{translateBereitstellung(quoteComposition.entsorgungRegime.bereitstellungUhrzeit, language)}</span>
                                                         </div>
-                                                        <div className="flex justify-between items-baseline text-sm text-[#526574] pt-1">
+                                                        <div className="flex justify-between items-baseline text-sm text-[#50647c] pt-1">
                                                             <span>{mt('Source & Version:', 'Fuente y Fecha:', 'Quelle & Stand:', 'Source & Version :', 'Fonte & Data:', 'Fonte e Data:')}</span>
-                                                            <span className="font-medium text-[#526574]">{quoteComposition.entsorgungRegime.quelle} ({quoteComposition.entsorgungRegime.stand})</span>
+                                                            <span className="font-medium text-[#50647c]">{quoteComposition.entsorgungRegime.quelle} ({quoteComposition.entsorgungRegime.stand})</span>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="mt-3.5 p-3.5 bg-[#eef7f5] border border-[#c8dedb] rounded-xl space-y-2.5 text-sm text-[#526574] leading-relaxed shadow-sm">
-                                                    <div className="font-semibold text-[#082b45] flex items-center gap-1.5 text-sm">
+                                                <div className="mt-3.5 p-3.5 bg-[#edf4fd] border border-[#c9dbef] rounded-xl space-y-2.5 text-sm text-[#50647c] leading-relaxed shadow-sm">
+                                                    <div className="font-semibold text-[#032b59] flex items-center gap-1.5 text-sm">
                                                         <span>💡</span>
                                                         <span>
                                                             {mt(
@@ -5088,9 +5088,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                             )}
                                                         </span>
                                                     </div>
-                                                    <ul className="space-y-2 text-sm text-[#526574] list-disc list-inside">
+                                                    <ul className="space-y-2 text-sm text-[#50647c] list-disc list-inside">
                                                         <li>
-                                                            <strong className="text-[#082b45]">
+                                                            <strong className="text-[#032b59]">
                                                                 {mt("Labour estimate:", "Estimación de mano de obra:", "Geschätzter Personalaufwand:", "Estimation de main-d'œuvre :", "Stima della manodopera:", "Estimativa de mão de obra:")}
                                                             </strong>{' '}
                                                             {mt(
@@ -5103,7 +5103,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                             )}
                                                         </li>
                                                         <li>
-                                                            <strong className="text-[#082b45]">
+                                                            <strong className="text-[#032b59]">
                                                                 {mt('Municipal Ordinance:', 'Normativa Municipal:', 'Gemeindeverordnung:', 'Règlement municipal :', 'Regolamento comunale:', 'Regulamento Municipal:')}
                                                             </strong>{' '}
                                                             {quoteComposition.entsorgungRegime.gemeindeName} ({translateSperrgutModell(quoteComposition.entsorgungRegime.sperrgutModell, language)}) - {mt(
@@ -5116,7 +5116,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                             )}
                                                         </li>
                                                         <li>
-                                                            <strong className="text-[#082b45]">
+                                                            <strong className="text-[#032b59]">
                                                                 {mt("Scope and conditions:", "Alcance y condiciones:", "Umfang und Bedingungen:", "Périmètre et conditions :", "Ambito e condizioni:", "Âmbito e condições:")}
                                                             </strong>{' '}
                                                             {mt(
@@ -5137,13 +5137,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     {cart.length > 0 && (
                                         <div className="mb-6 flex justify-between items-center px-2">
                                             <div className="flex flex-col">
-                                                <span className="text-sm font-semibold text-[#526574] ">
+                                                <span className="text-sm font-semibold text-[#50647c] ">
                                                     {onlyComics
                                                         ? (language === 'es' ? 'Gastos de envío' : 'Shipping Cost')
                                                         : t('consultation.travel.fee')}
                                                 </span>
                                                 {onlyComics ? (
-                                                    <span className="text-sm font-semibold text-[#087f73]">
+                                                    <span className="text-sm font-semibold text-[#1464ad]">
                                                         {language === 'es' ? 'Envío por correo postal' : 'Postal Shipping'}
                                                     </span>
                                                 ) : travelMsg ? (
@@ -5156,34 +5156,34 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                 ) : (
                                                     <button
                                                         onClick={() => setShowTravelModal(true)}
-                                                        className="kraken-control min-h-11 min-w-11 text-base font-semibold text-[#087f73] hover:underline flex items-center gap-1 mt-0.5"
+                                                        className="kraken-control min-h-11 min-w-11 text-base font-semibold text-[#1464ad] hover:underline flex items-center gap-1 mt-0.5"
                                                     >
                                                         {t('consultation.travel.howFree')} <InfoIcon className="w-2.5 h-2.5" />
                                                     </button>
                                                 )}
                                             </div>
-                                            <span className={`font-semibold ${travelFee === 0 ? 'text-green-500' : 'text-[#526574]'} text-lg`}>
+                                            <span className={`font-semibold ${travelFee === 0 ? 'text-green-500' : 'text-[#50647c]'} text-lg`}>
                                                 {travelFee === 0 ? t('consultation.free') : `CHF ${travelFee.toFixed(2)}`}
                                             </span>
                                         </div>
                                     )}
 
                                     <div className="flex justify-between items-end mb-8 px-2">
-                                        <span className="text-[#526574] font-semibold text-sm ">{t('consultation.estimatedTotal')}</span>
-                                        <span className="text-3xl font-semibold text-[#082b45]">{cart.length > 0 ? `CHF ${grandTotal.toFixed(2)}` : '—'}</span>
+                                        <span className="text-[#50647c] font-semibold text-sm ">{t('consultation.estimatedTotal')}</span>
+                                        <span className="text-3xl font-semibold text-[#032b59]">{cart.length > 0 ? `CHF ${grandTotal.toFixed(2)}` : '—'}</span>
                                     </div>
-                                    <div className="bg-[#eef7f5] text-[#087f73] text-sm p-4 rounded-xl mb-8 flex gap-3 leading-relaxed font-semibold border border-[#c8dedb]">
+                                    <div className="bg-[#edf4fd] text-[#1464ad] text-sm p-4 rounded-xl mb-8 flex gap-3 leading-relaxed font-semibold border border-[#c9dbef]">
                                         <InfoIcon className="w-5 h-5" />
                                         <p>{t('consultation.bundle.includesDesc')}</p>
                                     </div>
-                                    <button onClick={() => setContactModalOpen(true)} disabled={cart.length === 0} className="kraken-control min-h-11 w-full bg-[#087f73] hover:bg-[#087f73] text-white font-semibold py-5 rounded-[1.5rem] shadow-sm transition-all disabled:opacity-50 transform hover:-translate-y-1 active:translate-y-0 text-lg ">{t('consultation.bundle.getFinalQuote')}</button>
+                                    <button onClick={() => setContactModalOpen(true)} disabled={cart.length === 0} className="kraken-control min-h-11 w-full bg-[#1464ad] hover:bg-[#1464ad] text-white font-semibold py-5 rounded-[1.5rem] shadow-sm transition-all disabled:opacity-50 transform hover:-translate-y-1 active:translate-y-0 text-lg ">{t('consultation.bundle.getFinalQuote')}</button>
 
                                     <button
                                         type="button"
                                         onClick={handleDirectPDFExport}
                                         aria-busy={pdfExporting}
                                         disabled={cart.length === 0 || pdfExporting}
-                                        className="kraken-control min-h-11 mt-3 w-full bg-[#f4f8f8] hover:bg-slate-200 disabled:opacity-50 text-[#082b45] font-semibold py-4 rounded-[1.5rem] border border-[#dce6e8] transition-all text-base flex items-center justify-center gap-2 cursor-pointer"
+                                        className="kraken-control min-h-11 mt-3 w-full bg-[#f3f7fc] hover:bg-slate-200 disabled:opacity-50 text-[#032b59] font-semibold py-4 rounded-[1.5rem] border border-[#dce5f0] transition-all text-base flex items-center justify-center gap-2 cursor-pointer"
                                     >
                                         📄 {pdfExporting ? quotePdfStatusText(language, 'loading') : language === 'es' ? 'Exportar Estimación en PDF' : (language === 'de' || language === 'de-CH') ? 'Kostenvoranschlag als PDF exportieren' : language === 'fr' ? 'Exporter le devis en PDF' : language === 'it' ? 'Esporta preventivo in PDF' : language === 'pt' ? 'Exportar orçamento em PDF' : 'Export Estimate as PDF'}
                                     </button>
@@ -5199,35 +5199,35 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         {/* --- MODALS --- */}
         {showAddressModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-fade-in select-none">
-            <div className="bg-white rounded-3xl shadow-sm w-full max-w-lg p-8 relative flex flex-col overflow-hidden border border-[#dce6e8]">
+            <div className="bg-white rounded-3xl shadow-sm w-full max-w-lg p-8 relative flex flex-col overflow-hidden border border-[#dce5f0]">
               {/* Top design background */}
-              <div className="absolute top-0 left-0 w-full h-32 bg-[#eef7f5] rounded-b-[50%] -z-0 transform -translate-y-16 "></div>
+              <div className="absolute top-0 left-0 w-full h-32 bg-[#edf4fd] rounded-b-[50%] -z-0 transform -translate-y-16 "></div>
 
               {/* Close Button - Only visible if they already have an address configured */}
               {address.trim() && postcode.trim() && city.trim() && (
                 <button
                   onClick={() => setShowAddressModal(false)}
-                  className="kraken-control min-h-11 min-w-11 absolute top-6 right-6 p-2 bg-white hover:bg-[#f4f8f8] rounded-full border border-[#dce6e8] transition-colors z-20 cursor-pointer"
+                  className="kraken-control min-h-11 min-w-11 absolute top-6 right-6 p-2 bg-white hover:bg-[#f3f7fc] rounded-full border border-[#dce5f0] transition-colors z-20 cursor-pointer"
                 >
-                  <XMarkIcon className="w-5 h-5 text-[#526574]" />
+                  <XMarkIcon className="w-5 h-5 text-[#50647c]" />
                 </button>
               )}
 
               <div className="relative z-10 text-center mb-6">
                 <img src={mascotImageUrl} alt="Kai Mascot" className="w-20 h-20 object-contain mx-auto mb-3 drop-shadow-md animate-bounce-in" />
-                <h3 className="text-xl font-semibold text-[#082b45] ">📍 {t('consultation.modal.address.title')}</h3>
-                <p className="text-base text-[#526574] font-semibold max-w-sm mx-auto mt-2 leading-relaxed">
+                <h3 className="text-xl font-semibold text-[#032b59] ">📍 {t('consultation.modal.address.title')}</h3>
+                <p className="text-base text-[#50647c] font-semibold max-w-sm mx-auto mt-2 leading-relaxed">
                   {t('consultation.modal.address.desc')}
                 </p>
               </div>
 
               <form onSubmit={handleSaveAddress} className="kraken-form space-y-4 relative z-10 text-left">
                 <div className="group">
-                  <label htmlFor="consultationpage-field-13" className="kraken-label block text-sm font-semibold text-[#082b45] mb-1.5 ml-1">{t('consultation.step1.street')}</label>
+                  <label htmlFor="consultationpage-field-13" className="kraken-label block text-sm font-semibold text-[#032b59] mb-1.5 ml-1">{t('consultation.step1.street')}</label>
                   <input id="consultationpage-field-13"
                     type="text"
                     placeholder="e.g. Bahnhofstrasse 12"
-                    className="kraken-field w-full p-4 bg-white border-2 border-[#dce6e8] rounded-2xl focus:border-[#087f73] outline-none font-semibold text-base shadow-sm transition-all duration-300"
+                    className="kraken-field w-full p-4 bg-white border-2 border-[#dce5f0] rounded-2xl focus:border-[#1464ad] outline-none font-semibold text-base shadow-sm transition-all duration-300"
                     value={tempAddress}
                     onChange={(e) => setTempAddress(e.target.value)}
                     required
@@ -5236,23 +5236,23 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="group">
-                    <label htmlFor="consultationpage-field-14" className="kraken-label block text-sm font-semibold text-[#082b45] mb-1.5 ml-1">{t('consultation.step1.postcode')}</label>
+                    <label htmlFor="consultationpage-field-14" className="kraken-label block text-sm font-semibold text-[#032b59] mb-1.5 ml-1">{t('consultation.step1.postcode')}</label>
                     <input id="consultationpage-field-14"
                       type="text"
                       placeholder="e.g. 8001"
                       maxLength={4}
-                      className="kraken-field w-full p-4 bg-white border-2 border-[#dce6e8] rounded-2xl focus:border-[#087f73] outline-none font-semibold text-base shadow-sm transition-all duration-300 animate-fade-in"
+                      className="kraken-field w-full p-4 bg-white border-2 border-[#dce5f0] rounded-2xl focus:border-[#1464ad] outline-none font-semibold text-base shadow-sm transition-all duration-300 animate-fade-in"
                       value={tempPostcode}
                       onChange={(e) => handleTempPostcodeChange(e.target.value)}
                       required
                     />
                   </div>
                   <div className="group">
-                    <label htmlFor="consultationpage-field-15" className="kraken-label block text-sm font-semibold text-[#082b45] mb-1.5 ml-1">{t('consultation.step1.city')}</label>
+                    <label htmlFor="consultationpage-field-15" className="kraken-label block text-sm font-semibold text-[#032b59] mb-1.5 ml-1">{t('consultation.step1.city')}</label>
                     <input id="consultationpage-field-15"
                       type="text"
                       placeholder="e.g. Zürich"
-                      className="kraken-field w-full p-4 bg-white border-2 border-[#dce6e8] rounded-2xl focus:border-[#087f73] outline-none font-semibold text-base shadow-sm transition-all duration-300"
+                      className="kraken-field w-full p-4 bg-white border-2 border-[#dce5f0] rounded-2xl focus:border-[#1464ad] outline-none font-semibold text-base shadow-sm transition-all duration-300"
                       value={tempCity}
                       onChange={(e) => setTempCity(e.target.value)}
                       required
@@ -5262,18 +5262,18 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                 {/* Dynamic Live Zone Badge */}
                 {tempPostcode.trim().length === 4 && (
-                  <div className="p-3.5 bg-[#eef7f5] border border-[#c8dedb] rounded-2xl flex items-center gap-3 animate-fade-in">
+                  <div className="p-3.5 bg-[#edf4fd] border border-[#c9dbef] rounded-2xl flex items-center gap-3 animate-fade-in">
                     <span className="text-xl">🗺️</span>
                     <div>
-                      <span className="block text-sm font-semibold text-[#526574] leading-none mb-0.5">{t('consultation.step1.detectedZone')}</span>
-                      <span className="font-semibold text-sm text-[#082b45] flex items-center gap-1.5">
+                      <span className="block text-sm font-semibold text-[#50647c] leading-none mb-0.5">{t('consultation.step1.detectedZone')}</span>
+                      <span className="font-semibold text-sm text-[#032b59] flex items-center gap-1.5">
                         {detectZone(tempPostcode).label}
                         {detectZone(tempPostcode).surchargePercent > 0 ? (
-                          <span className="text-sm font-semibold bg-blue-100 text-[#087f73] px-1.5 py-0.5 rounded-md leading-none">
+                          <span className="text-sm font-semibold bg-blue-100 text-[#1464ad] px-1.5 py-0.5 rounded-md leading-none">
                             {t('consultation.step1.localRateText', { percent: detectZone(tempPostcode).surchargePercent })}
                           </span>
                         ) : (
-                          <span className="text-sm font-semibold bg-[#eef7f5] text-[#087f73] px-1.5 py-0.5 rounded-md leading-none border border-[#c8dedb]">
+                          <span className="text-sm font-semibold bg-[#edf4fd] text-[#1464ad] px-1.5 py-0.5 rounded-md leading-none border border-[#c9dbef]">
                             {t('consultation.step1.baseRate')}
                           </span>
                         )}
@@ -5290,7 +5290,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                 <button
                   type="submit"
-                  className="kraken-control min-h-11 w-full bg-[#082b45] hover:bg-[#001D3B] text-[#ffffff] py-4 rounded-2xl font-semibold text-base shadow-sm transition-all cursor-pointer mt-4"
+                  className="kraken-control min-h-11 w-full bg-[#032b59] hover:bg-[#001D3B] text-[#ffffff] py-4 rounded-2xl font-semibold text-base shadow-sm transition-all cursor-pointer mt-4"
                 >
                   {t('consultation.form.saveContinue')}
                 </button>
@@ -5302,16 +5302,16 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         {/* --- MODAL: PAYREXX CONFIG ERROR & FALLBACK SELECTION --- */}
         {payrexxError && (
           <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/85 backdrop-blur-md animate-fade-in select-none">
-            <div className="bg-white rounded-3xl shadow-sm w-full max-w-xl p-8 relative flex flex-col overflow-hidden border border-[#dce6e8]">
+            <div className="bg-white rounded-3xl shadow-sm w-full max-w-xl p-8 relative flex flex-col overflow-hidden border border-[#dce5f0]">
               {/* Highlight ribbon */}
               <div className="absolute top-0 left-0 w-full h-32 bg-amber-50 rounded-b-[50%] -z-0 transform -translate-y-16 "></div>
 
               {/* Close Button */}
               <button
                 onClick={() => setPayrexxError(null)}
-                className="kraken-control min-h-11 min-w-11 absolute top-6 right-6 p-2 bg-white hover:bg-[#f4f8f8] rounded-full border border-[#dce6e8] transition-colors z-20 cursor-pointer"
+                className="kraken-control min-h-11 min-w-11 absolute top-6 right-6 p-2 bg-white hover:bg-[#f3f7fc] rounded-full border border-[#dce5f0] transition-colors z-20 cursor-pointer"
               >
-                <XMarkIcon className="w-5 h-5 text-[#526574]" />
+                <XMarkIcon className="w-5 h-5 text-[#50647c]" />
               </button>
 
               <div className="relative z-10 text-center mb-6">
@@ -5319,9 +5319,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                 <h3 className="text-xl font-semibold text-amber-800 ">{t('payment.alert.title')}</h3>
 
                 {/* Alert message display */}
-                <div className="mt-4 bg-[#f4f8f8] border border-[#dce6e8] p-4 rounded-2xl text-left">
-                  <p className="text-base font-semibold text-[#526574] mb-1">{t('payment.alert.details')}</p>
-                  <p className="text-base text-[#526574] font-semibold leading-relaxed">
+                <div className="mt-4 bg-[#f3f7fc] border border-[#dce5f0] p-4 rounded-2xl text-left">
+                  <p className="text-base font-semibold text-[#50647c] mb-1">{t('payment.alert.details')}</p>
+                  <p className="text-base text-[#50647c] font-semibold leading-relaxed">
                     {payrexxError.message}
                   </p>
                   <p className="text-base text-amber-700 font-semibold mt-2 leading-relaxed">
@@ -5346,7 +5346,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                       window.location.assign(url.pathname + url.search + url.hash);
                     } catch { setBookingError(t('consultation.alert.paymentFailed')); }
                   }}
-                  className="kraken-control min-h-11 w-full p-5 bg-[#082b45] hover:bg-[#001D3B] text-white rounded-[2rem] text-left transition-all cursor-pointer shadow-sm shadow-[#082b45]/20 group relative overflow-hidden"
+                  className="kraken-control min-h-11 w-full p-5 bg-[#032b59] hover:bg-[#001D3B] text-white rounded-[2rem] text-left transition-all cursor-pointer shadow-sm shadow-[#032b59]/20 group relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full translate-x-8 -translate-y-8 transition-transform"></div>
                   <div className="flex items-start gap-4">
@@ -5365,7 +5365,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                 <button
                   type="button"
                   onClick={() => setPayrexxError(null)}
-                  className="kraken-control min-h-11 min-w-11 px-6 py-2 border border-[#dce6e8] hover:bg-[#f4f8f8] text-[#526574] rounded-xl font-semibold text-base transition-all cursor-pointer"
+                  className="kraken-control min-h-11 min-w-11 px-6 py-2 border border-[#dce5f0] hover:bg-[#f3f7fc] text-[#50647c] rounded-xl font-semibold text-base transition-all cursor-pointer"
                 >
                   {t('payment.cancel')}
                 </button>
@@ -5399,10 +5399,10 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
               </div>
 
               <div className="space-y-2">
-                <span className="inline-block bg-[#eef7f5] text-[#082b45] text-sm font-semibold px-3.5 py-1.5 rounded-full shadow-sm border border-amber-300">
+                <span className="inline-block bg-[#edf4fd] text-[#032b59] text-sm font-semibold px-3.5 py-1.5 rounded-full shadow-sm border border-amber-300">
                   ⏳ {t('services.comingSoon')}
                 </span>
-                <h3 className="text-2xl font-semibold text-[#082b45]">
+                <h3 className="text-2xl font-semibold text-[#032b59]">
                   {t(
                     comingSoonModalService === 'gardening' ? 'services.gardening.title' :
                     comingSoonModalService === 'exterior-cleaning' ? 'services.exterior.title' :
@@ -5413,7 +5413,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                 </h3>
               </div>
 
-              <p className="text-base font-medium text-[#526574] leading-relaxed max-w-md mx-auto">
+              <p className="text-base font-medium text-[#50647c] leading-relaxed max-w-md mx-auto">
                 {t('services.comingSoon.notice')}
               </p>
 
@@ -5421,7 +5421,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                 <button
                   type="button"
                   onClick={() => setComingSoonModalService(null)}
-                  className="kraken-control min-h-11 min-w-11 px-6 py-3.5 bg-[#f4f8f8] hover:bg-slate-200 rounded-2xl text-[#082b45] font-semibold text-base transition-all cursor-pointer"
+                  className="kraken-control min-h-11 min-w-11 px-6 py-3.5 bg-[#f3f7fc] hover:bg-slate-200 rounded-2xl text-[#032b59] font-semibold text-base transition-all cursor-pointer"
                 >
                   {t('consultation.form.back')}
                 </button>
@@ -5429,7 +5429,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                   href="https://wa.me/41774505705"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-6 py-3.5 bg-[#082b45] hover:bg-[#082b45] text-white rounded-2xl font-semibold text-sm transition-all cursor-pointer shadow-md flex items-center justify-center gap-2"
+                  className="px-6 py-3.5 bg-[#032b59] hover:bg-[#032b59] text-white rounded-2xl font-semibold text-sm transition-all cursor-pointer shadow-md flex items-center justify-center gap-2"
                 >
                   <span>💬</span>
                   {language === 'es' ? 'Consulta Personalizada' : language === 'de' || language === 'de-CH' ? 'Anfrage Senden' : 'Custom Inquiry'}
@@ -5455,54 +5455,54 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                 <div className="space-y-8">
                     <div className="text-center">
                         <img src={mascotImageUrl} alt="Kai explaining" className="w-24 h-24 mx-auto mb-4 object-contain animate-float" />
-                        <h4 className="text-xl font-semibold text-[#082b45] ">{t('payment.travel.header')}</h4>
-                        <p className="text-base text-[#526574] font-medium">{t('payment.travel.subheader')}</p>
+                        <h4 className="text-xl font-semibold text-[#032b59] ">{t('payment.travel.header')}</h4>
+                        <p className="text-base text-[#50647c] font-medium">{t('payment.travel.subheader')}</p>
                     </div>
 
                     <div className="space-y-4">
-                        <div className={`p-5 rounded-2xl border-2 transition-all ${travelFee === 45 ? 'border-[#082b45] bg-[#f4f8f8]' : 'border-[#dce6e8] bg-white'}`}>
+                        <div className={`p-5 rounded-2xl border-2 transition-all ${travelFee === 45 ? 'border-[#032b59] bg-[#f3f7fc]' : 'border-[#dce5f0] bg-white'}`}>
                             <div className="flex justify-between items-center mb-2">
-                                <span className="font-semibold text-[#082b45] text-sm">{t('payment.travel.tier1.title')}</span>
-                                <span className="font-semibold text-[#082b45]">CHF 45.00</span>
+                                <span className="font-semibold text-[#032b59] text-sm">{t('payment.travel.tier1.title')}</span>
+                                <span className="font-semibold text-[#032b59]">CHF 45.00</span>
                             </div>
-                            <p className="text-base text-[#526574]">{t('payment.travel.tier1.desc')}</p>
+                            <p className="text-base text-[#50647c]">{t('payment.travel.tier1.desc')}</p>
                         </div>
 
-                        <div className={`p-5 rounded-2xl border-2 transition-all ${travelFee === 25 ? 'border-[#087f73] bg-[#eef7f5]' : 'border-[#dce6e8] bg-white'}`}>
+                        <div className={`p-5 rounded-2xl border-2 transition-all ${travelFee === 25 ? 'border-[#1464ad] bg-[#edf4fd]' : 'border-[#dce5f0] bg-white'}`}>
                             <div className="flex justify-between items-center mb-2">
-                                <span className="font-semibold text-[#087f73] text-sm">{t('payment.travel.tier2.title')}</span>
-                                <span className="font-semibold text-[#087f73]">CHF 25.00</span>
+                                <span className="font-semibold text-[#1464ad] text-sm">{t('payment.travel.tier2.title')}</span>
+                                <span className="font-semibold text-[#1464ad]">CHF 25.00</span>
                             </div>
-                            <p className="text-base text-[#526574] mb-2">{t('payment.travel.tier2.qualify')}</p>
-                            <ul className="text-sm space-y-1 font-semibold text-[#526574]">
-                                <li className="flex items-center gap-2"><CheckIcon className="w-3 h-3 text-[#087f73]"/> {t('payment.travel.tier2.qualify.bullet1')}</li>
-                                <li className="flex items-center gap-2"><CheckIcon className="w-3 h-3 text-[#087f73]"/> {t('payment.travel.tier2.qualify.bullet2')}</li>
+                            <p className="text-base text-[#50647c] mb-2">{t('payment.travel.tier2.qualify')}</p>
+                            <ul className="text-sm space-y-1 font-semibold text-[#50647c]">
+                                <li className="flex items-center gap-2"><CheckIcon className="w-3 h-3 text-[#1464ad]"/> {t('payment.travel.tier2.qualify.bullet1')}</li>
+                                <li className="flex items-center gap-2"><CheckIcon className="w-3 h-3 text-[#1464ad]"/> {t('payment.travel.tier2.qualify.bullet2')}</li>
                             </ul>
                         </div>
 
-                        <div className={`p-5 rounded-2xl border-2 transition-all ${travelFee === 0 && cart.length > 0 ? 'border-[#087f73] bg-[#eef7f5]' : 'border-[#dce6e8] bg-white'}`}>
+                        <div className={`p-5 rounded-2xl border-2 transition-all ${travelFee === 0 && cart.length > 0 ? 'border-[#1464ad] bg-[#edf4fd]' : 'border-[#dce5f0] bg-white'}`}>
                             <div className="flex justify-between items-center mb-2">
-                                <span className={`font-semibold text-sm ${travelFee === 0 && cart.length > 0 ? 'text-[#087f73]' : 'text-[#526574]'}`}>{t('payment.travel.tier3.title')}</span>
-                                <span className={`font-semibold ${travelFee === 0 && cart.length > 0 ? 'text-[#087f73]' : 'text-[#526574]'}`}>{t('payment.travel.free')}</span>
+                                <span className={`font-semibold text-sm ${travelFee === 0 && cart.length > 0 ? 'text-[#1464ad]' : 'text-[#50647c]'}`}>{t('payment.travel.tier3.title')}</span>
+                                <span className={`font-semibold ${travelFee === 0 && cart.length > 0 ? 'text-[#1464ad]' : 'text-[#50647c]'}`}>{t('payment.travel.free')}</span>
                             </div>
-                            <p className="text-base text-[#526574] mb-2">{t('payment.travel.tier3.qualify')}</p>
-                            <ul className="text-sm space-y-1 font-semibold text-[#526574]">
-                                <li className="flex items-center gap-2"><CheckIcon className={`w-3 h-3 ${travelFee === 0 && cart.length > 0 ? 'text-[#087f73]' : 'text-[#526574]'}`}/> {t('payment.travel.tier3.qualify.bullet1')}</li>
-                                <li className="flex items-center gap-2"><CheckIcon className={`w-3 h-3 ${travelFee === 0 && cart.length > 0 ? 'text-[#087f73]' : 'text-[#526574]'}`}/> {t('payment.travel.tier3.qualify.bullet2')}</li>
+                            <p className="text-base text-[#50647c] mb-2">{t('payment.travel.tier3.qualify')}</p>
+                            <ul className="text-sm space-y-1 font-semibold text-[#50647c]">
+                                <li className="flex items-center gap-2"><CheckIcon className={`w-3 h-3 ${travelFee === 0 && cart.length > 0 ? 'text-[#1464ad]' : 'text-[#50647c]'}`}/> {t('payment.travel.tier3.qualify.bullet1')}</li>
+                                <li className="flex items-center gap-2"><CheckIcon className={`w-3 h-3 ${travelFee === 0 && cart.length > 0 ? 'text-[#1464ad]' : 'text-[#50647c]'}`}/> {t('payment.travel.tier3.qualify.bullet2')}</li>
                             </ul>
                         </div>
                     </div>
 
-                    <div className="p-4 bg-[#eef7f5] rounded-xl flex items-start gap-3">
-                         <LeafIcon className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                         <p className="text-base text-[#087f73] font-semibold leading-relaxed">
+                    <div className="p-4 bg-[#edf4fd] rounded-xl flex items-start gap-3">
+                         <LeafIcon className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                         <p className="text-base text-[#1464ad] font-semibold leading-relaxed">
                             {t('payment.travel.sustainability.message')}
                          </p>
                     </div>
 
                     <button
                         onClick={() => setShowTravelModal(false)}
-                        className="kraken-control min-h-11 w-full bg-[#082b45] text-white py-4 rounded-2xl font-semibold text-base shadow-sm"
+                        className="kraken-control min-h-11 w-full bg-[#032b59] text-white py-4 rounded-2xl font-semibold text-base shadow-sm"
                     >
                         {t('payment.travel.close')}
                     </button>
@@ -5514,7 +5514,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         {activeModal === 'end-of-tenancy' && false && (
             <ModalOverlay title={t('services.endOfTenancy.title')} onClose={() => { setActiveModal(null); setEditingItemId(null); }} noScroll={true}>
                 <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
-                    <button onClick={() => setShowInclusionsModal('end-of-tenancy')} className="kraken-control min-h-11 w-full text-center text-[#087f73] text-base font-semibold hover:underline flex items-center justify-center gap-2.5 bg-[#eef7f5] p-4 rounded-xl border border-[#c8dedb] hover:bg-blue-100 transition-colors"><InfoIcon className="w-5 h-5" />{t('consultation.whatsIncluded')}</button>
+                    <button onClick={() => setShowInclusionsModal('end-of-tenancy')} className="kraken-control min-h-11 w-full text-center text-[#1464ad] text-base font-semibold hover:underline flex items-center justify-center gap-2.5 bg-[#edf4fd] p-4 rounded-xl border border-[#c9dbef] hover:bg-blue-100 transition-colors"><InfoIcon className="w-5 h-5" />{t('consultation.whatsIncluded')}</button>
 
                     {config.roomsCount === 0 && config.bathroomsCount === 0 && (config.balconyCount > 0 || config.storageCount > 0 || config.carpetCount > 0 || config.furnitureCount > 0) && (
                         <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl mb-4 animate-fade-in">
@@ -5529,12 +5529,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         <CounterCard icon="🚿" label={t('consultation.label.bathrooms')} value={config.bathroomsCount} onChange={(v) => { const b = Math.max(0,v); const d = calculateEOTDuration(config.roomsCount, b, config.balconyCount, config.storageCount, config.carpetCount, config.furnitureCount); setConfig({ ...config, bathroomsCount: b, duration: d }); }} />
                     </div>
 
-                    <div className="bg-[#f4f8f8] p-5 rounded-2xl border border-[#dce6e8]">
+                    <div className="bg-[#f3f7fc] p-5 rounded-2xl border border-[#dce5f0]">
                         <div className="flex justify-between mb-2">
-                            <label className="kraken-label text-sm font-semibold text-[#526574] flex items-center gap-2">
-                                <ClockIcon className="w-4 h-4 text-[#087f73]" />{t('consultation.label.manualIncrease')}
+                            <label className="kraken-label text-sm font-semibold text-[#50647c] flex items-center gap-2">
+                                <ClockIcon className="w-4 h-4 text-[#1464ad]" />{t('consultation.label.manualIncrease')}
                             </label>
-                            <span className="font-semibold text-[#087f73] text-lg">{formatTotalHours(getActiveTotalHours())}</span>
+                            <span className="font-semibold text-[#1464ad] text-lg">{formatTotalHours(getActiveTotalHours())}</span>
                         </div>
                         <input
                             type="range"
@@ -5543,13 +5543,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             step="0.5"
                             value={getActiveTotalHours()}
                             onChange={(e) => setConfig({ ...config, duration: parseFloat(e.target.value) })}
-                            className="kraken-field w-full h-2.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#087f73]"
+                            className="kraken-field w-full h-2.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#1464ad]"
                         />
-                        <p className="text-base text-[#526574] text-center mt-2 font-medium italic">{t('consultation.label.manualIncreaseDesc', { rate: PRICES.deepHourly.toFixed(2) })}</p>
+                        <p className="text-base text-[#50647c] text-center mt-2 font-medium italic">{t('consultation.label.manualIncreaseDesc', { rate: PRICES.deepHourly.toFixed(2) })}</p>
                     </div>
 
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.label.extras')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.label.extras')}</label>
                         <div className="space-y-3">
                             <CounterCard icon="☀️" label={t('consultation.label.balcony')} subLabel="+ CHF 40.00 / +30m" value={config.balconyCount} isExtra={true} onChange={(v) => setConfig({...config, balconyCount: v, duration: calculateEOTDuration(config.roomsCount, config.bathroomsCount, v, config.storageCount, config.carpetCount, config.furnitureCount)})} />
                             <CounterCard icon="📦" label={t('consultation.label.storage')} subLabel="+ CHF 30.00 / +30m" value={config.storageCount} isExtra={true} onChange={(v) => setConfig({...config, storageCount: v, duration: calculateEOTDuration(config.roomsCount, config.bathroomsCount, config.balconyCount, v, config.carpetCount, config.furnitureCount)})} />
@@ -5567,12 +5567,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     />
                 </div>
                 {/* Sticky Footer */}
-                <div className="p-5 bg-[#f4f8f8] border-t border-[#dce6e8] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
+                <div className="p-5 bg-[#f3f7fc] border-t border-[#dce5f0] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
                     <div className="flex justify-between items-center px-1">
-                        <span className="font-semibold text-[#082b45] text-sm sm:text-sm ">{t('consultation.estimatedTotal')}</span>
-                        <span className="font-semibold text-2xl text-[#087f73]">CHF {getEstimatedPrice().toFixed(2)}</span>
+                        <span className="font-semibold text-[#032b59] text-sm sm:text-sm ">{t('consultation.estimatedTotal')}</span>
+                        <span className="font-semibold text-2xl text-[#1464ad]">CHF {getEstimatedPrice().toFixed(2)}</span>
                     </div>
-                    <button onClick={handleAddToCart} className="kraken-control min-h-11 w-full bg-[#087f73] hover:bg-[#087f73] text-white py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all ">
+                    <button onClick={handleAddToCart} className="kraken-control min-h-11 w-full bg-[#1464ad] hover:bg-[#1464ad] text-white py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all ">
                         {editingItemId ? t('consultation.label.updateService') : t('consultation.label.addServiceWithDetails', { duration: formatTotalHours(getActiveTotalHours()), price: getEstimatedPrice().toFixed(2) })}
                     </button>
                 </div>
@@ -5583,7 +5583,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         {activeModal === 'deep-cleaning' && false && (
             <ModalOverlay title={t('services.deepCleaning.title')} onClose={() => { setActiveModal(null); setEditingItemId(null); }} noScroll={true}>
                 <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
-                    <button onClick={() => setShowInclusionsModal('deep-cleaning')} className="kraken-control min-h-11 w-full text-center text-[#087f73] text-base font-semibold hover:underline flex items-center justify-center gap-2.5 bg-[#eef7f5] p-4 rounded-xl border border-[#c8dedb] hover:bg-blue-100 transition-colors"><InfoIcon className="w-5 h-5" />{t('consultation.whatsIncluded')}</button>
+                    <button onClick={() => setShowInclusionsModal('deep-cleaning')} className="kraken-control min-h-11 w-full text-center text-[#1464ad] text-base font-semibold hover:underline flex items-center justify-center gap-2.5 bg-[#edf4fd] p-4 rounded-xl border border-[#c9dbef] hover:bg-blue-100 transition-colors"><InfoIcon className="w-5 h-5" />{t('consultation.whatsIncluded')}</button>
 
                     {config.bedrooms === 0 && config.bathrooms === 0 && (config.balconyCount > 0 || config.storageCount > 0 || config.carpetCount > 0 || config.furnitureCount > 0) && (
                         <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl mb-4 animate-fade-in">
@@ -5594,7 +5594,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     )}
 
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.label.frequency')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.label.frequency')}</label>
                         <div className="grid grid-cols-2 gap-2">
                             {[
                                 {id: 'One-Time', icon: '✨', label: t('frequency.One-Time', 'One-Time')},
@@ -5616,11 +5616,11 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                     {config.frequency !== 'One-Time' && (
                         <div className="animate-fade-in">
-                            <label htmlFor="consultationpage-field-16" className="kraken-label block text-sm font-semibold text-[#526574] mb-2">{t('consultation.label.preferredRecurrence')}</label>
+                            <label htmlFor="consultationpage-field-16" className="kraken-label block text-sm font-semibold text-[#50647c] mb-2">{t('consultation.label.preferredRecurrence')}</label>
                             <input id="consultationpage-field-16"
                                 type="text"
                                 placeholder="e.g., First Monday, or every 15th..."
-                                className="kraken-field w-full p-4 bg-[#f4f8f8] border border-[#dce6e8] rounded-xl outline-none focus:ring-2 focus:ring-[#087f73] text-base font-medium text-[#526574]"
+                                className="kraken-field w-full p-4 bg-[#f3f7fc] border border-[#dce5f0] rounded-xl outline-none focus:ring-2 focus:ring-[#1464ad] text-base font-medium text-[#50647c]"
                                 value={config.recurringDayPreference || ''}
                                 onChange={(e) => setConfig({...config, recurringDayPreference: e.target.value})}
                             />
@@ -5631,13 +5631,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         <CounterCard icon="🛌" label={t('consultation.label.beds')} value={config.bedrooms} onChange={(v) => setConfig({ ...config, bedrooms: v, duration: calculateCleaningDuration('deep-cleaning', v, config.bathrooms, config.balconyCount, config.storageCount, config.carpetCount, config.furnitureCount) })} />
                         <CounterCard icon="🚿" label={t('consultation.label.baths')} value={config.bathrooms} onChange={(v) => setConfig({ ...config, bathrooms: v, duration: calculateCleaningDuration('deep-cleaning', config.bedrooms, v, config.balconyCount, config.storageCount, config.carpetCount, config.furnitureCount) })} />
                     </div>
-                    <div className="bg-[#f4f8f8] p-5 rounded-2xl border border-[#dce6e8]">
-                        <div className="flex justify-between mb-2"><label className="kraken-label text-sm font-semibold text-[#526574] flex items-center gap-2"><ClockIcon className="w-4 h-4 text-[#087f73]" />{t('consultation.label.manualIncrease')}</label><span className="font-semibold text-[#087f73] text-lg">{formatTotalHours(getActiveTotalHours())}</span></div>
-                        <input type="range" min="4" max="20" step="0.5" value={getActiveTotalHours()} onChange={(e) => setConfig({ ...config, duration: parseFloat(e.target.value) })} className="kraken-field w-full h-2.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#087f73]" />
-                        <p className="text-base text-[#526574] text-center mt-2 font-medium italic">{t('consultation.label.manualIncreaseDesc', { rate: PRICES.deepHourly.toFixed(2) })}</p>
+                    <div className="bg-[#f3f7fc] p-5 rounded-2xl border border-[#dce5f0]">
+                        <div className="flex justify-between mb-2"><label className="kraken-label text-sm font-semibold text-[#50647c] flex items-center gap-2"><ClockIcon className="w-4 h-4 text-[#1464ad]" />{t('consultation.label.manualIncrease')}</label><span className="font-semibold text-[#1464ad] text-lg">{formatTotalHours(getActiveTotalHours())}</span></div>
+                        <input type="range" min="4" max="20" step="0.5" value={getActiveTotalHours()} onChange={(e) => setConfig({ ...config, duration: parseFloat(e.target.value) })} className="kraken-field w-full h-2.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#1464ad]" />
+                        <p className="text-base text-[#50647c] text-center mt-2 font-medium italic">{t('consultation.label.manualIncreaseDesc', { rate: PRICES.deepHourly.toFixed(2) })}</p>
                     </div>
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.label.extras')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.label.extras')}</label>
                         <div className="space-y-3">
                             <CounterCard icon="☀️" label={t('consultation.label.balcony')} subLabel="+ CHF 40.00 / +30m" value={config.balconyCount} isExtra={true} onChange={(v) => setConfig({...config, balconyCount: v, duration: calculateCleaningDuration('deep-cleaning', config.bedrooms, config.bathrooms, v, config.storageCount, config.carpetCount, config.furnitureCount)})} />
                             <CounterCard icon="📦" label={t('consultation.label.storage')} subLabel="+ CHF 30.00 / +30m" value={config.storageCount} isExtra={true} onChange={(v) => setConfig({...config, storageCount: v, duration: calculateCleaningDuration('deep-cleaning', config.bedrooms, config.bathrooms, config.balconyCount, v, config.carpetCount, config.furnitureCount)})} />
@@ -5647,12 +5647,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     </div>
                 </div>
                 {/* Sticky Footer */}
-                <div className="p-5 bg-[#f4f8f8] border-t border-[#dce6e8] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
+                <div className="p-5 bg-[#f3f7fc] border-t border-[#dce5f0] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
                     <div className="flex justify-between items-center px-1">
-                        <span className="font-semibold text-[#082b45] text-sm sm:text-sm ">{t('consultation.estimatedTotal')}</span>
-                        <span className="font-semibold text-2xl text-[#087f73]">CHF {getEstimatedPrice().toFixed(2)}</span>
+                        <span className="font-semibold text-[#032b59] text-sm sm:text-sm ">{t('consultation.estimatedTotal')}</span>
+                        <span className="font-semibold text-2xl text-[#1464ad]">CHF {getEstimatedPrice().toFixed(2)}</span>
                     </div>
-                    <button onClick={handleAddToCart} className="kraken-control min-h-11 w-full bg-[#087f73] hover:bg-[#087f73] text-white py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all ">
+                    <button onClick={handleAddToCart} className="kraken-control min-h-11 w-full bg-[#1464ad] hover:bg-[#1464ad] text-white py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all ">
                         {editingItemId ? t('consultation.label.updateService') : t('consultation.label.addServiceWithDetails', { duration: formatTotalHours(getActiveTotalHours()), price: getEstimatedPrice().toFixed(2) })}
                     </button>
                 </div>
@@ -5663,7 +5663,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         {activeModal === 'daily-cleaning' && false && (
             <ModalOverlay title={t('services.dailyCleaning.title')} onClose={() => { setActiveModal(null); setEditingItemId(null); }} noScroll={true}>
                 <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
-                    <button onClick={() => setShowInclusionsModal('daily-cleaning')} className="kraken-control min-h-11 w-full text-center text-[#087f73] text-base font-semibold hover:underline flex items-center justify-center gap-2.5 bg-[#eef7f5] p-4 rounded-xl border border-[#c8dedb] hover:bg-blue-100 transition-colors"><InfoIcon className="w-5 h-5" />{t('consultation.whatsIncluded')}</button>
+                    <button onClick={() => setShowInclusionsModal('daily-cleaning')} className="kraken-control min-h-11 w-full text-center text-[#1464ad] text-base font-semibold hover:underline flex items-center justify-center gap-2.5 bg-[#edf4fd] p-4 rounded-xl border border-[#c9dbef] hover:bg-blue-100 transition-colors"><InfoIcon className="w-5 h-5" />{t('consultation.whatsIncluded')}</button>
 
                     {config.bedrooms === 0 && config.bathrooms === 0 && (config.ironing || config.laundry || config.oven || config.cabinets || config.fridge || config.windowCount > 0) && (
                         <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl mb-4 animate-fade-in">
@@ -5674,7 +5674,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     )}
 
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.label.frequency')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.label.frequency')}</label>
                         <div className="grid grid-cols-2 gap-2">
                             {['Daily', 'Weekly', 'Bi-Weekly', 'Every 4 Weeks', 'More Frequently'].map(f => {
                                 let freqTitle = f;
@@ -5692,11 +5692,11 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     </div>
 
                     <div className="animate-fade-in">
-                        <label htmlFor="consultationpage-field-17" className="kraken-label block text-sm font-semibold text-[#526574] mb-2">{t('consultation.label.preferredRecurrence')}</label>
+                        <label htmlFor="consultationpage-field-17" className="kraken-label block text-sm font-semibold text-[#50647c] mb-2">{t('consultation.label.preferredRecurrence')}</label>
                         <input id="consultationpage-field-17"
                             type="text"
                             placeholder="e.g., Wednesdays, or Tuesdays & Fridays..."
-                            className="kraken-field w-full p-4 bg-[#f4f8f8] border border-[#dce6e8] rounded-xl outline-none focus:ring-2 focus:ring-[#087f73] text-base font-medium text-[#526574]"
+                            className="kraken-field w-full p-4 bg-[#f3f7fc] border border-[#dce5f0] rounded-xl outline-none focus:ring-2 focus:ring-[#1464ad] text-base font-medium text-[#50647c]"
                             value={config.frequencyDetails || ''}
                             onChange={(e) => setConfig({...config, frequencyDetails: e.target.value})}
                         />
@@ -5715,23 +5715,23 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         <CounterCard icon="🚿" label={t('consultation.label.baths')} value={config.bathrooms} onChange={(v) => setConfig({ ...config, bathrooms: v, duration: calculateCleaningDuration('daily-cleaning', config.bedrooms, v) })} />
                     </div>
 
-                    <div className="bg-[#f4f8f8] p-5 rounded-2xl border border-[#dce6e8]">
-                        <div className="flex justify-between mb-2"><label className="kraken-label text-sm font-semibold text-[#526574] flex items-center gap-2"><ClockIcon className="w-4 h-4 text-[#087f73]" />{mt('Duration', 'Duración', 'Dauer', 'Durée', 'Durata', 'Duração')}</label><span className="font-semibold text-[#087f73] text-lg">{formatTotalHours(getActiveTotalHours())}</span></div>
-                        <input type="range" min="2.5" max="24" step="0.5" value={getActiveTotalHours()} onChange={(e) => setConfig({ ...config, duration: parseFloat(e.target.value) })} className="kraken-field w-full h-2.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#087f73]" />
-                        <p className="text-base text-[#526574] text-center mt-2 font-medium italic">{t('consultation.label.estimatedDurationDesc', 'Duration bar includes all selected extra tasks.')}</p>
+                    <div className="bg-[#f3f7fc] p-5 rounded-2xl border border-[#dce5f0]">
+                        <div className="flex justify-between mb-2"><label className="kraken-label text-sm font-semibold text-[#50647c] flex items-center gap-2"><ClockIcon className="w-4 h-4 text-[#1464ad]" />{mt('Duration', 'Duración', 'Dauer', 'Durée', 'Durata', 'Duração')}</label><span className="font-semibold text-[#1464ad] text-lg">{formatTotalHours(getActiveTotalHours())}</span></div>
+                        <input type="range" min="2.5" max="24" step="0.5" value={getActiveTotalHours()} onChange={(e) => setConfig({ ...config, duration: parseFloat(e.target.value) })} className="kraken-field w-full h-2.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#1464ad]" />
+                        <p className="text-base text-[#50647c] text-center mt-2 font-medium italic">{t('consultation.label.estimatedDurationDesc', 'Duration bar includes all selected extra tasks.')}</p>
                     </div>
 
                     <div className="space-y-4">
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] ">{t('consultation.label.extras')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] ">{t('consultation.label.extras')}</label>
 
                         {/* 1. Ironing Service */}
                         <div className="space-y-3">
                             <OptionCard icon="👔" title={t('consultation.label.ironingService', 'Ironing Service')} description={t('consultation.label.ironingServiceDesc', 'Add ironing to your routine')} selected={config.ironing} onClick={() => setConfig({...config, ironing: !config.ironing})} isExtra={true} />
                             {config.ironing && (
-                                <div className="bg-[#f4f8f8] p-5 rounded-2xl border-2 border-[#087f73] space-y-4 animate-fade-in">
+                                <div className="bg-[#f3f7fc] p-5 rounded-2xl border-2 border-[#1464ad] space-y-4 animate-fade-in">
                                     <CounterCard icon="⏰" label={t('consultation.label.manualIncrease')} value={config.ironingHours} step={0.5} onChange={(v) => setConfig({...config, ironingHours: v})} min={0.5} />
-                                    <div><label htmlFor="consultationpage-field-18" className="kraken-label block text-sm font-semibold text-[#526574] mb-2">{t('consultation.label.instructions', 'Instructions')}</label>
-                                    <textarea id="consultationpage-field-18" placeholder="e.g., Shirts on hangers, linens folded..." className="kraken-field w-full p-4 bg-white border border-[#dce6e8] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#087f73]" value={config.ironingNotes} onChange={(e) => setConfig({...config, ironingNotes: e.target.value})}></textarea></div>
+                                    <div><label htmlFor="consultationpage-field-18" className="kraken-label block text-sm font-semibold text-[#50647c] mb-2">{t('consultation.label.instructions', 'Instructions')}</label>
+                                    <textarea id="consultationpage-field-18" placeholder="e.g., Shirts on hangers, linens folded..." className="kraken-field w-full p-4 bg-white border border-[#dce5f0] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#1464ad]" value={config.ironingNotes} onChange={(e) => setConfig({...config, ironingNotes: e.target.value})}></textarea></div>
                                 </div>
                             )}
                         </div>
@@ -5740,21 +5740,21 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         <div className="space-y-3">
                             <OptionCard icon="🧺" title={t('consultation.label.laundryService', 'Laundry Service')} description={t('consultation.label.laundryServiceDesc', 'Wash, Dry, or Both')} selected={config.laundry} onClick={() => setConfig({...config, laundry: !config.laundry})} isExtra={true} />
                             {config.laundry && (
-                                <div className="bg-[#f4f8f8] p-5 rounded-2xl border-2 border-[#087f73] space-y-4 animate-fade-in">
-                                    <div><label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.label.serviceType', 'Service Type')}</label>
+                                <div className="bg-[#f3f7fc] p-5 rounded-2xl border-2 border-[#1464ad] space-y-4 animate-fade-in">
+                                    <div><label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.label.serviceType', 'Service Type')}</label>
                                     <div className="grid grid-cols-3 gap-2">{['Wash Only', 'Dry Only', 'Wash & Dry'].map(ty => {
                                         let lType = ty;
                                         if (ty === 'Wash Only') lType = t('laundry.Wash Only', 'Wash Only');
                                         else if (ty === 'Dry Only') lType = t('laundry.Dry Only', 'Dry Only');
                                         else if (ty === 'Wash & Dry') lType = t('laundry.Wash & Dry', 'Wash & Dry');
                                         return (
-                                            <button key={ty} onClick={() => setConfig({...config, laundryType: ty})} className={`kraken-control min-h-11 min-w-11 p-2 rounded-lg text-base font-semibold border-2 transition-all ${config.laundryType === ty ? 'border-[#087f73] bg-white text-[#087f73]' : 'border-transparent bg-white text-[#526574]'}`}>{lType}</button>
+                                            <button key={ty} onClick={() => setConfig({...config, laundryType: ty})} className={`kraken-control min-h-11 min-w-11 p-2 rounded-lg text-base font-semibold border-2 transition-all ${config.laundryType === ty ? 'border-[#1464ad] bg-white text-[#1464ad]' : 'border-transparent bg-white text-[#50647c]'}`}>{lType}</button>
                                         );
                                     })}</div></div>
                                     <CounterCard icon="👕" label={t('consultation.label.clothesCount', 'Number of Clothes')} subLabel={t('consultation.label.clothesCountDesc', 'Approximate items or loads')} value={config.laundryItems} onChange={(v) => setConfig({...config, laundryItems: v})} />
                                     <CounterCard icon="⏰" label={t('consultation.label.manualIncrease')} value={config.laundryHours} step={1} onChange={(v) => setConfig({...config, laundryHours: v})} min={1} />
-                                    <div><label htmlFor="consultationpage-field-19" className="kraken-label block text-sm font-semibold text-[#526574] mb-2">{t('consultation.label.fabricMethod', 'Fabric & Washing Method')}</label>
-                                    <textarea id="consultationpage-field-19" placeholder="e.g., Cotton shirts cold wash, delicates air dry..." className="kraken-field w-full p-4 bg-white border border-[#dce6e8] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#087f73]" value={config.laundryNotes} onChange={(e) => setConfig({...config, laundryNotes: e.target.value})}></textarea></div>
+                                    <div><label htmlFor="consultationpage-field-19" className="kraken-label block text-sm font-semibold text-[#50647c] mb-2">{t('consultation.label.fabricMethod', 'Fabric & Washing Method')}</label>
+                                    <textarea id="consultationpage-field-19" placeholder="e.g., Cotton shirts cold wash, delicates air dry..." className="kraken-field w-full p-4 bg-white border border-[#dce5f0] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#1464ad]" value={config.laundryNotes} onChange={(e) => setConfig({...config, laundryNotes: e.target.value})}></textarea></div>
                                 </div>
                             )}
                         </div>
@@ -5763,19 +5763,19 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         <div className="space-y-3">
                             <OptionCard icon="🍳" title={t('consultation.label.ovenCleaning', 'Oven Cleaning')} description={t('consultation.label.ovenCleaningDesc', 'Deep clean inside and out')} selected={config.oven} onClick={() => setConfig({...config, oven: !config.oven})} isExtra={true} />
                             {config.oven && (
-                                <div className="bg-[#f4f8f8] p-5 rounded-2xl border-2 border-[#087f73] space-y-4 animate-fade-in">
-                                    <div><label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.label.greaseLevel', 'Grease Level')}</label>
+                                <div className="bg-[#f3f7fc] p-5 rounded-2xl border-2 border-[#1464ad] space-y-4 animate-fade-in">
+                                    <div><label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.label.greaseLevel', 'Grease Level')}</label>
                                     <div className="grid grid-cols-3 gap-2">{['Low', 'Medium', 'High'].map(l => {
                                         let greaseLabel = l;
                                         if (l === 'Low') greaseLabel = t('grease.Low', 'Low');
                                         else if (l === 'Medium') greaseLabel = t('grease.Medium', 'Medium');
                                         else if (l === 'High') greaseLabel = t('grease.High', 'High');
                                         return (
-                                            <button key={l} onClick={() => setConfig({...config, ovenGrease: l})} className={`kraken-control min-h-11 min-w-11 p-2 rounded-lg text-base font-semibold border-2 transition-all ${config.ovenGrease === l ? 'border-[#087f73] bg-white text-[#087f73]' : 'border-transparent bg-white text-[#526574]'}`}>{greaseLabel}</button>
+                                            <button key={l} onClick={() => setConfig({...config, ovenGrease: l})} className={`kraken-control min-h-11 min-w-11 p-2 rounded-lg text-base font-semibold border-2 transition-all ${config.ovenGrease === l ? 'border-[#1464ad] bg-white text-[#1464ad]' : 'border-transparent bg-white text-[#50647c]'}`}>{greaseLabel}</button>
                                         );
-                                    })}</div><p className="text-base text-[#526574] mt-2 italic">{t('consultation.label.ovenGreaseDesc', 'Duration adjusts based on grease: Low (30m), Medium (40m), High (50m).')}</p></div>
-                                    <div><label htmlFor="consultationpage-field-20" className="kraken-label block text-sm font-semibold text-[#526574] mb-2">{t('consultation.label.instructions', 'Instructions')}</label>
-                                    <textarea id="consultationpage-field-20" placeholder="e.g., Double oven, brand details..." className="kraken-field w-full p-4 bg-white border border-[#dce6e8] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#087f73]" value={config.ovenNotes} onChange={(e) => setConfig({...config, ovenNotes: e.target.value})}></textarea></div>
+                                    })}</div><p className="text-base text-[#50647c] mt-2 italic">{t('consultation.label.ovenGreaseDesc', 'Duration adjusts based on grease: Low (30m), Medium (40m), High (50m).')}</p></div>
+                                    <div><label htmlFor="consultationpage-field-20" className="kraken-label block text-sm font-semibold text-[#50647c] mb-2">{t('consultation.label.instructions', 'Instructions')}</label>
+                                    <textarea id="consultationpage-field-20" placeholder="e.g., Double oven, brand details..." className="kraken-field w-full p-4 bg-white border border-[#dce5f0] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#1464ad]" value={config.ovenNotes} onChange={(e) => setConfig({...config, ovenNotes: e.target.value})}></textarea></div>
                                 </div>
                             )}
                         </div>
@@ -5784,22 +5784,22 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         <div className="space-y-3">
                             <OptionCard icon="🚪" title={t('consultation.label.cabinetCleaning', 'Cabinet Cleaning')} description={t('consultation.slice.cabinetCleaningDesc', 'Interior cleaning & organizing')} selected={config.cabinets} onClick={() => setConfig({...config, cabinets: !config.cabinets})} isExtra={true} />
                             {config.cabinets && (
-                                <div className="bg-[#f4f8f8] p-5 rounded-2xl border-2 border-[#087f73] space-y-4 animate-fade-in">
-                                    <div><label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.label.condition', 'Condition')}</label>
+                                <div className="bg-[#f3f7fc] p-5 rounded-2xl border-2 border-[#1464ad] space-y-4 animate-fade-in">
+                                    <div><label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.label.condition', 'Condition')}</label>
                                     <div className="grid grid-cols-2 gap-2">{['Empty', 'With Items'].map(c => {
                                         let condLabel = c;
                                         if (c === 'Empty') condLabel = t('condition.Empty', 'Empty');
                                         else if (c === 'With Items') condLabel = t('condition.With Items', 'With Items');
                                         return (
-                                            <button key={c} onClick={() => setConfig({...config, cabinetCondition: c})} className={`kraken-control min-h-11 min-w-11 p-2 rounded-lg text-base font-semibold border-2 transition-all ${config.cabinetCondition === c ? 'border-[#087f73] bg-white text-[#087f73]' : 'border-transparent bg-white text-[#526574]'}`}>{condLabel}</button>
+                                            <button key={c} onClick={() => setConfig({...config, cabinetCondition: c})} className={`kraken-control min-h-11 min-w-11 p-2 rounded-lg text-base font-semibold border-2 transition-all ${config.cabinetCondition === c ? 'border-[#1464ad] bg-white text-[#1464ad]' : 'border-transparent bg-white text-[#50647c]'}`}>{condLabel}</button>
                                         );
                                     })}</div></div>
-                                    <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-[#dce6e8]">
-                                        <div className="flex flex-col"><span className="text-sm font-semibold text-[#082b45]">{t('consultation.label.organizeItems', 'Remove & Organize Items')}</span><span className="text-sm text-[#526574]">{t('consultation.label.organizeItemsDesc', 'Increases time (+30m)')}</span></div>
-                                        <button onClick={() => setConfig({...config, cabinetOrganize: !config.cabinetOrganize})} className={`kraken-switch w-10 h-5 rounded-full relative transition-colors ${config.cabinetOrganize ? 'bg-[#087f73]' : 'bg-gray-200'}`}><div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${config.cabinetOrganize ? 'translate-x-5' : 'translate-x-0'}`}></div></button>
+                                    <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-[#dce5f0]">
+                                        <div className="flex flex-col"><span className="text-sm font-semibold text-[#032b59]">{t('consultation.label.organizeItems', 'Remove & Organize Items')}</span><span className="text-sm text-[#50647c]">{t('consultation.label.organizeItemsDesc', 'Increases time (+30m)')}</span></div>
+                                        <button onClick={() => setConfig({...config, cabinetOrganize: !config.cabinetOrganize})} className={`kraken-switch w-10 h-5 rounded-full relative transition-colors ${config.cabinetOrganize ? 'bg-[#1464ad]' : 'bg-gray-200'}`}><div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${config.cabinetOrganize ? 'translate-x-5' : 'translate-x-0'}`}></div></button>
                                     </div>
-                                    <div><label htmlFor="consultationpage-field-21" className="kraken-label block text-sm font-semibold text-[#526574] mb-2">{t('consultation.label.instructions', 'Instructions')}</label>
-                                    <textarea id="consultationpage-field-21" placeholder="e.g., Kitchen upper cabinets only..." className="kraken-field w-full p-4 bg-white border border-[#dce6e8] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#087f73]" value={config.cabinetNotes} onChange={(e) => setConfig({...config, cabinetNotes: e.target.value})}></textarea></div>
+                                    <div><label htmlFor="consultationpage-field-21" className="kraken-label block text-sm font-semibold text-[#50647c] mb-2">{t('consultation.label.instructions', 'Instructions')}</label>
+                                    <textarea id="consultationpage-field-21" placeholder="e.g., Kitchen upper cabinets only..." className="kraken-field w-full p-4 bg-white border border-[#dce5f0] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#1464ad]" value={config.cabinetNotes} onChange={(e) => setConfig({...config, cabinetNotes: e.target.value})}></textarea></div>
                                 </div>
                             )}
                         </div>
@@ -5808,22 +5808,22 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         <div className="space-y-3">
                             <OptionCard icon="❄️" title={t('consultation.label.fridgeCleaning', 'Fridge Cleaning')} description={t('consultation.label.fridgeCleaningDesc', 'Hygiene & Organization')} selected={config.fridge} onClick={() => setConfig({...config, fridge: !config.fridge})} isExtra={true} />
                             {config.fridge && (
-                                <div className="bg-[#f4f8f8] p-5 rounded-2xl border-2 border-[#087f73] space-y-4 animate-fade-in">
-                                    <div><label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.label.condition', 'Condition')}</label>
+                                <div className="bg-[#f3f7fc] p-5 rounded-2xl border-2 border-[#1464ad] space-y-4 animate-fade-in">
+                                    <div><label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.label.condition', 'Condition')}</label>
                                     <div className="grid grid-cols-2 gap-2">{['Empty', 'With Items'].map(c => {
                                         let condLabel = c;
                                         if (c === 'Empty') condLabel = t('condition.Empty', 'Empty');
                                         else if (c === 'With Items') condLabel = t('condition.With Items', 'With Items');
                                         return (
-                                            <button key={c} onClick={() => setConfig({...config, fridgeCondition: c})} className={`kraken-control min-h-11 min-w-11 p-2 rounded-lg text-base font-semibold border-2 transition-all ${config.fridgeCondition === c ? 'border-[#087f73] bg-white text-[#087f73]' : 'border-transparent bg-white text-[#526574]'}`}>{condLabel}</button>
+                                            <button key={c} onClick={() => setConfig({...config, fridgeCondition: c})} className={`kraken-control min-h-11 min-w-11 p-2 rounded-lg text-base font-semibold border-2 transition-all ${config.fridgeCondition === c ? 'border-[#1464ad] bg-white text-[#1464ad]' : 'border-transparent bg-white text-[#50647c]'}`}>{condLabel}</button>
                                         );
                                     })}</div></div>
-                                    <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-[#dce6e8]">
-                                        <div className="flex flex-col"><span className="text-sm font-semibold text-[#082b45]">{t('consultation.label.organizeItems', 'Remove & Organize Items')}</span><span className="text-sm text-[#526574]">{t('consultation.label.organizeItemsDesc', 'Increases time (+30m)')}</span></div>
-                                        <button onClick={() => setConfig({...config, fridgeOrganize: !config.fridgeOrganize})} className={`kraken-switch w-10 h-5 rounded-full relative transition-colors ${config.fridgeOrganize ? 'bg-[#087f73]' : 'bg-gray-200'}`}><div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${config.fridgeOrganize ? 'translate-x-5' : 'translate-x-0'}`}></div></button>
+                                    <div className="flex items-center justify-between p-4 bg-white rounded-xl border border-[#dce5f0]">
+                                        <div className="flex flex-col"><span className="text-sm font-semibold text-[#032b59]">{t('consultation.label.organizeItems', 'Remove & Organize Items')}</span><span className="text-sm text-[#50647c]">{t('consultation.label.organizeItemsDesc', 'Increases time (+30m)')}</span></div>
+                                        <button onClick={() => setConfig({...config, fridgeOrganize: !config.fridgeOrganize})} className={`kraken-switch w-10 h-5 rounded-full relative transition-colors ${config.fridgeOrganize ? 'bg-[#1464ad]' : 'bg-gray-200'}`}><div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${config.fridgeOrganize ? 'translate-x-5' : 'translate-x-0'}`}></div></button>
                                     </div>
-                                    <div><label htmlFor="consultationpage-field-22" className="kraken-label block text-sm font-semibold text-[#526574] mb-2">{t('consultation.label.instructions', 'Instructions')}</label>
-                                    <textarea id="consultationpage-field-22" placeholder="e.g., Freezer defrosting needed..." className="kraken-field w-full p-4 bg-white border border-[#dce6e8] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#087f73]" value={config.fridgeNotes} onChange={(e) => setConfig({...config, fridgeNotes: e.target.value})}></textarea></div>
+                                    <div><label htmlFor="consultationpage-field-22" className="kraken-label block text-sm font-semibold text-[#50647c] mb-2">{t('consultation.label.instructions', 'Instructions')}</label>
+                                    <textarea id="consultationpage-field-22" placeholder="e.g., Freezer defrosting needed..." className="kraken-field w-full p-4 bg-white border border-[#dce5f0] rounded-xl text-base outline-none focus:ring-2 focus:ring-[#1464ad]" value={config.fridgeNotes} onChange={(e) => setConfig({...config, fridgeNotes: e.target.value})}></textarea></div>
                                 </div>
                             )}
                         </div>
@@ -5838,12 +5838,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     </div>
                 </div>
                 {/* Sticky Footer */}
-                <div className="p-5 bg-[#f4f8f8] border-t border-[#dce6e8] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
+                <div className="p-5 bg-[#f3f7fc] border-t border-[#dce5f0] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
                     <div className="flex justify-between items-center px-1">
-                        <span className="font-semibold text-[#082b45] text-sm sm:text-sm ">{t('consultation.estimatedTotal')}</span>
-                        <span className="font-semibold text-2xl text-[#087f73]">CHF {getEstimatedPrice().toFixed(2)}</span>
+                        <span className="font-semibold text-[#032b59] text-sm sm:text-sm ">{t('consultation.estimatedTotal')}</span>
+                        <span className="font-semibold text-2xl text-[#1464ad]">CHF {getEstimatedPrice().toFixed(2)}</span>
                     </div>
-                    <button onClick={handleAddToCart} className="kraken-control min-h-11 w-full bg-[#087f73] hover:bg-[#087f73] text-white py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all ">
+                    <button onClick={handleAddToCart} className="kraken-control min-h-11 w-full bg-[#1464ad] hover:bg-[#1464ad] text-white py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all ">
                         {editingItemId ? t('consultation.label.updateService') : t('consultation.label.addServiceWithDetails', { duration: formatTotalHours(getActiveTotalHours()), price: getEstimatedPrice().toFixed(2) })}
                     </button>
                 </div>
@@ -5887,15 +5887,15 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         <button
                             type="button"
                             onClick={() => setShowMovingInfo(true)}
-                            className="kraken-control min-h-11 w-full flex items-center justify-center gap-3 p-4 bg-[#eef7f5] border border-[#c8dedb] rounded-[2rem] hover:bg-[#eef7f5] transition-all group animate-fade-in"
+                            className="kraken-control min-h-11 w-full flex items-center justify-center gap-3 p-4 bg-[#edf4fd] border border-[#c9dbef] rounded-[2rem] hover:bg-[#edf4fd] transition-all group animate-fade-in"
                         >
-                            <InfoIcon className="w-5 h-5 text-[#087f73]" />
-                            <span className="text-sm font-semibold text-[#087f73] ">How our moving service works?</span>
+                            <InfoIcon className="w-5 h-5 text-[#1464ad]" />
+                            <span className="text-sm font-semibold text-[#1464ad] ">How our moving service works?</span>
                         </button>
 
                         {/* What are we moving? */}
                         <div className="space-y-2">
-                            <label className="kraken-label block text-sm font-semibold text-[#526574] ">¿Qué vamos a trasladar? / Move Type</label>
+                            <label className="kraken-label block text-sm font-semibold text-[#50647c] ">¿Qué vamos a trasladar? / Move Type</label>
                             <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                                 {[
                                     {id: 'Home Contents', label: 'Hogar', icon: '🏠'},
@@ -5908,7 +5908,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         key={m.id}
                                         type="button"
                                         onClick={() => setConfig({...config, moveType: m.id})}
-                                        className={`kraken-control min-h-11 min-w-11 flex flex-col items-center justify-center p-3 rounded-2xl border transition-all text-center ${config.moveType === m.id ? 'bg-[#087f73] border-[#087f73] text-white shadow-md' : 'bg-white border-[#dce6e8] text-[#082b45] hover:bg-[#f4f8f8]'}`}
+                                        className={`kraken-control min-h-11 min-w-11 flex flex-col items-center justify-center p-3 rounded-2xl border transition-all text-center ${config.moveType === m.id ? 'bg-[#1464ad] border-[#1464ad] text-white shadow-md' : 'bg-white border-[#dce5f0] text-[#032b59] hover:bg-[#f3f7fc]'}`}
                                     >
                                         <span className="text-2xl mb-1">{m.icon}</span>
                                         <span className="text-sm font-semibold leading-tight">{m.label}</span>
@@ -5918,8 +5918,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         </div>
 
                         {/* Crew & Tariff Rate */}
-                        <div className="bg-[#f4f8f8] p-5 rounded-3xl border border-[#dce6e8] space-y-3">
-                            <label className="kraken-label block text-sm font-semibold text-[#526574] flex items-center gap-2">
+                        <div className="bg-[#f3f7fc] p-5 rounded-3xl border border-[#dce5f0] space-y-3">
+                            <label className="kraken-label block text-sm font-semibold text-[#50647c] flex items-center gap-2">
                                 👥 EQUIPO Y TARIFA / CREW COST
                             </label>
                             <div className="grid grid-cols-2 gap-2">
@@ -5933,32 +5933,32 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         key={opt.count}
                                         type="button"
                                         onClick={() => setConfig({...config, moversCount: opt.count, serviceLevel: opt.count === 1 ? 'Standard' : opt.count === 2 ? 'Standard' : opt.count === 3 ? 'Large' : 'Commercial'})}
-                                        className={`kraken-control min-h-11 min-w-11 flex flex-col items-center justify-center p-3 rounded-2xl border transition-all text-center ${config.moversCount === opt.count ? 'bg-[#087f73] border-[#087f73] text-white shadow-sm' : 'bg-white border-[#dce6e8] hover:bg-[#f4f8f8] text-[#082b45]'}`}
+                                        className={`kraken-control min-h-11 min-w-11 flex flex-col items-center justify-center p-3 rounded-2xl border transition-all text-center ${config.moversCount === opt.count ? 'bg-[#1464ad] border-[#1464ad] text-white shadow-sm' : 'bg-white border-[#dce5f0] hover:bg-[#f3f7fc] text-[#032b59]'}`}
                                     >
                                         <span className="text-sm font-semibold">{opt.label}</span>
-                                        <span className={`text-sm font-semibold my-0.5 ${config.moversCount === opt.count ? 'text-white' : 'text-[#087f73]'}`}>{opt.rate}</span>
-                                        <span className={`text-sm ${config.moversCount === opt.count ? 'text-[#526574]' : 'text-[#526574]'}`}>{opt.desc}</span>
+                                        <span className={`text-sm font-semibold my-0.5 ${config.moversCount === opt.count ? 'text-white' : 'text-[#1464ad]'}`}>{opt.rate}</span>
+                                        <span className={`text-sm ${config.moversCount === opt.count ? 'text-[#50647c]' : 'text-[#50647c]'}`}>{opt.desc}</span>
                                     </button>
                                 ))}
                             </div>
 
                             {/* Custom helpers count input */}
                             <div className="pt-2">
-                                <div className="flex items-center gap-4 bg-white p-3 rounded-2xl border border-[#dce6e8]">
-                                    <span className="text-sm font-semibold text-[#526574]">¿Quieres añadir más ayudantes?</span>
+                                <div className="flex items-center gap-4 bg-white p-3 rounded-2xl border border-[#dce5f0]">
+                                    <span className="text-sm font-semibold text-[#50647c]">¿Quieres añadir más ayudantes?</span>
                                     <div className="flex items-center gap-2 ml-auto">
                                         <button
                                             type="button"
                                             disabled={movers <= 1}
                                             onClick={() => setConfig({...config, moversCount: Math.max(1, movers - 1)})}
-                                            className="kraken-control min-h-11 min-w-11 w-8 h-8 rounded-xl bg-[#f4f8f8] hover:bg-slate-200 text-[#082b45] flex items-center justify-center font-semibold disabled:opacity-40"
+                                            className="kraken-control min-h-11 min-w-11 w-8 h-8 rounded-xl bg-[#f3f7fc] hover:bg-slate-200 text-[#032b59] flex items-center justify-center font-semibold disabled:opacity-40"
                                         >-</button>
                                         <span className="w-8 font-semibold text-center text-sm">{movers}</span>
                                         <button
                                             type="button"
                                             disabled={movers >= 10}
                                             onClick={() => setConfig({...config, moversCount: Math.min(10, movers + 1)})}
-                                            className="kraken-control min-h-11 min-w-11 w-8 h-8 rounded-xl bg-[#f4f8f8] hover:bg-slate-200 text-[#082b45] flex items-center justify-center font-semibold disabled:opacity-40"
+                                            className="kraken-control min-h-11 min-w-11 w-8 h-8 rounded-xl bg-[#f3f7fc] hover:bg-slate-200 text-[#032b59] flex items-center justify-center font-semibold disabled:opacity-40"
                                         >+</button>
                                     </div>
                                 </div>
@@ -5966,9 +5966,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         </div>
 
                         {/* Estimated Duration adjustment (minimum 1h) */}
-                        <div className="bg-[#f4f8f8] p-5 rounded-3xl border border-[#dce6e8] space-y-3">
-                            <label htmlFor="consultationpage-field-23" className="kraken-label block text-sm font-semibold text-[#526574] flex items-center gap-2">
-                                <ClockIcon className="w-4 h-4 text-[#087f73]" />
+                        <div className="bg-[#f3f7fc] p-5 rounded-3xl border border-[#dce5f0] space-y-3">
+                            <label htmlFor="consultationpage-field-23" className="kraken-label block text-sm font-semibold text-[#50647c] flex items-center gap-2">
+                                <ClockIcon className="w-4 h-4 text-[#1464ad]" />
                                 DURACIÓN ESTIMADA / ESTIMATED DURATION
                             </label>
 
@@ -5979,7 +5979,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         key={h}
                                         type="button"
                                         onClick={() => setConfig({...config, duration: h})}
-                                        className={`kraken-control min-h-11 min-w-11 px-4 py-2.5 text-base font-semibold rounded-xl transition-all border ${config.duration === h ? 'bg-[#087f73] border-[#087f73] text-white shadow-md' : 'bg-white border-[#dce6e8] text-[#526574] hover:bg-[#f4f8f8]'}`}
+                                        className={`kraken-control min-h-11 min-w-11 px-4 py-2.5 text-base font-semibold rounded-xl transition-all border ${config.duration === h ? 'bg-[#1464ad] border-[#1464ad] text-white shadow-md' : 'bg-white border-[#dce5f0] text-[#50647c] hover:bg-[#f3f7fc]'}`}
                                     >
                                         {h}h
                                     </button>
@@ -5987,8 +5987,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             </div>
 
                             {/* Manual input */}
-                            <div className="flex items-center gap-3 bg-white p-3 rounded-2xl border border-[#dce6e8]">
-                                <span className="text-sm text-[#526574] font-semibold">O introduce horas exactas:</span>
+                            <div className="flex items-center gap-3 bg-white p-3 rounded-2xl border border-[#dce5f0]">
+                                <span className="text-sm text-[#50647c] font-semibold">O introduce horas exactas:</span>
                                 <input id="consultationpage-field-23"
                                     type="number"
                                     step="0.5"
@@ -5998,7 +5998,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         const val = parseFloat(e.target.value);
                                         setConfig({...config, duration: isNaN(val) ? 1 : Math.max(1, val)});
                                     }}
-                                    className="kraken-field w-24 p-2 bg-[#f4f8f8] border border-[#dce6e8] rounded-xl font-semibold text-center text-[#082b45] focus:ring-2 focus:ring-[#087f73] outline-none"
+                                    className="kraken-field w-24 p-2 bg-[#f3f7fc] border border-[#dce5f0] rounded-xl font-semibold text-center text-[#032b59] focus:ring-2 focus:ring-[#1464ad] outline-none"
                                 />
                             </div>
                         </div>
@@ -6006,8 +6006,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         {/* Origin and Destination Address details */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* Source location */}
-                            <div className="bg-[#f4f8f8] p-4 rounded-3xl border border-[#dce6e8] space-y-3">
-                                <label className="kraken-label block text-sm font-semibold text-[#526574] flex items-center gap-2">
+                            <div className="bg-[#f3f7fc] p-4 rounded-3xl border border-[#dce5f0] space-y-3">
+                                <label className="kraken-label block text-sm font-semibold text-[#50647c] flex items-center gap-2">
                                     📍 {mt('Origin (Starting)', 'Origen (Punto de Inicio)', 'Startort (Auszug)')}
                                 </label>
                                 <div className="space-y-3">
@@ -6016,7 +6016,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         placeholder={mt('Full Address (Street, House No.)', 'Dirección completa (Calle, nº)', 'Genaue Adresse (Strasse, Nr.)')}
                                         value={config.fromAddress || ''}
                                         onChange={(e) => setConfig({...config, fromAddress: e.target.value})}
-                                        className="kraken-field w-full p-3 bg-white border border-[#dce6e8] rounded-xl outline-none text-base font-semibold text-[#526574]"
+                                        className="kraken-field w-full p-3 bg-white border border-[#dce5f0] rounded-xl outline-none text-base font-semibold text-[#50647c]"
                                     />
                                     <div className="grid grid-cols-2 gap-2">
                                         <input
@@ -6024,12 +6024,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             placeholder={mt('ZIP (e.g. 8000)', 'Código Postal (ej. 8000)', 'PLZ (z. B. 8000)')}
                                             value={config.fromZip || ''}
                                             onChange={(e) => setConfig({...config, fromZip: e.target.value})}
-                                            className={`kraken-field w-full p-3 bg-white border rounded-xl outline-none text-base font-semibold font-mono ${config.fromZip && !isFromZipValid ? 'border-amber-300 bg-amber-50 text-amber-900' : 'border-[#dce6e8]'}`}
+                                            className={`kraken-field w-full p-3 bg-white border rounded-xl outline-none text-base font-semibold font-mono ${config.fromZip && !isFromZipValid ? 'border-amber-300 bg-amber-50 text-amber-900' : 'border-[#dce5f0]'}`}
                                         />
                                         <select
                                             value={config.floorFrom || '0'}
                                             onChange={(e) => setConfig({...config, floorFrom: e.target.value})}
-                                            className="kraken-field w-full p-2 bg-white border border-[#dce6e8] rounded-xl outline-none text-base font-semibold"
+                                            className="kraken-field w-full p-2 bg-white border border-[#dce5f0] rounded-xl outline-none text-base font-semibold"
                                         >
                                             <option value="Basement">{mt('Basement', 'Sótano', 'Keller')}</option>
                                             <option value="0">{mt('Ground floor', 'Planta baja', 'Erdgeschoss')}</option>
@@ -6044,7 +6044,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     <select
                                         value={config.accessFrom || 'Lift'}
                                         onChange={(e) => setConfig({...config, accessFrom: e.target.value})}
-                                        className="kraken-field w-full p-3 bg-white border border-[#dce6e8] rounded-xl outline-none text-base font-semibold"
+                                        className="kraken-field w-full p-3 bg-white border border-[#dce5f0] rounded-xl outline-none text-base font-semibold"
                                     >
                                         <option value="Lift">{mt('With Elevator', 'Con Ascensor', 'Mit Lift')}</option>
                                         <option value="Stairs">{mt('Only Stairs', 'Solo Escaleras', 'Nur Treppe')}</option>
@@ -6058,8 +6058,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             </div>
 
                             {/* Target location */}
-                            <div className="bg-[#f4f8f8] p-4 rounded-3xl border border-[#dce6e8] space-y-3">
-                                <label className="kraken-label block text-sm font-semibold text-[#526574] flex items-center gap-2">
+                            <div className="bg-[#f3f7fc] p-4 rounded-3xl border border-[#dce5f0] space-y-3">
+                                <label className="kraken-label block text-sm font-semibold text-[#50647c] flex items-center gap-2">
                                     🏁 {mt('Destination (Target)', 'Destino (Punto de Entrega)', 'Zielort (Einzug)')}
                                 </label>
                                 <div className="space-y-3">
@@ -6068,7 +6068,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         placeholder={mt('Full Address (Street, House No.)', 'Dirección completa (Calle, nº)', 'Genaue Adresse (Strasse, Nr.)')}
                                         value={config.toAddress || ''}
                                         onChange={(e) => setConfig({...config, toAddress: e.target.value})}
-                                        className="kraken-field w-full p-3 bg-white border border-[#dce6e8] rounded-xl outline-none text-base font-semibold text-[#526574]"
+                                        className="kraken-field w-full p-3 bg-white border border-[#dce5f0] rounded-xl outline-none text-base font-semibold text-[#50647c]"
                                     />
                                     <div className="grid grid-cols-2 gap-2">
                                         <input
@@ -6076,12 +6076,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             placeholder={mt('ZIP (e.g. 8400)', 'Código Postal (ej. 8400)', 'PLZ (z. B. 8400)')}
                                             value={config.toZip || ''}
                                             onChange={(e) => setConfig({...config, toZip: e.target.value})}
-                                            className={`kraken-field w-full p-3 bg-white border rounded-xl outline-none text-base font-semibold font-mono ${config.toZip && !isToZipValid ? 'border-amber-300 bg-amber-50 text-amber-900' : 'border-[#dce6e8]'}`}
+                                            className={`kraken-field w-full p-3 bg-white border rounded-xl outline-none text-base font-semibold font-mono ${config.toZip && !isToZipValid ? 'border-amber-300 bg-amber-50 text-amber-900' : 'border-[#dce5f0]'}`}
                                         />
                                         <select
                                             value={config.floorTo || '0'}
                                             onChange={(e) => setConfig({...config, floorTo: e.target.value})}
-                                            className="kraken-field w-full p-2 bg-white border border-[#dce6e8] rounded-xl outline-none text-base font-semibold"
+                                            className="kraken-field w-full p-2 bg-white border border-[#dce5f0] rounded-xl outline-none text-base font-semibold"
                                         >
                                             <option value="Basement">{mt('Basement', 'Sótano', 'Keller')}</option>
                                             <option value="0">{mt('Ground floor', 'Planta baja', 'Erdgeschoss')}</option>
@@ -6096,7 +6096,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     <select
                                         value={config.accessTo || 'Lift'}
                                         onChange={(e) => setConfig({...config, accessTo: e.target.value})}
-                                        className="kraken-field w-full p-3 bg-white border border-[#dce6e8] rounded-xl outline-none text-base font-semibold"
+                                        className="kraken-field w-full p-3 bg-white border border-[#dce5f0] rounded-xl outline-none text-base font-semibold"
                                     >
                                         <option value="Lift">{mt('With Elevator', 'Con Ascensor', 'Mit Lift')}</option>
                                         <option value="Stairs">{mt('Only Stairs', 'Solo Escaleras', 'Nur Treppe')}</option>
@@ -6112,24 +6112,24 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                         {/* Additional Services with Toggle: Montaje, Ascensor, Embalaje */}
                         <div className="space-y-3">
-                            <label className="kraken-label block text-sm font-semibold text-[#526574] ">
+                            <label className="kraken-label block text-sm font-semibold text-[#50647c] ">
                                 🛠️ {mt('ADDITIONAL SERVICES / EXTRAS', 'SERVICIOS ADICIONALES / EXTRAS', 'ZUSATZLEISTUNGEN / EXTRAS')}
                             </label>
 
                             {/* Montaje / Desmontaje */}
-                            <div className="flex items-center justify-between p-4 bg-white border border-[#dce6e8] rounded-2xl hover:shadow-sm transition-all animate-fade-in">
+                            <div className="flex items-center justify-between p-4 bg-white border border-[#dce5f0] rounded-2xl hover:shadow-sm transition-all animate-fade-in">
                                 <div className="flex items-start gap-3">
                                     <span className="text-2xl mt-0.5">🔧</span>
                                     <div>
                                         <h4 className="text-lg font-semibold text-slate-850">
                                             {mt('Furniture Assembly / Disassembly', 'Montaje y desmontaje de muebles', 'Möbelmontage & -demontage')}
                                         </h4>
-                                        <p className="text-base text-[#526574]">
+                                        <p className="text-base text-[#50647c]">
                                             {mt('Beds, desks, wardrobes', 'Camas, escritorios, armarios', 'Betten, Schreibtische, Schränke')}
                                         </p>
                                         {config.assembly && (
-                                            <div className="mt-2 flex items-center gap-2 bg-[#f4f8f8] p-2 rounded-xl border border-[#dce6e8]">
-                                                <span className="text-sm font-semibold text-[#526574]">
+                                            <div className="mt-2 flex items-center gap-2 bg-[#f3f7fc] p-2 rounded-xl border border-[#dce5f0]">
+                                                <span className="text-sm font-semibold text-[#50647c]">
                                                     {mt('Hours:', 'Horas:', 'Stunden:')}
                                                 </span>
                                                 <input
@@ -6141,18 +6141,18 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         const val = parseFloat(e.target.value);
                                                         setConfig({...config, assemblyHours: isNaN(val) ? 1 : Math.max(0.5, val)});
                                                     }}
-                                                    className="kraken-field w-16 p-1 bg-white border border-[#dce6e8] rounded-lg text-center text-base font-semibold font-mono outline-none"
+                                                    className="kraken-field w-16 p-1 bg-white border border-[#dce5f0] rounded-lg text-center text-base font-semibold font-mono outline-none"
                                                 />
                                             </div>
                                         )}
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <span className="text-sm font-semibold text-[#526574]">80 CHF/h</span>
+                                    <span className="text-sm font-semibold text-[#50647c]">80 CHF/h</span>
                                     <button
                                         type="button"
                                         onClick={() => setConfig({...config, assembly: !config.assembly, assemblyHours: config.assemblyHours ? config.assemblyHours : 1})}
-                                        className={`kraken-switch w-10 h-5 rounded-full relative transition-colors ${config.assembly ? 'bg-[#087f73]' : 'bg-gray-200'}`}
+                                        className={`kraken-switch w-10 h-5 rounded-full relative transition-colors ${config.assembly ? 'bg-[#1464ad]' : 'bg-gray-200'}`}
                                     >
                                         <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${config.assembly ? 'translate-x-5' : 'translate-x-0'}`}></div>
                                     </button>
@@ -6160,7 +6160,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             </div>
 
                             {/* Ascensor hidráulico */}
-                            <div className="flex flex-col p-4 bg-white border border-[#dce6e8] rounded-2xl hover:shadow-sm transition-all space-y-3 animate-fade-in">
+                            <div className="flex flex-col p-4 bg-white border border-[#dce5f0] rounded-2xl hover:shadow-sm transition-all space-y-3 animate-fade-in">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-start gap-3">
                                         <span className="text-2xl mt-0.5">🏗️</span>
@@ -6168,32 +6168,32 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             <h4 className="text-lg font-semibold text-slate-850">
                                                 {mt('Hydraulic Lift Rental', 'Ascensor hidráulico', 'Möbellift / Fassadenlift')}
                                             </h4>
-                                            <p className="text-base text-[#526574] font-medium">
+                                            <p className="text-base text-[#50647c] font-medium">
                                                 {mt('Bulky furniture to high floors', 'Muebles voluminosos a pisos altos', 'Sperrige Möbel in hohe Etagen')}
                                             </p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <span className="text-sm font-semibold text-[#526574]">150 CHF/h</span>
+                                        <span className="text-sm font-semibold text-[#50647c]">150 CHF/h</span>
                                         <button
                                             type="button"
                                             onClick={() => setConfig({...config, hydraulicLift: !config.hydraulicLift, hydraulicLiftHours: config.hydraulicLiftHours ? config.hydraulicLiftHours : 1})}
-                                            className={`kraken-switch w-10 h-5 rounded-full relative transition-colors ${config.hydraulicLift ? 'bg-[#087f73]' : 'bg-gray-200'}`}
+                                            className={`kraken-switch w-10 h-5 rounded-full relative transition-colors ${config.hydraulicLift ? 'bg-[#1464ad]' : 'bg-gray-200'}`}
                                         >
                                             <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${config.hydraulicLift ? 'translate-x-5' : 'translate-x-0'}`}></div>
                                         </button>
                                     </div>
                                 </div>
                                 {config.hydraulicLift && (
-                                    <div className="flex items-center gap-2 bg-[#f4f8f8] p-2 rounded-xl border border-[#dce6e8] w-full justify-between animate-fade-in">
-                                        <span className="text-sm font-semibold text-[#526574]">
+                                    <div className="flex items-center gap-2 bg-[#f3f7fc] p-2 rounded-xl border border-[#dce5f0] w-full justify-between animate-fade-in">
+                                        <span className="text-sm font-semibold text-[#50647c]">
                                             {mt('Hours required:', 'Horas requeridas:', 'Benötigte Stunden:')}
                                         </span>
                                         <div className="flex items-center gap-2">
                                             <button
                                                 type="button"
                                                 onClick={() => setConfig({...config, hydraulicLiftHours: Math.max(0.5, (config.hydraulicLiftHours || 1) - 0.5)})}
-                                                className="kraken-control min-h-11 min-w-11 w-6 h-6 rounded bg-slate-200 hover:bg-slate-300 font-semibold text-[#087f73] flex items-center justify-center text-base"
+                                                className="kraken-control min-h-11 min-w-11 w-6 h-6 rounded bg-slate-200 hover:bg-slate-300 font-semibold text-[#1464ad] flex items-center justify-center text-base"
                                             >-</button>
                                             <input
                                                 type="number"
@@ -6204,12 +6204,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     const val = parseFloat(e.target.value);
                                                     setConfig({...config, hydraulicLiftHours: isNaN(val) ? 1 : Math.max(0.5, val)});
                                                 }}
-                                                className="kraken-field w-16 p-1 bg-white border border-[#dce6e8] rounded-lg text-center text-base font-semibold font-mono outline-none focus:ring-1 focus:ring-[#087f73]"
+                                                className="kraken-field w-16 p-1 bg-white border border-[#dce5f0] rounded-lg text-center text-base font-semibold font-mono outline-none focus:ring-1 focus:ring-[#1464ad]"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setConfig({...config, hydraulicLiftHours: (config.hydraulicLiftHours || 1) + 0.5})}
-                                                className="kraken-control min-h-11 min-w-11 w-6 h-6 rounded bg-slate-200 hover:bg-slate-300 font-semibold text-[#087f73] flex items-center justify-center text-base"
+                                                className="kraken-control min-h-11 min-w-11 w-6 h-6 rounded bg-slate-200 hover:bg-slate-300 font-semibold text-[#1464ad] flex items-center justify-center text-base"
                                             >+</button>
                                         </div>
                                     </div>
@@ -6217,24 +6217,24 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             </div>
 
                             {/* Material de Embalaje */}
-                            <div className="flex items-center justify-between p-4 bg-white border border-[#dce6e8] rounded-2xl hover:shadow-sm transition-all animate-fade-in">
+                            <div className="flex items-center justify-between p-4 bg-white border border-[#dce5f0] rounded-2xl hover:shadow-sm transition-all animate-fade-in">
                                 <div className="flex items-start gap-3">
                                     <span className="text-2xl mt-0.5">📦</span>
                                     <div>
                                         <h4 className="text-lg font-semibold text-slate-850">
                                             {mt('Packaging Materials', 'Materiales de embalaje', 'Verpackungsmaterialien')}
                                         </h4>
-                                        <p className="text-base text-[#526574]">
+                                        <p className="text-base text-[#50647c]">
                                             {mt('Boxes, bubble wrap, stretch film', 'Cajas, papel burbuja, film', 'Kartons, Blasenfolie, Stretchfolie')}
                                         </p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <span className="text-sm font-semibold text-[#526574]">45 CHF</span>
+                                    <span className="text-sm font-semibold text-[#50647c]">45 CHF</span>
                                     <button
                                         type="button"
                                         onClick={() => setConfig({...config, packaging: !config.packaging})}
-                                        className={`kraken-switch w-10 h-5 rounded-full relative transition-colors ${config.packaging ? 'bg-[#087f73]' : 'bg-gray-200'}`}
+                                        className={`kraken-switch w-10 h-5 rounded-full relative transition-colors ${config.packaging ? 'bg-[#1464ad]' : 'bg-gray-200'}`}
                                     >
                                         <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${config.packaging ? 'translate-x-5' : 'translate-x-0'}`}></div>
                                     </button>
@@ -6244,48 +6244,48 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                         {/* Special description */}
                         <div className="space-y-1">
-                            <label htmlFor="consultationpage-field-24" className="kraken-label block text-sm font-semibold text-[#526574] text-sm">
+                            <label htmlFor="consultationpage-field-24" className="kraken-label block text-sm font-semibold text-[#50647c] text-sm">
                                 {mt('Inventory Details / Special Instructions', 'Detalles del inventario / Instrucciones especiales', 'Details zum Umzugsgut / Spezialanweisungen')}
                             </label>
                             <textarea id="consultationpage-field-24"
                                 placeholder={mt('e.g. 3-bedroom apartment, couch, fridge, 10 large boxes...', 'ej. departamento de 3 habitaciones, sofá, refrigerador, 10 cajas grandes...', 'z.B. 3-Zimmer-Wohnung, Sofa, Kühlschrank, 10 grosse Kartons...')}
                                 value={config.description || ''}
                                 onChange={(e) => setConfig({...config, description: e.target.value})}
-                                className="kraken-field w-full p-4 bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl outline-none focus:ring-1 focus:ring-[#087f73] text-base font-semibold max-h-[100px]"
+                                className="kraken-field w-full p-4 bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl outline-none focus:ring-1 focus:ring-[#1464ad] text-base font-semibold max-h-[100px]"
                             />
                         </div>
 
                         {/* DESGLOSE DEL PRESUPUESTO */}
-                        <div className="bg-[#f4f8f8] p-5 rounded-3xl border border-[#dce6e8] space-y-3 animate-fade-in">
-                            <label className="kraken-label block text-sm font-semibold text-[#526574] mb-1 flex items-center gap-1.5">
+                        <div className="bg-[#f3f7fc] p-5 rounded-3xl border border-[#dce5f0] space-y-3 animate-fade-in">
+                            <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-1 flex items-center gap-1.5">
                                 📋 {mt('BUDGET BREAKDOWN', 'DESGLOSE DEL PRESUPUESTO', 'OFFERTEN-AUFSCHLÜSSELUNG')}
                             </label>
 
                             {/* Labor cost */}
-                            <div className="flex justify-between items-center text-sm sm:text-sm font-semibold text-[#526574]">
-                                <span className="text-[#526574]">
+                            <div className="flex justify-between items-center text-sm sm:text-sm font-semibold text-[#50647c]">
+                                <span className="text-[#50647c]">
                                     {mt('Labor', 'Mano de obra', 'Arbeitskraft')} ({duration}h × {laborRate} CHF/h)
                                 </span>
-                                <span className="font-semibold text-[#082b45]">
+                                <span className="font-semibold text-[#032b59]">
                                     {laborCost.toFixed(2)} CHF
                                 </span>
                             </div>
 
                             {/* Gasoline cost */}
-                            <div className="flex justify-between items-center text-sm sm:text-sm font-semibold text-[#526574]">
-                                <span className="text-[#526574]">
+                            <div className="flex justify-between items-center text-sm sm:text-sm font-semibold text-[#50647c]">
+                                <span className="text-[#50647c]">
                                     {mt('Gasoline', 'Automóvil / Gasolina', 'Triebstoff')} ({gasInfo.distance > 0 ? `${gasInfo.distance.toFixed(1)} km (${mt('round trip', 'ida y vuelta', 'Hin- und Rückfahrt')})` : '—'}) x 0.15 CHF/km
                                 </span>
-                                <span className="font-semibold text-[#082b45] font-mono">
+                                <span className="font-semibold text-[#032b59] font-mono">
                                     {gasInfo.distance > 0 ? `${gasInfo.cost.toFixed(2)} CHF` : '— CHF'}
                                 </span>
                             </div>
 
                             {/* Assembly extra */}
                             {config.assembly && (
-                                <div className="flex justify-between items-center text-sm sm:text-sm font-semibold text-[#526574]">
-                                    <span className="text-[#526574]">{mt('Furniture Assembly', 'Montaje de muebles', 'Möbelmontage')} ({config.assemblyHours || 1}h × 80 CHF/h)</span>
-                                    <span className="font-semibold text-[#082b45] font-mono">
+                                <div className="flex justify-between items-center text-sm sm:text-sm font-semibold text-[#50647c]">
+                                    <span className="text-[#50647c]">{mt('Furniture Assembly', 'Montaje de muebles', 'Möbelmontage')} ({config.assemblyHours || 1}h × 80 CHF/h)</span>
+                                    <span className="font-semibold text-[#032b59] font-mono">
                                         {((config.assemblyHours || 1) * 80).toFixed(2)} CHF
                                     </span>
                                 </div>
@@ -6293,9 +6293,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                             {/* Lift extra */}
                             {config.hydraulicLift && (
-                                <div className="flex justify-between items-center text-sm sm:text-sm font-semibold text-[#526574]">
-                                    <span className="text-[#526574] font-medium">🏗️ {mt('Hydraulic Lift Rental', 'Ascensor hidráulico', 'Möbellift / Fassadenlift')} ({config.hydraulicLiftHours || 1}h × 150 CHF/h)</span>
-                                    <span className="font-semibold text-[#082b45] font-mono">
+                                <div className="flex justify-between items-center text-sm sm:text-sm font-semibold text-[#50647c]">
+                                    <span className="text-[#50647c] font-medium">🏗️ {mt('Hydraulic Lift Rental', 'Ascensor hidráulico', 'Möbellift / Fassadenlift')} ({config.hydraulicLiftHours || 1}h × 150 CHF/h)</span>
+                                    <span className="font-semibold text-[#032b59] font-mono">
                                         {((config.hydraulicLiftHours || 1) * 150).toFixed(2)} CHF
                                     </span>
                                 </div>
@@ -6303,9 +6303,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                             {/* Packaging extra */}
                             {config.packaging && (
-                                <div className="flex justify-between items-center text-sm sm:text-sm font-semibold text-[#526574]">
-                                    <span className="text-[#526574] font-medium">📦 {mt('Packaging Materials', 'Materiales de embalaje', 'Verpackungsmaterialien')} ({mt('Flat Rate', 'Tarifa Plana', 'Flatrate')})</span>
-                                    <span className="font-semibold text-[#082b45] font-mono">45.00 CHF</span>
+                                <div className="flex justify-between items-center text-sm sm:text-sm font-semibold text-[#50647c]">
+                                    <span className="text-[#50647c] font-medium">📦 {mt('Packaging Materials', 'Materiales de embalaje', 'Verpackungsmaterialien')} ({mt('Flat Rate', 'Tarifa Plana', 'Flatrate')})</span>
+                                    <span className="font-semibold text-[#032b59] font-mono">45.00 CHF</span>
                                 </div>
                             )}
 
@@ -6332,10 +6332,10 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         </div>
                     </div>
                     {/* Sticky Footer */}
-                    <div className="p-5 bg-[#f4f8f8] border-t border-[#dce6e8] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
+                    <div className="p-5 bg-[#f3f7fc] border-t border-[#dce5f0] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
                         <div className="flex justify-between items-center px-1">
-                            <span className="font-semibold text-[#082b45] text-sm sm:text-sm ">{mt('Estimated Total', 'Estimado Total', 'Total Schätzung')}</span>
-                            <span className="font-semibold text-2xl text-[#087f73]">CHF {estimatedTotal.toFixed(2)}</span>
+                            <span className="font-semibold text-[#032b59] text-sm sm:text-sm ">{mt('Estimated Total', 'Estimado Total', 'Total Schätzung')}</span>
+                            <span className="font-semibold text-2xl text-[#1464ad]">CHF {estimatedTotal.toFixed(2)}</span>
                         </div>
                         <button
                             type="button"
@@ -6348,7 +6348,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                 }
                                 handleAddToCart();
                             }}
-                            className="kraken-control min-h-11 w-full bg-[#087f73] hover:bg-[#087f73] text-[#ffffff] py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all "
+                            className="kraken-control min-h-11 w-full bg-[#1464ad] hover:bg-[#1464ad] text-[#ffffff] py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all "
                         >
                             {editingItemId ? mt('Update Service', 'Actualizar Servicio', 'Service aktualisieren') : `${mt('Add to Cart', 'Añadir al Carrito', 'In den Warenkorb')} (CHF ${estimatedTotal.toFixed(2)})`}
                         </button>
@@ -6360,29 +6360,29 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         {/* MODAL: Moving Info Pop-up */}
         {showMovingInfo && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade-in">
-                <div className="bg-white rounded-3xl shadow-sm w-full max-w-lg overflow-hidden border border-[#dce6e8] animate-fade-in-up">
+                <div className="bg-white rounded-3xl shadow-sm w-full max-w-lg overflow-hidden border border-[#dce5f0] animate-fade-in-up">
                     <div className="px-8 pt-8 pb-4 flex justify-between items-center">
                         <div className="flex items-center gap-3">
-                            <div className="bg-[#087f73] p-2.5 rounded-2xl">
+                            <div className="bg-[#1464ad] p-2.5 rounded-2xl">
                                 <InfoIcon className="w-6 h-6 text-white" />
                             </div>
-                            <h3 className="text-xl font-semibold text-[#082b45] ">
+                            <h3 className="text-xl font-semibold text-[#032b59] ">
                                 {mt('Moving Process', 'Proceso de Mudanza', 'Umzugsablauf')}
                             </h3>
                         </div>
-                        <button onClick={() => setShowMovingInfo(false)} className="kraken-control min-h-11 min-w-11 p-2 hover:bg-[#f4f8f8] rounded-full transition-colors group">
-                            <XMarkIcon className="w-6 h-6 text-[#526574] group-hover:text-red-500 transition-colors" />
+                        <button onClick={() => setShowMovingInfo(false)} className="kraken-control min-h-11 min-w-11 p-2 hover:bg-[#f3f7fc] rounded-full transition-colors group">
+                            <XMarkIcon className="w-6 h-6 text-[#50647c] group-hover:text-red-500 transition-colors" />
                         </button>
                     </div>
 
                     <div className="px-8 py-6 space-y-6">
                         <div className="flex gap-5">
-                            <div className="w-10 h-10 bg-[#eef7f5] rounded-2xl flex-shrink-0 flex items-center justify-center text-[#087f73] font-semibold text-lg">1</div>
+                            <div className="w-10 h-10 bg-[#edf4fd] rounded-2xl flex-shrink-0 flex items-center justify-center text-[#1464ad] font-semibold text-lg">1</div>
                             <div className="space-y-1">
-                                <h4 className="font-semibold text-[#082b45] text-lg ">
+                                <h4 className="font-semibold text-[#032b59] text-lg ">
                                     {mt('Storage & Lift Constraints', 'Restricciones de espacio y ascensor', 'Einschränkungen für Lift & Transport')}
                                 </h4>
-                                <p className="text-base text-[#526574] leading-relaxed font-medium">
+                                <p className="text-base text-[#50647c] leading-relaxed font-medium">
                                     {mt(
                                         'If the lift interior is too narrow for specific items, our team will utilize the staircase. For safety, this may require additional movers to manage the weight and dimensions properly.',
                                         'Si el interior del ascensor es demasiado estrecho para ciertos objetos, nuestro equipo utilizará las escaleras. Por seguridad, esto puede requerir operarios adicionales para gestionar el peso y las dimensiones de forma adecuada.',
@@ -6393,12 +6393,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         </div>
 
                         <div className="flex gap-5">
-                            <div className="w-10 h-10 bg-emerald-50 rounded-2xl flex-shrink-0 flex items-center justify-center text-emerald-600 font-semibold text-lg">2</div>
+                            <div className="w-10 h-10 bg-blue-50 rounded-2xl flex-shrink-0 flex items-center justify-center text-blue-600 font-semibold text-lg">2</div>
                             <div className="space-y-1">
-                                <h4 className="font-semibold text-[#082b45] text-lg ">
+                                <h4 className="font-semibold text-[#032b59] text-lg ">
                                     {mt('Surface Protection', 'Protección de superficies', 'Oberflächenschutz')}
                                 </h4>
-                                <p className="text-base text-[#526574] leading-relaxed font-medium">
+                                <p className="text-base text-[#50647c] leading-relaxed font-medium">
                                     {mt(
                                         "Tell us about delicate surfaces and furniture so we can confirm suitable protection and transport arrangements before the move.",
                                         "Indica las superficies y los muebles delicados para que podamos confirmar las protecciones y las condiciones del transporte antes de la mudanza.",
@@ -6414,10 +6414,10 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         <div className="flex gap-5">
                             <div className="w-10 h-10 bg-amber-50 rounded-2xl flex-shrink-0 flex items-center justify-center text-amber-600 font-semibold text-lg">3</div>
                             <div className="space-y-1">
-                                <h4 className="font-semibold text-[#082b45] text-lg ">
+                                <h4 className="font-semibold text-[#032b59] text-lg ">
                                     {mt('Hydraulic Lift Necessity', 'Necesidad de ascensor hidráulico', 'Bedarf an Möbellift / Fassadenlift')}
                                 </h4>
-                                <p className="text-base text-[#526574] leading-relaxed font-medium">
+                                <p className="text-base text-[#50647c] leading-relaxed font-medium">
                                     {mt(
                                         'For oversized pieces that cannot safely travel via stairs or lifts, a hydraulic external lift may be necessary to facilitate delivery through large windows or balconies.',
                                         'Para piezas de gran tamaño que no puedan transportarse de forma segura por escaleras o ascensores, puede ser necesario un elevador hidráulico exterior para facilitar la entrega a través de ventanas grandes o balcones.',
@@ -6431,7 +6431,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     <div className="p-8 pt-4">
                         <button
                             onClick={() => setShowMovingInfo(false)}
-                            className="kraken-control min-h-11 w-full bg-[#082b45] text-white py-4 rounded-2xl font-semibold text-lg shadow-sm hover:bg-[#001D3A] transition-all "
+                            className="kraken-control min-h-11 w-full bg-[#032b59] text-white py-4 rounded-2xl font-semibold text-lg shadow-sm hover:bg-[#001D3A] transition-all "
                         >
                             {mt('Got it!', '¡Entendido!', 'Verstanden!')}
                         </button>
@@ -6447,16 +6447,16 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     <button
                         type="button"
                         onClick={() => setShowInclusionsModal('gardening')}
-                        className="kraken-control min-h-11 w-full text-left text-[#087f73] text-base font-semibold flex items-center justify-between bg-[#eef7f5] p-3.5 px-4 rounded-2xl border border-[#c8dedb] hover:bg-[#eef7f5] transition-all select-none group"
+                        className="kraken-control min-h-11 w-full text-left text-[#1464ad] text-base font-semibold flex items-center justify-between bg-[#edf4fd] p-3.5 px-4 rounded-2xl border border-[#c9dbef] hover:bg-[#edf4fd] transition-all select-none group"
                     >
                         <div className="flex items-center gap-3">
-                            <InfoIcon className="w-5 h-5 text-[#087f73] shrink-0" />
+                            <InfoIcon className="w-5 h-5 text-[#1464ad] shrink-0" />
                             <span className="text-sm font-semibold">{t('consultation.whatsIncluded')}</span>
                         </div>
-                        <ChevronRightIcon className="w-4 h-4 text-[#087f73] shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                        <ChevronRightIcon className="w-4 h-4 text-[#1464ad] shrink-0 group-hover:translate-x-0.5 transition-transform" />
                     </button>
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.gardening.size')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.gardening.size')}</label>
                         <div className="space-y-2">
                             {[
                                 {id: 'Small', label: t('consultation.gardening.size.small'), desc: t('consultation.gardening.size.small.desc'), price: '140 CHF', icon: '🏡'},
@@ -6480,7 +6480,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     {config.size !== 'XL' && (
                         <>
                             <div>
-                                <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.gardening.condition')}</label>
+                                <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.gardening.condition')}</label>
                                 <div className="grid grid-cols-3 gap-2">
                                     {[
                                         {id: 'Cuidado', label: t('consultation.gardening.condition.cared'), desc: '1.0x', icon: '✨'},
@@ -6500,7 +6500,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             </div>
 
                             <div>
-                                <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.gardening.frequency')}</label>
+                                <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.gardening.frequency')}</label>
                                 <div className="grid grid-cols-3 gap-2">
                                     {[
                                         {id: 'Única', label: t('consultation.gardening.frequency.once'), desc: t('consultation.gardening.frequency.once.desc'), icon: '📅'},
@@ -6520,9 +6520,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             </div>
 
                             <div>
-                                <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.gardening.features')}</label>
+                                <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.gardening.features')}</label>
                                 <div className="space-y-3">
-                                    <div className="bg-white border border-[#dce6e8] rounded-2xl p-4 shadow-sm">
+                                    <div className="bg-white border border-[#dce5f0] rounded-2xl p-4 shadow-sm">
                                         <div className="flex items-center justify-between mb-3">
                                             <div className="flex items-center gap-2">
                                                 <input
@@ -6534,21 +6534,21 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         features: { ...(config.features || {}), lawn: e.target.checked },
                                                         mowing: e.target.checked
                                                     })}
-                                                    className="w-4 h-4 text-[#087f73] focus:ring-[#087f73] border-[#dce6e8] rounded"
+                                                    className="w-4 h-4 text-[#1464ad] focus:ring-[#1464ad] border-[#dce5f0] rounded"
                                                 />
-                                                <label htmlFor="lawn-mowing-chk" className="kraken-label text-sm font-semibold text-[#526574] cursor-pointer">{t('consultation.gardening.lawn')}</label>
+                                                <label htmlFor="lawn-mowing-chk" className="kraken-label text-sm font-semibold text-[#50647c] cursor-pointer">{t('consultation.gardening.lawn')}</label>
                                             </div>
-                                            <span className="text-sm font-semibold text-[#087f73]">From 60.00 CHF</span>
+                                            <span className="text-sm font-semibold text-[#1464ad]">From 60.00 CHF</span>
                                         </div>
                                         {config.features?.lawn && (
-                                            <div className="pt-2 border-t border-[#dce6e8] animate-fade-in">
-                                                <p className="text-base text-[#526574] mb-2">{t('consultation.gardening.lawn.desc')}</p>
+                                            <div className="pt-2 border-t border-[#dce5f0] animate-fade-in">
+                                                <p className="text-base text-[#50647c] mb-2">{t('consultation.gardening.lawn.desc')}</p>
                                                 <CounterInput label={t('consultation.gardening.lawn.label')} value={parseFloat(config.lawnSqm) || 50} onChange={(v) => setConfig({...config, lawnSqm: String(v)})} />
                                             </div>
                                         )}
                                     </div>
 
-                                    <div className="bg-white border border-[#dce6e8] rounded-2xl p-4 shadow-sm">
+                                    <div className="bg-white border border-[#dce5f0] rounded-2xl p-4 shadow-sm">
                                         <div className="flex items-center justify-between mb-3">
                                             <div className="flex items-center gap-2">
                                                 <input
@@ -6559,20 +6559,20 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         ...config,
                                                         features: { ...(config.features || {}), hedges: e.target.checked }
                                                     })}
-                                                    className="w-4 h-4 text-[#087f73] focus:ring-[#087f73] border-[#dce6e8] rounded"
+                                                    className="w-4 h-4 text-[#1464ad] focus:ring-[#1464ad] border-[#dce5f0] rounded"
                                                 />
-                                                <label htmlFor="hedge-trimming-chk" className="kraken-label text-sm font-semibold text-[#526574] cursor-pointer">{t('consultation.gardening.hedges')}</label>
+                                                <label htmlFor="hedge-trimming-chk" className="kraken-label text-sm font-semibold text-[#50647c] cursor-pointer">{t('consultation.gardening.hedges')}</label>
                                             </div>
-                                            <span className="text-sm font-semibold text-[#087f73]">15.00 CHF/m</span>
+                                            <span className="text-sm font-semibold text-[#1464ad]">15.00 CHF/m</span>
                                         </div>
                                         {config.features?.hedges && (
-                                            <div className="pt-2 border-t border-[#dce6e8] animate-fade-in">
+                                            <div className="pt-2 border-t border-[#dce5f0] animate-fade-in">
                                                 <CounterInput label={t('consultation.gardening.hedges.label')} value={config.hedgeMeters || 10} onChange={(v) => setConfig({...config, hedgeMeters: v})} />
                                             </div>
                                         )}
                                     </div>
 
-                                    <div className="bg-white border border-[#dce6e8] rounded-2xl p-4 shadow-sm">
+                                    <div className="bg-white border border-[#dce5f0] rounded-2xl p-4 shadow-sm">
                                         <div className="flex items-center justify-between mb-3">
                                             <div className="flex items-center gap-2">
                                                 <input
@@ -6583,14 +6583,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         ...config,
                                                         features: { ...(config.features || {}), trees: e.target.checked }
                                                     })}
-                                                    className="w-4 h-4 text-[#087f73] focus:ring-[#087f73] border-[#dce6e8] rounded"
+                                                    className="w-4 h-4 text-[#1464ad] focus:ring-[#1464ad] border-[#dce5f0] rounded"
                                                 />
-                                                <label htmlFor="tree-pruning-chk" className="kraken-label text-sm font-semibold text-[#526574] cursor-pointer">{t('consultation.gardening.trees')}</label>
+                                                <label htmlFor="tree-pruning-chk" className="kraken-label text-sm font-semibold text-[#50647c] cursor-pointer">{t('consultation.gardening.trees')}</label>
                                             </div>
-                                            <span className="text-sm font-semibold text-[#087f73]">45.00 CHF/h</span>
+                                            <span className="text-sm font-semibold text-[#1464ad]">45.00 CHF/h</span>
                                         </div>
                                         {config.features?.trees && (
-                                            <div className="pt-2 border-t border-[#dce6e8] animate-fade-in">
+                                            <div className="pt-2 border-t border-[#dce5f0] animate-fade-in">
                                                 <CounterInput label={t('consultation.gardening.trees.label')} value={config.treePruningHours || 2} onChange={(v) => setConfig({...config, treePruningHours: v})} />
                                             </div>
                                         )}
@@ -6614,7 +6614,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         onClick={() => setConfig({...config, cleanup: !config.cleanup})}
                                     />
 
-                                    <div className="bg-white border border-[#dce6e8] rounded-2xl p-4 shadow-sm">
+                                    <div className="bg-white border border-[#dce5f0] rounded-2xl p-4 shadow-sm">
                                         <div className="flex items-center justify-between mb-3">
                                             <div className="flex items-center gap-2">
                                                 <input
@@ -6625,15 +6625,15 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         ...config,
                                                         greenWaste: e.target.checked
                                                     })}
-                                                    className="w-4 h-4 text-[#087f73] focus:ring-[#087f73] border-[#dce6e8] rounded"
+                                                    className="w-4 h-4 text-[#1464ad] focus:ring-[#1464ad] border-[#dce5f0] rounded"
                                                 />
-                                                <label htmlFor="green-debris-waste-chk" className="kraken-label text-sm font-semibold text-[#526574] cursor-pointer">{t('consultation.gardening.waste')}</label>
+                                                <label htmlFor="green-debris-waste-chk" className="kraken-label text-sm font-semibold text-[#50647c] cursor-pointer">{t('consultation.gardening.waste')}</label>
                                             </div>
-                                            <span className="text-sm font-semibold text-[#087f73]">+18.00 CHF/bag</span>
+                                            <span className="text-sm font-semibold text-[#1464ad]">+18.00 CHF/bag</span>
                                         </div>
                                         {config.greenWaste && (
-                                            <div className="pt-2 border-t border-[#dce6e8] animate-fade-in">
-                                                <p className="text-base text-[#526574] mb-2">{t('consultation.gardening.waste.desc')}</p>
+                                            <div className="pt-2 border-t border-[#dce5f0] animate-fade-in">
+                                                <p className="text-base text-[#50647c] mb-2">{t('consultation.gardening.waste.desc')}</p>
                                                 <CounterInput label={t('consultation.gardening.waste.label')} value={config.greenWasteBags || 0} onChange={(v) => setConfig({...config, greenWasteBags: v})} />
                                             </div>
                                         )}
@@ -6674,16 +6674,16 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                 </div>
                 {/* Sticky Footer */}
-                <div className="p-5 bg-[#f4f8f8] border-t border-[#dce6e8] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
+                <div className="p-5 bg-[#f3f7fc] border-t border-[#dce5f0] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
                     <div className="flex justify-between items-center px-1">
-                        <span className="font-semibold text-[#082b45] text-sm sm:text-sm ">{t('consultation.gardening.total')}</span>
-                        <span className="font-semibold text-2xl text-emerald-600">
+                        <span className="font-semibold text-[#032b59] text-sm sm:text-sm ">{t('consultation.gardening.total')}</span>
+                        <span className="font-semibold text-2xl text-blue-600">
                             {config.size === 'XL' ? t('consultation.label.inquiry') : `CHF ${getEstimatedPrice().toFixed(2)}`}
                         </span>
                     </div>
                     <button
                         onClick={handleAddToCart}
-                        className="kraken-control min-h-11 w-full bg-[#10b981] hover:bg-[#059669] text-[#082b45] py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all"
+                        className="kraken-control min-h-11 w-full bg-[#10b981] hover:bg-[#059669] text-[#032b59] py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all"
                     >
                         {editingItemId ? t('consultation.gardening.update') : t('consultation.gardening.checkout')}
                     </button>
@@ -6694,21 +6694,21 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         {/* MODAL: Exterior Cleaning */}
         {activeModal === 'exterior-cleaning' && (
             <ModalOverlay title={t('services.exterior.title')} onClose={() => { setActiveModal(null); setEditingItemId(null); }} size="lg" noScroll={true}>
-                <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-white text-[#082b45]">
+                <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-white text-[#032b59]">
                     <button
                         type="button"
                         onClick={() => setShowInclusionsModal('exterior-cleaning')}
-                        className="kraken-control min-h-11 w-full text-left text-[#087f73] text-base font-semibold flex items-center justify-between bg-[#eef7f5] p-3.5 px-4 rounded-2xl border border-[#c8dedb] hover:bg-[#eef7f5] transition-all select-none group"
+                        className="kraken-control min-h-11 w-full text-left text-[#1464ad] text-base font-semibold flex items-center justify-between bg-[#edf4fd] p-3.5 px-4 rounded-2xl border border-[#c9dbef] hover:bg-[#edf4fd] transition-all select-none group"
                     >
                         <div className="flex items-center gap-3">
-                            <InfoIcon className="w-5 h-5 text-[#087f73] shrink-0" />
+                            <InfoIcon className="w-5 h-5 text-[#1464ad] shrink-0" />
                             <span className="text-sm font-semibold">{t('consultation.whatsIncluded')}</span>
                         </div>
-                        <ChevronRightIcon className="w-4 h-4 text-[#087f73] shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                        <ChevronRightIcon className="w-4 h-4 text-[#1464ad] shrink-0 group-hover:translate-x-0.5 transition-transform" />
                     </button>
                     <div>
                         <div className="flex justify-between items-center mb-3">
-                            <label className="kraken-label block text-sm font-semibold text-[#526574] ">{t('consultation.exterior.configured')}</label>
+                            <label className="kraken-label block text-sm font-semibold text-[#50647c] ">{t('consultation.exterior.configured')}</label>
                             <button
                                 type="button"
                                 onClick={() => {
@@ -6718,15 +6718,15 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         surfaces: [...surfaces, { surfaceType: 'Driveway / Path', material: 'Stone', severity: 'Ligero', areaSqm: '20', moldSealing: false }]
                                     });
                                 }}
-                                className="kraken-control min-h-11 min-w-11 text-base font-semibold text-[#087f73] hover:underline"
+                                className="kraken-control min-h-11 min-w-11 text-base font-semibold text-[#1464ad] hover:underline"
                             >
                                 {t('consultation.exterior.add_surface_btn')}
                             </button>
                         </div>
 
                         {(!config.surfaces || config.surfaces.length === 0) ? (
-                            <div className="text-center p-6 bg-[#f4f8f8] border border-dashed border-[#dce6e8] rounded-2xl">
-                                <p className="text-base text-[#526574] mb-3">{t('consultation.exterior.no_surfaces')}</p>
+                            <div className="text-center p-6 bg-[#f3f7fc] border border-dashed border-[#dce5f0] rounded-2xl">
+                                <p className="text-base text-[#50647c] mb-3">{t('consultation.exterior.no_surfaces')}</p>
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -6735,7 +6735,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             surfaces: [{ surfaceType: 'Driveway / Path', material: 'Stone', severity: 'Ligero', areaSqm: '25', moldSealing: false }]
                                         });
                                     }}
-                                    className="kraken-control min-h-11 min-w-11 px-4 py-2 bg-[#eef7f5] text-[#087f73] font-semibold text-base rounded-xl hover:bg-blue-100 transition-colors "
+                                    className="kraken-control min-h-11 min-w-11 px-4 py-2 bg-[#edf4fd] text-[#1464ad] font-semibold text-base rounded-xl hover:bg-blue-100 transition-colors "
                                 >
                                     {t('consultation.exterior.add_surface')}
                                 </button>
@@ -6743,7 +6743,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         ) : (
                             <div className="space-y-3">
                                 {config.surfaces.map((surf: any, index: number) => (
-                                    <div key={index} className="bg-white border border-[#dce6e8] rounded-[1.25rem] p-4 relative shadow-sm">
+                                    <div key={index} className="bg-white border border-[#dce5f0] rounded-[1.25rem] p-4 relative shadow-sm">
                                         <div className="absolute top-4 right-4 flex items-center gap-2">
                                             <button
                                                 type="button"
@@ -6757,13 +6757,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             </button>
                                         </div>
 
-                                        <h5 className="font-semibold text-lg text-[#526574] mb-3">
+                                        <h5 className="font-semibold text-lg text-[#50647c] mb-3">
                                             {t('consultation.exterior.surface_num').replace('{index}', String(index + 1))}
                                         </h5>
 
                                         <div className="space-y-3">
                                             <div>
-                                                <label className="kraken-label block text-sm font-semibold text-[#526574] mb-1">{t('consultation.exterior.surface_type')}</label>
+                                                <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-1">{t('consultation.exterior.surface_type')}</label>
                                                 <div className="grid grid-cols-3 gap-1">
                                                     {[
                                                         { id: 'Driveway / Path', label: t('consultation.exterior.type.driveway') },
@@ -6778,7 +6778,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                                 updated[index].surfaceType = item.id;
                                                                 setConfig({...config, surfaces: updated});
                                                             }}
-                                                            className={`kraken-control min-h-11 min-w-11 py-2 text-base font-semibold rounded-lg border text-center transition-all ${surf.surfaceType === item.id ? 'bg-[#eef7f5] border-[#087f73] text-[#087f73]' : 'bg-white border-[#dce6e8] text-[#526574]'}`}
+                                                            className={`kraken-control min-h-11 min-w-11 py-2 text-base font-semibold rounded-lg border text-center transition-all ${surf.surfaceType === item.id ? 'bg-[#edf4fd] border-[#1464ad] text-[#1464ad]' : 'bg-white border-[#dce5f0] text-[#50647c]'}`}
                                                         >
                                                             {item.label}
                                                         </button>
@@ -6788,7 +6788,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                             <div className="grid grid-cols-2 gap-2">
                                                 <div>
-                                                    <label htmlFor="consultationpage-field-25" className="kraken-label block text-sm font-semibold text-[#526574] mb-1">{t('consultation.exterior.material')}</label>
+                                                    <label htmlFor="consultationpage-field-25" className="kraken-label block text-sm font-semibold text-[#50647c] mb-1">{t('consultation.exterior.material')}</label>
                                                     <select id="consultationpage-field-25"
                                                         value={surf.material}
                                                         onChange={(e) => {
@@ -6796,7 +6796,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                             updated[index].material = e.target.value;
                                                             setConfig({...config, surfaces: updated});
                                                         }}
-                                                        className="kraken-field w-full bg-[#f4f8f8] text-base font-semibold text-[#526574] p-2 rounded-lg border border-[#dce6e8] outline-none focus:ring-1 focus:ring-[#087f73]"
+                                                        className="kraken-field w-full bg-[#f3f7fc] text-base font-semibold text-[#50647c] p-2 rounded-lg border border-[#dce5f0] outline-none focus:ring-1 focus:ring-[#1464ad]"
                                                     >
                                                         <option value="Stone">{t('consultation.exterior.material.stone')}</option>
                                                         <option value="Concrete">{t('consultation.exterior.material.concrete')}</option>
@@ -6806,7 +6806,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <label htmlFor="consultationpage-field-26" className="kraken-label block text-sm font-semibold text-[#526574] mb-1">{t('consultation.exterior.severity')}</label>
+                                                    <label htmlFor="consultationpage-field-26" className="kraken-label block text-sm font-semibold text-[#50647c] mb-1">{t('consultation.exterior.severity')}</label>
                                                     <select id="consultationpage-field-26"
                                                         value={surf.severity}
                                                         onChange={(e) => {
@@ -6814,7 +6814,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                             updated[index].severity = e.target.value;
                                                             setConfig({...config, surfaces: updated});
                                                         }}
-                                                        className="kraken-field w-full bg-[#f4f8f8] text-base font-semibold text-[#526574] p-2 rounded-lg border border-[#dce6e8] outline-none focus:ring-1 focus:ring-[#087f73]"
+                                                        className="kraken-field w-full bg-[#f3f7fc] text-base font-semibold text-[#50647c] p-2 rounded-lg border border-[#dce5f0] outline-none focus:ring-1 focus:ring-[#1464ad]"
                                                     >
                                                         <option value="Ligero">{t('consultation.exterior.severity.light')}</option>
                                                         <option value="Moderado">{t('consultation.exterior.severity.moderate')}</option>
@@ -6825,7 +6825,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                             <div className="grid grid-cols-2 gap-2 items-center pt-1">
                                                 <div>
-                                                    <label htmlFor="consultationpage-field-27" className="kraken-label block text-sm font-semibold text-[#526574] mb-1">{t('consultation.exterior.total_sqm')}</label>
+                                                    <label htmlFor="consultationpage-field-27" className="kraken-label block text-sm font-semibold text-[#50647c] mb-1">{t('consultation.exterior.total_sqm')}</label>
                                                     <input id="consultationpage-field-27"
                                                         type="number"
                                                         value={surf.areaSqm}
@@ -6834,7 +6834,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                             updated[index].areaSqm = e.target.value;
                                                             setConfig({...config, surfaces: updated});
                                                         }}
-                                                        className="kraken-field w-full bg-[#f4f8f8] text-base font-semibold text-[#526574] p-2 rounded-lg border border-[#dce6e8] outline-none focus:ring-1 focus:ring-[#087f73]"
+                                                        className="kraken-field w-full bg-[#f3f7fc] text-base font-semibold text-[#50647c] p-2 rounded-lg border border-[#dce5f0] outline-none focus:ring-1 focus:ring-[#1464ad]"
                                                     />
                                                 </div>
                                                 <div className="flex items-center gap-2 pt-4">
@@ -6847,9 +6847,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                             updated[index].moldSealing = e.target.checked;
                                                             setConfig({...config, surfaces: updated});
                                                         }}
-                                                        className="w-4 h-4 text-[#087f73] focus:ring-[#087f73] border-[#dce6e8] rounded"
+                                                        className="w-4 h-4 text-[#1464ad] focus:ring-[#1464ad] border-[#dce5f0] rounded"
                                                     />
-                                                    <label htmlFor={`mold-sealing-${index}`} className="kraken-label text-sm font-semibold text-[#526574] cursor-pointer">{t('consultation.exterior.mold_sealant')}</label>
+                                                    <label htmlFor={`mold-sealing-${index}`} className="kraken-label text-sm font-semibold text-[#50647c] cursor-pointer">{t('consultation.exterior.mold_sealant')}</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -6860,7 +6860,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     </div>
 
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.exterior.global_addons')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.exterior.global_addons')}</label>
                         <div className="space-y-2">
                             <OptionCard
                                 icon="🧼"
@@ -6883,14 +6883,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                 </div>
                 {/* Sticky Footer */}
-                <div className="p-5 bg-[#f4f8f8] border-t border-[#dce6e8] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
+                <div className="p-5 bg-[#f3f7fc] border-t border-[#dce5f0] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
                     <div className="flex justify-between items-center px-1">
-                        <span className="font-semibold text-[#082b45] text-sm sm:text-sm text-[#082b45]">{t('consultation.exterior.total')}</span>
-                        <span className="font-semibold text-2xl text-[#087f73]">CHF {getEstimatedPrice().toFixed(2)}</span>
+                        <span className="font-semibold text-[#032b59] text-sm sm:text-sm text-[#032b59]">{t('consultation.exterior.total')}</span>
+                        <span className="font-semibold text-2xl text-[#1464ad]">CHF {getEstimatedPrice().toFixed(2)}</span>
                     </div>
                     <button
                         onClick={handleAddToCart}
-                        className="kraken-control min-h-11 w-full bg-[#087f73] hover:bg-[#087f73] text-white py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all"
+                        className="kraken-control min-h-11 w-full bg-[#1464ad] hover:bg-[#1464ad] text-white py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all"
                     >
                         {editingItemId ? t('consultation.exterior.update') : t('consultation.exterior.checkout')}
                     </button>
@@ -6905,16 +6905,16 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     <button
                         type="button"
                         onClick={() => setShowInclusionsModal('gutter-cleaning')}
-                        className="kraken-control min-h-11 w-full text-left text-[#087f73] text-base font-semibold flex items-center justify-between bg-[#eef7f5] p-3.5 px-4 rounded-2xl border border-[#c8dedb] hover:bg-[#eef7f5] transition-all select-none group"
+                        className="kraken-control min-h-11 w-full text-left text-[#1464ad] text-base font-semibold flex items-center justify-between bg-[#edf4fd] p-3.5 px-4 rounded-2xl border border-[#c9dbef] hover:bg-[#edf4fd] transition-all select-none group"
                     >
                         <div className="flex items-center gap-3">
-                            <InfoIcon className="w-5 h-5 text-[#087f73] shrink-0" />
+                            <InfoIcon className="w-5 h-5 text-[#1464ad] shrink-0" />
                             <span className="text-sm font-semibold">{t('consultation.whatsIncluded')}</span>
                         </div>
-                        <ChevronRightIcon className="w-4 h-4 text-[#087f73] shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                        <ChevronRightIcon className="w-4 h-4 text-[#1464ad] shrink-0 group-hover:translate-x-0.5 transition-transform" />
                     </button>
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.gutter.height')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.gutter.height')}</label>
                         <div className="space-y-2">
                             {[
                                 {id: '1 Story', icon: '🏠', label: t('consultation.gutter.height.1'), price: '180.00 CHF'},
@@ -6935,7 +6935,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     </div>
 
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.gutter.length')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.gutter.length')}</label>
                         <div className="space-y-2">
                             {[
                                 {id: 'Standard (<20m)', icon: '📏', label: t('consultation.gutter.length.standard'), price: 'Included'},
@@ -6956,7 +6956,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     </div>
 
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.gutter.state')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.gutter.state')}</label>
                         <div className="grid grid-cols-2 gap-2">
                             {[
                                 {id: 'Ligero', icon: '🍃', label: t('consultation.gutter.state.light'), price: 'Included'},
@@ -6978,7 +6978,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     </div>
 
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.gutter.addons')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.gutter.addons')}</label>
                         <div className="space-y-2">
                             <OptionCard
                                 icon="💦"
@@ -7001,14 +7001,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                 </div>
                 {/* Sticky Footer */}
-                <div className="p-5 bg-[#f4f8f8] border-t border-[#dce6e8] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
+                <div className="p-5 bg-[#f3f7fc] border-t border-[#dce5f0] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
                     <div className="flex justify-between items-center px-1">
-                        <span className="font-semibold text-[#082b45] text-sm sm:text-sm text-[#082b45]">{t('consultation.gutter.total')}</span>
-                        <span className="font-semibold text-2xl text-[#087f73]">CHF {getEstimatedPrice().toFixed(2)}</span>
+                        <span className="font-semibold text-[#032b59] text-sm sm:text-sm text-[#032b59]">{t('consultation.gutter.total')}</span>
+                        <span className="font-semibold text-2xl text-[#1464ad]">CHF {getEstimatedPrice().toFixed(2)}</span>
                     </div>
                     <button
                         onClick={handleAddToCart}
-                        className="kraken-control min-h-11 w-full bg-[#087f73] hover:bg-[#087f73] text-white py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all"
+                        className="kraken-control min-h-11 w-full bg-[#1464ad] hover:bg-[#1464ad] text-white py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all"
                     >
                         {editingItemId ? t('consultation.gutter.update') : t('consultation.gutter.checkout')}
                     </button>
@@ -7019,29 +7019,29 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         {/* MODAL: Car Detailing */}
         {activeModal === 'car-detailing' && (
             <ModalOverlay title={t('services.car.title')} onClose={() => { setActiveModal(null); setEditingItemId(null); }} size="lg" noScroll={true}>
-                <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-white text-[#082b45]">
+                <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-white text-[#032b59]">
                     <button
                         type="button"
                         onClick={() => setShowInclusionsModal('car-detailing')}
-                        className="kraken-control min-h-11 w-full text-left text-[#087f73] text-base font-semibold flex items-center justify-between bg-[#eef7f5] p-3.5 px-4 rounded-2xl border border-[#c8dedb] hover:bg-[#eef7f5] transition-all select-none group"
+                        className="kraken-control min-h-11 w-full text-left text-[#1464ad] text-base font-semibold flex items-center justify-between bg-[#edf4fd] p-3.5 px-4 rounded-2xl border border-[#c9dbef] hover:bg-[#edf4fd] transition-all select-none group"
                     >
                         <div className="flex items-center gap-3">
-                            <InfoIcon className="w-5 h-5 text-[#087f73] shrink-0" />
+                            <InfoIcon className="w-5 h-5 text-[#1464ad] shrink-0" />
                             <span className="text-sm font-semibold">{t('consultation.whatsIncluded')}</span>
                         </div>
-                        <ChevronRightIcon className="w-4 h-4 text-[#087f73] shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                        <ChevronRightIcon className="w-4 h-4 text-[#1464ad] shrink-0 group-hover:translate-x-0.5 transition-transform" />
                     </button>
                     <div>
                         <div className="flex justify-between items-center mb-3">
-                            <label className="kraken-label block text-sm font-semibold text-[#526574] ">{t('consultation.car.garage')}</label>
-                            <span className="text-sm bg-[#eef7f5] text-[#087f73] px-2.5 py-1 rounded-full font-semibold ">
+                            <label className="kraken-label block text-sm font-semibold text-[#50647c] ">{t('consultation.car.garage')}</label>
+                            <span className="text-sm bg-[#edf4fd] text-[#1464ad] px-2.5 py-1 rounded-full font-semibold ">
                                 {config.vehicles?.length || 0} {config.vehicles?.length === 1 ? t('consultation.car.vehicle_num').replace(' #{index}', '') : t('consultation.car.garage')}
                             </span>
                         </div>
 
                         {(!config.vehicles || config.vehicles.length === 0) ? (
-                            <div className="text-center p-6 bg-[#f4f8f8] border border-dashed border-[#dce6e8] rounded-2xl">
-                                <p className="text-base text-[#526574] mb-3">{t('consultation.car.no_cars')}</p>
+                            <div className="text-center p-6 bg-[#f3f7fc] border border-dashed border-[#dce5f0] rounded-2xl">
+                                <p className="text-base text-[#50647c] mb-3">{t('consultation.car.no_cars')}</p>
                                 <button
                                     type="button"
                                     onClick={() => {
@@ -7050,13 +7050,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             vehicles: [{ category: 'M', dirtLevel: 'Medium', coverage: 'Full', hasPets: false, hasHeadlights: false, hasScratches: false, hasOdor: false, hasUpholstery: false, locationType: 'Mobile' }]
                                         });
                                     }}
-                                    className="kraken-control min-h-11 min-w-11 px-4 py-2 bg-[#eef7f5] text-[#087f73] font-semibold text-base rounded-xl hover:bg-blue-100 transition-colors "
+                                    className="kraken-control min-h-11 min-w-11 px-4 py-2 bg-[#edf4fd] text-[#1464ad] font-semibold text-base rounded-xl hover:bg-blue-100 transition-colors "
                                 >
                                     {t('consultation.car.add_car_btn')}
                                 </button>
                             </div>
                         ) : (
-                            <div className="flex flex-wrap items-center gap-2 border-b border-[#dce6e8] pb-4 mb-5">
+                            <div className="flex flex-wrap items-center gap-2 border-b border-[#dce5f0] pb-4 mb-5">
                                 {(config.vehicles || []).map((veh: any, idx: number) => {
                                     const isActive = idx === (config.activeVehicleIdx || 0);
                                     return (
@@ -7066,8 +7066,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             onClick={() => setConfig({ ...config, activeVehicleIdx: idx })}
                                             className={`kraken-control min-h-11 min-w-11 px-4 py-2.5 rounded-2xl text-base font-semibold transition-all duration-300 flex items-center gap-2 border shadow-sm ${
                                                 isActive
-                                                ? 'bg-[#082b45] text-white border-[#087f73] '
-                                                : 'bg-[#f4f8f8] text-[#526574] border-[#dce6e8] hover:bg-[#f4f8f8] hover:border-[#dce6e8]'
+                                                ? 'bg-[#032b59] text-white border-[#1464ad] '
+                                                : 'bg-[#f3f7fc] text-[#50647c] border-[#dce5f0] hover:bg-[#f3f7fc] hover:border-[#dce5f0]'
                                             }`}
                                         >
                                             <span className="text-sm filter drop-shadow-sm">{veh.category === 'S' ? '🚙' : veh.category === 'M' ? '🚗' : veh.category === 'L' ? '🏎️' : '🚐'}</span>
@@ -7080,7 +7080,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         const nextActive = Math.max(0, (config.activeVehicleIdx || 0) >= updated.length ? updated.length - 1 : (config.activeVehicleIdx || 0));
                                                         setConfig({ ...config, vehicles: updated, activeVehicleIdx: nextActive });
                                                     }}
-                                                    className={`ml-1.5 p-0.5 rounded-full hover:bg-red-500 hover:text-white transition-all text-sm leading-none ${isActive ? 'text-[#526574] hover:bg-white hover:text-[#087f73]' : 'text-[#526574]'}`}
+                                                    className={`ml-1.5 p-0.5 rounded-full hover:bg-red-500 hover:text-white transition-all text-sm leading-none ${isActive ? 'text-[#50647c] hover:bg-white hover:text-[#1464ad]' : 'text-[#50647c]'}`}
                                                     title={t('consultation.car.remove')}
                                                 >
                                                     ✕
@@ -7101,7 +7101,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             activeVehicleIdx: vehicles.length
                                         });
                                     }}
-                                    className="kraken-control min-h-11 min-w-11 px-4 py-2.5 border border-dashed border-[#087f73] text-[#087f73] hover:bg-[#eef7f5] text-base font-semibold rounded-2xl transition-all duration-300 flex items-center gap-1.5"
+                                    className="kraken-control min-h-11 min-w-11 px-4 py-2.5 border border-dashed border-[#1464ad] text-[#1464ad] hover:bg-[#edf4fd] text-base font-semibold rounded-2xl transition-all duration-300 flex items-center gap-1.5"
                                 >
                                     {t('consultation.car.add_car')}
                                 </button>
@@ -7120,8 +7120,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                 {/* 1. Vehicle Size Category with rich cards */}
                                 <div className="space-y-2.5">
                                     <div className="flex justify-between items-baseline">
-                                        <label className="kraken-label block text-sm font-semibold text-[#526574] ">{t('consultation.car.class_label')}</label>
-                                        <span className="text-sm font-semibold text-[#526574] ">{t('consultation.car.class_sub')}</span>
+                                        <label className="kraken-label block text-sm font-semibold text-[#50647c] ">{t('consultation.car.class_label')}</label>
+                                        <span className="text-sm font-semibold text-[#50647c] ">{t('consultation.car.class_sub')}</span>
                                     </div>
                                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
                                         {[
@@ -7142,20 +7142,20 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     }}
                                                     className={`kraken-control min-h-11 min-w-11 p-3.5 rounded-2xl border text-left flex flex-col justify-between h-full min-h-[115px] transition-all duration-300 relative overflow-hidden group select-none ${
                                                         isSelected
-                                                        ? 'bg-[#eef7f5] border-[#087f73] shadow-sm ring-1 ring-[#087f73]/10 '
-                                                        : 'bg-white border-[#dce6e8] hover:border-[#dce6e8] hover:shadow-sm'
+                                                        ? 'bg-[#edf4fd] border-[#1464ad] shadow-sm ring-1 ring-[#1464ad]/10 '
+                                                        : 'bg-white border-[#dce5f0] hover:border-[#dce5f0] hover:shadow-sm'
                                                     }`}
                                                 >
                                                     <div className="flex justify-between items-start w-full mb-1">
                                                         <span className="text-2xl filter drop-shadow-sm transition-transform duration-300">{sz.icon}</span>
-                                                        <span className={`text-sm font-semibold px-1.5 py-0.5 rounded-md ${isSelected ? 'bg-[#087f73] text-white' : 'bg-[#f4f8f8] text-[#526574]'}`}>
+                                                        <span className={`text-sm font-semibold px-1.5 py-0.5 rounded-md ${isSelected ? 'bg-[#1464ad] text-white' : 'bg-[#f3f7fc] text-[#50647c]'}`}>
                                                             {sz.price}
                                                         </span>
                                                     </div>
                                                     <div>
-                                                        <h6 className={`font-semibold text-lg ${isSelected ? 'text-[#087f73]' : 'text-[#526574]'}`}>{sz.title}</h6>
-                                                        <span className="block text-sm text-[#526574] font-semibold mb-1 leading-none">{sz.subtitle}</span>
-                                                        <p className="text-base text-[#526574] font-medium leading-tight truncate">{sz.desc}</p>
+                                                        <h6 className={`font-semibold text-lg ${isSelected ? 'text-[#1464ad]' : 'text-[#50647c]'}`}>{sz.title}</h6>
+                                                        <span className="block text-sm text-[#50647c] font-semibold mb-1 leading-none">{sz.subtitle}</span>
+                                                        <p className="text-base text-[#50647c] font-medium leading-tight truncate">{sz.desc}</p>
                                                     </div>
                                                 </button>
                                             );
@@ -7165,7 +7165,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                 {/* 2. Service Coverage Option */}
                                 <div className="space-y-2.5">
-                                    <label className="kraken-label block text-sm font-semibold text-[#526574] ">{t('consultation.car.focus_label')}</label>
+                                    <label className="kraken-label block text-sm font-semibold text-[#50647c] ">{t('consultation.car.focus_label')}</label>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
                                         {[
                                             { id: 'Full', label: t('consultation.car.cov.full.label'), desc: t('consultation.car.cov.full.desc'), icon: '✨' },
@@ -7184,14 +7184,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     }}
                                                     className={`kraken-control min-h-11 min-w-11 p-3 rounded-2xl border text-left transition-all duration-300 relative select-none flex items-start gap-4 ${
                                                         isSelected
-                                                        ? 'bg-[#eef7f5] border-[#087f73] shadow-sm ring-1 ring-[#087f73]/10 '
-                                                        : 'bg-white border-[#dce6e8] hover:border-[#dce6e8]'
+                                                        ? 'bg-[#edf4fd] border-[#1464ad] shadow-sm ring-1 ring-[#1464ad]/10 '
+                                                        : 'bg-white border-[#dce5f0] hover:border-[#dce5f0]'
                                                     }`}
                                                 >
-                                                    <span className="text-xl bg-white p-2.5 rounded-xl border border-[#dce6e8] shadow-sm filter drop-shadow-xs">{cov.icon}</span>
+                                                    <span className="text-xl bg-white p-2.5 rounded-xl border border-[#dce5f0] shadow-sm filter drop-shadow-xs">{cov.icon}</span>
                                                     <div className="space-y-0.5">
-                                                        <h6 className={`font-semibold text-lg ${isSelected ? 'text-[#087f73]' : 'text-[#526574]'}`}>{cov.label}</h6>
-                                                        <p className="text-base text-[#526574] font-medium leading-tight">{cov.desc}</p>
+                                                        <h6 className={`font-semibold text-lg ${isSelected ? 'text-[#1464ad]' : 'text-[#50647c]'}`}>{cov.label}</h6>
+                                                        <p className="text-base text-[#50647c] font-medium leading-tight">{cov.desc}</p>
                                                     </div>
                                                 </button>
                                             );
@@ -7201,7 +7201,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                 {/* 3. Dirt Condition with intuitive meters */}
                                 <div className="space-y-2.5">
-                                    <label className="kraken-label block text-sm font-semibold text-[#526574] ">{t('consultation.car.dirt_label')}</label>
+                                    <label className="kraken-label block text-sm font-semibold text-[#50647c] ">{t('consultation.car.dirt_label')}</label>
                                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
                                         {[
                                             { id: 'Minimum', title: t('consultation.car.dirt.min.label'), surcharge: '+0.-', desc: t('consultation.car.dirt.min.desc'), icon: '✨' },
@@ -7221,19 +7221,19 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     }}
                                                     className={`kraken-control min-h-11 min-w-11 p-3.5 rounded-2xl border text-left flex flex-col justify-between h-full min-h-[120px] transition-all duration-300 relative select-none gap-2 ${
                                                         isSelected
-                                                        ? 'bg-[#eef7f5] border-[#087f73] shadow-sm ring-1 ring-[#087f73]/10 '
-                                                        : 'bg-white border-[#dce6e8] hover:border-[#dce6e8]'
+                                                        ? 'bg-[#edf4fd] border-[#1464ad] shadow-sm ring-1 ring-[#1464ad]/10 '
+                                                        : 'bg-white border-[#dce5f0] hover:border-[#dce5f0]'
                                                     }`}
                                                 >
                                                     <div className="flex justify-between items-center w-full">
                                                         <span className="text-xl">{lvl.icon}</span>
-                                                        <span className={`text-sm font-semibold px-1.5 py-0.5 rounded-md ${lvl.surcharge === '+0.-' ? 'bg-green-50 text-green-700 decoration-none' : 'bg-[#eef7f5] text-[#087f73] decoration-none'}`}>
+                                                        <span className={`text-sm font-semibold px-1.5 py-0.5 rounded-md ${lvl.surcharge === '+0.-' ? 'bg-green-50 text-green-700 decoration-none' : 'bg-[#edf4fd] text-[#1464ad] decoration-none'}`}>
                                                             {lvl.surcharge}
                                                         </span>
                                                     </div>
                                                     <div className="space-y-0.5">
-                                                        <h6 className={`font-semibold text-lg whitespace-normal leading-tight break-words ${isSelected ? 'text-[#087f73]' : 'text-[#526574]'}`}>{lvl.title}</h6>
-                                                        <p className="text-base text-[#526574] font-medium leading-tight">{lvl.desc}</p>
+                                                        <h6 className={`font-semibold text-lg whitespace-normal leading-tight break-words ${isSelected ? 'text-[#1464ad]' : 'text-[#50647c]'}`}>{lvl.title}</h6>
+                                                        <p className="text-base text-[#50647c] font-medium leading-tight">{lvl.desc}</p>
                                                     </div>
                                                 </button>
                                             );
@@ -7243,7 +7243,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                 {/* 4. Location Selector */}
                                 <div className="space-y-2.5">
-                                    <label className="kraken-label block text-sm font-semibold text-[#526574] ">{t('consultation.car.location_label')}</label>
+                                    <label className="kraken-label block text-sm font-semibold text-[#50647c] ">{t('consultation.car.location_label')}</label>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                                         {[
                                             { id: 'Workshop', title: t('consultation.car.loc.workshop.label'), charge: '0.-', desc: t('consultation.car.loc.workshop.desc'), icon: '🏢' },
@@ -7261,15 +7261,15 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     }}
                                                     className={`kraken-control min-h-11 min-w-11 p-3.5 rounded-2xl border text-left transition-all duration-300 relative select-none flex items-start gap-4 ${
                                                         isSelected
-                                                        ? 'bg-[#eef7f5] border-[#087f73] shadow-sm ring-1 ring-[#087f73]/10 '
-                                                        : 'bg-white border-[#dce6e8] hover:border-[#dce6e8]'
+                                                        ? 'bg-[#edf4fd] border-[#1464ad] shadow-sm ring-1 ring-[#1464ad]/10 '
+                                                        : 'bg-white border-[#dce5f0] hover:border-[#dce5f0]'
                                                     }`}
                                                 >
                                                     <span className="text-2xl">{loc.icon}</span>
                                                     <div className="space-y-0.5">
-                                                        <h6 className={`font-semibold text-lg ${isSelected ? 'text-[#087f73]' : 'text-[#526574]'}`}>{loc.title}</h6>
-                                                        <span className="block text-sm text-[#087f73] font-semibold ">{t('consultation.car.loc.surcharge').replace('{charge}', loc.charge)}</span>
-                                                        <p className="text-base text-[#526574] font-medium leading-tight">{loc.desc}</p>
+                                                        <h6 className={`font-semibold text-lg ${isSelected ? 'text-[#1464ad]' : 'text-[#50647c]'}`}>{loc.title}</h6>
+                                                        <span className="block text-sm text-[#1464ad] font-semibold ">{t('consultation.car.loc.surcharge').replace('{charge}', loc.charge)}</span>
+                                                        <p className="text-base text-[#50647c] font-medium leading-tight">{loc.desc}</p>
                                                     </div>
                                                 </button>
                                             );
@@ -7279,11 +7279,11 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                 {/* 5. Premium Highlight: Ceramic Nano Quartz Paint Treatment */}
                                 <div className="space-y-2.5">
-                                    <label htmlFor="consultationpage-field-28" className="kraken-label block text-sm font-semibold text-[#526574] ">{t('consultation.car.protection_label')}</label>
+                                    <label htmlFor="consultationpage-field-28" className="kraken-label block text-sm font-semibold text-[#50647c] ">{t('consultation.car.protection_label')}</label>
                                     <div className={`p-4 rounded-2xl border transition-all duration-300 relative overflow-hidden select-none cursor-pointer ${
                                         v.ceramicYears === '3 Years'
-                                        ? 'bg-[#eef7f5] border-purple-500 shadow-md ring-1 ring-purple-500/10'
-                                        : 'bg-white border-[#dce6e8] hover:border-purple-200'
+                                        ? 'bg-[#edf4fd] border-purple-500 shadow-md ring-1 ring-purple-500/10'
+                                        : 'bg-white border-[#dce5f0] hover:border-purple-200'
                                     }`}
                                     onClick={() => {
                                         const updated = [...config.vehicles];
@@ -7299,7 +7299,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                 type="checkbox"
                                                 checked={v.ceramicYears === '3 Years'}
                                                 onChange={() => {}} // Swallowed since onClick handles card
-                                                className="w-4 h-4 text-purple-600 focus:ring-purple-500 border-[#dce6e8] rounded mt-0.5"
+                                                className="w-4 h-4 text-purple-600 focus:ring-purple-500 border-[#dce5f0] rounded mt-0.5"
                                             />
                                             <div className="space-y-1">
                                                 <div className="flex items-center gap-2">
@@ -7316,7 +7316,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                 {/* 6. Modular Addons Check Grid */}
                                 <div className="space-y-2.5">
-                                    <label htmlFor="consultationpage-field-29" className="kraken-label block text-sm font-semibold text-[#526574] ">{t('consultation.car.upgrades_label')}</label>
+                                    <label htmlFor="consultationpage-field-29" className="kraken-label block text-sm font-semibold text-[#50647c] ">{t('consultation.car.upgrades_label')}</label>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                                         {[
                                             { id: 'hasPets', label: t('consultation.car.opt.hasPets'), price: '+60.00 CHF', desc: t('consultation.car.opt.hasPets.desc') },
@@ -7331,8 +7331,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     key={opt.id}
                                                     className={`kraken-label p-3.5 rounded-2xl border transition-all duration-300 cursor-pointer flex items-start gap-3 select-none ${
                                                         activeValue
-                                                        ? 'bg-[#eef7f5] border-[#087f73] shadow-sm ring-1 ring-[#087f73]/10'
-                                                        : 'bg-white border-[#dce6e8] hover:bg-[#f4f8f8] hover:border-[#dce6e8]'
+                                                        ? 'bg-[#edf4fd] border-[#1464ad] shadow-sm ring-1 ring-[#1464ad]/10'
+                                                        : 'bg-white border-[#dce5f0] hover:bg-[#f3f7fc] hover:border-[#dce5f0]'
                                                     }`}
                                                 >
                                                     <input id="consultationpage-field-29"
@@ -7343,14 +7343,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                             updated[safeActiveIdx][opt.id] = e.target.checked;
                                                             setConfig({ ...config, vehicles: updated });
                                                         }}
-                                                        className="w-4 h-4 text-[#087f73] focus:ring-[#087f73] border-[#dce6e8] rounded mt-0.5"
+                                                        className="w-4 h-4 text-[#1464ad] focus:ring-[#1464ad] border-[#dce5f0] rounded mt-0.5"
                                                     />
                                                     <div className="space-y-0.5">
                                                         <div className="flex flex-wrap items-baseline gap-x-2">
-                                                            <span className="text-sm font-semibold text-[#526574] ">{opt.label}</span>
-                                                            <span className="text-sm font-semibold text-[#087f73]">{opt.price}</span>
+                                                            <span className="text-sm font-semibold text-[#50647c] ">{opt.label}</span>
+                                                            <span className="text-sm font-semibold text-[#1464ad]">{opt.price}</span>
                                                         </div>
-                                                        <p className="text-base text-[#526574] font-medium leading-tight">{opt.desc}</p>
+                                                        <p className="text-base text-[#50647c] font-medium leading-tight">{opt.desc}</p>
                                                     </div>
                                                 </label>
                                             );
@@ -7363,20 +7363,20 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                 </div>
                 {/* Sticky Footer */}
-                <div className="p-5 bg-[#f4f8f8] border-t border-[#dce6e8] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
-                    <div className="bg-[#eef7f5] p-5 rounded-2xl border border-[#c8dedb] space-y-2 shadow-inner">
+                <div className="p-5 bg-[#f3f7fc] border-t border-[#dce5f0] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
+                    <div className="bg-[#edf4fd] p-5 rounded-2xl border border-[#c9dbef] space-y-2 shadow-inner">
                         <div className="flex justify-between items-baseline">
-                            <span className="text-sm font-semibold text-[#082b45]">{t('consultation.car.package_total').replace('{count}', String(config.vehicles?.length || 0))}</span>
-                            <span className="font-mono text-sm text-[#082b45] font-semibold bg-white/60 px-2 py-0.5 rounded border border-[#c8dedb]">{t('consultation.car.canton_adjusted')}</span>
+                            <span className="text-sm font-semibold text-[#032b59]">{t('consultation.car.package_total').replace('{count}', String(config.vehicles?.length || 0))}</span>
+                            <span className="font-mono text-sm text-[#032b59] font-semibold bg-white/60 px-2 py-0.5 rounded border border-[#c9dbef]">{t('consultation.car.canton_adjusted')}</span>
                         </div>
-                        <div className="flex justify-between items-center border-t border-[#c8dedb] pt-2.5">
-                            <span className="text-sm font-semibold text-[#526574] ">{t('consultation.car.premium_total_label')}</span>
-                            <span className="font-semibold text-3xl text-[#087f73]">CHF {getEstimatedPrice().toFixed(2)}</span>
+                        <div className="flex justify-between items-center border-t border-[#c9dbef] pt-2.5">
+                            <span className="text-sm font-semibold text-[#50647c] ">{t('consultation.car.premium_total_label')}</span>
+                            <span className="font-semibold text-3xl text-[#1464ad]">CHF {getEstimatedPrice().toFixed(2)}</span>
                         </div>
                     </div>
                     <button
                         onClick={handleAddToCart}
-                        className="kraken-control min-h-11 w-full bg-[#087f73] hover:bg-[#087f73] text-white py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all"
+                        className="kraken-control min-h-11 w-full bg-[#1464ad] hover:bg-[#1464ad] text-white py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all"
                     >
                         {editingItemId ? t('consultation.car.checkout.update') : t('consultation.car.checkout')}
                     </button>
@@ -7387,20 +7387,20 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         {/* MODAL: Pest Control */}
         {activeModal === 'pest-control' && (
             <ModalOverlay title={t('services.pest.title')} onClose={() => { setActiveModal(null); setEditingItemId(null); }} size="lg" noScroll={true}>
-                <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-white text-[#082b45]">
+                <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-white text-[#032b59]">
                     <button
                         type="button"
                         onClick={() => setShowInclusionsModal('pest-control')}
-                        className="kraken-control min-h-11 w-full text-left text-[#087f73] text-base font-semibold flex items-center justify-between bg-[#eef7f5] p-3.5 px-4 rounded-2xl border border-[#c8dedb] hover:bg-[#eef7f5] transition-all select-none group"
+                        className="kraken-control min-h-11 w-full text-left text-[#1464ad] text-base font-semibold flex items-center justify-between bg-[#edf4fd] p-3.5 px-4 rounded-2xl border border-[#c9dbef] hover:bg-[#edf4fd] transition-all select-none group"
                     >
                         <div className="flex items-center gap-3">
-                            <InfoIcon className="w-5 h-5 text-[#087f73] shrink-0" />
+                            <InfoIcon className="w-5 h-5 text-[#1464ad] shrink-0" />
                             <span className="text-sm font-semibold">{t('consultation.whatsIncluded')}</span>
                         </div>
-                        <ChevronRightIcon className="w-4 h-4 text-[#087f73] shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                        <ChevronRightIcon className="w-4 h-4 text-[#1464ad] shrink-0 group-hover:translate-x-0.5 transition-transform" />
                     </button>
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.pest.category')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.pest.category')}</label>
                         <div className="grid grid-cols-3 gap-2">
                             {[
                                 {id: 'Insects', label: t('consultation.pest.category.insects'), desc: t('consultation.pest.category.insects.desc'), icon: '🐜'},
@@ -7424,7 +7424,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     </div>
 
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.pest.target')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.pest.target')}</label>
                         <div className="flex flex-wrap gap-1.5">
                             {config.pestType === 'Insects' ? (
                                 ['Ants', 'Wasps', 'Bedbugs', 'Cockroaches', 'Fleas'].map(name => {
@@ -7438,7 +7438,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                 const u = active ? pests.filter((p: string) => p !== name) : [...pests, name];
                                                 setConfig({...config, pests: u});
                                             }}
-                                            className={`kraken-control min-h-11 min-w-11 px-3 py-1.5 rounded-full text-base font-semibold border transition-all ${active ? 'bg-[#eef7f5] border-[#087f73] text-[#087f73]' : 'bg-[#f4f8f8] border-[#dce6e8] text-[#526574] hover:bg-[#f4f8f8]'}`}
+                                            className={`kraken-control min-h-11 min-w-11 px-3 py-1.5 rounded-full text-base font-semibold border transition-all ${active ? 'bg-[#edf4fd] border-[#1464ad] text-[#1464ad]' : 'bg-[#f3f7fc] border-[#dce5f0] text-[#50647c] hover:bg-[#f3f7fc]'}`}
                                         >
                                             {name === 'Ants' ? t('consultation.pest.target.ants') : name === 'Wasps' ? t('consultation.pest.target.wasps') : name === 'Bedbugs' ? t('consultation.pest.target.bedbugs') : name === 'Cockroaches' ? t('consultation.pest.target.cockroaches') : t('consultation.pest.target.fleas')}
                                         </button>
@@ -7456,20 +7456,20 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                 const u = active ? pests.filter((p: string) => p !== name) : [...pests, name];
                                                 setConfig({...config, pests: u});
                                             }}
-                                            className={`kraken-control min-h-11 min-w-11 px-3 py-1.5 rounded-full text-base font-semibold border transition-all ${active ? 'bg-[#eef7f5] border-[#087f73] text-[#087f73]' : 'bg-[#f4f8f8] border-[#dce6e8] text-[#526574] hover:bg-[#f4f8f8]'}`}
+                                            className={`kraken-control min-h-11 min-w-11 px-3 py-1.5 rounded-full text-base font-semibold border transition-all ${active ? 'bg-[#edf4fd] border-[#1464ad] text-[#1464ad]' : 'bg-[#f3f7fc] border-[#dce5f0] text-[#50647c] hover:bg-[#f3f7fc]'}`}
                                         >
                                             {name === 'Mice' ? t('consultation.pest.target.mice') : name === 'Rats' ? t('consultation.pest.target.rats') : t('consultation.pest.target.martens')}
                                         </button>
                                     );
                                 })
                             ) : (
-                                <span className="text-sm text-[#526574] font-semibold italic">{t('consultation.pest.target.placeholder')}</span>
+                                <span className="text-sm text-[#50647c] font-semibold italic">{t('consultation.pest.target.placeholder')}</span>
                             )}
                         </div>
                     </div>
 
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.pest.urgency')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.pest.urgency')}</label>
                         <div className="grid grid-cols-2 gap-2">
                             {[
                                 {id: 'Standard', label: t('consultation.pest.urgency.standard'), desc: t('consultation.pest.urgency.standard.desc'), icon: '📅'},
@@ -7494,7 +7494,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     )}
 
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.pest.property')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.pest.property')}</label>
                         <div className="grid grid-cols-3 gap-2">
                             {[
                                 {id: 'Residential', icon: '🏠', label: t('consultation.pest.property.residential')},
@@ -7513,7 +7513,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     </div>
 
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.pest.shields')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.pest.shields')}</label>
                         <div className="space-y-2">
                             <OptionCard
                                 icon="🛡️"
@@ -7535,10 +7535,10 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     </div>
 
                     <div>
-                        <label htmlFor="consultationpage-field-30" className="kraken-label block text-sm font-semibold text-[#526574] mb-2">{t('consultation.pest.observations')}</label>
+                        <label htmlFor="consultationpage-field-30" className="kraken-label block text-sm font-semibold text-[#50647c] mb-2">{t('consultation.pest.observations')}</label>
                         <textarea id="consultationpage-field-30"
                             placeholder={t('consultation.pest.observations.placeholder')}
-                            className="kraken-field w-full p-4 bg-[#f4f8f8] border border-[#dce6e8] rounded-xl outline-none focus:ring-2 focus:ring-[#087f73] text-base font-medium text-[#526574] min-h-[80px]"
+                            className="kraken-field w-full p-4 bg-[#f3f7fc] border border-[#dce5f0] rounded-xl outline-none focus:ring-2 focus:ring-[#1464ad] text-base font-medium text-[#50647c] min-h-[80px]"
                             value={config.description || ''}
                             onChange={(e) => setConfig({...config, description: e.target.value})}
                         />
@@ -7546,14 +7546,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                 </div>
                 {/* Sticky Footer */}
-                <div className="p-5 bg-[#f4f8f8] border-t border-[#dce6e8] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
+                <div className="p-5 bg-[#f3f7fc] border-t border-[#dce5f0] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
                     <div className="flex justify-between items-center px-1">
-                        <span className="font-semibold text-[#082b45] text-sm sm:text-sm text-[#082b45]">{t('consultation.pest.total')}</span>
-                        <span className="font-semibold text-2xl text-[#087f73]">CHF {getEstimatedPrice().toFixed(2)}</span>
+                        <span className="font-semibold text-[#032b59] text-sm sm:text-sm text-[#032b59]">{t('consultation.pest.total')}</span>
+                        <span className="font-semibold text-2xl text-[#1464ad]">CHF {getEstimatedPrice().toFixed(2)}</span>
                     </div>
                     <button
                         onClick={handleAddToCart}
-                        className="kraken-control min-h-11 w-full bg-[#087f73] hover:bg-[#087f73] text-white py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all"
+                        className="kraken-control min-h-11 w-full bg-[#1464ad] hover:bg-[#1464ad] text-white py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all"
                     >
                         {editingItemId ? t('consultation.pest.update') : t('consultation.pest.checkout')}
                     </button>
@@ -7564,20 +7564,20 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         {/* MODAL: Waste Management */}
         {activeModal === 'waste-management' && (
             <ModalOverlay title={t('services.waste.title')} onClose={() => { setActiveModal(null); setEditingItemId(null); }} size="lg" noScroll={true}>
-                <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-white text-[#082b45]">
+                <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-white text-[#032b59]">
                     <button
                         type="button"
                         onClick={() => setShowInclusionsModal('waste-management')}
-                        className="kraken-control min-h-11 w-full text-left text-[#087f73] text-base font-semibold flex items-center justify-between bg-[#eef7f5] p-3.5 px-4 rounded-2xl border border-[#c8dedb] hover:bg-[#eef7f5] transition-all select-none group"
+                        className="kraken-control min-h-11 w-full text-left text-[#1464ad] text-base font-semibold flex items-center justify-between bg-[#edf4fd] p-3.5 px-4 rounded-2xl border border-[#c9dbef] hover:bg-[#edf4fd] transition-all select-none group"
                     >
                         <div className="flex items-center gap-3">
-                            <InfoIcon className="w-5 h-5 text-[#087f73] shrink-0" />
+                            <InfoIcon className="w-5 h-5 text-[#1464ad] shrink-0" />
                             <span className="text-sm font-semibold">{t('consultation.whatsIncluded')}</span>
                         </div>
-                        <ChevronRightIcon className="w-4 h-4 text-[#087f73] shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                        <ChevronRightIcon className="w-4 h-4 text-[#1464ad] shrink-0 group-hover:translate-x-0.5 transition-transform" />
                     </button>
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.waste.category')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.waste.category')}</label>
                         <div className="grid grid-cols-2 gap-2">
                             {[
                                 {id: 'Household', icon: '🏠', title: t('consultation.waste.category.household'), desc: t('consultation.waste.category.household.desc')},
@@ -7598,7 +7598,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     </div>
 
                     <div>
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] mb-3">{t('consultation.waste.inventory')}</label>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-3">{t('consultation.waste.inventory')}</label>
                         <div className="space-y-2">
                             {[
                                 {id: 'sofa', name: t('consultation.waste.item.sofa'), icon: '🛋️', rate: t('consultation.waste.item.sofa.rate')},
@@ -7608,12 +7608,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             ].map(item => {
                                 const currentCount = config.items?.[item.id] || 0;
                                 return (
-                                    <div key={item.id} className="flex justify-between items-center bg-[#f4f8f8] border border-[#dce6e8] rounded-xl p-3 bg-white">
+                                    <div key={item.id} className="flex justify-between items-center bg-[#f3f7fc] border border-[#dce5f0] rounded-xl p-3 bg-white">
                                         <div className="flex items-center gap-2">
                                             <span className="text-xl">{item.icon}</span>
                                             <div>
-                                                <h5 className="text-lg font-semibold text-[#526574]">{item.name}</h5>
-                                                <span className="text-sm text-[#526574] font-semibold ">{item.rate}</span>
+                                                <h5 className="text-lg font-semibold text-[#50647c]">{item.name}</h5>
+                                                <span className="text-sm text-[#50647c] font-semibold ">{item.rate}</span>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-3">
@@ -7624,11 +7624,11 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     const val = Math.max(0, currentCount - 1);
                                                     setConfig({...config, items: { ...current, [item.id]: val }});
                                                 }}
-                                                className="kraken-control min-h-11 min-w-11 w-8 h-8 rounded-full border border-[#dce6e8] flex items-center justify-center font-semibold hover:bg-[#f4f8f8] text-[#526574] transition-colors"
+                                                className="kraken-control min-h-11 min-w-11 w-8 h-8 rounded-full border border-[#dce5f0] flex items-center justify-center font-semibold hover:bg-[#f3f7fc] text-[#50647c] transition-colors"
                                             >
                                                 -
                                             </button>
-                                            <span className="font-semibold text-sm text-[#526574] min-w-[20px] text-center">{currentCount}</span>
+                                            <span className="font-semibold text-sm text-[#50647c] min-w-[20px] text-center">{currentCount}</span>
                                             <button
                                                 type="button"
                                                 onClick={() => {
@@ -7636,7 +7636,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     const val = currentCount + 1;
                                                     setConfig({...config, items: { ...current, [item.id]: val }});
                                                 }}
-                                                className="kraken-control min-h-11 min-w-11 w-8 h-8 rounded-full border border-[#dce6e8] flex items-center justify-center font-semibold hover:bg-[#f4f8f8] text-[#526574] transition-colors"
+                                                className="kraken-control min-h-11 min-w-11 w-8 h-8 rounded-full border border-[#dce5f0] flex items-center justify-center font-semibold hover:bg-[#f3f7fc] text-[#50647c] transition-colors"
                                             >
                                                 +
                                             </button>
@@ -7649,14 +7649,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="kraken-label block text-sm font-semibold text-[#526574] mb-2">{t('consultation.waste.access')}</label>
+                            <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-2">{t('consultation.waste.access')}</label>
                             <div className="grid grid-cols-2 gap-1.5">
                                 {['Lift', 'Stairs'].map(acc => (
                                     <button
                                         key={acc}
                                         type="button"
                                         onClick={() => setConfig({...config, accessStyle: acc})}
-                                        className={`kraken-control min-h-11 min-w-11 py-2 text-base font-semibold rounded-xl border text-center transition-all ${config.accessStyle === acc ? 'bg-[#eef7f5] border-[#087f73] text-[#087f73]' : 'bg-white border-[#dce6e8] text-[#526574] hover:bg-[#f4f8f8]'}`}
+                                        className={`kraken-control min-h-11 min-w-11 py-2 text-base font-semibold rounded-xl border text-center transition-all ${config.accessStyle === acc ? 'bg-[#edf4fd] border-[#1464ad] text-[#1464ad]' : 'bg-white border-[#dce5f0] text-[#50647c] hover:bg-[#f3f7fc]'}`}
                                     >
                                         {acc === 'Lift' ? t('consultation.waste.access.lift') : t('consultation.waste.access.stairs')}
                                     </button>
@@ -7666,7 +7666,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                         {config.accessStyle === 'Stairs' && (
                             <div className="animate-fade-in">
-                                <label className="kraken-label block text-sm font-semibold text-[#526574] mb-2">{t('consultation.waste.access.floor')}</label>
+                                <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-2">{t('consultation.waste.access.floor')}</label>
                                 <CounterInput
                                     label={t('consultation.waste.access.floor_label')}
                                     value={config.stairsFloorCount || 1}
@@ -7676,17 +7676,17 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         )}
                     </div>
 
-                    <div className="bg-white border border-[#dce6e8] rounded-2xl p-4 shadow-sm">
+                    <div className="bg-white border border-[#dce5f0] rounded-2xl p-4 shadow-sm">
                         <label htmlFor="consultationpage-field-31" className="kraken-label flex items-center gap-2 cursor-pointer">
                             <input id="consultationpage-field-31"
                                 type="checkbox"
                                 checked={!!config.needsCertificate}
                                 onChange={(e) => setConfig({...config, needsCertificate: e.target.checked})}
-                                className="w-4 h-4 text-[#087f73] focus:ring-[#087f73] border-[#dce6e8] rounded"
+                                className="w-4 h-4 text-[#1464ad] focus:ring-[#1464ad] border-[#dce5f0] rounded"
                             />
                             <div>
-                                <h5 className="text-lg font-semibold text-[#526574] ">{t('consultation.waste.certificate')}</h5>
-                                <p className="text-base text-[#526574]">{t('consultation.waste.certificate.desc')}</p>
+                                <h5 className="text-lg font-semibold text-[#50647c] ">{t('consultation.waste.certificate')}</h5>
+                                <p className="text-base text-[#50647c]">{t('consultation.waste.certificate.desc')}</p>
                             </div>
                         </label>
                     </div>
@@ -7728,17 +7728,17 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                 </div>
                 {/* Sticky Footer */}
-                <div className="p-5 bg-[#f4f8f8] border-t border-[#dce6e8] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
+                <div className="p-5 bg-[#f3f7fc] border-t border-[#dce5f0] z-10 flex flex-col gap-3 rounded-b-[2rem] shrink-0 shadow-xs">
                     <div className="flex justify-between items-center px-1">
-                        <span className="font-semibold text-[#082b45] text-sm sm:text-sm text-[#082b45]">{t('consultation.waste.total')}</span>
-                        <span className="font-semibold text-2xl text-[#087f73]">
+                        <span className="font-semibold text-[#032b59] text-sm sm:text-sm text-[#032b59]">{t('consultation.waste.total')}</span>
+                        <span className="font-semibold text-2xl text-[#1464ad]">
                             {config.hasHazardous ? t('consultation.waste.total.blocked') : `CHF ${getEstimatedPrice().toFixed(2)}`}
                         </span>
                     </div>
                     <button
                         onClick={handleAddToCart}
                         disabled={config.hasHazardous}
-                        className={`kraken-control min-h-11 w-full text-white py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all ${config.hasHazardous ? 'bg-gray-300 cursor-not-allowed shadow-none' : 'bg-[#087f73] hover:bg-[#087f73]'}`}
+                        className={`kraken-control min-h-11 w-full text-white py-4 rounded-2xl font-semibold text-base sm:text-base shadow-sm transition-all ${config.hasHazardous ? 'bg-gray-300 cursor-not-allowed shadow-none' : 'bg-[#1464ad] hover:bg-[#1464ad]'}`}
                     >
                         {editingItemId ? t('consultation.waste.update') : t('consultation.waste.checkout')}
                     </button>
@@ -7940,12 +7940,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                 <div className="flex-1 flex flex-col min-h-0 bg-white">
                                     <div className="flex-1 flex flex-col md:flex-row min-h-0">
                                         {/* LEFT COLUMN: Mascot column with gorgeous background */}
-                                        <div className="hidden md:flex md:w-[42%] bg-[#F0F6FF] p-6 sm:p-8 flex-col justify-between items-center relative overflow-hidden md:border-r border-[#dce6e8] min-h-0">
+                                        <div className="hidden md:flex md:w-[42%] bg-[#F0F6FF] p-6 sm:p-8 flex-col justify-between items-center relative overflow-hidden md:border-r border-[#dce5f0] min-h-0">
                                             {/* Speech Bubble */}
-                                            <div className="relative bg-white text-[#082b45] text-sm sm:text-sm font-semibold p-4 rounded-2xl shadow-md border border-[#c8dedb] text-center max-w-[280px] animate-fade-in">
+                                            <div className="relative bg-white text-[#032b59] text-sm sm:text-sm font-semibold p-4 rounded-2xl shadow-md border border-[#c9dbef] text-center max-w-[280px] animate-fade-in">
                                                 {pTexts.speechBubble}
                                                 {/* Speech bubble tail pointing down */}
-                                                <div className="absolute bottom-[-8px] left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white rotate-45 border-r border-b border-[#c8dedb]"></div>
+                                                <div className="absolute bottom-[-8px] left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white rotate-45 border-r border-b border-[#c9dbef]"></div>
                                             </div>
 
                                             {/* Mascot image */}
@@ -7965,7 +7965,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         {/* RIGHT COLUMN: Interactive Form with Totals */}
                                         <div className="w-full md:w-[58%] p-4 sm:p-8 flex flex-col justify-start md:justify-center items-center space-y-4 sm:space-y-5 overflow-y-auto custom-scrollbar bg-white flex-1 min-h-0">
                                             {/* Circular padlock icon */}
-                                            <div className="w-12 h-12 bg-[#eef7f5] border border-[#c8dedb] text-[#082b45] rounded-full flex items-center justify-center shadow-3xs">
+                                            <div className="w-12 h-12 bg-[#edf4fd] border border-[#c9dbef] text-[#032b59] rounded-full flex items-center justify-center shadow-3xs">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
                                                 </svg>
@@ -7973,36 +7973,36 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                             {/* Heading */}
                                             <div className="space-y-1 text-center">
-                                                <h2 className="text-lg sm:text-xl font-semibold text-[#082b45] leading-snug">
+                                                <h2 className="text-lg sm:text-xl font-semibold text-[#032b59] leading-snug">
                                                     {pTexts.title}
                                                 </h2>
-                                                <p className="text-base text-[#526574] font-semibold max-w-sm leading-relaxed text-center">
+                                                <p className="text-base text-[#50647c] font-semibold max-w-sm leading-relaxed text-center">
                                                     {pTexts.subtitle}
                                                 </p>
                                             </div>
 
                                             {/* Pre-reserved info notice */}
-                                            <div className="bg-[#EBF3FE] border border-[#c8dedb] p-3.5 rounded-2xl text-sm sm:text-sm text-[#087f73] font-semibold leading-relaxed flex items-start gap-2.5 w-full max-w-sm">
-                                                <span className="text-[#087f73] text-sm mt-0.5 shrink-0">🕒</span>
+                                            <div className="bg-[#EBF3FE] border border-[#c9dbef] p-3.5 rounded-2xl text-sm sm:text-sm text-[#1464ad] font-semibold leading-relaxed flex items-start gap-2.5 w-full max-w-sm">
+                                                <span className="text-[#1464ad] text-sm mt-0.5 shrink-0">🕒</span>
                                                 <span>{pTexts.howItWorks}</span>
                                             </div>
 
                                             {/* Invoice Overview Card */}
-                                            <div className="w-full bg-[#FAF8F5] p-5 rounded-2xl border border-[#dce6e8] shadow-3xs space-y-2.5 text-left text-sm w-full max-w-sm">
-                                                <div className="flex justify-between items-center font-semibold text-[#526574] text-sm">
+                                            <div className="w-full bg-[#FAF8F5] p-5 rounded-2xl border border-[#dce5f0] shadow-3xs space-y-2.5 text-left text-sm w-full max-w-sm">
+                                                <div className="flex justify-between items-center font-semibold text-[#50647c] text-sm">
                                                     <span>{lang === 'es' ? 'Localizador Booking' : 'Booking Locator'}</span>
-                                                    <span className="font-semibold text-[#082b45] font-mono ">{submittedRequestData.formattedId || submittedRequestData.id}</span>
+                                                    <span className="font-semibold text-[#032b59] font-mono ">{submittedRequestData.formattedId || submittedRequestData.id}</span>
                                                 </div>
-                                                <div className="border-t border-dashed border-[#dce6e8] my-1"></div>
-                                                <div className="flex justify-between items-center font-semibold text-[#082b45]">
+                                                <div className="border-t border-dashed border-[#dce5f0] my-1"></div>
+                                                <div className="flex justify-between items-center font-semibold text-[#032b59]">
                                                     <span>{pTexts.depositLabel}</span>
                                                     <span className="font-semibold text-lg text-[#00B272]">CHF {submittedRequestData.depositAmount.toFixed(2)}</span>
                                                 </div>
-                                                <div className="flex justify-between items-center font-semibold text-[#526574] text-sm">
+                                                <div className="flex justify-between items-center font-semibold text-[#50647c] text-sm">
                                                     <span>{pTexts.totalLabel}</span>
                                                     <span>CHF {submittedRequestData.grandTotal.toFixed(2)}</span>
                                                 </div>
-                                                <div className="flex justify-between items-center font-semibold text-[#526574] text-sm">
+                                                <div className="flex justify-between items-center font-semibold text-[#50647c] text-sm">
                                                     <span>{pTexts.remainingLabel}</span>
                                                     <span>CHF {submittedRequestData.remainingBalance.toFixed(2)}</span>
                                                 </div>
@@ -8020,18 +8020,18 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     href={submittedRequestData.payrexxLink}
                                                     target="_blank"
                                                     referrerPolicy="no-referrer"
-                                                    className="w-full flex items-center justify-center gap-2 bg-[#00B272] hover:bg-[#009c63] text-[#082b45] py-3.5 rounded-[1.5rem] font-semibold text-sm text-center shadow-md hover:shadow-sm transition-all duration-300 transform active:translate-y-px"
+                                                    className="w-full flex items-center justify-center gap-2 bg-[#00B272] hover:bg-[#009c63] text-[#032b59] py-3.5 rounded-[1.5rem] font-semibold text-sm text-center shadow-md hover:shadow-sm transition-all duration-300 transform active:translate-y-px"
                                                 >
                                                     <span>🔒 {pTexts.payAction}</span>
                                                 </a>
 
-                                                <p className="text-center text-base text-[#526574] font-semibold italic leading-relaxed px-2">
+                                                <p className="text-center text-base text-[#50647c] font-semibold italic leading-relaxed px-2">
                                                     {pTexts.helpNote}
                                                 </p>
 
                                                 <button
                                                     onClick={() => setContactModalOpen(false)}
-                                                    className="kraken-control min-h-11 w-full bg-[#f4f8f8] hover:bg-slate-200 text-[#526574] py-3 rounded-[1.5rem] font-semibold text-base transition-all duration-300 cursor-pointer text-center"
+                                                    className="kraken-control min-h-11 w-full bg-[#f3f7fc] hover:bg-slate-200 text-[#50647c] py-3 rounded-[1.5rem] font-semibold text-base transition-all duration-300 cursor-pointer text-center"
                                                     type="button"
                                                 >
                                                     {lang === 'es' ? 'VOLVER / CANCELAR' : lang === 'de' ? 'ZURÜCK / ABBRECHEN' : lang === 'fr' ? 'RETOUR / ANNULER' : 'BACK / CANCEL'}
@@ -8055,7 +8055,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         <CheckIcon className="w-7 h-7 stroke-[3.5]" />
                                     </div>
                                 ) : (
-                                    <div className="w-14 h-14 bg-[#082b45] text-white rounded-full flex items-center justify-center shadow-md shrink-0">
+                                    <div className="w-14 h-14 bg-[#032b59] text-white rounded-full flex items-center justify-center shadow-md shrink-0">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6 ">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                         </svg>
@@ -8064,10 +8064,10 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                 {/* Header & Order Ref */}
                                 <div className="space-y-1.5 text-center">
-                                    <h2 className="text-xl sm:text-2xl font-semibold text-[#082b45] leading-snug">
+                                    <h2 className="text-xl sm:text-2xl font-semibold text-[#032b59] leading-snug">
                                         {isDirect ? texts.thanksConfirm : texts.thanksReceipt}
                                     </h2>
-                                    <p className="text-base sm:text-base text-[#526574] font-semibold">
+                                    <p className="text-base sm:text-base text-[#50647c] font-semibold">
                                         {isDirect
                                             ? `${texts.bookingNo} ${submittedRequestData.formattedId}`
                                             : texts.weAreReviewing
@@ -8076,43 +8076,43 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                 </div>
 
                                 {/* Cream Summary Card Container */}
-                                <div className="w-full bg-[#FAF8F5] p-5 rounded-[2rem] border border-[#dce6e8] shadow-xs space-y-3.5 text-left text-sm max-w-sm mx-auto">
+                                <div className="w-full bg-[#FAF8F5] p-5 rounded-[2rem] border border-[#dce5f0] shadow-xs space-y-3.5 text-left text-sm max-w-sm mx-auto">
                                     {isDirect ? (
                                         <>
                                             {/* Row 1: Direct indicator with Zap icon / BoltIcon */}
-                                            <div className="flex items-center gap-3 font-semibold text-[#082b45]">
-                                                <BoltIcon className="w-4 h-4 text-[#082b45] shrink-0" />
+                                            <div className="flex items-center gap-3 font-semibold text-[#032b59]">
+                                                <BoltIcon className="w-4 h-4 text-[#032b59] shrink-0" />
                                                 <span className=" text-sm">{texts.reservaExpress}</span>
                                             </div>
                                             {/* Row 2: Date-Time */}
-                                            <div className="flex items-center gap-3 font-semibold text-[#526574]">
-                                                <CalendarIcon className="w-4 h-4 text-[#526574] shrink-0" />
+                                            <div className="flex items-center gap-3 font-semibold text-[#50647c]">
+                                                <CalendarIcon className="w-4 h-4 text-[#50647c] shrink-0" />
                                                 <span>{formattedDate} • {submittedRequestData.time}</span>
                                             </div>
                                             {/* Row 3: Address */}
-                                            <div className="flex items-center gap-3 font-semibold text-[#526574]">
-                                                <MapPinIcon className="w-4 h-4 text-[#526574] shrink-0" />
+                                            <div className="flex items-center gap-3 font-semibold text-[#50647c]">
+                                                <MapPinIcon className="w-4 h-4 text-[#50647c] shrink-0" />
                                                 <span className="truncate max-w-[280px]">{submittedRequestData.address}</span>
                                             </div>
 
-                                            <div className="border-t border-dashed border-[#dce6e8] my-2"></div>
+                                            <div className="border-t border-dashed border-[#dce5f0] my-2"></div>
 
                                             {/* Paid Row */}
-                                            <div className="flex justify-between items-center font-semibold text-[#526574]">
+                                            <div className="flex justify-between items-center font-semibold text-[#50647c]">
                                                 <span>{texts.paidToday}</span>
-                                                <span className="font-semibold text-sm text-[#082b45]">CHF {submittedRequestData.depositAmount.toFixed(2)}</span>
+                                                <span className="font-semibold text-sm text-[#032b59]">CHF {submittedRequestData.depositAmount.toFixed(2)}</span>
                                             </div>
                                             {/* Balance Row */}
-                                            <div className="flex justify-between items-center font-semibold text-[#526574]">
+                                            <div className="flex justify-between items-center font-semibold text-[#50647c]">
                                                 <span>{texts.balanceDue}</span>
-                                                <span className="font-semibold text-[#526574] text-sm">CHF {submittedRequestData.remainingBalance.toFixed(2)}</span>
+                                                <span className="font-semibold text-[#50647c] text-sm">CHF {submittedRequestData.remainingBalance.toFixed(2)}</span>
                                             </div>
                                         </>
                                     ) : (
                                         <>
                                             {/* Row 1: Files indicator with DocumentTextIcon */}
-                                            <div className="flex items-center gap-3 font-semibold text-[#082b45]">
-                                                <DocumentTextIcon className="w-4 h-4 text-[#087f73] shrink-0" />
+                                            <div className="flex items-center gap-3 font-semibold text-[#032b59]">
+                                                <DocumentTextIcon className="w-4 h-4 text-[#1464ad] shrink-0" />
                                                 <span className="">
                                                     {submittedRequestData.filesCount === 0 ? (
                                                         <span>{lang === 'es' ? 'No se adjuntaron archivos' : 'No attached files'}</span>
@@ -8130,22 +8130,22 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                 </span>
                                             </div>
                                             {/* Row 2: Address */}
-                                            <div className="flex items-center gap-3 font-semibold text-[#526574]">
-                                                <MapPinIcon className="w-4 h-4 text-[#526574] shrink-0" />
+                                            <div className="flex items-center gap-3 font-semibold text-[#50647c]">
+                                                <MapPinIcon className="w-4 h-4 text-[#50647c] shrink-0" />
                                                 <span className="truncate max-w-[280px]">{submittedRequestData.address}</span>
                                             </div>
                                             {/* Row 3: Requested Date */}
-                                            <div className="flex items-center gap-3 font-semibold text-[#526574]">
-                                                <CalendarIcon className="w-4 h-4 text-[#526574] shrink-0" />
+                                            <div className="flex items-center gap-3 font-semibold text-[#50647c]">
+                                                <CalendarIcon className="w-4 h-4 text-[#50647c] shrink-0" />
                                                 <span>{lang === 'es' ? `Solicitado el ${formattedDate}` : `Requested on ${formattedDate}`}</span>
                                             </div>
 
-                                            <div className="border-t border-dashed border-[#dce6e8] my-2"></div>
+                                            <div className="border-t border-dashed border-[#dce5f0] my-2"></div>
 
                                             {/* Review Fee Row */}
-                                            <div className="flex justify-between items-center font-semibold text-[#526574]">
+                                            <div className="flex justify-between items-center font-semibold text-[#50647c]">
                                                 <span>{texts.feePaid}</span>
-                                                <span className="font-semibold text-sm text-[#082b45]">CHF {submittedRequestData.depositAmount.toFixed(2)}</span>
+                                                <span className="font-semibold text-sm text-[#032b59]">CHF {submittedRequestData.depositAmount.toFixed(2)}</span>
                                             </div>
                                         </>
                                     )}
@@ -8153,34 +8153,34 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                 {/* Deducted details disclaimer for Precision Quote */}
                                 {!isDirect && (
-                                    <p className="text-base text-[#526574] font-semibold max-w-xs text-center px-4 leading-normal">
+                                    <p className="text-base text-[#50647c] font-semibold max-w-xs text-center px-4 leading-normal">
                                         {texts.deductedNotice}
                                     </p>
                                 )}
 
                                 {/* "What's Next / ¿Qué sigue ahora?" step layout */}
                                 <div className="w-full text-left max-w-sm mx-auto space-y-3 pt-2">
-                                    <h4 className="text-lg font-semibold text-[#082b45] ">
+                                    <h4 className="text-lg font-semibold text-[#032b59] ">
                                         {texts.whatsNext}
                                     </h4>
 
                                     <div className="space-y-3.5">
                                         {/* Step 1 */}
                                         <div className="flex gap-3 items-start">
-                                            <div className="w-6 h-6 bg-[#eef7f5] text-[#087f73] rounded-full flex items-center justify-center font-semibold text-sm shrink-0 mt-0.5 border border-[#c8dedb]">
+                                            <div className="w-6 h-6 bg-[#edf4fd] text-[#1464ad] rounded-full flex items-center justify-center font-semibold text-sm shrink-0 mt-0.5 border border-[#c9dbef]">
                                                 1
                                             </div>
-                                            <p className="text-base font-semibold text-[#526574] leading-relaxed pt-0.5">
+                                            <p className="text-base font-semibold text-[#50647c] leading-relaxed pt-0.5">
                                                 {isDirect ? texts.step1Direct : texts.step1Validate}
                                             </p>
                                         </div>
 
                                         {/* Step 2 */}
                                         <div className="flex gap-3 items-start">
-                                            <div className="w-6 h-6 bg-[#eef7f5] text-[#087f73] rounded-full flex items-center justify-center font-semibold text-sm shrink-0 mt-0.5 border border-[#c8dedb]">
+                                            <div className="w-6 h-6 bg-[#edf4fd] text-[#1464ad] rounded-full flex items-center justify-center font-semibold text-sm shrink-0 mt-0.5 border border-[#c9dbef]">
                                                 2
                                             </div>
-                                            <p className="text-base font-semibold text-[#526574] leading-relaxed pt-0.5">
+                                            <p className="text-base font-semibold text-[#50647c] leading-relaxed pt-0.5">
                                                 {isDirect ? texts.step2Direct : texts.step2Validate}
                                             </p>
                                         </div>
@@ -8189,19 +8189,19 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         <div className="flex gap-3 items-start">
                                             {isDirect ? (
                                                 <>
-                                                    <div className="w-6 h-6 bg-[#eef7f5] text-[#087f73] rounded-full flex items-center justify-center font-semibold text-sm shrink-0 mt-0.5 border border-[#c8dedb]">
+                                                    <div className="w-6 h-6 bg-[#edf4fd] text-[#1464ad] rounded-full flex items-center justify-center font-semibold text-sm shrink-0 mt-0.5 border border-[#c9dbef]">
                                                         3
                                                     </div>
-                                                    <p className="text-base font-semibold text-[#526574] leading-relaxed pt-0.5">
+                                                    <p className="text-base font-semibold text-[#50647c] leading-relaxed pt-0.5">
                                                         {texts.step3Direct.replace('{date}', formattedDate)}
                                                     </p>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <div className="w-6 h-6 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center shrink-0 mt-0.5 border border-emerald-100">
+                                                    <div className="w-6 h-6 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center shrink-0 mt-0.5 border border-blue-100">
                                                         <CheckIcon className="w-3.5 h-3.5 stroke-[3.5]" />
                                                     </div>
-                                                    <p className="text-base font-semibold text-[#526574] leading-relaxed pt-0.5">
+                                                    <p className="text-base font-semibold text-[#50647c] leading-relaxed pt-0.5">
                                                         {texts.step3Validate}
                                                     </p>
                                                 </>
@@ -8216,7 +8216,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         <>
                                             <button
                                                 onClick={handleAddToCalendar}
-                                                className="kraken-control min-h-11 w-full bg-[#082b45] hover:bg-[#083563] text-white py-4 rounded-[1.5rem] font-semibold text-base sm:text-base text-center shadow-md transition-all duration-300 cursor-pointer"
+                                                className="kraken-control min-h-11 w-full bg-[#032b59] hover:bg-[#083563] text-white py-4 rounded-[1.5rem] font-semibold text-base sm:text-base text-center shadow-md transition-all duration-300 cursor-pointer"
                                                 type="button"
                                             >
                                                 📅 {texts.addCalendar}
@@ -8227,7 +8227,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     href={submittedRequestData.payrexxLink}
                                                     target="_blank"
                                                     referrerPolicy="no-referrer"
-                                                    className="w-full block bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-[1.5rem] font-semibold text-sm text-center shadow-xs transition-all duration-300"
+                                                    className="w-full block bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-[1.5rem] font-semibold text-sm text-center shadow-xs transition-all duration-300"
                                                 >
                                                     💳 {t('consultation.success.payNow') || 'Secure Payment'} →
                                                 </a>
@@ -8235,7 +8235,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         </>
                                     ) : (
                                         <div className="text-center">
-                                            <p className="text-[#526574] font-semibold text-base sm:text-base leading-normal pb-3 px-2">
+                                            <p className="text-[#50647c] font-semibold text-base sm:text-base leading-normal pb-3 px-2">
                                                 {texts.noActionRequired}
                                             </p>
                                         </div>
@@ -8245,7 +8245,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         onClick={handleSuccessPDFExport}
                                         disabled={pdfExporting}
                                         aria-busy={pdfExporting}
-                                        className="kraken-control min-h-11 w-full bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white py-3.5 rounded-[1.5rem] font-semibold text-base text-center shadow-md transition-all duration-300 cursor-pointer flex items-center justify-center gap-2"
+                                        className="kraken-control min-h-11 w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white py-3.5 rounded-[1.5rem] font-semibold text-base text-center shadow-md transition-all duration-300 cursor-pointer flex items-center justify-center gap-2"
                                         type="button"
                                     >
                                         📄 {pdfExporting ? quotePdfStatusText(language, 'loading') : language === 'es' ? 'Descargar Presupuesto PDF' : (language === 'de' || language === 'de-CH') ? 'Offerte als PDF herunterladen' : language === 'fr' ? 'Télécharger le devis en PDF' : language === 'it' ? 'Scarica preventivo in PDF' : language === 'pt' ? 'Descarregar orçamento em PDF' : 'Download Estimate as PDF'}
@@ -8254,7 +8254,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                     <button
                                         onClick={() => setContactModalOpen(false)}
-                                        className="kraken-control min-h-11 w-full bg-[#f4f8f8] hover:bg-slate-200 text-[#526574] py-3.5 rounded-[1.5rem] font-semibold text-base transition-all duration-300 cursor-pointer text-center"
+                                        className="kraken-control min-h-11 w-full bg-[#f3f7fc] hover:bg-slate-200 text-[#50647c] py-3.5 rounded-[1.5rem] font-semibold text-base transition-all duration-300 cursor-pointer text-center"
                                         type="button"
                                     >
                                         {lang === 'es' ? 'Cerrar' : lang === 'de' ? 'Schließen' : lang === 'fr' ? 'Fermer' : 'Close'}
@@ -8268,13 +8268,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     <form onSubmit={ejecutarReservaYpago} className="kraken-form animate-fade-in flex flex-col flex-1 min-h-0 overflow-hidden bg-white">
 
                     {/* Visual Stepper Progress Bar */}
-                    <div className="kraken-stepper px-4 sm:px-6 pt-4 mb-4 border-b border-[#dce6e8] pb-4 shrink-0 bg-white">
+                    <div className="kraken-stepper px-4 sm:px-6 pt-4 mb-4 border-b border-[#dce5f0] pb-4 shrink-0 bg-white">
                         <div className="flex justify-between items-center relative">
                             {/* Line connector */}
-                            <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-[#f4f8f8] -z-10"></div>
+                            <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-[#f3f7fc] -z-10"></div>
                             {/* Active connection highlight */}
                             <div
-                                className="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 bg-[#eef7f5] -z-10 transition-all duration-300"
+                                className="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 bg-[#edf4fd] -z-10 transition-all duration-300"
                                 style={{ width: `${((currentStep - 1) / 4) * 100}%` }}
                             ></div>
 
@@ -8302,10 +8302,10 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         <div
                                             className={`w-9 h-9 rounded-full flex items-center justify-center font-semibold text-sm transition-all duration-300 border-2 select-none ${
                                                 isCompleted
-                                                    ? 'bg-[#087f73] border-[#087f73] text-white shadow-sm'
+                                                    ? 'bg-[#1464ad] border-[#1464ad] text-white shadow-sm'
                                                     : isActive
-                                                        ? 'bg-white border-[#087f73] text-[#087f73] ring-4 ring-blue-50 shadow-md font-semibold '
-                                                        : 'bg-white border-[#dce6e8] text-[#526574] group-hover:border-[#dce6e8] hover:text-[#526574]'
+                                                        ? 'bg-white border-[#1464ad] text-[#1464ad] ring-4 ring-blue-50 shadow-md font-semibold '
+                                                        : 'bg-white border-[#dce5f0] text-[#50647c] group-hover:border-[#dce5f0] hover:text-[#50647c]'
                                             }`}
                                         >
                                             {isCompleted ? <CheckIcon className="w-4 h-4" /> : s.num}
@@ -8313,10 +8313,10 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         <span
                                             className={`sr-only sm:not-sr-only text-sm font-semibold mt-2 transition-all duration-300 ${
                                                 isActive
-                                                    ? 'text-[#087f73] font-semibold '
+                                                    ? 'text-[#1464ad] font-semibold '
                                                     : isCompleted
-                                                        ? 'text-[#526574]'
-                                                        : 'text-[#526574] group-hover:text-[#526574]'
+                                                        ? 'text-[#50647c]'
+                                                        : 'text-[#50647c] group-hover:text-[#50647c]'
                                             }`}
                                         >
                                             {s.label}
@@ -8327,7 +8327,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         </div>
                     </div>
 
-                    <p className="sm:hidden px-4 pb-4 text-base font-semibold text-[#082b45]">{[t('consultation.step.schedule'), t('consultation.step.method'), t('consultation.step.location'), t('consultation.step.access'), t('consultation.step.payment')][currentStep - 1]}</p>
+                    <p className="sm:hidden px-4 pb-4 text-base font-semibold text-[#032b59]">{[t('consultation.step.schedule'), t('consultation.step.method'), t('consultation.step.location'), t('consultation.step.access'), t('consultation.step.payment')][currentStep - 1]}</p>
                     <div className="kraken-dialog-body flex-1 overflow-y-auto px-4 sm:px-6 pb-5 custom-scrollbar min-h-0 bg-white">
                         {bookingError && <p role="alert" className="my-4 rounded-xl bg-red-50 p-4 text-base text-red-800">{bookingError}</p>}
                         {/* STEP 1: Horario & Identity */}
@@ -8336,17 +8336,17 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                 {/* Identity Section */}
                                 <div className="space-y-4">
                                     <div className="flex items-center gap-2 mb-2">
-                                        <div className="p-2 bg-[#eef7f5] rounded-lg text-[#087f73]"><EnvelopeIcon className="w-5 h-5" /></div>
-                                        <h4 className="text-lg font-semibold text-[#082b45] ">{t('consultation.form.personalIdentity')}</h4>
+                                        <div className="p-2 bg-[#edf4fd] rounded-lg text-[#1464ad]"><EnvelopeIcon className="w-5 h-5" /></div>
+                                        <h4 className="text-lg font-semibold text-[#032b59] ">{t('consultation.form.personalIdentity')}</h4>
                                     </div>
                                     <div className="grid grid-cols-1 gap-4">
                                         <div className="group relative">
-                                            <label htmlFor="name" className="kraken-label block text-sm font-semibold text-[#526574] mb-1.5 ml-1">{t('consultation.form.fullName')}</label>
+                                            <label htmlFor="name" className="kraken-label block text-sm font-semibold text-[#50647c] mb-1.5 ml-1">{t('consultation.form.fullName')}</label>
                                             <input
                                                 id="name"
                                                 name="name"
                                                 placeholder={t('consultation.form.enterName')}
-                                                className={`kraken-field w-full p-4 bg-white border-2 rounded-[1.25rem] focus:border-[#087f73] focus:bg-[#eef7f5] outline-none font-semibold text-base transition-all duration-300 shadow-sm ${errors.clientName ? 'border-red-500 bg-red-50 shake' : 'border-[#dce6e8]'}`}
+                                                className={`kraken-field w-full p-4 bg-white border-2 rounded-[1.25rem] focus:border-[#1464ad] focus:bg-[#edf4fd] outline-none font-semibold text-base transition-all duration-300 shadow-sm ${errors.clientName ? 'border-red-500 bg-red-50 shake' : 'border-[#dce5f0]'}`}
                                                 value={clientName}
                                                 onChange={(e) => setClientName(e.target.value)}
                                             />
@@ -8354,24 +8354,24 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         </div>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div className="group">
-                                                <label htmlFor="consultationpage-field-32" className="kraken-label block text-sm font-semibold text-[#526574] mb-1.5 ml-1">{t('consultation.form.emailAddress')}</label>
+                                                <label htmlFor="consultationpage-field-32" className="kraken-label block text-sm font-semibold text-[#50647c] mb-1.5 ml-1">{t('consultation.form.emailAddress')}</label>
                                                 <input id="consultationpage-field-32"
                                                     name="email"
                                                     type="email"
                                                     placeholder="your@email.com"
-                                                    className={`kraken-field w-full p-4 bg-white border-2 rounded-[1.25rem] focus:border-[#087f73] focus:bg-[#eef7f5] outline-none font-semibold text-base transition-all duration-300 shadow-sm ${errors.email ? 'border-red-500 bg-red-50 shake' : 'border-[#dce6e8]'}`}
+                                                    className={`kraken-field w-full p-4 bg-white border-2 rounded-[1.25rem] focus:border-[#1464ad] focus:bg-[#edf4fd] outline-none font-semibold text-base transition-all duration-300 shadow-sm ${errors.email ? 'border-red-500 bg-red-50 shake' : 'border-[#dce5f0]'}`}
                                                     value={email}
                                                     onChange={(e) => setEmail(e.target.value)}
                                                 />
                                                 {errors.email && <span className="text-sm text-red-500 font-semibold mt-1 block ml-2">{errors.email}</span>}
                                             </div>
                                             <div className="group">
-                                                <label htmlFor="booking-phone" className="kraken-label block text-sm font-semibold text-[#526574] mb-1.5 ml-1">{t('consultation.form.phone')}</label>
+                                                <label htmlFor="booking-phone" className="kraken-label block text-sm font-semibold text-[#50647c] mb-1.5 ml-1">{t('consultation.form.phone')}</label>
                                                 <div className="flex min-w-0 gap-2">
                                                     <select
                                                         aria-label={`${t('consultation.form.phone')} (+41, +49…)`}
                                                         autoComplete="tel-country-code"
-                                                        className="kraken-field w-24 shrink-0 px-2 py-4 bg-[#f4f8f8] border-2 border-[#dce6e8] rounded-[1.25rem] focus:border-[#087f73] outline-none font-semibold text-base shadow-sm cursor-pointer"
+                                                        className="kraken-field w-24 shrink-0 px-2 py-4 bg-[#f3f7fc] border-2 border-[#dce5f0] rounded-[1.25rem] focus:border-[#1464ad] outline-none font-semibold text-base shadow-sm cursor-pointer"
                                                         value={phonePrefix}
                                                         onChange={(e) => setPhonePrefix(e.target.value)}
                                                     >
@@ -8389,7 +8389,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         type="tel"
                                                         autoComplete="tel-national"
                                                         placeholder="77 000 00 00"
-                                                        className={`kraken-field min-w-0 w-0 flex-1 p-4 bg-white border-2 rounded-[1.25rem] focus:border-[#087f73] focus:bg-[#eef7f5] outline-none font-semibold text-base transition-all duration-300 shadow-sm ${errors.phone ? 'border-red-500 bg-red-50 shake' : 'border-[#dce6e8]'}`}
+                                                        className={`kraken-field min-w-0 w-0 flex-1 p-4 bg-white border-2 rounded-[1.25rem] focus:border-[#1464ad] focus:bg-[#edf4fd] outline-none font-semibold text-base transition-all duration-300 shadow-sm ${errors.phone ? 'border-red-500 bg-red-50 shake' : 'border-[#dce5f0]'}`}
                                                         value={phone}
                                                         onChange={(e) => setPhone(e.target.value)}
                                                     />
@@ -8401,29 +8401,29 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                 </div>
 
                                 {/* Schedule Section */}
-                                <div className="bg-[#f4f8f8] p-6 rounded-3xl border border-[#dce6e8] space-y-6">
+                                <div className="bg-[#f3f7fc] p-6 rounded-3xl border border-[#dce5f0] space-y-6">
                                     <div className="flex items-center gap-2">
-                                        <div className="p-2 bg-white rounded-lg text-[#087f73] shadow-sm"><CalendarIcon className="w-5 h-5"/></div>
-                                        <h4 className="text-lg font-semibold text-[#082b45] ">{t('consultation.form.preferredSchedule')}</h4>
+                                        <div className="p-2 bg-white rounded-lg text-[#1464ad] shadow-sm"><CalendarIcon className="w-5 h-5"/></div>
+                                        <h4 className="text-lg font-semibold text-[#032b59] ">{t('consultation.form.preferredSchedule')}</h4>
                                     </div>
                                     <div className="grid grid-cols-1 gap-6">
-                                        <div className={`bg-white p-2 rounded-2xl shadow-sm border-2 ${errors.selectedDate ? 'border-red-500' : 'border-[#dce6e8]'}`}>
-                                            <label className="kraken-label block text-sm font-semibold text-[#526574] mb-2.5 ml-2 mt-2">{t('consultation.form.pickDate')}</label>
+                                        <div className={`bg-white p-2 rounded-2xl shadow-sm border-2 ${errors.selectedDate ? 'border-red-500' : 'border-[#dce5f0]'}`}>
+                                            <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-2.5 ml-2 mt-2">{t('consultation.form.pickDate')}</label>
                                             <BookingCalendar selectedDate={selectedDate} onChange={setSelectedDate} hasError={!!errors.selectedDate} />
                                             {errors.selectedDate && <span className="text-sm text-red-500 font-semibold mt-1 block ml-2">{errors.selectedDate}</span>}
                                         </div>
                                         <div>
-                                            <label className="kraken-label block text-sm font-semibold text-[#526574] mb-2.5 ml-1">{t('consultation.form.arrivalTime')}</label>
-                                            <div className={`bg-white p-4 rounded-2xl shadow-sm border-2 ${errors.selectedTime ? 'border-red-500' : 'border-[#dce6e8]'}`}>
+                                            <label className="kraken-label block text-sm font-semibold text-[#50647c] mb-2.5 ml-1">{t('consultation.form.arrivalTime')}</label>
+                                            <div className={`bg-white p-4 rounded-2xl shadow-sm border-2 ${errors.selectedTime ? 'border-red-500' : 'border-[#dce5f0]'}`}>
                                                 <TimePicker selectedTime={selectedTime} onChange={setSelectedTime} hasError={!!errors.selectedTime} />
                                                 {errors.selectedTime && <span className="text-sm text-red-500 font-semibold mt-1 block ml-2">{errors.selectedTime}</span>}
                                                 {selectedTime && totalDuration > 0 && (
                                                         <div className="mt-4 pt-4 border-t border-gray-50 flex flex-wrap gap-2 justify-between items-center animate-fade-in">
-                                                        <span className="text-sm font-semibold text-[#526574] ">{t('consultation.form.estWindow')}</span>
-                                                        <div className="flex gap-2.5 items-center font-semibold text-[#082b45] text-sm">
-                                                            <span className="bg-[#087f73] text-white px-2 py-0.5 rounded-lg">{selectedTime}</span>
-                                                            <span className="text-[#526574]">→</span>
-                                                            <span className="bg-[#082b45] text-white px-2 py-0.5 rounded-lg">{calculateEndTime(selectedTime, totalDuration)}</span>
+                                                        <span className="text-sm font-semibold text-[#50647c] ">{t('consultation.form.estWindow')}</span>
+                                                        <div className="flex gap-2.5 items-center font-semibold text-[#032b59] text-sm">
+                                                            <span className="bg-[#1464ad] text-white px-2 py-0.5 rounded-lg">{selectedTime}</span>
+                                                            <span className="text-[#50647c]">→</span>
+                                                            <span className="bg-[#032b59] text-white px-2 py-0.5 rounded-lg">{calculateEndTime(selectedTime, totalDuration)}</span>
                                                         </div>
                                                     </div>
                                                 )}
@@ -8439,12 +8439,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             <div className="space-y-4 animate-fade-in">
                                 <div>
                                     <div className="flex items-center gap-2 mb-1">
-                                        <div className="p-2 bg-[#eef7f5] rounded-lg text-[#087f73]"><BoltIcon className="w-5 h-5" /></div>
-                                        <h4 className="text-lg font-semibold text-[#082b45] ">
+                                        <div className="p-2 bg-[#edf4fd] rounded-lg text-[#1464ad]"><BoltIcon className="w-5 h-5" /></div>
+                                        <h4 className="text-lg font-semibold text-[#032b59] ">
                                             {onlyComics ? (language === 'es' ? 'Método de Pago Completo' : 'Full Payment Method') : t('consultation.booking.title')}
                                         </h4>
                                     </div>
-                                    <p className="ml-11 text-base text-[#526574] font-semibold ">
+                                    <p className="ml-11 text-base text-[#50647c] font-semibold ">
                                         {onlyComics ? (language === 'es' ? 'Pago único directo del 100% de tu pedido (sin depósitos ni cuotas parciales)' : 'Single direct 100% full payment for your order (no partial deposits or fees)') : t('consultation.booking.subtitle')}
                                     </p>
                                 </div>
@@ -8452,66 +8452,66 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     {onlyComics ? (
                                         <div
                                             onClick={() => setBookingMode('direct')}
-                                            className="p-6 rounded-[2rem] border-2 border-emerald-500 bg-emerald-50/50 shadow-sm transition-all cursor-pointer relative overflow-hidden"
+                                            className="p-6 rounded-[2rem] border-2 border-blue-500 bg-blue-50/50 shadow-sm transition-all cursor-pointer relative overflow-hidden"
                                         >
                                             <div className="flex items-start gap-4 relative z-10 w-full">
-                                                <div className="w-14 h-14 rounded-2xl flex flex-shrink-0 items-center justify-center text-3xl shadow-sm bg-emerald-500 text-[#082b45]">
+                                                <div className="w-14 h-14 rounded-2xl flex flex-shrink-0 items-center justify-center text-3xl shadow-sm bg-blue-500 text-[#032b59]">
                                                     📦
                                                 </div>
                                                 <div className="flex-1 min-w-0 text-left">
                                                     <div className="flex justify-between items-start mb-1 gap-2">
-                                                        <h5 className="font-semibold text-base truncate text-emerald-700">
+                                                        <h5 className="font-semibold text-base truncate text-blue-700">
                                                             {language === 'es' ? 'PAGO COMPLETO (100%)' : 'FULL PAYMENT (100%)'}
                                                         </h5>
-                                                        <span className="bg-emerald-500 text-[#082b45] text-sm font-semibold px-2 py-0.5 rounded-lg shrink-0">
+                                                        <span className="bg-blue-500 text-[#032b59] text-sm font-semibold px-2 py-0.5 rounded-lg shrink-0">
                                                             {language === 'es' ? 'CÓMICS + ENVÍO' : 'COMICS + SHIPPING'}
                                                         </span>
                                                     </div>
-                                                    <p className="text-base text-[#526574] font-semibold leading-relaxed">
+                                                    <p className="text-base text-[#50647c] font-semibold leading-relaxed">
                                                         {language === 'es'
                                                           ? 'Pago completo del total de tu pedido de cómics (100%). Sin depósitos parciales ni costes adicionales. Confirmación inmediata y envío postal a tu dirección.'
                                                           : 'Full payment for your comic book order (100%). No partial deposits or hidden fees. Immediate confirmation and postal shipping to your address.'}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className="absolute top-4 right-4 text-emerald-500"><CheckIcon className="w-6 h-6" /></div>
+                                            <div className="absolute top-4 right-4 text-blue-500"><CheckIcon className="w-6 h-6" /></div>
                                         </div>
                                     ) : (
                                         <>
                                             {/* Option A: Express Binding */}
                                             <div
                                                 onClick={() => setBookingMode('direct')}
-                                                className={`p-6 rounded-[2rem] border-2 transition-all cursor-pointer relative overflow-hidden ${bookingMode === 'direct' ? 'border-[#087f73] bg-[#eef7f5] shadow-sm ' : errors.bookingMode ? 'border-red-500 bg-red-50/20' : 'border-[#dce6e8] hover:border-[#c8dedb] bg-white'}`}
+                                                className={`p-6 rounded-[2rem] border-2 transition-all cursor-pointer relative overflow-hidden ${bookingMode === 'direct' ? 'border-[#1464ad] bg-[#edf4fd] shadow-sm ' : errors.bookingMode ? 'border-red-500 bg-red-50/20' : 'border-[#dce5f0] hover:border-[#c9dbef] bg-white'}`}
                                             >
                                                 <div className="flex items-start gap-4 relative z-10 w-full">
-                                                    <div className={`w-14 h-14 rounded-2xl flex flex-shrink-0 items-center justify-center text-3xl shadow-sm transition-all ${bookingMode === 'direct' ? 'bg-[#087f73] text-white' : 'bg-[#f4f8f8] text-[#526574]'}`}>🚀</div>
+                                                    <div className={`w-14 h-14 rounded-2xl flex flex-shrink-0 items-center justify-center text-3xl shadow-sm transition-all ${bookingMode === 'direct' ? 'bg-[#1464ad] text-white' : 'bg-[#f3f7fc] text-[#50647c]'}`}>🚀</div>
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex justify-between items-start mb-1 gap-2">
-                                                            <h5 className={`font-semibold text-base truncate ${bookingMode === 'direct' ? 'text-[#087f73]' : 'text-[#082b45]'}`}>{t('consultation.booking.optionA.title')}</h5>
-                                                            <span className="bg-[#087f73] text-white text-sm font-semibold px-2 py-0.5 rounded-lg shrink-0">{t('consultation.booking.optionA.subtitle')}</span>
+                                                            <h5 className={`font-semibold text-base truncate ${bookingMode === 'direct' ? 'text-[#1464ad]' : 'text-[#032b59]'}`}>{t('consultation.booking.optionA.title')}</h5>
+                                                            <span className="bg-[#1464ad] text-white text-sm font-semibold px-2 py-0.5 rounded-lg shrink-0">{t('consultation.booking.optionA.subtitle')}</span>
                                                         </div>
-                                                        <p className="text-base text-[#526574] font-semibold leading-relaxed">{t('consultation.booking.optionA.desc')}</p>
+                                                        <p className="text-base text-[#50647c] font-semibold leading-relaxed">{t('consultation.booking.optionA.desc')}</p>
                                                     </div>
                                                 </div>
-                                                {bookingMode === 'direct' && <div className="absolute top-4 right-4 text-[#087f73]"><CheckIcon className="w-6 h-6" /></div>}
+                                                {bookingMode === 'direct' && <div className="absolute top-4 right-4 text-[#1464ad]"><CheckIcon className="w-6 h-6" /></div>}
                                             </div>
 
                                             {/* Option B: Study & Validation */}
                                             <div
                                                 onClick={() => setBookingMode('validate')}
-                                                className={`p-6 rounded-[2rem] border-2 transition-all cursor-pointer relative overflow-hidden ${bookingMode === 'validate' ? 'border-emerald-500 bg-emerald-50/50 shadow-sm ' : errors.bookingMode ? 'border-red-500 bg-red-50/20' : 'border-[#dce6e8] hover:border-emerald-200 bg-white'}`}
+                                                className={`p-6 rounded-[2rem] border-2 transition-all cursor-pointer relative overflow-hidden ${bookingMode === 'validate' ? 'border-blue-500 bg-blue-50/50 shadow-sm ' : errors.bookingMode ? 'border-red-500 bg-red-50/20' : 'border-[#dce5f0] hover:border-blue-200 bg-white'}`}
                                             >
                                                 <div className="flex items-start gap-4 relative z-10 w-full">
-                                                    <div className={`w-14 h-14 rounded-2xl flex flex-shrink-0 items-center justify-center text-3xl shadow-sm transition-all ${bookingMode === 'validate' ? 'bg-emerald-500 text-white' : 'bg-[#f4f8f8] text-[#526574]'}`}>🔍</div>
+                                                    <div className={`w-14 h-14 rounded-2xl flex flex-shrink-0 items-center justify-center text-3xl shadow-sm transition-all ${bookingMode === 'validate' ? 'bg-blue-500 text-white' : 'bg-[#f3f7fc] text-[#50647c]'}`}>🔍</div>
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex justify-between items-start mb-1 gap-2">
-                                                            <h5 className={`font-semibold text-base truncate ${bookingMode === 'validate' ? 'text-emerald-600' : 'text-[#082b45]'}`}>{t('consultation.booking.optionB.title')}</h5>
-                                                            <span className="bg-emerald-500 text-white text-sm font-semibold px-2 py-0.5 rounded-lg shrink-0">{t('consultation.booking.optionB.subtitle')}</span>
+                                                            <h5 className={`font-semibold text-base truncate ${bookingMode === 'validate' ? 'text-blue-600' : 'text-[#032b59]'}`}>{t('consultation.booking.optionB.title')}</h5>
+                                                            <span className="bg-blue-500 text-white text-sm font-semibold px-2 py-0.5 rounded-lg shrink-0">{t('consultation.booking.optionB.subtitle')}</span>
                                                         </div>
-                                                        <p className="text-base text-[#526574] font-semibold leading-relaxed">{t('consultation.booking.optionB.desc')}</p>
+                                                        <p className="text-base text-[#50647c] font-semibold leading-relaxed">{t('consultation.booking.optionB.desc')}</p>
                                                     </div>
                                                 </div>
-                                                {bookingMode === 'validate' && <div className="absolute top-4 right-4 text-emerald-500"><CheckIcon className="w-6 h-6" /></div>}
+                                                {bookingMode === 'validate' && <div className="absolute top-4 right-4 text-blue-500"><CheckIcon className="w-6 h-6" /></div>}
                                             </div>
                                         </>
                                     )}
@@ -8524,15 +8524,15 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         {currentStep === 3 && (
                             <div className="space-y-4 animate-fade-in">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <div className="p-2 bg-[#eef7f5] rounded-lg text-[#087f73]"><MapPinIcon className="w-5 h-5" /></div>
-                                    <h4 className="text-lg font-semibold text-[#082b45] ">{t('consultation.form.verifiedLocation')}</h4>
+                                    <div className="p-2 bg-[#edf4fd] rounded-lg text-[#1464ad]"><MapPinIcon className="w-5 h-5" /></div>
+                                    <h4 className="text-lg font-semibold text-[#032b59] ">{t('consultation.form.verifiedLocation')}</h4>
                                 </div>
-                                <div className="bg-[#f4f8f8] border border-[#dce6e8] p-6 rounded-[2rem] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 shadow-sm">
+                                <div className="bg-[#f3f7fc] border border-[#dce5f0] p-6 rounded-[2rem] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 shadow-sm">
                                     <div className="text-left">
-                                        <p className="text-base text-[#526574] font-semibold leading-none mb-1">Dirección Confirmada / Verified Location</p>
-                                        <p className="font-semibold text-[#082b45] text-base">{address}</p>
-                                        <p className="font-semibold text-[#526574] text-base mt-1">{postcode} {city}</p>
-                                        <span className="inline-block mt-2 font-semibold text-sm text-[#087f73] bg-blue-100 px-2 py-0.5 rounded">
+                                        <p className="text-base text-[#50647c] font-semibold leading-none mb-1">Dirección Confirmada / Verified Location</p>
+                                        <p className="font-semibold text-[#032b59] text-base">{address}</p>
+                                        <p className="font-semibold text-[#50647c] text-base mt-1">{postcode} {city}</p>
+                                        <span className="inline-block mt-2 font-semibold text-sm text-[#1464ad] bg-blue-100 px-2 py-0.5 rounded">
                                             Zona / Zone: {detectZone(postcode || '8200').label}
                                         </span>
                                     </div>
@@ -8547,7 +8547,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                 }
                                             }, 100);
                                         }}
-                                        className="kraken-control min-h-11 min-w-11 px-5 py-3 bg-white hover:bg-subtle hover:text-[#087f73] border border-[#dce6e8] hover:border-[#087f73] rounded-xl font-semibold text-base transition-all shadow-xs cursor-pointer shrink-0 text-center"
+                                        className="kraken-control min-h-11 min-w-11 px-5 py-3 bg-white hover:bg-subtle hover:text-[#1464ad] border border-[#dce5f0] hover:border-[#1464ad] rounded-xl font-semibold text-base transition-all shadow-xs cursor-pointer shrink-0 text-center"
                                     >
                                         {t('consultation.form.change')}
                                     </button>
@@ -8560,14 +8560,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             <div className="space-y-4 animate-fade-in">
                                 <div className="flex items-center gap-2 mb-2">
                                     <div className="p-2 bg-amber-50 rounded-lg text-amber-600"><KeyIcon className="w-5 h-5" /></div>
-                                    <h4 className="text-lg font-semibold text-[#082b45] ">{t('consultation.form.propertyAccess')}</h4>
+                                    <h4 className="text-lg font-semibold text-[#032b59] ">{t('consultation.form.propertyAccess')}</h4>
                                 </div>
                                 <div className="grid grid-cols-1 gap-4">
                                     <div className="group relative">
-                                        <label htmlFor="consultationpage-field-33" className="kraken-label block text-sm font-semibold text-[#526574] mb-1.5 ml-1">{t('consultation.form.propertyAccess')}</label>
+                                        <label htmlFor="consultationpage-field-33" className="kraken-label block text-sm font-semibold text-[#50647c] mb-1.5 ml-1">{t('consultation.form.propertyAccess')}</label>
                                         <div className="relative">
                                             <select id="consultationpage-field-33"
-                                                className="kraken-field w-full p-4 bg-white border-2 border-[#dce6e8] rounded-[1.25rem] focus:border-[#087f73] focus:bg-[#eef7f5] outline-none font-semibold text-base transition-all duration-300 shadow-sm appearance-none cursor-pointer"
+                                                className="kraken-field w-full p-4 bg-white border-2 border-[#dce5f0] rounded-[1.25rem] focus:border-[#1464ad] focus:bg-[#edf4fd] outline-none font-semibold text-base transition-all duration-300 shadow-sm appearance-none cursor-pointer"
                                                 value={accessMethod}
                                                 onChange={(e) => setAccessMethod(e.target.value)}
                                             >
@@ -8577,15 +8577,15 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                 <option value="Access code">{mt("Access code", "Código de acceso", "Zugangscode", "Code d'accès", "Codice di accesso", "Código de acesso")}</option>
                                                 <option value="Other">{mt("Other", "Otro", "Sonstiges", "Autre", "Altro", "Outro")}</option>
                                             </select>
-                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#526574]">
+                                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#50647c]">
                                                 <ChevronDownIcon className="w-5 h-5" />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="group">
-                                        <label htmlFor="consultationpage-field-34" className="kraken-label block text-sm font-semibold text-[#526574] mb-1.5 ml-1">{t('consultation.form.specialNotes')}</label>
+                                        <label htmlFor="consultationpage-field-34" className="kraken-label block text-sm font-semibold text-[#50647c] mb-1.5 ml-1">{t('consultation.form.specialNotes')}</label>
                                         <textarea id="consultationpage-field-34"
-                                            className="kraken-field w-full p-4 bg-white border-2 border-[#dce6e8] rounded-[1.25rem] focus:border-[#087f73] focus:bg-[#eef7f5] outline-none font-semibold text-base transition-all duration-300 shadow-sm min-h-[120px]"
+                                            className="kraken-field w-full p-4 bg-white border-2 border-[#dce5f0] rounded-[1.25rem] focus:border-[#1464ad] focus:bg-[#edf4fd] outline-none font-semibold text-base transition-all duration-300 shadow-sm min-h-[120px]"
                                             placeholder={t('consultation.form.placeholderNotes')}
                                             value={notes}
                                             onChange={(e) => setNotes(e.target.value)}
@@ -8599,11 +8599,11 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                         {currentStep === 5 && (
                             <div className="space-y-6 animate-fade-in">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <div className="p-2 bg-emerald-50 rounded-lg text-emerald-600"><BoltIcon className="w-5 h-5" /></div>
-                                    <h4 className="text-lg font-semibold text-[#082b45] ">{t('payment.summary')}</h4>
+                                    <div className="p-2 bg-blue-50 rounded-lg text-blue-600"><BoltIcon className="w-5 h-5" /></div>
+                                    <h4 className="text-lg font-semibold text-[#032b59] ">{t('payment.summary')}</h4>
                                 </div>
 
-                                <div className={`kraken-panel bg-[#eef7f5] text-[#082b45] p-4 sm:p-6 rounded-2xl border border-[#c8dedb] relative overflow-hidden transition-all duration-300 ${errors.terms ? 'border-4 border-red-500' : ''}`}>
+                                <div className={`kraken-panel bg-[#edf4fd] text-[#032b59] p-4 sm:p-6 rounded-2xl border border-[#c9dbef] relative overflow-hidden transition-all duration-300 ${errors.terms ? 'border-4 border-red-500' : ''}`}>
                                     <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full -mr-24 -mt-24 pointer-events-none"></div>
 
                                     <div className="flex justify-between items-center mb-6">
@@ -8614,30 +8614,30 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             <button type="button" aria-label="Pricing breakdown overview" className="kraken-control min-h-11 min-w-11 text-blue-300/80 hover:text-white transition-colors cursor-help focus:outline-none">
                                                 <InfoIcon className="w-3.5 h-3.5" />
                                             </button>
-                                            <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block group-focus-within:block w-70 bg-[#082b45] text-white text-sm p-3 rounded-2xl shadow-sm border border-slate-700/60 leading-normal z-50">
-                                                <div className="absolute left-4 top-full w-2.5 h-2.5 bg-[#082b45] rotate-45 -translate-y-1.5 border-r border-b border-slate-700/60"></div>
+                                            <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block group-focus-within:block w-70 bg-[#032b59] text-white text-sm p-3 rounded-2xl shadow-sm border border-slate-700/60 leading-normal z-50">
+                                                <div className="absolute left-4 top-full w-2.5 h-2.5 bg-[#032b59] rotate-45 -translate-y-1.5 border-r border-b border-slate-700/60"></div>
                                                 {t('consultation.tooltip.estimateExplain')}
                                             </div>
                                         </div>
                                         <span className="font-semibold text-lg">{cart.length > 0 ? `CHF ${grandTotal.toFixed(2)}` : '—'}</span>
                                     </div>
 
-                                    <div className="bg-white p-6 rounded-3xl mb-8 border-2 border-[#087f73] shadow-md ">
-                                        <div className="flex justify-between items-center mb-4 pb-4 border-b border-[#dce6e8]">
-                                            <span className="text-sm font-semibold text-[#082b45]/70">
+                                    <div className="bg-white p-6 rounded-3xl mb-8 border-2 border-[#1464ad] shadow-md ">
+                                        <div className="flex justify-between items-center mb-4 pb-4 border-b border-[#dce5f0]">
+                                            <span className="text-sm font-semibold text-[#032b59]/70">
                                                 {onlyComics ? (language === 'es' ? 'PAGO COMPLETO AHORA (100%)' : 'FULL PAYMENT DUE NOW (100%)') : t('consultation.booking.dueNow')}
                                             </span>
-                                            <span className="text-3xl font-semibold text-emerald-600">CHF {calculateDeposit().toFixed(2)}</span>
+                                            <span className="text-3xl font-semibold text-blue-600">CHF {calculateDeposit().toFixed(2)}</span>
                                         </div>
                                         {/* Under-payment microcopy bullets to reassure checkout */}
                                         <div className="space-y-2.5 text-left">
-                                            <p className="text-base text-[#526574] font-semibold flex items-center gap-1.5 leading-snug">
+                                            <p className="text-base text-[#50647c] font-semibold flex items-center gap-1.5 leading-snug">
                                                 <span>{t('consultation.booking.noCommitment')}</span>
                                             </p>
-                                            <p className="text-base text-[#526574] font-semibold flex items-center gap-1.5 leading-snug">
+                                            <p className="text-base text-[#50647c] font-semibold flex items-center gap-1.5 leading-snug">
                                                 <span>{t('consultation.booking.verifiedSecure')}</span>
                                             </p>
-                                            <p className="text-base text-[#526574] font-semibold flex items-center gap-1.5 leading-snug">
+                                            <p className="text-base text-[#50647c] font-semibold flex items-center gap-1.5 leading-snug">
                                                 <span>{t('consultation.booking.satisfactionGuaranteed')}</span>
                                             </p>
                                         </div>
@@ -8645,12 +8645,12 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                     <div className="space-y-4">
                                         <div className={`flex items-start gap-4 p-5 rounded-[1.5rem] border transition-all duration-300 cursor-pointer ${errors.terms ? 'bg-red-500/20 border-red-500 shake' : 'bg-white/5 border-white/10 hover:bg-white/10'}`} onClick={() => setIsTermsAgreed(!isTermsAgreed)}>
-                                            <div className={`mt-1 w-6 h-6 rounded-lg border-2 flex flex-shrink-0 items-center justify-center transition-all ${isTermsAgreed ? 'bg-emerald-500 border-emerald-500' : 'bg-transparent border-white/20'}`}>
+                                            <div className={`mt-1 w-6 h-6 rounded-lg border-2 flex flex-shrink-0 items-center justify-center transition-all ${isTermsAgreed ? 'bg-blue-500 border-blue-500' : 'bg-transparent border-white/20'}`}>
                                                 {isTermsAgreed && <CheckIcon className="w-4 h-4 text-white" />}
                                             </div>
                                             <p className="flex-1 text-base text-blue-50 font-medium leading-relaxed">
                                                 {t('consultation.terms.confirm', { name: clientName || '...' })}
-                                                <button type="button" onClick={(e) => { e.stopPropagation(); onNavigate('terms'); }} className="kraken-control min-h-11 min-w-11 text-[#087f73] hover:underline font-semibold">
+                                                <button type="button" onClick={(e) => { e.stopPropagation(); onNavigate('terms'); }} className="kraken-control min-h-11 min-w-11 text-[#1464ad] hover:underline font-semibold">
                                                     {t('nav.terms')}
                                                 </button>.
                                                 {" "}{t('consultation.terms.gateway')}
@@ -8664,25 +8664,25 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                     </div>
 
                     {/* STICKY BOTTOM PRICER & NAVIGATION BAR */}
-                    <div className="kraken-dialog-footer sticky bottom-0 w-full p-4 sm:p-5 bg-white border-t border-[#dce6e8] z-30 shrink-0">
+                    <div className="kraken-dialog-footer sticky bottom-0 w-full p-4 sm:p-5 bg-white border-t border-[#dce5f0] z-30 shrink-0">
                         <div className="flex flex-col gap-3">
                             <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
                                 {/* Live Pricing */}
                                 <div className="flex items-center gap-4">
                                     <div className="text-left">
-                                        <p className="text-base font-semibold text-[#526574] leading-none mb-1">
+                                        <p className="text-base font-semibold text-[#50647c] leading-none mb-1">
                                             {t('consultation.estimatedProjectTotal')}
                                         </p>
-                                        <p className="text-base font-semibold text-[#082b45]">
+                                        <p className="text-base font-semibold text-[#032b59]">
                                             {cart.length > 0 ? `CHF ${grandTotal.toFixed(2)}` : '—'}
                                         </p>
                                     </div>
                                     <div className="w-px h-8 bg-gray-200"></div>
                                     <div className="text-left">
-                                        <p className="text-base font-semibold text-[#087f73] leading-none mb-1">
+                                        <p className="text-base font-semibold text-[#1464ad] leading-none mb-1">
                                             {onlyComics ? (language === 'es' ? 'Pago completo' : 'Full payment') : t('consultation.booking.dueNow')}
                                         </p>
-                                        <p className="text-lg font-semibold text-[#087f73]">
+                                        <p className="text-lg font-semibold text-[#1464ad]">
                                             CHF {calculateDeposit().toFixed(2)}
                                         </p>
                                     </div>
@@ -8694,7 +8694,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         <button
                                             type="button"
                                             onClick={() => setCurrentStep(prev => prev - 1)}
-                                            className="kraken-control min-h-11 min-w-11 px-5 py-3 cursor-pointer bg-white hover:bg-[#f4f8f8] text-[#526574] font-semibold border border-[#dce6e8] rounded-2xl text-base transition-all transform shadow-sm"
+                                            className="kraken-control min-h-11 min-w-11 px-5 py-3 cursor-pointer bg-white hover:bg-[#f3f7fc] text-[#50647c] font-semibold border border-[#dce5f0] rounded-2xl text-base transition-all transform shadow-sm"
                                         >
                                             ← {t('consultation.form.back')}
                                         </button>
@@ -8704,7 +8704,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         <button
                                             type="button"
                                             onClick={handleNextStep}
-                                            className="kraken-control min-h-11 flex-1 sm:flex-initial px-8 py-3 bg-[#087f73] hover:bg-[#087f73] text-white font-semibold rounded-2xl text-base transition-all transform shadow-md "
+                                            className="kraken-control min-h-11 flex-1 sm:flex-initial px-8 py-3 bg-[#1464ad] hover:bg-[#1464ad] text-white font-semibold rounded-2xl text-base transition-all transform shadow-md "
                                         >
                                             {t('consultation.form.next')} →
                                         </button>
@@ -8712,7 +8712,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                         <button
                                             type="submit"
                                             disabled={isSubmitting}
-                                            className="kraken-control min-h-11 flex-1 sm:flex-initial px-8 py-3 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-[#082b45] font-semibold rounded-2xl text-base transition-all transform shadow-md flex items-center justify-center gap-2"
+                                            className="kraken-control min-h-11 flex-1 sm:flex-initial px-8 py-3 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 text-[#032b59] font-semibold rounded-2xl text-base transition-all transform shadow-md flex items-center justify-center gap-2"
                                         >
                                             {isSubmitting ? (
                                                 <>

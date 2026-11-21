@@ -661,60 +661,60 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <main className="kraken-portal min-h-screen pt-6 sm:pt-10 pb-12 font-sans text-[#082b45] relative bg-[#f4f8f8]">
+    <main className="kraken-portal min-h-screen pt-6 sm:pt-10 pb-12 font-sans text-[#032b59] relative bg-[#f3f7fc]">
       {/* Main Container */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 relative min-w-0 [overflow-wrap:anywhere]">
 
         {/* Portal heading and loaded-record summaries */}
-        <section className="kraken-panel kraken-portal-header mb-6 rounded-2xl border border-[#dce6e8] bg-white p-4 sm:p-6 shadow-sm" aria-labelledby="portal-heading">
+        <section className="kraken-panel kraken-portal-header mb-6 rounded-2xl border border-[#dce5f0] bg-white p-4 sm:p-6 shadow-sm" aria-labelledby="portal-heading">
           <div className="mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 min-w-0">
             <div className="min-w-0">
-            <p className="mb-1 text-base font-semibold text-[#087f73]">{isStaff ? dt.staffConsole.replace(/^[^\p{L}]+/u, '') : heading.subtitle}</p>
-            <h1 id="portal-heading" className="text-2xl sm:text-3xl font-semibold text-[#082b45] break-words">{isStaff ? dt.activeTasks : heading.title}</h1>
-            <p className="mt-2 text-base text-[#526574] break-words">{dt.welcomeBack} {user?.name || ''}</p>
+            <p className="mb-1 text-base font-semibold text-[#1464ad]">{isStaff ? dt.staffConsole.replace(/^[^\p{L}]+/u, '') : heading.subtitle}</p>
+            <h1 id="portal-heading" className="text-2xl sm:text-3xl font-semibold text-[#032b59] break-words">{isStaff ? dt.activeTasks : heading.title}</h1>
+            <p className="mt-2 text-base text-[#50647c] break-words">{dt.welcomeBack} {user?.name || ''}</p>
             </div>
-            <button type="button" onClick={handleLogout} disabled={loggingOut} aria-busy={loggingOut} className="kraken-control min-h-11 min-w-11 min-h-11 px-4 py-2 self-start sm:self-center shrink-0 rounded-xl border border-[#dce6e8] bg-white text-base font-semibold text-[#526574] hover:bg-[#f4f8f8] disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-blue-600">{loggingOut ? heading.loggingOut : heading.logout}</button>
+            <button type="button" onClick={handleLogout} disabled={loggingOut} aria-busy={loggingOut} className="kraken-control min-h-11 min-w-11 min-h-11 px-4 py-2 self-start sm:self-center shrink-0 rounded-xl border border-[#dce5f0] bg-white text-base font-semibold text-[#50647c] hover:bg-[#f3f7fc] disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-blue-600">{loggingOut ? heading.loggingOut : heading.logout}</button>
           </div>
           {logoutError && <p role="alert" className="mb-4 text-base font-semibold text-red-700">{heading.logoutError}</p>}
           <dl className="kraken-metrics grid grid-cols-1 md:grid-cols-3 gap-3 min-w-0">
-            <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-[#dce6e8] bg-[#f4f8f8] p-3 sm:p-4">
-              <dt className="min-w-0 text-sm font-medium leading-5 text-[#526574] [overflow-wrap:normal]">{isStaff ? dt.activeTasks : dt.activeServices}</dt>
-              <dd className="shrink-0 text-xl font-semibold tabular-nums text-[#082b45]">{activeJobs}</dd>
+            <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-[#dce5f0] bg-[#f3f7fc] p-3 sm:p-4">
+              <dt className="min-w-0 text-sm font-medium leading-5 text-[#50647c] [overflow-wrap:normal]">{isStaff ? dt.activeTasks : dt.activeServices}</dt>
+              <dd className="shrink-0 text-xl font-semibold tabular-nums text-[#032b59]">{activeJobs}</dd>
             </div>
-            <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-[#dce6e8] bg-[#f4f8f8] p-3 sm:p-4">
-              <dt className="min-w-0 text-sm font-medium leading-5 text-[#526574] [overflow-wrap:normal]">{dt.highPriority}</dt>
-              <dd className="shrink-0 text-xl font-semibold tabular-nums text-[#082b45]">{highPriorityCount}</dd>
+            <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-[#dce5f0] bg-[#f3f7fc] p-3 sm:p-4">
+              <dt className="min-w-0 text-sm font-medium leading-5 text-[#50647c] [overflow-wrap:normal]">{dt.highPriority}</dt>
+              <dd className="shrink-0 text-xl font-semibold tabular-nums text-[#032b59]">{highPriorityCount}</dd>
             </div>
-            <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-[#dce6e8] bg-[#f4f8f8] p-3 sm:p-4">
-              <dt className="min-w-0 text-sm font-medium leading-5 text-[#526574] [overflow-wrap:normal]">{isStaff ? dt.estRevenue : dt.estBudget}</dt>
-              <dd className="min-w-0 max-w-[65%] text-right text-base sm:text-lg font-semibold tabular-nums text-emerald-700 [overflow-wrap:normal]">CHF {totalRevenue.toLocaleString()}</dd>
+            <div className="flex items-center justify-between gap-3 min-w-0 rounded-xl border border-[#dce5f0] bg-[#f3f7fc] p-3 sm:p-4">
+              <dt className="min-w-0 text-sm font-medium leading-5 text-[#50647c] [overflow-wrap:normal]">{isStaff ? dt.estRevenue : dt.estBudget}</dt>
+              <dd className="min-w-0 max-w-[65%] text-right text-base sm:text-lg font-semibold tabular-nums text-blue-700 [overflow-wrap:normal]">CHF {totalRevenue.toLocaleString()}</dd>
             </div>
           </dl>
         </section>
 
-        {actionAlert && <div role="alert" className="sticky top-24 z-30 mb-5 flex items-start justify-between gap-3 rounded-2xl border border-[#b9d9d2] bg-white p-4 shadow-md"><p className="min-w-0 text-base font-medium text-[#082b45]">{actionAlert}</p><button type="button" onClick={() => setActionAlert(null)} aria-label={portalActionText(language, 'close')} className="kraken-control inline-flex h-11 w-11 min-h-11 min-w-11 shrink-0 items-center justify-center rounded-xl text-[#526574] hover:bg-[#f4f8f8]"><X aria-hidden="true" className="h-5 w-5" /></button></div>}
+        {actionAlert && <div role="alert" className="sticky top-24 z-30 mb-5 flex items-start justify-between gap-3 rounded-2xl border border-[#b9d9d2] bg-white p-4 shadow-md"><p className="min-w-0 text-base font-medium text-[#032b59]">{actionAlert}</p><button type="button" onClick={() => setActionAlert(null)} aria-label={portalActionText(language, 'close')} className="kraken-control inline-flex h-11 w-11 min-h-11 min-w-11 shrink-0 items-center justify-center rounded-xl text-[#50647c] hover:bg-[#f3f7fc]"><X aria-hidden="true" className="h-5 w-5" /></button></div>}
 
-        {!user?.emailVerified && <div className="bg-[#eef7f5] border border-[#c8dedb] rounded-2xl p-5 mb-6 text-sm">
-          <p>{pt('verifyHint')}</p><div className="flex flex-wrap gap-4 mt-3 font-semibold text-[#087f73]">
+        {!user?.emailVerified && <div className="bg-[#edf4fd] border border-[#c9dbef] rounded-2xl p-5 mb-6 text-sm">
+          <p>{pt('verifyHint')}</p><div className="flex flex-wrap gap-4 mt-3 font-semibold text-[#1464ad]">
             <button type="button" onClick={async () => { try { await resendVerification(); setActionAlert(pt('verificationSent')); } catch { setActionAlert(pt('saveError')); } }}>{pt('verify')}</button>
             <button type="button" onClick={async () => { try { await refreshUser(); } catch { setActionAlert(pt('loadError')); } }}>{pt('refresh')}</button>
           </div></div>}
-        <div className="flex flex-wrap items-center justify-between gap-3 bg-white border border-[#dce6e8] rounded-2xl p-4 mb-5">
-          <p className="text-base text-[#526574]">{pt('loadedOnly')}</p>
-          <button type="button" className="kraken-control min-h-11 min-w-11 font-semibold text-[#087f73]" onClick={() => fetchPortalPage(activeTab)}>{heading.refresh}</button>
+        <div className="flex flex-wrap items-center justify-between gap-3 bg-white border border-[#dce5f0] rounded-2xl p-4 mb-5">
+          <p className="text-base text-[#50647c]">{pt('loadedOnly')}</p>
+          <button type="button" className="kraken-control min-h-11 min-w-11 font-semibold text-[#1464ad]" onClick={() => fetchPortalPage(activeTab)}>{heading.refresh}</button>
         </div>
         {loadErrors[activeTab] && <div role="alert" className="bg-red-50 text-red-800 rounded-2xl p-4 mb-5">
           <p>{pt('loadError')}</p><button type="button" className="kraken-control min-h-11 min-w-11 font-semibold underline mt-2" onClick={() => fetchPortalPage(activeTab)}>{pt('retry')}</button>
         </div>}
         {/* Section Navigation Tabs */}
-        <nav aria-label={heading.subtitle} className="kraken-tabs mb-6 flex items-center gap-2 overflow-x-auto border-b border-[#dce6e8] pb-3">
+        <nav aria-label={heading.subtitle} className="kraken-tabs mb-6 flex items-center gap-2 overflow-x-auto border-b border-[#dce5f0] pb-3">
           <button
             aria-pressed={activeTab === 'requests'}
             onClick={() => setActiveTab('requests')}
             className={`kraken-control min-h-11 min-w-11 px-6 py-3 rounded-2xl font-semibold text-base transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'requests'
-                ? 'bg-[#082b45] text-white shadow-sm '
-                : 'bg-white text-[#526574] hover:bg-[#f4f8f8] border border-[#dce6e8]'
+                ? 'bg-[#032b59] text-white shadow-sm '
+                : 'bg-white text-[#50647c] hover:bg-[#f3f7fc] border border-[#dce5f0]'
             }`}
           >
             <Clipboard className="w-4 h-4" />
@@ -726,8 +726,8 @@ const Dashboard: React.FC = () => {
             onClick={() => setActiveTab('careers')}
             className={`kraken-control min-h-11 min-w-11 px-6 py-3 rounded-2xl font-semibold text-base transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'careers'
-                ? 'bg-[#082b45] text-white shadow-sm '
-                : 'bg-white text-[#526574] hover:bg-[#f4f8f8] border border-[#dce6e8]'
+                ? 'bg-[#032b59] text-white shadow-sm '
+                : 'bg-white text-[#50647c] hover:bg-[#f3f7fc] border border-[#dce5f0]'
             }`}
           >
             <FileText className="w-4 h-4" />
@@ -739,8 +739,8 @@ const Dashboard: React.FC = () => {
             onClick={() => setActiveTab('messages')}
             className={`kraken-control min-h-11 min-w-11 px-6 py-3 rounded-2xl font-semibold text-base transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'messages'
-                ? 'bg-[#082b45] text-white shadow-sm '
-                : 'bg-white text-[#526574] hover:bg-[#f4f8f8] border border-[#dce6e8]'
+                ? 'bg-[#032b59] text-white shadow-sm '
+                : 'bg-white text-[#50647c] hover:bg-[#f3f7fc] border border-[#dce5f0]'
             }`}
           >
             <Mail className="w-4 h-4" />
@@ -752,17 +752,17 @@ const Dashboard: React.FC = () => {
           /* ================= MENSAJES DE CONTACTO VIEW ================= */
           <div className="space-y-8 animate-fade-in mb-12">
             {/* Search & Filter Bar */}
-            <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 bg-white p-6 rounded-3xl border border-[#dce6e8] shadow-sm">
+            <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 bg-white p-6 rounded-3xl border border-[#dce5f0] shadow-sm">
               <div className="relative min-w-0 flex-1">
                 <input
                   type="text"
                   value={messageSearchQuery}
                   onChange={(e) => setMessageSearchQuery(e.target.value)}
                   placeholder="Buscar por nombre, email o asunto..."
-                  className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3 pl-4 pr-10 text-base font-semibold text-[#082b45] outline-none focus:border-[#087f73] focus:bg-white transition-all shadow-sm"
+                  className="kraken-field w-full bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl py-3 pl-4 pr-10 text-base font-semibold text-[#032b59] outline-none focus:border-[#1464ad] focus:bg-white transition-all shadow-sm"
                 />
                 {messageSearchQuery && (
-                  <button onClick={() => setMessageSearchQuery('')} className="kraken-control min-h-11 min-w-11 absolute right-3 top-1/2 -translate-y-1/2 text-[#526574] hover:text-[#526574]">
+                  <button onClick={() => setMessageSearchQuery('')} className="kraken-control min-h-11 min-w-11 absolute right-3 top-1/2 -translate-y-1/2 text-[#50647c] hover:text-[#50647c]">
                     <X className="w-4 h-4" />
                   </button>
                 )}
@@ -775,8 +775,8 @@ const Dashboard: React.FC = () => {
                     onClick={() => setMessageFilterStatus(st)}
                     className={`kraken-control min-h-11 min-w-11 px-4 py-2 rounded-xl text-base font-semibold transition-all cursor-pointer ${
                       messageFilterStatus === st
-                        ? 'bg-[#087f73] text-white shadow-md'
-                        : 'bg-[#f4f8f8] text-[#526574] hover:bg-slate-200'
+                        ? 'bg-[#1464ad] text-white shadow-md'
+                        : 'bg-[#f3f7fc] text-[#50647c] hover:bg-slate-200'
                     }`}
                   >
                     {st === 'all' ? 'Todos' : st === 'new' ? 'Nuevos' : 'Atendidos'}
@@ -786,15 +786,15 @@ const Dashboard: React.FC = () => {
             </div>
 
             {loadingMessages ? (
-              <div className="text-center py-12 bg-white rounded-3xl border border-[#dce6e8] shadow-sm">
-                <div className="w-8 h-8 border-4 border-[#087f73] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-base font-semibold text-[#526574]">Cargando mensajes de contacto...</p>
+              <div className="text-center py-12 bg-white rounded-3xl border border-[#dce5f0] shadow-sm">
+                <div className="w-8 h-8 border-4 border-[#1464ad] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-base font-semibold text-[#50647c]">Cargando mensajes de contacto...</p>
               </div>
             ) : contactMessages.length === 0 ? (
-              <div className="text-center py-16 bg-white rounded-3xl border border-[#dce6e8] shadow-sm p-8">
-                <Mail className="w-12 h-12 text-[#526574] mx-auto mb-3" />
-                <h3 className="text-lg font-semibold text-[#082b45]">{loadErrors.messages ? pt('loadError') : pt('messages')}</h3>
-                <p className="text-base text-[#526574] mt-1">Los mensajes enviados desde el formulario de contacto aparecerán aquí.</p>
+              <div className="text-center py-16 bg-white rounded-3xl border border-[#dce5f0] shadow-sm p-8">
+                <Mail className="w-12 h-12 text-[#50647c] mx-auto mb-3" />
+                <h3 className="text-lg font-semibold text-[#032b59]">{loadErrors.messages ? pt('loadError') : pt('messages')}</h3>
+                <p className="text-base text-[#50647c] mt-1">Los mensajes enviados desde el formulario de contacto aparecerán aquí.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-4">
@@ -809,29 +809,29 @@ const Dashboard: React.FC = () => {
                     <div
                       key={msg.id}
                       className={`p-6 rounded-3xl border transition-all bg-white shadow-sm hover:shadow-md ${
-                        msg.status === 'new' ? 'border-amber-300 bg-amber-50/20' : 'border-[#dce6e8]'
+                        msg.status === 'new' ? 'border-amber-300 bg-amber-50/20' : 'border-[#dce5f0]'
                       }`}
                     >
-                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-[#dce6e8]">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-[#dce5f0]">
                         <div className="flex items-center gap-3">
-                          <div className={`p-3 rounded-2xl ${msg.status === 'new' ? 'bg-amber-100 text-amber-700' : 'bg-[#f4f8f8] text-[#526574]'}`}>
+                          <div className={`p-3 rounded-2xl ${msg.status === 'new' ? 'bg-amber-100 text-amber-700' : 'bg-[#f3f7fc] text-[#50647c]'}`}>
                             <Mail className="w-5 h-5" />
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <h4 className="font-semibold text-[#082b45] text-base">{msg.name}</h4>
+                              <h4 className="font-semibold text-[#032b59] text-base">{msg.name}</h4>
                               <span className={`text-sm font-semibold px-2.5 py-0.5 rounded-full ${
-                                msg.status === 'new' ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                                msg.status === 'new' ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-blue-100 text-blue-800 border border-blue-200'
                               }`}>
                                 {msg.status === 'new' ? 'Nuevo' : 'Atendido'}
                               </span>
                               {msg.language && (
-                                <span className="text-sm font-mono font-semibold text-[#526574] bg-[#f4f8f8] px-2 py-0.5 rounded-md">
+                                <span className="text-sm font-mono font-semibold text-[#50647c] bg-[#f3f7fc] px-2 py-0.5 rounded-md">
                                   {msg.language}
                                 </span>
                               )}
                             </div>
-                            <p className="text-base text-[#526574] font-medium">{msg.email}</p>
+                            <p className="text-base text-[#50647c] font-medium">{msg.email}</p>
                           </div>
                         </div>
 
@@ -840,8 +840,8 @@ const Dashboard: React.FC = () => {
                             onClick={() => handleMessageStatusToggle(msg.id, msg.status)}
                             className={`kraken-control min-h-11 min-w-11 px-4 py-2 rounded-xl font-semibold text-base transition-all flex items-center gap-2 cursor-pointer ${
                               msg.status === 'new'
-                                ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm'
-                                : 'bg-[#f4f8f8] hover:bg-slate-200 text-[#526574]'
+                                ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-sm'
+                                : 'bg-[#f3f7fc] hover:bg-slate-200 text-[#50647c]'
                             }`}
                           >
                             <CheckCircle className="w-4 h-4" />
@@ -851,8 +851,8 @@ const Dashboard: React.FC = () => {
                       </div>
 
                       <div className="space-y-2">
-                        <p className="text-base font-semibold text-[#526574] ">Asunto: {msg.subject}</p>
-                        <p className="text-base text-[#526574] whitespace-pre-wrap leading-relaxed bg-[#f4f8f8] p-4 rounded-2xl border border-[#dce6e8]">
+                        <p className="text-base font-semibold text-[#50647c] ">Asunto: {msg.subject}</p>
+                        <p className="text-base text-[#50647c] whitespace-pre-wrap leading-relaxed bg-[#f3f7fc] p-4 rounded-2xl border border-[#dce5f0]">
                           {msg.message}
                         </p>
                       </div>
@@ -865,17 +865,17 @@ const Dashboard: React.FC = () => {
           /* ================= MI CARRERA & CVs VIEW ================= */
           <div className="space-y-8 animate-fade-in mb-12">
             {/* Careers Search & Status Filter Bar */}
-            <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 bg-white p-6 rounded-3xl border border-[#dce6e8] shadow-sm">
+            <div className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 bg-white p-6 rounded-3xl border border-[#dce5f0] shadow-sm">
               <div className="relative min-w-0 flex-1">
                 <input
                   type="text"
                   value={careerSearchQuery}
                   onChange={(e) => setCareerSearchQuery(e.target.value)}
                   placeholder={dt.searchCareersPlaceholder}
-                  className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3 pl-4 pr-10 text-base font-semibold text-[#082b45] outline-none focus:border-[#087f73] focus:bg-white transition-all shadow-sm"
+                  className="kraken-field w-full bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl py-3 pl-4 pr-10 text-base font-semibold text-[#032b59] outline-none focus:border-[#1464ad] focus:bg-white transition-all shadow-sm"
                 />
                 {careerSearchQuery && (
-                  <button onClick={() => setCareerSearchQuery('')} className="kraken-control min-h-11 min-w-11 absolute right-3 top-1/2 -translate-y-1/2 text-[#526574] hover:text-[#526574]">
+                  <button onClick={() => setCareerSearchQuery('')} className="kraken-control min-h-11 min-w-11 absolute right-3 top-1/2 -translate-y-1/2 text-[#50647c] hover:text-[#50647c]">
                     <X className="w-4 h-4" />
                   </button>
                 )}
@@ -898,8 +898,8 @@ const Dashboard: React.FC = () => {
                       onClick={() => setCareerFilterStatus(statusKey)}
                       className={`kraken-control min-h-11 min-w-11 px-4 py-2.5 rounded-xl text-base font-semibold transition-all border shrink-0 cursor-pointer ${
                         isActive
-                          ? 'bg-[#082b45] text-white border-blue-900 shadow-md'
-                          : 'bg-white text-[#526574] border-[#dce6e8] hover:bg-[#f4f8f8]'
+                          ? 'bg-[#032b59] text-white border-blue-900 shadow-md'
+                          : 'bg-white text-[#50647c] border-[#dce5f0] hover:bg-[#f3f7fc]'
                       }`}
                     >
                       {labelMap[statusKey] || statusKey}
@@ -910,15 +910,15 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Candidates Table */}
-            <div className="kraken-panel bg-white rounded-3xl border border-[#dce6e8] overflow-hidden shadow-sm">
-              <div className="p-6 bg-[#f4f8f8] border-b border-[#dce6e8] flex items-center justify-between">
+            <div className="kraken-panel bg-white rounded-3xl border border-[#dce5f0] overflow-hidden shadow-sm">
+              <div className="p-6 bg-[#f3f7fc] border-b border-[#dce5f0] flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <span className="p-2.5 bg-blue-100 text-[#087f73] rounded-xl">
+                  <span className="p-2.5 bg-blue-100 text-[#1464ad] rounded-xl">
                     <FileText className="w-5 h-5" />
                   </span>
                   <div>
-                    <h3 className="font-semibold text-lg text-[#082b45] ">{dt.careersTitle}</h3>
-                    <p className="text-base text-[#526574] font-semibold">
+                    <h3 className="font-semibold text-lg text-[#032b59] ">{dt.careersTitle}</h3>
+                    <p className="text-base text-[#50647c] font-semibold">
                       {jobApplications.length} {dt.applicationsReceived}
                     </p>
                   </div>
@@ -927,7 +927,7 @@ const Dashboard: React.FC = () => {
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
-                  <thead className="bg-[#f4f8f8] text-[#526574] text-sm font-semibold border-b border-[#dce6e8]">
+                  <thead className="bg-[#f3f7fc] text-[#50647c] text-sm font-semibold border-b border-[#dce5f0]">
                     <tr>
                       <th className="px-6 py-4 pl-8">{dt.tableCandidate}</th>
                       <th className="px-6 py-4">{dt.tablePosition}</th>
@@ -941,8 +941,8 @@ const Dashboard: React.FC = () => {
                   <tbody className="text-sm">
                     {loadingCareers ? (
                       <tr>
-                        <td colSpan={7} className="px-8 py-16 text-center text-[#526574] font-semibold italic">
-                          <span className="inline-block animate-spin w-4 h-4 border-2 border-[#087f73] border-t-transparent rounded-full mr-2 align-middle"></span>
+                        <td colSpan={7} className="px-8 py-16 text-center text-[#50647c] font-semibold italic">
+                          <span className="inline-block animate-spin w-4 h-4 border-2 border-[#1464ad] border-t-transparent rounded-full mr-2 align-middle"></span>
                           {dt.loadingCareers}
                         </td>
                       </tr>
@@ -957,7 +957,7 @@ const Dashboard: React.FC = () => {
                         return matchStatus && matchSearch;
                       }).length === 0 ? (
                       <tr>
-                        <td colSpan={7} className="px-8 py-16 text-center text-[#526574] font-semibold">
+                        <td colSpan={7} className="px-8 py-16 text-center text-[#50647c] font-semibold">
                           {loadErrors.careers ? pt('loadError') : dt.noCandidatesFound}
                         </td>
                       </tr>
@@ -975,13 +975,13 @@ const Dashboard: React.FC = () => {
                         <tr
                           key={app.id}
                           onClick={() => setSelectedJobApp(app)}
-                          className="border-b border-[#dce6e8] hover:bg-[#eef7f5] transition-colors cursor-pointer group"
+                          className="border-b border-[#dce5f0] hover:bg-[#edf4fd] transition-colors cursor-pointer group"
                         >
                           <td className="px-6 py-4 pl-8">
-                            <div className="font-semibold text-[#082b45] group-hover:text-[#087f73] transition-colors text-base">
+                            <div className="font-semibold text-[#032b59] group-hover:text-[#1464ad] transition-colors text-base">
                               {app.name}
                             </div>
-                            <div className="text-sm text-[#526574] font-mono flex items-center gap-2 mt-0.5">
+                            <div className="text-sm text-[#50647c] font-mono flex items-center gap-2 mt-0.5">
                               <span>{app.phone}</span>
                               {app.phone && (
                                 <a
@@ -989,7 +989,7 @@ const Dashboard: React.FC = () => {
                                   target="_blank"
                                   rel="noreferrer"
                                   onClick={(e) => e.stopPropagation()}
-                                  className="text-emerald-600 hover:underline font-semibold text-sm"
+                                  className="text-blue-600 hover:underline font-semibold text-sm"
                                 >
                                   WhatsApp
                                 </a>
@@ -997,18 +997,18 @@ const Dashboard: React.FC = () => {
                             </div>
                           </td>
 
-                          <td className="px-6 py-4 font-semibold text-[#082b45] text-base">
+                          <td className="px-6 py-4 font-semibold text-[#032b59] text-base">
                             {app.position || 'Solicitud General'}
                           </td>
 
-                          <td className="px-6 py-4 text-base font-medium text-[#526574]">
+                          <td className="px-6 py-4 text-base font-medium text-[#50647c]">
                             <div>{app.region || 'Suiza'}</div>
-                            <div className="text-sm text-[#526574] font-mono">Permiso: {app.permit || 'No especificado'}</div>
+                            <div className="text-sm text-[#50647c] font-mono">Permiso: {app.permit || 'No especificado'}</div>
                           </td>
 
-                          <td className="px-6 py-4 text-base text-[#526574] font-medium">
+                          <td className="px-6 py-4 text-base text-[#50647c] font-medium">
                             <div>{app.startDate || 'Inmediata'}</div>
-                            <div className="text-sm text-[#526574]">Jornada: {app.pensum || '100%'}</div>
+                            <div className="text-sm text-[#50647c]">Jornada: {app.pensum || '100%'}</div>
                           </td>
 
                           <td className="px-6 py-4">
@@ -1021,24 +1021,24 @@ const Dashboard: React.FC = () => {
                                     name: app.cvName || `${app.name.replace(/\s+/g, '_')}_CV.pdf`,
                                     title: `Currículum • ${app.name}`
                                   })}
-                                  className="kraken-control min-h-11 min-w-11 inline-flex items-center gap-1 px-3 py-1.5 bg-[#eef7f5] hover:bg-blue-100 text-[#087f73] border border-[#c8dedb] rounded-xl text-base font-semibold transition-all shadow-sm cursor-pointer"
+                                  className="kraken-control min-h-11 min-w-11 inline-flex items-center gap-1 px-3 py-1.5 bg-[#edf4fd] hover:bg-blue-100 text-[#1464ad] border border-[#c9dbef] rounded-xl text-base font-semibold transition-all shadow-sm cursor-pointer"
                                   title="Visualizar CV en pantalla"
                                 >
-                                  <Eye className="w-3.5 h-3.5 text-[#087f73]" />
+                                  <Eye className="w-3.5 h-3.5 text-[#1464ad]" />
                                   <span>{dt.actionView}</span>
                                 </button>
                                 <button
                                   type="button"
                                   onClick={() => downloadFileSafely(app.cvData!, app.cvName || `${app.name.replace(/\s+/g, '_')}_CV.pdf`)}
-                                  className="kraken-control min-h-11 min-w-11 inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-base font-semibold transition-all shadow-sm cursor-pointer"
+                                  className="kraken-control min-h-11 min-w-11 inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 rounded-xl text-base font-semibold transition-all shadow-sm cursor-pointer"
                                   title="Descargar CV seguro"
                                 >
-                                  <Download className="w-3.5 h-3.5 text-emerald-600" />
+                                  <Download className="w-3.5 h-3.5 text-blue-600" />
                                   <span>{dt.actionDownload}</span>
                                 </button>
                               </div>
                             ) : (
-                              <span className="text-[#526574] text-sm italic">{dt.noFile}</span>
+                              <span className="text-[#50647c] text-sm italic">{dt.noFile}</span>
                             )}
                           </td>
 
@@ -1048,8 +1048,8 @@ const Dashboard: React.FC = () => {
                               onClick={(e) => e.stopPropagation()}
                               disabled={!isStaff} onChange={(e) => handleJobAppStatusChange(app.id, e.target.value as any)}
                               className={`kraken-field px-3 py-1 rounded-full text-base font-semibold border cursor-pointer ${
-                                app.status === 'Hired' ? 'bg-emerald-100 text-emerald-800 border-emerald-300' :
-                                app.status === 'Contacted' ? 'bg-blue-100 text-[#087f73] border-[#087f73]' :
+                                app.status === 'Hired' ? 'bg-blue-100 text-blue-800 border-blue-300' :
+                                app.status === 'Contacted' ? 'bg-blue-100 text-[#1464ad] border-[#1464ad]' :
                                 app.status === 'Reviewed' ? 'bg-purple-100 text-purple-800 border-purple-300' :
                                 app.status === 'Rejected' ? 'bg-rose-100 text-rose-800 border-rose-300' :
                                 'bg-amber-100 text-amber-800 border-amber-300'
@@ -1066,7 +1066,7 @@ const Dashboard: React.FC = () => {
                           <td className="px-6 py-4 text-right pr-8">
                             <button
                               onClick={(e) => { e.stopPropagation(); setSelectedJobApp(app); }}
-                              className="kraken-control min-h-11 min-w-11 px-3.5 py-1.5 bg-[#f4f8f8] hover:bg-[#087f73] text-[#526574] hover:text-white rounded-xl text-base font-semibold transition-all border border-[#dce6e8]"
+                              className="kraken-control min-h-11 min-w-11 px-3.5 py-1.5 bg-[#f3f7fc] hover:bg-[#1464ad] text-[#50647c] hover:text-white rounded-xl text-base font-semibold transition-all border border-[#dce5f0]"
                             >
                               {dt.viewRecord}
                             </button>
@@ -1083,7 +1083,7 @@ const Dashboard: React.FC = () => {
         /* ================= SERVICE REQUESTS & BORRADORES VIEW ================= */
         <>
         {/* Search, Filter, and Request Trigger bar */}
-        <div className="kraken-toolbar mb-6 grid gap-3 rounded-2xl border border-[#dce6e8] bg-white p-4 md:grid-cols-[minmax(12rem,1fr)_auto]">
+        <div className="kraken-toolbar mb-6 grid gap-3 rounded-2xl border border-[#dce5f0] bg-white p-4 md:grid-cols-[minmax(12rem,1fr)_auto]">
 
             {/* Search Input */}
             <div className="relative min-w-0 flex-1">
@@ -1092,12 +1092,12 @@ const Dashboard: React.FC = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={dt.searchRequestsPlaceholder}
-                    className="kraken-field w-full bg-white border border-[#dce6e8] rounded-2xl py-3.5 pl-5 pr-12 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574] shadow-sm"
+                    className="kraken-field w-full bg-white border border-[#dce5f0] rounded-2xl py-3.5 pl-5 pr-12 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:bg-white transition-all placeholder:text-[#50647c] shadow-sm"
                 />
                 {searchQuery && (
                     <button
                         onClick={() => setSearchQuery('')}
-                        className="kraken-control min-h-11 min-w-11 absolute right-4 top-1/2 -translate-y-1/2 text-[#526574] hover:text-[#526574] transition-colors"
+                        className="kraken-control min-h-11 min-w-11 absolute right-4 top-1/2 -translate-y-1/2 text-[#50647c] hover:text-[#50647c] transition-colors"
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -1109,11 +1109,11 @@ const Dashboard: React.FC = () => {
                 {['all', 'Pending', 'In Progress', 'Completed', 'Draft'].map((status) => {
                     const isActive = (status === 'all' && filterStatus === 'all') || filterStatus === status;
                     const statusColorMap = {
-                        all: 'bg-[#082b45] border-[#082b45] text-white',
+                        all: 'bg-[#032b59] border-[#032b59] text-white',
                         Pending: 'bg-[#fff7e6] border-[#edd3a3] text-[#7c5c21]',
-                        'In Progress': 'bg-[#eef7f5] border-[#b9d9d2] text-[#07685e]',
+                        'In Progress': 'bg-[#edf4fd] border-[#b9d9d2] text-[#07685e]',
                         Completed: 'bg-[#eaf5ee] border-[#b9d9c4] text-[#26633e]',
-                        Draft: 'bg-[#f4f8f8] border-[#dce6e8] text-[#526574]'
+                        Draft: 'bg-[#f3f7fc] border-[#dce5f0] text-[#50647c]'
                     };
                     const activeStyle = statusColorMap[status as keyof typeof statusColorMap] || statusColorMap.all;
 
@@ -1125,7 +1125,7 @@ const Dashboard: React.FC = () => {
                             className={`kraken-control min-h-11 min-w-11 px-5 py-3 rounded-2xl text-base font-semibold transition-all shrink-0 border ${
                                 isActive
                                     ? `${activeStyle}`
-                                    : 'bg-white text-[#526574] border-[#dce6e8] hover:text-[#082b45] hover:bg-[#f4f8f8] hover:border-[#dce6e8] shadow-sm'
+                                    : 'bg-white text-[#50647c] border-[#dce5f0] hover:text-[#032b59] hover:bg-[#f3f7fc] hover:border-[#dce5f0] shadow-sm'
                             }`}
                         >
                             {status === 'all' ? dt.allRequests : status === 'Draft' ? dt.draftsFilter : status === 'Pending' ? dt.statusPending : status === 'In Progress' ? dt.statusInProgress : status === 'Completed' ? dt.statusCompleted : status}
@@ -1139,7 +1139,7 @@ const Dashboard: React.FC = () => {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setIsFormOpen(!isFormOpen)}
-                className="kraken-control min-h-11 min-w-11 bg-[#087f73] hover:bg-[#087f73] text-white px-8 py-3.5 rounded-2xl shadow-sm flex items-center justify-center gap-3 transition-all font-semibold text-base shrink-0 cursor-pointer"
+                className="kraken-control min-h-11 min-w-11 bg-[#1464ad] hover:bg-[#1464ad] text-white px-8 py-3.5 rounded-2xl shadow-sm flex items-center justify-center gap-3 transition-all font-semibold text-base shrink-0 cursor-pointer"
             >
                 <PlusIcon className="w-5 h-5" />
                 {isFormOpen ? dt.hidePortal : isStaff ? dt.enterCustomService : dt.addNewRequest}
@@ -1158,12 +1158,12 @@ const Dashboard: React.FC = () => {
                     exit={{ opacity: 0, x: -30 }}
                     className="lg:col-span-1"
                   >
-                      <div className="kraken-panel bg-white rounded-3xl border border-[#dce6e8] overflow-hidden shadow-sm">
-                          <div className="p-8 bg-[#f4f8f8] border-b border-[#dce6e8]">
-                              <h3 className="font-semibold text-xl text-[#082b45]">
+                      <div className="kraken-panel bg-white rounded-3xl border border-[#dce5f0] overflow-hidden shadow-sm">
+                          <div className="p-8 bg-[#f3f7fc] border-b border-[#dce5f0]">
+                              <h3 className="font-semibold text-xl text-[#032b59]">
                                   {isStaff ? dt.directStaffEntry : dt.newServiceRequest}
                               </h3>
-                              <p className="text-base font-semibold text-[#526574] mt-1">
+                              <p className="text-base font-semibold text-[#50647c] mt-1">
                                   {isStaff ? dt.recordB2BAppointments : dt.enterPropertyDetails}
                               </p>
                           </div>
@@ -1173,11 +1173,11 @@ const Dashboard: React.FC = () => {
                                   <>
                                       {/* Client Name */}
                                       <div className="space-y-1.5">
-                                          <label htmlFor="dashboard-field-1" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.clientName}</label>
+                                          <label htmlFor="dashboard-field-1" className="kraken-label block text-sm font-semibold text-[#50647c] ml-4">{dt.clientName}</label>
                                           <input id="dashboard-field-1"
                                               type="text"
                                               required
-                                              className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574]"
+                                              className="kraken-field w-full bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl py-3.5 px-5 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:bg-white transition-all placeholder:text-[#50647c]"
                                               placeholder={dt.clientNamePlaceholder}
                                               value={newRequest.client}
                                               onChange={e => setNewRequest({...newRequest, client: e.target.value})}
@@ -1187,22 +1187,22 @@ const Dashboard: React.FC = () => {
                                       {/* Contact Email & Phone */}
                                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                           <div className="space-y-1.5">
-                                              <label htmlFor="dashboard-field-2" className="kraken-label block text-sm font-semibold text-[#526574] ml-3">{dt.clientEmail}</label>
+                                              <label htmlFor="dashboard-field-2" className="kraken-label block text-sm font-semibold text-[#50647c] ml-3">{dt.clientEmail}</label>
                                               <input id="dashboard-field-2"
                                                   type="email"
                                                   required={isStaff}
-                                                  className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-4 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574]"
+                                                  className="kraken-field w-full bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl py-3.5 px-4 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:bg-white transition-all placeholder:text-[#50647c]"
                                                   placeholder="name@mail.com"
                                                   value={newRequest.email}
                                                   onChange={e => setNewRequest({...newRequest, email: e.target.value})}
                                               />
                                           </div>
                                           <div className="space-y-1.5">
-                                              <label htmlFor="dashboard-field-3" className="kraken-label block text-sm font-semibold text-[#526574] ml-3">{dt.telephone}</label>
+                                              <label htmlFor="dashboard-field-3" className="kraken-label block text-sm font-semibold text-[#50647c] ml-3">{dt.telephone}</label>
                                               <input id="dashboard-field-3"
                                                   type="text"
                                                   required
-                                                  className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-4 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574]"
+                                                  className="kraken-field w-full bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl py-3.5 px-4 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:bg-white transition-all placeholder:text-[#50647c]"
                                                   placeholder="+41 79..."
                                                   value={newRequest.phone}
                                                   onChange={e => setNewRequest({...newRequest, phone: e.target.value})}
@@ -1213,11 +1213,11 @@ const Dashboard: React.FC = () => {
                               ) : (
                                   /* Clean, streamlined layout for Clients */
                                   <div className="space-y-1.5">
-                                      <label htmlFor="dashboard-field-4" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.telephone}</label>
+                                      <label htmlFor="dashboard-field-4" className="kraken-label block text-sm font-semibold text-[#50647c] ml-4">{dt.telephone}</label>
                                       <input id="dashboard-field-4"
                                           type="text"
                                           required
-                                          className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574]"
+                                          className="kraken-field w-full bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl py-3.5 px-5 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:bg-white transition-all placeholder:text-[#50647c]"
                                           placeholder="+41 79..."
                                           value={newRequest.phone}
                                           onChange={e => setNewRequest({...newRequest, phone: e.target.value})}
@@ -1227,10 +1227,10 @@ const Dashboard: React.FC = () => {
 
                               {/* Physical Address */}
                               <div className="space-y-1.5">
-                                  <label htmlFor="dashboard-field-5" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.serviceAddress}</label>
+                                  <label htmlFor="dashboard-field-5" className="kraken-label block text-sm font-semibold text-[#50647c] ml-4">{dt.serviceAddress}</label>
                                   <input id="dashboard-field-5"
                                       type="text"
-                                      className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574]"
+                                      className="kraken-field w-full bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl py-3.5 px-5 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:bg-white transition-all placeholder:text-[#50647c]"
                                       placeholder={dt.serviceAddressPlaceholder}
                                       value={newRequest.address}
                                       onChange={e => setNewRequest({...newRequest, address: e.target.value})}
@@ -1239,9 +1239,9 @@ const Dashboard: React.FC = () => {
 
                               {/* Service Selection */}
                               <div className="space-y-1.5">
-                                  <label htmlFor="dashboard-field-6" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.serviceClassification}</label>
+                                  <label htmlFor="dashboard-field-6" className="kraken-label block text-sm font-semibold text-[#50647c] ml-4">{dt.serviceClassification}</label>
                                   <select id="dashboard-field-6"
-                                      className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all appearance-none"
+                                      className="kraken-field w-full bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl py-3.5 px-5 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:bg-white transition-all appearance-none"
                                       value={newRequest.service}
                                       onChange={e => setNewRequest({...newRequest, service: e.target.value})}
                                       required
@@ -1259,19 +1259,19 @@ const Dashboard: React.FC = () => {
                               {/* Date & Priority */}
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                   <div className="space-y-1.5">
-                                      <label htmlFor="dashboard-field-7" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.executionDate}</label>
+                                      <label htmlFor="dashboard-field-7" className="kraken-label block text-sm font-semibold text-[#50647c] ml-4">{dt.executionDate}</label>
                                       <input id="dashboard-field-7"
                                           type="date"
                                           required
-                                          className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-4 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all text-[#526574]"
+                                          className="kraken-field w-full bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl py-3.5 px-4 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:bg-white transition-all text-[#50647c]"
                                           value={newRequest.date}
                                           onChange={e => setNewRequest({...newRequest, date: e.target.value})}
                                       />
                                   </div>
                                   <div className="space-y-1.5">
-                                      <label htmlFor="dashboard-field-8" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.priority}</label>
+                                      <label htmlFor="dashboard-field-8" className="kraken-label block text-sm font-semibold text-[#50647c] ml-4">{dt.priority}</label>
                                       <select id="dashboard-field-8"
-                                          className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-4 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all appearance-none"
+                                          className="kraken-field w-full bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl py-3.5 px-4 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:bg-white transition-all appearance-none"
                                           disabled={!isStaff} value={newRequest.priority}
                                           onChange={e => setNewRequest({...newRequest, priority: e.target.value as any})}
                                       >
@@ -1284,10 +1284,10 @@ const Dashboard: React.FC = () => {
 
                               {/* Staff estimates do not establish payment. */}
                               <div hidden={!isStaff} className="space-y-1.5">
-                                  <label htmlFor="dashboard-field-9" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.budgetQuotedPrice}</label>
+                                  <label htmlFor="dashboard-field-9" className="kraken-label block text-sm font-semibold text-[#50647c] ml-4">{dt.budgetQuotedPrice}</label>
                                   <input id="dashboard-field-9"
                                       type="number"
-                                      className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574]"
+                                      className="kraken-field w-full bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl py-3.5 px-5 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:bg-white transition-all placeholder:text-[#50647c]"
                                       placeholder={dt.budgetPlaceholder}
                                       min={0} max={1000000} step="0.01" value={newRequest.amount}
                                       onChange={e => setNewRequest({...newRequest, amount: e.target.value})}
@@ -1296,10 +1296,10 @@ const Dashboard: React.FC = () => {
 
                               {/* Notes */}
                               <div className="space-y-1.5">
-                                  <label htmlFor="dashboard-field-10" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.operationalNotes}</label>
+                                  <label htmlFor="dashboard-field-10" className="kraken-label block text-sm font-semibold text-[#50647c] ml-4">{dt.operationalNotes}</label>
                                   <textarea id="dashboard-field-10"
                                       rows={2}
-                                      className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574]"
+                                      className="kraken-field w-full bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl py-3 px-5 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:bg-white transition-all placeholder:text-[#50647c]"
                                       placeholder={dt.notesPlaceholder}
                                       value={newRequest.notes}
                                       onChange={e => setNewRequest({...newRequest, notes: e.target.value})}
@@ -1308,10 +1308,10 @@ const Dashboard: React.FC = () => {
 
                               {/* Custom Media Attachment URL */}
                               <div className="space-y-1.5">
-                                  <label htmlFor="dashboard-field-11" className="kraken-label block text-sm font-semibold text-[#526574] ml-4">{dt.externalImageLinks}</label>
+                                  <label htmlFor="dashboard-field-11" className="kraken-label block text-sm font-semibold text-[#50647c] ml-4">{dt.externalImageLinks}</label>
                                   <input id="dashboard-field-11"
                                       type="text"
-                                      className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574]"
+                                      className="kraken-field w-full bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl py-3.5 px-5 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:bg-white transition-all placeholder:text-[#50647c]"
                                       placeholder="https://example.com/photo1.jpg, https://example.com/photo2.png"
                                       value={newRequest.mediaUrlString}
                                       onChange={e => setNewRequest({...newRequest, mediaUrlString: e.target.value})}
@@ -1322,7 +1322,7 @@ const Dashboard: React.FC = () => {
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 type="submit"
-                                className="kraken-control min-h-11 w-full py-4.5 bg-[#087f73] text-white rounded-2xl font-semibold text-base shadow-sm transition-all mt-3"
+                                className="kraken-control min-h-11 w-full py-4.5 bg-[#1464ad] text-white rounded-2xl font-semibold text-base shadow-sm transition-all mt-3"
                               >
                                 {dt.submitRequestRecord}
                               </motion.button>
@@ -1336,31 +1336,31 @@ const Dashboard: React.FC = () => {
             <div className={`${isFormOpen ? 'lg:col-span-2' : 'lg:col-span-3'} transition-all duration-200`}>
 
                 {/* Visual Header describing Queue Scope */}
-                <div className="bg-white p-5 rounded-3xl border border-[#dce6e8] mb-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm font-semibold text-[#526574] shadow-sm">
+                <div className="bg-white p-5 rounded-3xl border border-[#dce5f0] mb-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm font-semibold text-[#50647c] shadow-sm">
                     <div className="flex items-center gap-3">
-                        <span className="p-2.5 bg-[#eef7f5] text-[#087f73] rounded-2xl border border-[#c8dedb]">
+                        <span className="p-2.5 bg-[#edf4fd] text-[#1464ad] rounded-2xl border border-[#c9dbef]">
                             <Clipboard className="w-4 h-4" />
                         </span>
                         <span>{dt.showingIncidents.replace('{filtered}', String(filteredRequests.length)).replace('{total}', String(totalSubmissions))}</span>
                     </div>
                     <div className="flex flex-wrap gap-4">
                         <span className="flex items-center gap-2 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200/60 text-sm text-amber-700 font-semibold"><span className="w-1.5 h-1.5 bg-amber-500 rounded-full "></span> {dt.statusPending}</span>
-                        <span className="flex items-center gap-2 bg-[#eef7f5] px-3 py-1.5 rounded-xl border border-[#c8dedb] text-sm text-[#087f73] font-semibold"><span className="w-1.5 h-1.5 bg-[#087f73] rounded-full "></span> {dt.statusInProgress}</span>
-                        <span className="flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200/60 text-sm text-emerald-700 font-semibold"><span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> {dt.statusCompleted}</span>
+                        <span className="flex items-center gap-2 bg-[#edf4fd] px-3 py-1.5 rounded-xl border border-[#c9dbef] text-sm text-[#1464ad] font-semibold"><span className="w-1.5 h-1.5 bg-[#1464ad] rounded-full "></span> {dt.statusInProgress}</span>
+                        <span className="flex items-center gap-2 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-200/60 text-sm text-blue-700 font-semibold"><span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> {dt.statusCompleted}</span>
                     </div>
                 </div>
 
                 <div className="lg:hidden space-y-4 mb-5">
-                  {loading ? <p role="status" className="p-6 bg-white rounded-2xl">{pt('loading')}</p> : filteredRequests.length === 0 ? <p className="p-6 bg-white rounded-2xl">{loadErrors.requests ? pt('loadError') : dt.noRequestsFound}</p> : filteredRequests.map(request => <article key={request.id} className="bg-white border border-[#dce6e8] rounded-2xl p-5 shadow-sm space-y-3">
-                    <div className="flex justify-between gap-3"><h3 className="font-semibold text-[#082b45] min-w-0 [overflow-wrap:anywhere]">{request.service}</h3><span className="text-sm text-[#526574] shrink-0">{request.status === 'Pending' ? dt.statusPending : request.status === 'In Progress' ? dt.statusInProgress : request.status === 'Completed' ? dt.statusCompleted : dt.draftLabel}</span></div>
-                    <p className="text-base break-words">{request.client}</p><p className="text-base text-[#526574]">{request.date || '—'} · {amountText(request)}</p>
-                    <button type="button" onClick={() => setSelectedRequest(request)} className="kraken-control min-h-11 w-full bg-[#087f73] text-white rounded-xl px-4 py-3 font-semibold">{dt.actions}</button>
+                  {loading ? <p role="status" className="p-6 bg-white rounded-2xl">{pt('loading')}</p> : filteredRequests.length === 0 ? <p className="p-6 bg-white rounded-2xl">{loadErrors.requests ? pt('loadError') : dt.noRequestsFound}</p> : filteredRequests.map(request => <article key={request.id} className="bg-white border border-[#dce5f0] rounded-2xl p-5 shadow-sm space-y-3">
+                    <div className="flex justify-between gap-3"><h3 className="font-semibold text-[#032b59] min-w-0 [overflow-wrap:anywhere]">{request.service}</h3><span className="text-sm text-[#50647c] shrink-0">{request.status === 'Pending' ? dt.statusPending : request.status === 'In Progress' ? dt.statusInProgress : request.status === 'Completed' ? dt.statusCompleted : dt.draftLabel}</span></div>
+                    <p className="text-base break-words">{request.client}</p><p className="text-base text-[#50647c]">{request.date || '—'} · {amountText(request)}</p>
+                    <button type="button" onClick={() => setSelectedRequest(request)} className="kraken-control min-h-11 w-full bg-[#1464ad] text-white rounded-xl px-4 py-3 font-semibold">{dt.actions}</button>
                   </article>)}
                 </div>
-                <div className="kraken-panel bg-white rounded-3xl border border-[#dce6e8] overflow-hidden shadow-sm">
+                <div className="kraken-panel bg-white rounded-3xl border border-[#dce5f0] overflow-hidden shadow-sm">
                     <div className="hidden lg:block overflow-x-auto">
                         <table className="w-full text-left border-collapse">
-                            <thead className="bg-[#f4f8f8] text-[#526574] text-sm font-semibold border-b border-[#dce6e8]">
+                            <thead className="bg-[#f3f7fc] text-[#50647c] text-sm font-semibold border-b border-[#dce5f0]">
                                 <tr>
                                     <th className="px-6 py-5 pl-8">{dt.tableServiceID}</th>
                                     <th className="px-6 py-5">{dt.tableClientContact}</th>
@@ -1374,14 +1374,14 @@ const Dashboard: React.FC = () => {
                             <tbody className="text-sm">
                                 {loading ? (
                                     <tr>
-                                        <td colSpan={7} className="px-8 py-20 text-center text-[#526574] italic font-semibold">
-                                            <span className="inline-block animate-spin w-5 h-5 border-2 border-[#087f73] border-t-transparent rounded-full mr-3 align-middle"></span>
+                                        <td colSpan={7} className="px-8 py-20 text-center text-[#50647c] italic font-semibold">
+                                            <span className="inline-block animate-spin w-5 h-5 border-2 border-[#1464ad] border-t-transparent rounded-full mr-3 align-middle"></span>
                                             {dt.loadingRequests}
                                         </td>
                                     </tr>
                                 ) : filteredRequests.length === 0 ? (
                                     <tr>
-                                        <td colSpan={7} className="px-8 py-20 text-center text-[#526574] font-semibold">
+                                        <td colSpan={7} className="px-8 py-20 text-center text-[#50647c] font-semibold">
                                             {loadErrors.requests ? pt('loadError') : dt.noRequestsFound}
                                         </td>
                                     </tr>
@@ -1395,21 +1395,21 @@ const Dashboard: React.FC = () => {
                                               animate={{ opacity: 1, y: 0 }}
                                               transition={{ delay: idx * 0.03 }}
                                               onClick={() => setSelectedRequest(req)}
-                                              className={`border-b border-[#dce6e8] hover:bg-[#f4f8f8] transition-all cursor-pointer group ${
-                                                  selectedRequest?.id === req.id ? 'bg-[#eef7f5]' : ''
+                                              className={`border-b border-[#dce5f0] hover:bg-[#f3f7fc] transition-all cursor-pointer group ${
+                                                  selectedRequest?.id === req.id ? 'bg-[#edf4fd]' : ''
                                               }`}
                                             >
                                                 {/* ID */}
-                                                <td className="px-6 py-5 pl-8 font-mono text-base text-[#526574] whitespace-nowrap">
+                                                <td className="px-6 py-5 pl-8 font-mono text-base text-[#50647c] whitespace-nowrap">
                                                     #{req.id.substring(0, 8).toUpperCase()}
                                                 </td>
 
                                                 {/* Client Name */}
-                                                <td className="px-6 py-5 font-semibold text-[#082b45] group-hover:text-[#087f73] transition-colors ">
+                                                <td className="px-6 py-5 font-semibold text-[#032b59] group-hover:text-[#1464ad] transition-colors ">
                                                     <div className="flex flex-col">
-                                                        <span className="text-[#082b45] group-hover:text-[#087f73] transition-colors">{req.client}</span>
+                                                        <span className="text-[#032b59] group-hover:text-[#1464ad] transition-colors">{req.client}</span>
                                                         {isStaff && req.email && (
-                                                            <span className="text-sm text-[#526574] normal-case font-medium mt-0.5 lowercase truncate max-w-[150px]">{req.email}</span>
+                                                            <span className="text-sm text-[#50647c] normal-case font-medium mt-0.5 lowercase truncate max-w-[150px]">{req.email}</span>
                                                         )}
                                                     </div>
                                                 </td>
@@ -1417,15 +1417,15 @@ const Dashboard: React.FC = () => {
                                                 {/* Service Name */}
                                                 <td className="px-6 py-5">
                                                     <div className="flex flex-col gap-1">
-                                                        <span className="font-semibold text-[#526574] text-sm">{req.service}</span>
-                                                        <span className="text-sm text-emerald-600 font-mono font-semibold mt-0.5">{amountText(req)}</span>
+                                                        <span className="font-semibold text-[#50647c] text-sm">{req.service}</span>
+                                                        <span className="text-sm text-blue-600 font-mono font-semibold mt-0.5">{amountText(req)}</span>
                                                     </div>
                                                 </td>
 
                                                 {/* Date */}
-                                                <td className="px-6 py-5 text-[#526574] font-mono text-base whitespace-nowrap">
+                                                <td className="px-6 py-5 text-[#50647c] font-mono text-base whitespace-nowrap">
                                                     <div className="flex items-center gap-1.5">
-                                                        <ClockIcon className="w-3.5 h-3.5 text-[#526574]" />
+                                                        <ClockIcon className="w-3.5 h-3.5 text-[#50647c]" />
                                                         <span>{req.date}</span>
                                                     </div>
                                                 </td>
@@ -1433,7 +1433,7 @@ const Dashboard: React.FC = () => {
                                                 {/* Media uploads indicator */}
                                                 <td className="px-6 py-5">
                                                     {hasMedia ? (
-                                                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold bg-[#eef7f5] text-[#087f73] border border-[#c8dedb]">
+                                                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-semibold bg-[#edf4fd] text-[#1464ad] border border-[#c9dbef]">
                                                             <ImageIcon className="w-3.5 h-3.5" />
                                                             {req.mediaUrls?.length} {req.mediaUrls && req.mediaUrls.length > 1 ? dt.attachments : dt.attachment}
                                                         </span>
@@ -1447,15 +1447,15 @@ const Dashboard: React.FC = () => {
                                                     <span
                                                         onClick={(e) => handleStatusChange(req.id, req.status, e)}
                                                         className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-semibold cursor-pointer select-none transition-all border whitespace-nowrap ${
-                                                            req.status === 'Completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-sm' :
-                                                            req.status === 'In Progress' ? 'bg-[#eef7f5] text-[#087f73] border-[#c8dedb] shadow-sm' :
+                                                            req.status === 'Completed' ? 'bg-blue-50 text-blue-700 border-blue-200 shadow-sm' :
+                                                            req.status === 'In Progress' ? 'bg-[#edf4fd] text-[#1464ad] border-[#c9dbef] shadow-sm' :
                                                             req.status === 'Draft' ? 'bg-purple-50 text-purple-800 border-purple-200 shadow-sm' :
                                                             'bg-amber-50 text-amber-700 border-amber-200 shadow-sm'
                                                         }`}
                                                     >
-                                                        {req.status === 'In Progress' && <span className="w-1.5 h-1.5 bg-[#087f73] rounded-full "></span>}
+                                                        {req.status === 'In Progress' && <span className="w-1.5 h-1.5 bg-[#1464ad] rounded-full "></span>}
                                                         {req.status === 'Pending' && <span className="w-1.5 h-1.5 bg-amber-500 rounded-full "></span>}
-                                                        {req.status === 'Completed' && <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>}
+                                                        {req.status === 'Completed' && <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>}
                                                         {req.status === 'Draft' && <span className="w-1.5 h-1.5 bg-purple-500 rounded-full "></span>}
                                                         {req.status === 'Draft' ? dt.draftLabel : req.status === 'Pending' ? dt.statusPending : req.status === 'In Progress' ? dt.statusInProgress : req.status === 'Completed' ? dt.statusCompleted : req.status}
                                                     </span>
@@ -1468,7 +1468,7 @@ const Dashboard: React.FC = () => {
                                                            whileHover={{ scale: 1.08 }}
                                                            whileTap={{ scale: 0.95 }}
                                                            onClick={(e) => { e.stopPropagation(); setSelectedRequest(req); }}
-                                                           className="kraken-control h-11 w-11 min-h-11 min-w-11 shrink-0 p-0 inline-flex items-center justify-center bg-[#f4f8f8] hover:bg-[#087f73] rounded-xl text-[#526574] hover:text-white transition-colors border border-[#dce6e8]"
+                                                           className="kraken-control h-11 w-11 min-h-11 min-w-11 shrink-0 p-0 inline-flex items-center justify-center bg-[#f3f7fc] hover:bg-[#1464ad] rounded-xl text-[#50647c] hover:text-white transition-colors border border-[#dce5f0]"
                                                            aria-label={portalActionText(language, 'details')} title={portalActionText(language, 'details')}
                                                          >
                                                              <Eye aria-hidden="true" className="h-5 w-5" />
@@ -1477,7 +1477,7 @@ const Dashboard: React.FC = () => {
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={(e) => { e.stopPropagation(); handleSendEmail(req); }}
-                    className="kraken-control h-11 w-11 min-h-11 min-w-11 shrink-0 p-0 inline-flex items-center justify-center bg-[#eef7f5] hover:bg-[#dceee9] rounded-xl text-[#087f73] transition-colors"
+                    className="kraken-control h-11 w-11 min-h-11 min-w-11 shrink-0 p-0 inline-flex items-center justify-center bg-[#edf4fd] hover:bg-[#dceee9] rounded-xl text-[#1464ad] transition-colors"
                     hidden={!isStaff} aria-label={dt.sendCostConfirmation} title={dt.sendCostConfirmation}
                   >
                     <Mail aria-hidden="true" size={20} />
@@ -1486,7 +1486,7 @@ const Dashboard: React.FC = () => {
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={(e) => { e.stopPropagation(); markConfirmed(req.id, confirmationStatuses[req.id] === 'confirmed' ? 'none' : 'confirmed'); }}
-                    className={`kraken-control h-11 w-11 min-h-11 min-w-11 shrink-0 p-0 inline-flex items-center justify-center rounded-xl transition-colors ${confirmationStatuses[req.id] === 'confirmed' ? 'bg-green-100 text-green-700' : 'bg-[#f4f8f8] hover:bg-green-50 text-[#526574] hover:text-green-600'}`}
+                    className={`kraken-control h-11 w-11 min-h-11 min-w-11 shrink-0 p-0 inline-flex items-center justify-center rounded-xl transition-colors ${confirmationStatuses[req.id] === 'confirmed' ? 'bg-green-100 text-green-700' : 'bg-[#f3f7fc] hover:bg-green-50 text-[#50647c] hover:text-green-600'}`}
                     hidden={!isStaff} aria-label={pt('localNote')} aria-pressed={confirmationStatuses[req.id] === 'confirmed'} title={pt('localNote')}
                   >
                     <Check aria-hidden="true" size={20} />
@@ -1496,7 +1496,7 @@ const Dashboard: React.FC = () => {
                                                                  whileHover={{ scale: 1.15, color: "#f43f5e" }}
                                                                  whileTap={{ scale: 0.8 }}
                                                                  onClick={(e) => handleDelete(req.id, e)}
-                                                                 className="kraken-control min-h-11 min-w-11 p-2 text-[#526574] hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all cursor-pointer"
+                                                                 className="kraken-control min-h-11 min-w-11 p-2 text-[#50647c] hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all cursor-pointer"
                                                                  aria-label={dt.deleteRequestLedger} title={dt.deleteRequestLedger}
                                                              >
                                                                  <TrashIcon className="w-4 h-4" />
@@ -1517,7 +1517,7 @@ const Dashboard: React.FC = () => {
         </>
         )}
 
-        {hasMore[activeTab] && <div className="flex justify-center my-8"><button type="button" disabled={isPageLoading} onClick={() => fetchPortalPage(activeTab, true)} className="kraken-control min-h-11 min-w-11 px-6 py-3 rounded-2xl bg-[#087f73] text-white font-semibold disabled:opacity-50">{isPageLoading ? pt('loading') : pt('more')}</button></div>}
+        {hasMore[activeTab] && <div className="flex justify-center my-8"><button type="button" disabled={isPageLoading} onClick={() => fetchPortalPage(activeTab, true)} className="kraken-control min-h-11 min-w-11 px-6 py-3 rounded-2xl bg-[#1464ad] text-white font-semibold disabled:opacity-50">{isPageLoading ? pt('loading') : pt('more')}</button></div>}
         {/* Dynamic Detail-Inspector Overlay Modal for Service Requests */}
         <AnimatePresence>
             {selectedRequest && (
@@ -1537,71 +1537,71 @@ const Dashboard: React.FC = () => {
         <AnimatePresence>
             {selectedJobApp && (
                 <div className="kraken-portal kraken-overlay fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-white w-full max-w-2xl rounded-3xl border border-[#dce6e8] shadow-sm overflow-hidden max-h-[90vh] flex flex-col">
-                        <div className="kraken-dialog-header p-5 bg-[#eef7f5] text-[#082b45] flex items-center justify-between">
+                    <div className="bg-white w-full max-w-2xl rounded-3xl border border-[#dce5f0] shadow-sm overflow-hidden max-h-[90vh] flex flex-col">
+                        <div className="kraken-dialog-header p-5 bg-[#edf4fd] text-[#032b59] flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="p-3 bg-white/10 rounded-2xl">
-                                    <User className="w-6 h-6 text-[#087f73]" />
+                                    <User className="w-6 h-6 text-[#1464ad]" />
                                 </div>
                                 <div>
                                     <h3 className="font-semibold text-xl">{selectedJobApp.name}</h3>
-                                    <p className="text-base text-[#526574] font-semibold">{selectedJobApp.position || dt.tablePosition}</p>
+                                    <p className="text-base text-[#50647c] font-semibold">{selectedJobApp.position || dt.tablePosition}</p>
                                 </div>
                             </div>
                             <button type="button" aria-label={portalActionText(language, 'close')}
                                 onClick={() => setSelectedJobApp(null)}
-                                className="kraken-control min-h-11 min-w-11 p-2 hover:bg-white/10 rounded-full transition-colors text-[#082b45] cursor-pointer"
+                                className="kraken-control min-h-11 min-w-11 p-2 hover:bg-white/10 rounded-full transition-colors text-[#032b59] cursor-pointer"
                             >
                                 <X className="w-6 h-6" />
                             </button>
                         </div>
 
-                        <div className="p-8 overflow-y-auto space-y-6 text-[#082b45] text-sm">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#f4f8f8] p-5 rounded-2xl border border-[#dce6e8]">
+                        <div className="p-8 overflow-y-auto space-y-6 text-[#032b59] text-sm">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-[#f3f7fc] p-5 rounded-2xl border border-[#dce5f0]">
                                 <div>
-                                    <span className="text-sm font-semibold text-[#526574] block ">{dt.phoneContact}</span>
-                                    <span className="font-semibold text-[#082b45] text-base">{selectedJobApp.phone}</span>
+                                    <span className="text-sm font-semibold text-[#50647c] block ">{dt.phoneContact}</span>
+                                    <span className="font-semibold text-[#032b59] text-base">{selectedJobApp.phone}</span>
                                 </div>
                                 <div>
-                                    <span className="text-sm font-semibold text-[#526574] block ">{dt.workPermit}</span>
-                                    <span className="font-semibold text-[#082b45]">{selectedJobApp.permit || dt.noRecordsFound}</span>
+                                    <span className="text-sm font-semibold text-[#50647c] block ">{dt.workPermit}</span>
+                                    <span className="font-semibold text-[#032b59]">{selectedJobApp.permit || dt.noRecordsFound}</span>
                                 </div>
                                 <div>
-                                    <span className="text-sm font-semibold text-[#526574] block ">{dt.regionCanton}</span>
-                                    <span className="font-semibold text-[#082b45]">{selectedJobApp.region || 'Schweiz'}</span>
+                                    <span className="text-sm font-semibold text-[#50647c] block ">{dt.regionCanton}</span>
+                                    <span className="font-semibold text-[#032b59]">{selectedJobApp.region || 'Schweiz'}</span>
                                 </div>
                                 <div>
-                                    <span className="text-sm font-semibold text-[#526574] block ">{dt.incorporation}</span>
-                                    <span className="font-semibold text-[#082b45]">{selectedJobApp.startDate || dt.tableIncorporation}</span>
+                                    <span className="text-sm font-semibold text-[#50647c] block ">{dt.incorporation}</span>
+                                    <span className="font-semibold text-[#032b59]">{selectedJobApp.startDate || dt.tableIncorporation}</span>
                                 </div>
                                 <div>
-                                    <span className="text-sm font-semibold text-[#526574] block ">{dt.desiredWorkload}</span>
-                                    <span className="font-semibold text-[#082b45]">{selectedJobApp.pensum || '100%'}</span>
+                                    <span className="text-sm font-semibold text-[#50647c] block ">{dt.desiredWorkload}</span>
+                                    <span className="font-semibold text-[#032b59]">{selectedJobApp.pensum || '100%'}</span>
                                 </div>
                                 <div>
-                                    <span className="text-sm font-semibold text-[#526574] block ">{dt.certificatesDriving}</span>
-                                    <span className="font-semibold text-[#082b45]">{selectedJobApp.certificates || '-'}</span>
+                                    <span className="text-sm font-semibold text-[#50647c] block ">{dt.certificatesDriving}</span>
+                                    <span className="font-semibold text-[#032b59]">{selectedJobApp.certificates || '-'}</span>
                                 </div>
                             </div>
 
                             {selectedJobApp.languages && (
                                 <div>
-                                    <span className="text-sm font-semibold text-[#526574] block mb-1">{dt.languages}</span>
-                                    <p className="p-3 bg-[#f4f8f8] rounded-xl text-[#526574] font-medium border border-[#dce6e8]">{selectedJobApp.languages}</p>
+                                    <span className="text-sm font-semibold text-[#50647c] block mb-1">{dt.languages}</span>
+                                    <p className="p-3 bg-[#f3f7fc] rounded-xl text-[#50647c] font-medium border border-[#dce5f0]">{selectedJobApp.languages}</p>
                                 </div>
                             )}
 
                             {selectedJobApp.message && (
                                 <div>
-                                    <span className="text-sm font-semibold text-[#526574] block mb-1">{dt.presentation}</span>
-                                    <p className="p-4 bg-[#f4f8f8] rounded-xl text-[#526574] italic border border-[#dce6e8] whitespace-pre-wrap">{selectedJobApp.message}</p>
+                                    <span className="text-sm font-semibold text-[#50647c] block mb-1">{dt.presentation}</span>
+                                    <p className="p-4 bg-[#f3f7fc] rounded-xl text-[#50647c] italic border border-[#dce5f0] whitespace-pre-wrap">{selectedJobApp.message}</p>
                                 </div>
                             )}
 
-                            <div className="p-5 bg-[#eef7f5] rounded-2xl border border-[#c8dedb] flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div className="p-5 bg-[#edf4fd] rounded-2xl border border-[#c9dbef] flex flex-col sm:flex-row items-center justify-between gap-4">
                                 <div>
-                                    <span className="text-sm font-semibold text-[#087f73] block">{dt.cvDocument}</span>
-                                    <span className="text-sm text-[#087f73] font-mono font-semibold">{selectedJobApp.cvName || dt.tableCV}</span>
+                                    <span className="text-sm font-semibold text-[#1464ad] block">{dt.cvDocument}</span>
+                                    <span className="text-sm text-[#1464ad] font-mono font-semibold">{selectedJobApp.cvName || dt.tableCV}</span>
                                 </div>
                                 {selectedJobApp.cvData ? (
                                     <div className="flex items-center gap-2">
@@ -1612,7 +1612,7 @@ const Dashboard: React.FC = () => {
                                                 name: selectedJobApp.cvName || `${selectedJobApp.name.replace(/\s+/g, '_')}_CV.pdf`,
                                                 title: `${dt.tableCV} • ${selectedJobApp.name}`
                                             })}
-                                            className="kraken-control min-h-11 min-w-11 px-4 py-2.5 bg-[#087f73] hover:bg-[#087f73] text-white rounded-xl font-semibold text-base flex items-center gap-2 shadow-md transition-all cursor-pointer"
+                                            className="kraken-control min-h-11 min-w-11 px-4 py-2.5 bg-[#1464ad] hover:bg-[#1464ad] text-white rounded-xl font-semibold text-base flex items-center gap-2 shadow-md transition-all cursor-pointer"
                                         >
                                             <Eye className="w-4 h-4" />
                                             <span>{dt.preview}</span>
@@ -1620,19 +1620,19 @@ const Dashboard: React.FC = () => {
                                         <button
                                             type="button"
                                             onClick={() => downloadFileSafely(selectedJobApp.cvData!, selectedJobApp.cvName || `${selectedJobApp.name.replace(/\s+/g, '_')}_CV.pdf`)}
-                                            className="kraken-control min-h-11 min-w-11 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-[#082b45] rounded-xl font-semibold text-base flex items-center gap-2 shadow-sm transition-all cursor-pointer"
+                                            className="kraken-control min-h-11 min-w-11 px-5 py-2.5 bg-[#1464ad] hover:bg-[#0c4f92] text-white rounded-xl font-semibold text-base flex items-center gap-2 shadow-sm transition-all cursor-pointer"
                                         >
                                             <Download className="w-4 h-4" />
                                             <span>{dt.downloadCV}</span>
                                         </button>
                                     </div>
                                 ) : (
-                                    <span className="text-sm text-[#526574] font-semibold italic">{dt.noFile}</span>
+                                    <span className="text-sm text-[#50647c] font-semibold italic">{dt.noFile}</span>
                                 )}
                             </div>
 
                             <div>
-                                <span className="text-sm font-semibold text-[#526574] block mb-2">{dt.changeStatus}</span>
+                                <span className="text-sm font-semibold text-[#50647c] block mb-2">{dt.changeStatus}</span>
                                 <div className="flex flex-wrap gap-2">
                                     {[
                                         { key: 'Pending', label: dt.filterPendingCareer },
@@ -1646,8 +1646,8 @@ const Dashboard: React.FC = () => {
                                             disabled={!isStaff} onClick={() => handleJobAppStatusChange(selectedJobApp.id, st.key as any)}
                                             className={`kraken-control min-h-11 min-w-11 px-4 py-2 rounded-xl text-base font-semibold border cursor-pointer transition-all ${
                                                 selectedJobApp.status === st.key
-                                                    ? 'bg-[#082b45] text-white border-blue-900 shadow-md'
-                                                    : 'bg-white text-[#526574] border-[#dce6e8] hover:bg-[#f4f8f8]'
+                                                    ? 'bg-[#032b59] text-white border-blue-900 shadow-md'
+                                                    : 'bg-white text-[#50647c] border-[#dce5f0] hover:bg-[#f3f7fc]'
                                             }`}
                                         >
                                             {st.label}
@@ -1663,16 +1663,16 @@ const Dashboard: React.FC = () => {
 
       </div>
         {/* ===== EMAIL CONFIRMATION CENTER ===== */}
-        <div hidden={!isStaff} className="mt-6 bg-white rounded-2xl shadow-sm border border-[#dce6e8] overflow-hidden mx-4 mb-4">
-          <div className="bg-[#eef7f5] px-5 py-4 flex items-center justify-between cursor-pointer select-none" onClick={() => setShowEmailHistory(v => !v)}>
+        <div hidden={!isStaff} className="mt-6 bg-white rounded-2xl shadow-sm border border-[#dce5f0] overflow-hidden mx-4 mb-4">
+          <div className="bg-[#edf4fd] px-5 py-4 flex items-center justify-between cursor-pointer select-none" onClick={() => setShowEmailHistory(v => !v)}>
             <div className="flex items-center gap-3">
-              <Mail size={18} className="text-[#087f73]" />
-              <h3 className="text-[#082b45] font-semibold text-lg ">{dt.emailCenterTitle}</h3>
-              <span className="bg-[#087f73] text-[#082b45] text-sm font-semibold px-2 py-0.5 rounded-full">{emailHistory.length}</span>
+              <Mail size={18} className="text-[#1464ad]" />
+              <h3 className="text-[#032b59] font-semibold text-lg ">{dt.emailCenterTitle}</h3>
+              <span className="bg-[#1464ad] text-[#032b59] text-sm font-semibold px-2 py-0.5 rounded-full">{emailHistory.length}</span>
             </div>
-            <ArrowLeft size={16} className={`text-[#526574] transition-transform duration-300 ${showEmailHistory ? 'rotate-90' : '-rotate-90'}`} />
+            <ArrowLeft size={16} className={`text-[#50647c] transition-transform duration-300 ${showEmailHistory ? 'rotate-90' : '-rotate-90'}`} />
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-5 divide-x divide-slate-100 border-b border-[#dce6e8]">
+          <div className="grid grid-cols-2 sm:grid-cols-5 divide-x divide-slate-100 border-b border-[#dce5f0]">
             {([
               { label: dt.total, value: emailStats.total, color: 'text-slate-700', bg: 'bg-white', icon: '📨' },
               { label: dt.delivered, value: emailStats.sent, color: 'text-green-600', bg: 'bg-green-50', icon: '✅' },
@@ -1683,7 +1683,7 @@ const Dashboard: React.FC = () => {
               <div key={i} className={`${stat.bg} px-3 py-3 text-center`}>
                 <div className="text-base">{stat.icon}</div>
                 <div className={`text-xl font-semibold ${stat.color}`}>{stat.value}</div>
-                <div className="text-sm font-semibold text-[#526574] ">{stat.label}</div>
+                <div className="text-sm font-semibold text-[#50647c] ">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -1691,21 +1691,21 @@ const Dashboard: React.FC = () => {
             <div className="p-5">
               <div className="flex flex-wrap gap-2 mb-4">
                 {(['all','sent','pending','error'] as const).map(f => (
-                  <button key={f} onClick={() => setEmailHistoryFilter(f)} className={`kraken-control min-h-11 min-w-11 px-3 py-1 rounded-full text-base font-semibold transition-all ${emailHistoryFilter === f ? 'bg-[#082b45] text-white' : 'bg-[#f4f8f8] text-[#526574] hover:bg-slate-200'}`}>
+                  <button key={f} onClick={() => setEmailHistoryFilter(f)} className={`kraken-control min-h-11 min-w-11 px-3 py-1 rounded-full text-base font-semibold transition-all ${emailHistoryFilter === f ? 'bg-[#032b59] text-white' : 'bg-[#f3f7fc] text-[#50647c] hover:bg-slate-200'}`}>
                     {f === 'all' ? dt.filterAll : f === 'sent' ? dt.delivered : f === 'pending' ? dt.filterPending : dt.failed}
                   </button>
                 ))}
-                <input type="text" value={emailHistoryClientFilter} onChange={e => setEmailHistoryClientFilter(e.target.value)} placeholder={dt.filterClientPlaceholder} className="kraken-field border border-[#dce6e8] rounded-full px-3 py-1 text-base focus:outline-none focus:ring-1 focus:ring-[#087f73] flex-1 min-w-0 max-w-xs" />
+                <input type="text" value={emailHistoryClientFilter} onChange={e => setEmailHistoryClientFilter(e.target.value)} placeholder={dt.filterClientPlaceholder} className="kraken-field border border-[#dce5f0] rounded-full px-3 py-1 text-base focus:outline-none focus:ring-1 focus:ring-[#1464ad] flex-1 min-w-0 max-w-xs" />
               </div>
               {filteredEmailHistory.length === 0 ? (
-                <div className="text-center py-8 text-[#526574]">
+                <div className="text-center py-8 text-[#50647c]">
                   <Mail size={28} className="mx-auto mb-2 opacity-30" />
                   <p className="text-base font-medium">{dt.noEmailsSent}</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto rounded-xl border border-[#dce6e8]">
+                <div className="overflow-x-auto rounded-xl border border-[#dce5f0]">
                   <table className="w-full text-sm">
-                    <thead><tr className="bg-[#eef7f5] text-[#082b45]">
+                    <thead><tr className="bg-[#edf4fd] text-[#032b59]">
                       <th className="px-3 py-2.5 text-left font-semibold ">{dt.thDate}</th>
                       <th className="px-3 py-2.5 text-left font-semibold ">{dt.thClient}</th>
                       <th className="px-3 py-2.5 text-left font-semibold ">{dt.thTo}</th>
@@ -1716,25 +1716,25 @@ const Dashboard: React.FC = () => {
                     </tr></thead>
                     <tbody>
                       {filteredEmailHistory.map((entry, idx) => (
-                        <tr key={entry.id} className={`border-t border-[#dce6e8] ${idx%2===0?'bg-white':'bg-[#f4f8f8]'} hover:bg-[#eef7f5] transition-colors`}>
-                          <td className="px-3 py-2.5 text-[#526574] whitespace-nowrap">{new Date(entry.sentAt).toLocaleDateString('de-CH')} {new Date(entry.sentAt).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'})}</td>
-                          <td className="px-3 py-2.5 font-semibold text-[#082b45]">{entry.clientName}</td>
-                          <td className="px-3 py-2.5 text-[#526574] truncate max-w-[120px]">{entry.clientEmail}</td>
-                          <td className="px-3 py-2.5 text-right font-semibold text-[#082b45]">{entry.amount}</td>
+                        <tr key={entry.id} className={`border-t border-[#dce5f0] ${idx%2===0?'bg-white':'bg-[#f3f7fc]'} hover:bg-[#edf4fd] transition-colors`}>
+                          <td className="px-3 py-2.5 text-[#50647c] whitespace-nowrap">{new Date(entry.sentAt).toLocaleDateString('de-CH')} {new Date(entry.sentAt).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'})}</td>
+                          <td className="px-3 py-2.5 font-semibold text-[#032b59]">{entry.clientName}</td>
+                          <td className="px-3 py-2.5 text-[#50647c] truncate max-w-[120px]">{entry.clientEmail}</td>
+                          <td className="px-3 py-2.5 text-right font-semibold text-[#032b59]">{entry.amount}</td>
                           <td className="px-3 py-2.5 text-center">
                             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-sm font-semibold ${entry.status==='sent'?'bg-green-100 text-green-700':entry.status==='pending'?'bg-yellow-100 text-yellow-600':'bg-red-100 text-red-600'}`}>
                               {entry.status==='sent'?dt.delivered:entry.status==='pending'?dt.filterPending:dt.failed}
                             </span>
                           </td>
                           <td className="px-3 py-2.5 text-center">
-                            <select value={confirmationStatuses[entry.requestId]||'none'} onChange={e => markConfirmed(entry.requestId, e.target.value as 'confirmed'|'pending'|'none')} className="kraken-field text-base border border-[#dce6e8] rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-[#087f73] bg-white">
+                            <select value={confirmationStatuses[entry.requestId]||'none'} onChange={e => markConfirmed(entry.requestId, e.target.value as 'confirmed'|'pending'|'none')} className="kraken-field text-base border border-[#dce5f0] rounded px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-[#1464ad] bg-white">
                               <option value="none">— {dt.filterAll} —</option>
                               <option value="pending">{dt.filterPending}</option>
                               <option value="confirmed">{dt.confirmed}</option>
                             </select>
                           </td>
                           <td className="px-3 py-2.5 text-center">
-                            <button onClick={() => doResendEmail(entry)} className="kraken-control min-h-11 min-w-11 px-2 py-1 rounded-md bg-[#082b45] text-white text-base font-semibold hover:bg-slate-700 transition-colors">{dt.resend}</button>
+                            <button onClick={() => doResendEmail(entry)} className="kraken-control min-h-11 min-w-11 px-2 py-1 rounded-md bg-[#032b59] text-white text-base font-semibold hover:bg-slate-700 transition-colors">{dt.resend}</button>
                           </td>
                         </tr>
                       ))}
@@ -1749,54 +1749,54 @@ const Dashboard: React.FC = () => {
         {/* ===== EMAIL COMPOSITION MODAL ===== */}
         {emailModalOpen && selectedEmailRequest && (
           <div className="kraken-portal kraken-overlay fixed inset-0 z-[300] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4" onClick={e => { if (e.target === e.currentTarget) setEmailModalOpen(false); }}>
-            <div className="kraken-dialog bg-white rounded-2xl shadow-sm w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden border border-[#dce6e8]">
-              <div className="kraken-dialog-header bg-[#eef7f5] px-5 py-4 flex items-center justify-between flex-shrink-0">
+            <div className="kraken-dialog bg-white rounded-2xl shadow-sm w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden border border-[#dce5f0]">
+              <div className="kraken-dialog-header bg-[#edf4fd] px-5 py-4 flex items-center justify-between flex-shrink-0">
                 <div>
-                  <h2 className="text-[#087f73] font-semibold text-base flex items-center gap-2"><Mail size={16}/> {dt.sendCostConfirmation}</h2>
-                  <p className="text-[#526574] text-base mt-0.5">{dt.thClient}: {selectedEmailRequest.client} · {amountText(selectedEmailRequest)}</p>
+                  <h2 className="text-[#1464ad] font-semibold text-base flex items-center gap-2"><Mail size={16}/> {dt.sendCostConfirmation}</h2>
+                  <p className="text-[#50647c] text-base mt-0.5">{dt.thClient}: {selectedEmailRequest.client} · {amountText(selectedEmailRequest)}</p>
                 </div>
-                <button onClick={() => setEmailModalOpen(false)} className="kraken-control min-h-11 min-w-11 text-[#526574] hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"><X size={18}/></button>
+                <button onClick={() => setEmailModalOpen(false)} className="kraken-control min-h-11 min-w-11 text-[#50647c] hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"><X size={18}/></button>
               </div>
-              <div className="bg-[#f4f8f8] px-6 pt-3 flex gap-2 flex-shrink-0 border-b border-[#dce6e8]">
-                <button onClick={() => setEmailPreviewMode(false)} className={`kraken-control min-h-11 min-w-11 px-4 py-2 rounded-t-lg text-base font-semibold transition-all ${!emailPreviewMode ? 'bg-white text-[#082b45] shadow-sm' : 'text-[#526574] hover:text-[#526574]'}`}>{dt.compose}</button>
-                <button onClick={() => setEmailPreviewMode(true)} className={`kraken-control min-h-11 min-w-11 px-4 py-2 rounded-t-lg text-base font-semibold transition-all ${emailPreviewMode ? 'bg-white text-[#082b45] shadow-sm' : 'text-[#526574] hover:text-[#526574]'}`}>{dt.preview}</button>
+              <div className="bg-[#f3f7fc] px-6 pt-3 flex gap-2 flex-shrink-0 border-b border-[#dce5f0]">
+                <button onClick={() => setEmailPreviewMode(false)} className={`kraken-control min-h-11 min-w-11 px-4 py-2 rounded-t-lg text-base font-semibold transition-all ${!emailPreviewMode ? 'bg-white text-[#032b59] shadow-sm' : 'text-[#50647c] hover:text-[#50647c]'}`}>{dt.compose}</button>
+                <button onClick={() => setEmailPreviewMode(true)} className={`kraken-control min-h-11 min-w-11 px-4 py-2 rounded-t-lg text-base font-semibold transition-all ${emailPreviewMode ? 'bg-white text-[#032b59] shadow-sm' : 'text-[#50647c] hover:text-[#50647c]'}`}>{dt.preview}</button>
               </div>
               <div className="flex-1 overflow-y-auto p-6">
                 {!emailPreviewMode ? (
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label htmlFor="dashboard-field-12" className="kraken-label block text-sm font-semibold text-[#526574] mb-1">{dt.to} *</label>
-                        <input id="dashboard-field-12" type="email" value={emailTo} onChange={e => setEmailTo(e.target.value)} className="kraken-field w-full border border-[#dce6e8] rounded-lg px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-[#087f73] focus:border-transparent" placeholder="client@example.com"/>
+                        <label htmlFor="dashboard-field-12" className="kraken-label block text-sm font-semibold text-[#50647c] mb-1">{dt.to} *</label>
+                        <input id="dashboard-field-12" type="email" value={emailTo} onChange={e => setEmailTo(e.target.value)} className="kraken-field w-full border border-[#dce5f0] rounded-lg px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-[#1464ad] focus:border-transparent" placeholder="client@example.com"/>
                       </div>
                       <div>
-                        <label htmlFor="dashboard-field-13" className="kraken-label block text-sm font-semibold text-[#526574] mb-1">{dt.cc}</label>
-                        <input id="dashboard-field-13" type="email" value={emailCC} onChange={e => setEmailCC(e.target.value)} className="kraken-field w-full border border-[#dce6e8] rounded-lg px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-[#087f73] focus:border-transparent" placeholder="cc@example.com"/>
+                        <label htmlFor="dashboard-field-13" className="kraken-label block text-sm font-semibold text-[#50647c] mb-1">{dt.cc}</label>
+                        <input id="dashboard-field-13" type="email" value={emailCC} onChange={e => setEmailCC(e.target.value)} className="kraken-field w-full border border-[#dce5f0] rounded-lg px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-[#1464ad] focus:border-transparent" placeholder="cc@example.com"/>
                       </div>
                     </div>
                     <div>
-                      <label htmlFor="dashboard-field-14" className="kraken-label block text-sm font-semibold text-[#526574] mb-1">{dt.subject}</label>
-                      <input id="dashboard-field-14" type="text" value={emailSubject} onChange={e => setEmailSubject(e.target.value)} className="kraken-field w-full border border-[#dce6e8] rounded-lg px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-[#087f73] focus:border-transparent"/>
+                      <label htmlFor="dashboard-field-14" className="kraken-label block text-sm font-semibold text-[#50647c] mb-1">{dt.subject}</label>
+                      <input id="dashboard-field-14" type="text" value={emailSubject} onChange={e => setEmailSubject(e.target.value)} className="kraken-field w-full border border-[#dce5f0] rounded-lg px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-[#1464ad] focus:border-transparent"/>
                     </div>
                     <div>
-                      <label htmlFor="dashboard-field-15" className="kraken-label block text-sm font-semibold text-[#526574] mb-1">{dt.emailBody}</label>
-                      <textarea id="dashboard-field-15" value={emailBody} onChange={e => setEmailBody(e.target.value)} rows={14} className="kraken-field w-full border border-[#dce6e8] rounded-lg px-3 py-2 text-base font-mono focus:outline-none focus:ring-2 focus:ring-[#087f73] focus:border-transparent resize-none"/>
+                      <label htmlFor="dashboard-field-15" className="kraken-label block text-sm font-semibold text-[#50647c] mb-1">{dt.emailBody}</label>
+                      <textarea id="dashboard-field-15" value={emailBody} onChange={e => setEmailBody(e.target.value)} rows={14} className="kraken-field w-full border border-[#dce5f0] rounded-lg px-3 py-2 text-base font-mono focus:outline-none focus:ring-2 focus:ring-[#1464ad] focus:border-transparent resize-none"/>
                     </div>
                   </div>
                 ) : (
-                  <div className="border border-[#dce6e8] rounded-xl overflow-hidden">
-                    <div className="bg-[#f4f8f8] px-4 py-2 text-sm text-[#526574] font-medium border-b border-[#dce6e8]">{dt.preview}</div>
+                  <div className="border border-[#dce5f0] rounded-xl overflow-hidden">
+                    <div className="bg-[#f3f7fc] px-4 py-2 text-sm text-[#50647c] font-medium border-b border-[#dce5f0]">{dt.preview}</div>
                     <iframe srcDoc={emailBody} className="w-full" style={{height:'420px',border:'none'}} title="Email Preview" sandbox=""/>
                   </div>
                 )}
               </div>
-              <div className="border-t border-[#dce6e8] px-6 py-4 flex items-center justify-between bg-[#f4f8f8] flex-shrink-0">
-                <div className="flex flex-wrap items-center gap-2 text-sm text-[#526574]">
+              <div className="border-t border-[#dce5f0] px-6 py-4 flex items-center justify-between bg-[#f3f7fc] flex-shrink-0">
+                <div className="flex flex-wrap items-center gap-2 text-sm text-[#50647c]">
                   <CheckCircle size={12} className="text-green-400"/> Via Kraken PFM Dispatch
                 </div>
                 <div className="flex gap-3">
-                  <button onClick={() => setEmailModalOpen(false)} className="kraken-control min-h-11 min-w-11 px-4 py-2 rounded-lg border border-[#dce6e8] text-base font-medium text-[#526574] hover:bg-[#f4f8f8] transition-colors">{dt.cancel}</button>
-                  <button onClick={doSendEmail} disabled={emailSending || !emailTo} className="kraken-control min-h-11 min-w-11 px-5 py-2 rounded-lg bg-[#082b45] text-white text-base font-semibold hover:bg-[#082b45] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                  <button onClick={() => setEmailModalOpen(false)} className="kraken-control min-h-11 min-w-11 px-4 py-2 rounded-lg border border-[#dce5f0] text-base font-medium text-[#50647c] hover:bg-[#f3f7fc] transition-colors">{dt.cancel}</button>
+                  <button onClick={doSendEmail} disabled={emailSending || !emailTo} className="kraken-control min-h-11 min-w-11 px-5 py-2 rounded-lg bg-[#032b59] text-white text-base font-semibold hover:bg-[#032b59] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
                     {emailSending ? <><Clock size={13} className="animate-spin"/> {dt.sending}</> : <><Send size={13}/> {dt.sendEmail}</>}
                   </button>
                 </div>

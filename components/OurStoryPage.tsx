@@ -393,18 +393,18 @@ const OurStoryPage: React.FC<OurStoryPageProps> = ({ onNavigate }) => {
   ];
 
   return (
-    <main className="kraken-page kraken-editorial bg-white text-[#082b45]">
+    <main className="kraken-page kraken-editorial bg-white text-[#032b59]">
       <header className="kraken-page-intro kraken-container grid gap-10 py-12 sm:py-20 lg:grid-cols-2 lg:items-center lg:gap-16">
         <div><p className="kraken-eyebrow">Kraken PFM</p><h1 className="kraken-heading mt-3">{getS('hero_title1')} {getS('hero_title2')}</h1><p className="kraken-description">{getS('hero_desc')}</p><div className="mt-7 flex flex-wrap gap-3"><button onClick={() => document.getElementById('timeline')?.scrollIntoView({ behavior: 'smooth' })} className="kraken-button kraken-primary">{getS('btn_timeline')}</button><button onClick={() => onNavigate('comic-page')} className="kraken-button kraken-secondary">{getS('btn_kai')}</button></div></div>
-        <img src={aboutHeroImageUrl} alt="Kai — Kraken PFM" className="aspect-[4/3] w-full rounded-2xl border border-[#dce6e8] object-cover" />
+        <img src={aboutHeroImageUrl} alt="Kai — Kraken PFM" className="aspect-[4/3] w-full rounded-2xl border border-[#dce5f0] object-cover" />
       </header>
-      <section id="timeline" className="scroll-mt-28 border-y border-[#dce6e8] bg-[#f4f8f8] py-12 sm:py-20">
+      <section id="timeline" className="scroll-mt-28 border-y border-[#dce5f0] bg-[#f3f7fc] py-12 sm:py-20">
         <div className="kraken-container max-w-6xl"><div className="max-w-2xl"><h2 className="kraken-heading">{getS('origin_title')}</h2><p className="kraken-description">{getS('origin_desc')}</p></div>
-          <ol className="mt-10 space-y-8">{timeline.map((item,index) => <li key={index} className="grid overflow-hidden rounded-2xl border border-[#dce6e8] bg-white md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]"><img src={item.img} alt="" loading="lazy" className="aspect-[4/3] h-full w-full object-cover" /><div className="p-7 sm:p-10"><p className="kraken-eyebrow">{item.year}</p><h3 className="mt-3 text-2xl font-semibold tracking-tight">{item.title}</h3><p className="mt-4 text-base leading-relaxed text-[#526574]">{item.desc}</p></div></li>)}</ol>
+          <ol className="mt-10 space-y-8">{timeline.map((item,index) => <li key={index} className="grid overflow-hidden rounded-2xl border border-[#dce5f0] bg-white md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]"><img src={item.img} alt="" loading="lazy" className="aspect-[4/3] h-full w-full object-cover" /><div className="p-7 sm:p-10"><p className="kraken-eyebrow">{item.year}</p><h3 className="mt-3 text-2xl font-semibold tracking-tight">{item.title}</h3><p className="mt-4 text-base leading-relaxed text-[#50647c]">{item.desc}</p></div></li>)}</ol>
         </div>
       </section>
-      <section className="kraken-container py-12 sm:py-20"><div className="max-w-2xl"><p className="kraken-eyebrow">{getS('aspirations_badge')}</p><h2 className="kraken-heading mt-3">{getS('aspirations_title1')} {getS('aspirations_title2')}</h2></div><div className="mt-9 grid gap-6 md:grid-cols-3">{[1,2,3].map(index => <article key={index} className="rounded-2xl border border-[#dce6e8] p-7"><h3 className="text-xl font-semibold">{getS(`asp_point${index}_title`)}</h3><p className="mt-3 text-base leading-relaxed text-[#526574]">{getS(`asp_point${index}_desc`)}</p></article>)}</div></section>
-      <section className="border-t border-[#dce6e8] bg-[#f4f8f8] py-12 sm:py-20"><div className="kraken-container flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between"><h2 className="kraken-heading max-w-2xl">{getS('footer_title1')} {getS('footer_title2')}</h2><button onClick={() => onNavigate('consultation')} className="kraken-button kraken-primary self-start lg:shrink-0">{getS('footer_btn')}</button></div></section>
+      <section className="kraken-container py-12 sm:py-20"><div className="max-w-2xl"><p className="kraken-eyebrow">{getS('aspirations_badge')}</p><h2 className="kraken-heading mt-3">{getS('aspirations_title1')} {getS('aspirations_title2')}</h2></div><div className="mt-9 grid gap-6 md:grid-cols-3">{[1,2,3].map(index => <article key={index} className="rounded-2xl border border-[#dce5f0] p-7"><h3 className="text-xl font-semibold">{getS(`asp_point${index}_title`)}</h3><p className="mt-3 text-base leading-relaxed text-[#50647c]">{getS(`asp_point${index}_desc`)}</p></article>)}</div></section>
+      <section className="border-t border-[#dce5f0] bg-[#f3f7fc] py-12 sm:py-20"><div className="kraken-container flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between"><h2 className="kraken-heading max-w-2xl">{getS('footer_title1')} {getS('footer_title2')}</h2><button onClick={() => onNavigate('consultation')} className="kraken-button kraken-primary self-start lg:shrink-0">{getS('footer_btn')}</button></div></section>
     </main>
   );
 };

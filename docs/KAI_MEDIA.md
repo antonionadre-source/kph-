@@ -1,3 +1,5 @@
+> Inventario vigente: `KAI_BRAND_V3_ASSETS.json`. Véase `BRAND_MOTION_2026-11-21.md` para el nuevo diseño y las fuentes de marca. Los catálogos que siguen documentan la entrega anterior.
+
 # Medios de Kai — producción del 21 de noviembre de 2026
 
 Se utilizó la habilidad `imagegen` y la herramienta integrada `image_gen`, sin Fal, CLI de generación, claves API ni modelos alternativos. El usuario autorizó crear muchas imágenes y usar las existentes del sitio como referencia de Kai.

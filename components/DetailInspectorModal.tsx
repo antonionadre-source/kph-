@@ -348,33 +348,33 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
   if (!isStaff) return (
     <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="request-summary-heading" className="kraken-portal kraken-overlay fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/40 p-3 sm:p-6">
       <section className="kraken-dialog flex max-h-[90dvh] w-full max-w-2xl min-w-0 flex-col overflow-hidden rounded-2xl bg-white shadow-sm [overflow-wrap:anywhere]">
-        <header className="kraken-dialog-header flex items-start justify-between gap-3 border-b border-[#dce6e8] p-4 sm:p-6">
-          <div className="min-w-0"><p className="text-base font-medium text-[#526574]">{detailText(language, 'summary')}</p><h2 id="request-summary-heading" className="mt-1 text-xl font-semibold text-[#082b45]">{selectedRequest.service}</h2></div>
-          <button ref={closeRef} type="button" onClick={() => setSelectedRequest(null)} aria-label={detailText(language, 'close')} className="kraken-control min-h-11 min-w-11 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-[#526574] hover:bg-[#f4f8f8] focus-visible:outline-2 focus-visible:outline-blue-600"><X aria-hidden="true" className="h-5 w-5" /></button>
+        <header className="kraken-dialog-header flex items-start justify-between gap-3 border-b border-[#dce5f0] p-4 sm:p-6">
+          <div className="min-w-0"><p className="text-base font-medium text-[#50647c]">{detailText(language, 'summary')}</p><h2 id="request-summary-heading" className="mt-1 text-xl font-semibold text-[#032b59]">{selectedRequest.service}</h2></div>
+          <button ref={closeRef} type="button" onClick={() => setSelectedRequest(null)} aria-label={detailText(language, 'close')} className="kraken-control min-h-11 min-w-11 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-[#50647c] hover:bg-[#f3f7fc] focus-visible:outline-2 focus-visible:outline-blue-600"><X aria-hidden="true" className="h-5 w-5" /></button>
         </header>
         <div className="kraken-dialog-body min-h-0 space-y-5 overflow-y-auto p-4 sm:p-6">
-          {actionAlert && <p role="alert" className="rounded-xl bg-[#eef7f5] p-3 text-base text-[#087f73]">{actionAlert}</p>}
+          {actionAlert && <p role="alert" className="rounded-xl bg-[#edf4fd] p-3 text-base text-[#1464ad]">{actionAlert}</p>}
           <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-            <div><dt className="text-[#526574]">{detailText(language, 'reference')}</dt><dd className="mt-1 font-medium text-[#082b45]">{selectedRequest.id}</dd></div>
-            <div><dt className="text-[#526574]">{detailText(language, 'status')}</dt><dd className="mt-1 font-medium text-[#082b45]">{clientStatus}</dd></div>
-            {selectedRequest.date && <div><dt className="text-[#526574]">{pt('date')}</dt><dd className="mt-1 font-medium text-[#082b45]">{selectedRequest.date}{selectedRequest.time ? ` · ${selectedRequest.time}` : ''}</dd></div>}
-            <div><dt className="text-[#526574]">{pt('client')}</dt><dd className="mt-1 font-medium text-[#082b45]">{selectedRequest.client}</dd></div>
-            {selectedRequest.email && <div><dt className="text-[#526574]">{pt('email')}</dt><dd className="mt-1 font-medium text-[#082b45]">{selectedRequest.email}</dd></div>}
-            {selectedRequest.phone && <div><dt className="text-[#526574]">{pt('phone')}</dt><dd className="mt-1 font-medium text-[#082b45]">{selectedRequest.phone}</dd></div>}
-            {selectedRequest.address && <div className="sm:col-span-2"><dt className="text-[#526574]">{pt('address')}</dt><dd className="mt-1 font-medium text-[#082b45]">{selectedRequest.address}</dd></div>}
-            <div className="sm:col-span-2"><dt className="text-[#526574]">{dt.buildingAccess}</dt><dd className="mt-1 font-medium text-[#082b45]">{detailAccessText(selectedRequest.accessMethod, language)}</dd></div>
+            <div><dt className="text-[#50647c]">{detailText(language, 'reference')}</dt><dd className="mt-1 font-medium text-[#032b59]">{selectedRequest.id}</dd></div>
+            <div><dt className="text-[#50647c]">{detailText(language, 'status')}</dt><dd className="mt-1 font-medium text-[#032b59]">{clientStatus}</dd></div>
+            {selectedRequest.date && <div><dt className="text-[#50647c]">{pt('date')}</dt><dd className="mt-1 font-medium text-[#032b59]">{selectedRequest.date}{selectedRequest.time ? ` · ${selectedRequest.time}` : ''}</dd></div>}
+            <div><dt className="text-[#50647c]">{pt('client')}</dt><dd className="mt-1 font-medium text-[#032b59]">{selectedRequest.client}</dd></div>
+            {selectedRequest.email && <div><dt className="text-[#50647c]">{pt('email')}</dt><dd className="mt-1 font-medium text-[#032b59]">{selectedRequest.email}</dd></div>}
+            {selectedRequest.phone && <div><dt className="text-[#50647c]">{pt('phone')}</dt><dd className="mt-1 font-medium text-[#032b59]">{selectedRequest.phone}</dd></div>}
+            {selectedRequest.address && <div className="sm:col-span-2"><dt className="text-[#50647c]">{pt('address')}</dt><dd className="mt-1 font-medium text-[#032b59]">{selectedRequest.address}</dd></div>}
+            <div className="sm:col-span-2"><dt className="text-[#50647c]">{dt.buildingAccess}</dt><dd className="mt-1 font-medium text-[#032b59]">{detailAccessText(selectedRequest.accessMethod, language)}</dd></div>
           </dl>
-          {totalAmount !== undefined && <dl className="space-y-3 rounded-xl border border-[#dce6e8] bg-[#f4f8f8] p-4 text-sm">
-            <div className="flex flex-wrap justify-between gap-2"><dt className="text-[#526574]">{pt(financial.confirmed ? 'quotedAmount' : 'amount')}</dt><dd className="font-semibold text-[#082b45]">CHF {formatMoney(totalAmount)}</dd></div>
-            {depositDue !== undefined && <div className="flex flex-wrap justify-between gap-2"><dt className="text-[#526574]">{detailText(language, 'deposit')}</dt><dd className="font-semibold text-[#082b45]">CHF {formatMoney(depositDue)}</dd></div>}
+          {totalAmount !== undefined && <dl className="space-y-3 rounded-xl border border-[#dce5f0] bg-[#f3f7fc] p-4 text-sm">
+            <div className="flex flex-wrap justify-between gap-2"><dt className="text-[#50647c]">{pt(financial.confirmed ? 'quotedAmount' : 'amount')}</dt><dd className="font-semibold text-[#032b59]">CHF {formatMoney(totalAmount)}</dd></div>
+            {depositDue !== undefined && <div className="flex flex-wrap justify-between gap-2"><dt className="text-[#50647c]">{detailText(language, 'deposit')}</dt><dd className="font-semibold text-[#032b59]">CHF {formatMoney(depositDue)}</dd></div>}
           </dl>}
-          {verifiedPayment && <dl className="space-y-2 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm"><div className="flex flex-wrap justify-between gap-2"><dt>{detailText(language, 'paid')}</dt><dd className="font-semibold">CHF {formatMoney(evidence.paid)}</dd></div><div><dt className="text-[#526574]">{dt.txReference}</dt><dd className="font-mono">{selectedRequest.payment?.transactionId}</dd></div></dl>}
-          {selectedRequest.notes && <section><h3 className="mb-2 text-lg font-semibold text-[#526574]">{pt('notes')}</h3><p className="whitespace-pre-wrap text-base text-[#082b45]">{selectedRequest.notes}</p></section>}
-          {clientFiles.length > 0 && <section><h3 className="mb-2 text-lg font-semibold text-[#526574]">{dt.clientUploadedMedia}</h3><ul className="space-y-2">{clientFiles.map((file, index) => <li key={index}><a href={file.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm font-medium text-[#087f73] underline"><ExternalLink aria-hidden="true" className="h-4 w-4 shrink-0" />{file.name}</a></li>)}</ul></section>}
+          {verifiedPayment && <dl className="space-y-2 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm"><div className="flex flex-wrap justify-between gap-2"><dt>{detailText(language, 'paid')}</dt><dd className="font-semibold">CHF {formatMoney(evidence.paid)}</dd></div><div><dt className="text-[#50647c]">{dt.txReference}</dt><dd className="font-mono">{selectedRequest.payment?.transactionId}</dd></div></dl>}
+          {selectedRequest.notes && <section><h3 className="mb-2 text-lg font-semibold text-[#50647c]">{pt('notes')}</h3><p className="whitespace-pre-wrap text-base text-[#032b59]">{selectedRequest.notes}</p></section>}
+          {clientFiles.length > 0 && <section><h3 className="mb-2 text-lg font-semibold text-[#50647c]">{dt.clientUploadedMedia}</h3><ul className="space-y-2">{clientFiles.map((file, index) => <li key={index}><a href={file.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm font-medium text-[#1464ad] underline"><ExternalLink aria-hidden="true" className="h-4 w-4 shrink-0" />{file.name}</a></li>)}</ul></section>}
         </div>
-        <footer className="kraken-dialog-footer flex flex-wrap gap-2 border-t border-[#dce6e8] p-4 sm:p-6">
-          <button type="button" onClick={() => handleGenerateInvoice(selectedRequest)} className="kraken-control min-h-11 min-w-11 min-h-11 rounded-xl bg-[#087f73] px-4 py-2 text-base font-semibold text-white hover:bg-blue-800">{detailText(language, 'download')}</button>
-          <button type="button" onClick={() => setSelectedRequest(null)} className="kraken-control min-h-11 min-w-11 min-h-11 rounded-xl border border-[#dce6e8] px-4 py-2 text-base font-semibold text-[#526574] hover:bg-[#f4f8f8]">{detailText(language, 'close')}</button>
+        <footer className="kraken-dialog-footer flex flex-wrap gap-2 border-t border-[#dce5f0] p-4 sm:p-6">
+          <button type="button" onClick={() => handleGenerateInvoice(selectedRequest)} className="kraken-control min-h-11 min-w-11 min-h-11 rounded-xl bg-[#1464ad] px-4 py-2 text-base font-semibold text-white hover:bg-blue-800">{detailText(language, 'download')}</button>
+          <button type="button" onClick={() => setSelectedRequest(null)} className="kraken-control min-h-11 min-w-11 min-h-11 rounded-xl border border-[#dce5f0] px-4 py-2 text-base font-semibold text-[#50647c] hover:bg-[#f3f7fc]">{detailText(language, 'close')}</button>
           {evidence.canDeleteDraft && <button type="button" onClick={() => handleDelete(selectedRequest.id)} className="kraken-control min-h-11 min-w-11 min-h-11 rounded-xl px-4 py-2 text-base font-semibold text-red-700 hover:bg-red-50">{detailText(language, 'deleteDraft')}</button>}
         </footer>
       </section>
@@ -387,18 +387,18 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
             initial={{ opacity: 0, scale: 0.97, y: 15 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: 15 }}
-            className="kraken-dialog max-h-[92dvh] bg-white border border-[#dce6e8] w-full max-w-6xl rounded-[2rem] md:rounded-3xl shadow-sm overflow-hidden flex flex-col text-[#082b45] font-sans"
+            className="kraken-dialog max-h-[92dvh] bg-white border border-[#dce5f0] w-full max-w-6xl rounded-[2rem] md:rounded-3xl shadow-sm overflow-hidden flex flex-col text-[#032b59] font-sans"
         >
             {/* Sticky Nav top bar from Mockup */}
-            <div className="kraken-dialog-header px-5 py-4 sm:px-6 border-b border-[#dce6e8] bg-[#f4f8f8] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="kraken-dialog-header px-5 py-4 sm:px-6 border-b border-[#dce5f0] bg-[#f3f7fc] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#eef7f5] border border-[#c8dedb] flex items-center justify-center text-[#087f73] font-semibold text-lg">
+                    <div className="w-10 h-10 rounded-xl bg-[#edf4fd] border border-[#c9dbef] flex items-center justify-center text-[#1464ad] font-semibold text-lg">
                         K
                     </div>
-                    <div className="flex items-center gap-2 text-sm sm:text-sm font-semibold text-[#526574]">
-                        <span className="text-[#082b45] hover:text-[#087f73] font-semibold ">Kraken PFM</span>
-                        <span className="text-[#526574]">/</span>
-                        <span className="text-[#526574] hover:text-[#082b45] font-semibold transition-all truncate max-w-[120px] sm:max-w-none">{dt.tabRequests}</span>
+                    <div className="flex items-center gap-2 text-sm sm:text-sm font-semibold text-[#50647c]">
+                        <span className="text-[#032b59] hover:text-[#1464ad] font-semibold ">Kraken PFM</span>
+                        <span className="text-[#50647c]">/</span>
+                        <span className="text-[#50647c] hover:text-[#032b59] font-semibold transition-all truncate max-w-[120px] sm:max-w-none">{dt.tabRequests}</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
@@ -406,7 +406,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                         ref={closeRef}
                         type="button"
                         onClick={() => setSelectedRequest(null)}
-                        className="kraken-control min-h-11 min-w-11 px-4 py-2 bg-[#f4f8f8] hover:bg-slate-200/85 text-[#526574] rounded-lg text-base font-semibold flex items-center gap-1.5 transition-all border border-[#dce6e8]"
+                        className="kraken-control min-h-11 min-w-11 px-4 py-2 bg-[#f3f7fc] hover:bg-slate-200/85 text-[#50647c] rounded-lg text-base font-semibold flex items-center gap-1.5 transition-all border border-[#dce5f0]"
                     >
                         <ArrowLeft className="w-3.5 h-3.5" />
                         {dt.backToDashboard}
@@ -421,7 +421,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="bg-emerald-50 border-b border-emerald-100 px-6 py-3 text-emerald-700 text-sm font-semibold flex items-center gap-2"
+                        className="bg-blue-50 border-b border-blue-100 px-6 py-3 text-blue-700 text-sm font-semibold flex items-center gap-2"
                     >
                         <CheckCircle className="w-4 h-4 shrink-0" />
                         <span>{actionAlert}</span>
@@ -430,20 +430,20 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
             </AnimatePresence>
 
             {/* Detailed Header layout from Mockup */}
-            <div className="p-6 sm:p-8 border-b border-[#dce6e8] bg-[#f4f8f8] flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="p-6 sm:p-8 border-b border-[#dce5f0] bg-[#f3f7fc] flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="space-y-2">
                     <div className="flex items-center gap-2.5 flex-wrap">
-                        <span className="font-mono text-sm bg-[#f4f8f8] text-[#526574] px-2 py-0.5 rounded font-semibold border border-[#dce6e8] ">
+                        <span className="font-mono text-sm bg-[#f3f7fc] text-[#50647c] px-2 py-0.5 rounded font-semibold border border-[#dce5f0] ">
                             #{selectedRequest.id.toUpperCase()}
                         </span>
-                        <span className="text-sm text-[#526574] font-semibold">
+                        <span className="text-sm text-[#50647c] font-semibold">
                             {dt.submitted} {selectedRequest.createdAt ? new Date(selectedRequest.createdAt?.toDate?.() || selectedRequest.createdAt).toLocaleDateString() : 'online'}
                         </span>
                     </div>
-                    <h2 className="text-2xl sm:text-3xl font-medium text-[#082b45]">
+                    <h2 className="text-2xl sm:text-3xl font-medium text-[#032b59]">
                         {selectedRequest.service.split(' ').map((word, wIdx, arr) => {
                             if (wIdx >= arr.length - 2) {
-                                return <span key={wIdx} className="text-[#087f73] font-semibold">{word} </span>;
+                                return <span key={wIdx} className="text-[#1464ad] font-semibold">{word} </span>;
                             }
                             return <span key={wIdx}>{word} </span>;
                         })}
@@ -456,7 +456,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                             {dt.highPriorityBadge}
                         </span>
                     )}
-                    {surchargePercent !== undefined && <span className="px-3 py-1 bg-[#eef7f5] text-[#087f73] border border-[#c8dedb] text-sm font-semibold rounded-full">{dt.regionSurcharge} +{surchargePercent}%</span>}
+                    {surchargePercent !== undefined && <span className="px-3 py-1 bg-[#edf4fd] text-[#1464ad] border border-[#c9dbef] text-sm font-semibold rounded-full">{dt.regionSurcharge} +{surchargePercent}%</span>}
                 </div>
             </div>
 
@@ -466,8 +466,8 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                 <div className="lg:col-span-2 space-y-8">
 
                     {/* 1) Inline Pipeline progress steps from mockup */}
-                    <div className="bg-[#f4f8f8] rounded-2xl border border-[#dce6e8] overflow-hidden shadow-sm">
-                        <div className="flex flex-col sm:flex-row bg-[#f4f8f8]">
+                    <div className="bg-[#f3f7fc] rounded-2xl border border-[#dce5f0] overflow-hidden shadow-sm">
+                        <div className="flex flex-col sm:flex-row bg-[#f3f7fc]">
                             {([
                                 { label: dt.pendingUnscheduled, val: 'Pending', displayVal: dt.filterPending },
                                 { label: dt.inProgressAssigned, val: 'In Progress', displayVal: dt.filterInProgress },
@@ -481,27 +481,27 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                 return (
                                     <div
                                         key={st.val}
-                                        className={`flex-1 flex items-center justify-between px-5 py-4 border-r border-[#dce6e8] last:border-r-0 transition-all ${
-                                            isActive ? 'bg-[#eef7f5] border-b-2 border-b-blue-500' :
-                                            isCompleted ? 'bg-emerald-50 text-emerald-700' : 'text-[#526574]'
+                                        className={`flex-1 flex items-center justify-between px-5 py-4 border-r border-[#dce5f0] last:border-r-0 transition-all ${
+                                            isActive ? 'bg-[#edf4fd] border-b-2 border-b-blue-500' :
+                                            isCompleted ? 'bg-blue-50 text-blue-700' : 'text-[#50647c]'
                                         }`}
                                     >
                                         <div className="flex items-center gap-3">
                                             <div className={`w-6 h-6 rounded-lg font-mono text-sm font-semibold flex items-center justify-center border ${
-                                                isActive ? 'bg-blue-100 text-[#087f73] border-[#c8dedb]' :
-                                                isCompleted ? 'bg-emerald-100 text-emerald-700 border-emerald-250' : 'bg-slate-200 border-[#dce6e8] text-[#526574]'
+                                                isActive ? 'bg-blue-100 text-[#1464ad] border-[#c9dbef]' :
+                                                isCompleted ? 'bg-blue-100 text-blue-700 border-blue-250' : 'bg-slate-200 border-[#dce5f0] text-[#50647c]'
                                             }`}>
                                                 {isCompleted ? '✓' : stepIdx + 1}
                                             </div>
                                             <div className="flex flex-col">
                                                 <span className={`text-sm font-semibold leading-none ${
-                                                    isActive ? 'text-[#087f73]' : isCompleted ? 'text-emerald-700' : 'text-[#526574]'
+                                                    isActive ? 'text-[#1464ad]' : isCompleted ? 'text-blue-700' : 'text-[#50647c]'
                                                 }`}>{st.displayVal}</span>
-                                                <span className="text-sm text-[#526574] mt-0.5">{st.label}</span>
+                                                <span className="text-sm text-[#50647c] mt-0.5">{st.label}</span>
                                             </div>
                                         </div>
                                         {isActive && (
-                                            <span className="w-2 h-2 rounded-full bg-[#087f73] shrink-0" />
+                                            <span className="w-2 h-2 rounded-full bg-[#1464ad] shrink-0" />
                                         )}
                                     </div>
                                 );
@@ -510,8 +510,8 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
 
                         {/* Dynamic Admin status controls switcher (exclusive to staff/crew ops) */}
                         {isStaff && (
-                            <div className="p-4 bg-[#f4f8f8] border-t border-[#dce6e8] flex flex-col sm:flex-row items-center justify-between gap-3">
-                                <span className="text-sm font-semibold text-[#526574] ">
+                            <div className="p-4 bg-[#f3f7fc] border-t border-[#dce5f0] flex flex-col sm:flex-row items-center justify-between gap-3">
+                                <span className="text-sm font-semibold text-[#50647c] ">
                                     {dt.manualOverride}
                                 </span>
                                 <div className="grid grid-cols-1 sm:flex gap-2 w-full sm:w-auto">
@@ -526,8 +526,8 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                             onClick={() => updateStatusDirect(selectedRequest.id, st.key as any)}
                                             className={`kraken-control min-h-11 flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-base font-semibold whitespace-nowrap border transition-all ${
                                                 selectedRequest.status === st.key
-                                                    ? 'bg-[#087f73] text-white border-[#087f73] shadow-md'
-                                                    : 'bg-white text-[#526574] hover:text-slate-850 border-[#dce6e8] hover:bg-[#f4f8f8]'
+                                                    ? 'bg-[#1464ad] text-white border-[#1464ad] shadow-md'
+                                                    : 'bg-white text-[#50647c] hover:text-slate-850 border-[#dce5f0] hover:bg-[#f3f7fc]'
                                             }`}
                                         >
                                             {st.label}
@@ -539,41 +539,41 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                     </div>
 
                     {/* 3) Detailed Quote calculation inputs (Room metrics etc.) */}
-                    <div className="bg-[#f4f8f8] rounded-2xl p-6 border border-[#dce6e8] space-y-4">
-                        <h3 className="text-lg font-semibold text-[#526574] flex items-center gap-2">
+                    <div className="bg-[#f3f7fc] rounded-2xl p-6 border border-[#dce5f0] space-y-4">
+                        <h3 className="text-lg font-semibold text-[#50647c] flex items-center gap-2">
                             {dt.quoteParameters}
                         </h3>
 
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div className="bg-white p-4 rounded-xl border border-[#dce6e8]">
-                                <span className="text-sm text-[#526574] block font-semibold mb-1.5 flex items-center gap-1">
-                                    <Bed className="w-3 h-3 text-[#087f73]" /> {dt.bedRooms}
+                            <div className="bg-white p-4 rounded-xl border border-[#dce5f0]">
+                                <span className="text-sm text-[#50647c] block font-semibold mb-1.5 flex items-center gap-1">
+                                    <Bed className="w-3 h-3 text-[#1464ad]" /> {dt.bedRooms}
                                 </span>
-                                <span className="text-sm font-semibold text-[#082b45] font-mono">
+                                <span className="text-sm font-semibold text-[#032b59] font-mono">
                                     {roomsCount}
                                 </span>
                             </div>
-                            <div className="bg-white p-4 rounded-xl border border-[#dce6e8]">
-                                <span className="text-sm text-[#526574] block font-semibold mb-1.5 flex items-center gap-1">
-                                    <Droplets className="w-3 h-3 text-[#087f73]" /> {dt.bathrooms}
+                            <div className="bg-white p-4 rounded-xl border border-[#dce5f0]">
+                                <span className="text-sm text-[#50647c] block font-semibold mb-1.5 flex items-center gap-1">
+                                    <Droplets className="w-3 h-3 text-[#1464ad]" /> {dt.bathrooms}
                                 </span>
-                                <span className="text-sm font-semibold text-[#082b45] font-mono">
+                                <span className="text-sm font-semibold text-[#032b59] font-mono">
                                     {bathroomsCount}
                                 </span>
                             </div>
-                            <div className="bg-white p-4 rounded-xl border border-[#dce6e8]">
-                                <span className="text-sm text-[#526574] block font-semibold mb-1.5 flex items-center gap-1">
-                                    <Layers className="w-3 h-3 text-[#087f73]" /> {dt.carpetArea}
+                            <div className="bg-white p-4 rounded-xl border border-[#dce5f0]">
+                                <span className="text-sm text-[#50647c] block font-semibold mb-1.5 flex items-center gap-1">
+                                    <Layers className="w-3 h-3 text-[#1464ad]" /> {dt.carpetArea}
                                 </span>
-                                <span className="text-sm font-semibold text-[#082b45] font-mono">
+                                <span className="text-sm font-semibold text-[#032b59] font-mono">
                                     {carpetCount > 0 ? `${carpetCount} m²` : '—'}
                                 </span>
                             </div>
-                            <div className="bg-white p-4 rounded-xl border border-[#dce6e8]">
-                                <span className="text-sm text-[#526574] block font-semibold mb-1.5 flex items-center gap-1">
-                                    <Clock className="w-3.5 h-3.5 text-[#087f73]" /> {dt.allocatedDuration}
+                            <div className="bg-white p-4 rounded-xl border border-[#dce5f0]">
+                                <span className="text-sm text-[#50647c] block font-semibold mb-1.5 flex items-center gap-1">
+                                    <Clock className="w-3.5 h-3.5 text-[#1464ad]" /> {dt.allocatedDuration}
                                 </span>
-                                <span className="text-sm font-semibold text-[#087f73] font-mono">
+                                <span className="text-sm font-semibold text-[#1464ad] font-mono">
                                     {customDuration} <span className="text-sm font-semibold">{dt.hours}</span>
                                 </span>
                             </div>
@@ -581,36 +581,36 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
 
                         {/* Checked Configuration items visually */}
                         <div className="pt-2">
-                            <span className="text-sm text-[#526574] font-semibold block mb-2">{dt.requestedAddons}</span>
+                            <span className="text-sm text-[#50647c] font-semibold block mb-2">{dt.requestedAddons}</span>
                             <div className="flex flex-wrap gap-2">
                                 <span className={`px-3 py-1.5 rounded-lg text-sm font-semibold border transition-colors flex items-center gap-1.5 ${
                                     balconyCount > 0
-                                        ? 'bg-[#eef7f5] border-[#c8dedb] text-[#087f73] font-semibold'
-                                        : 'bg-[#f4f8f8] border-[#dce6e8] text-[#526574]'
+                                        ? 'bg-[#edf4fd] border-[#c9dbef] text-[#1464ad] font-semibold'
+                                        : 'bg-[#f3f7fc] border-[#dce5f0] text-[#50647c]'
                                 }`}>
                                     <CheckSquare className="w-3.5 h-3.5" />
                                     {dt.balconiesCleaner} {balconyCount > 0 ? `(${balconyCount})` : ''}
                                 </span>
                                 <span className={`px-3 py-1.5 rounded-lg text-sm font-semibold border transition-colors flex items-center gap-1.5 ${
                                     details.storageUnits
-                                        ? 'bg-[#eef7f5] border-[#c8dedb] text-[#087f73] font-semibold'
-                                        : 'bg-[#f4f8f8] border-[#dce6e8] text-[#526574]'
+                                        ? 'bg-[#edf4fd] border-[#c9dbef] text-[#1464ad] font-semibold'
+                                        : 'bg-[#f3f7fc] border-[#dce5f0] text-[#50647c]'
                                 }`}>
                                     <CheckSquare className="w-3.5 h-3.5" />
                                     {dt.cellarGarages}
                                 </span>
                                 <span className={`px-3 py-1.5 rounded-lg text-sm font-semibold border transition-colors flex items-center gap-1.5 ${
                                     details.furniture
-                                        ? 'bg-[#eef7f5] border-[#c8dedb] text-[#087f73] font-semibold'
-                                        : 'bg-[#f4f8f8] border-[#dce6e8] text-[#526574]'
+                                        ? 'bg-[#edf4fd] border-[#c9dbef] text-[#1464ad] font-semibold'
+                                        : 'bg-[#f3f7fc] border-[#dce5f0] text-[#50647c]'
                                 }`}>
                                     <CheckSquare className="w-3.5 h-3.5" />
                                     {dt.furnishedCleaning}
                                 </span>
                                 <span className={`px-3 py-1.5 rounded-lg text-sm font-semibold border transition-colors flex items-center gap-1.5 ${
                                     selectedRequest.bookingMode === 'instant'
-                                        ? 'bg-[#eef7f5] border-[#c8dedb] text-[#087f73] font-semibold'
-                                        : 'bg-[#f4f8f8] border-[#dce6e8] text-[#526574]'
+                                        ? 'bg-[#edf4fd] border-[#c9dbef] text-[#1464ad] font-semibold'
+                                        : 'bg-[#f3f7fc] border-[#dce5f0] text-[#50647c]'
                                 }`}>
                                     <CheckSquare className="w-3.5 h-3.5" />
                                     {dt.instantBookingPriority}
@@ -619,8 +619,8 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                         </div>
                     </div>
 
-                    {totalAmount !== undefined && <section className="space-y-3 rounded-2xl border border-[#dce6e8] bg-[#f4f8f8] p-6 text-sm">
-                        <h3 className="font-semibold text-[#526574]">{dt.pricingMatrix}</h3>
+                    {totalAmount !== undefined && <section className="space-y-3 rounded-2xl border border-[#dce5f0] bg-[#f3f7fc] p-6 text-sm">
+                        <h3 className="font-semibold text-[#50647c]">{dt.pricingMatrix}</h3>
                         <dl className="space-y-3">
                             {calculatedBase !== undefined && <div className="flex flex-wrap justify-between gap-2"><dt>{dt.baseQuote}</dt><dd>CHF {formatMoney(calculatedBase)}</dd></div>}
                             {calculatedSurcharge !== undefined && <div className="flex flex-wrap justify-between gap-2"><dt>{dt.regionSurcharge}{surchargePercent !== undefined ? ` (+${surchargePercent}%)` : ''}</dt><dd>CHF {formatMoney(calculatedSurcharge)}</dd></div>}
@@ -629,65 +629,65 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                             {depositDue !== undefined && <div className="flex flex-wrap justify-between gap-2"><dt>{detailText(language, 'deposit')}</dt><dd>CHF {formatMoney(depositDue)}</dd></div>}
                         </dl>
                     </section>}
-                    {verifiedPayment && <section className="space-y-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-sm">
-                        <h3 className="font-semibold text-emerald-800">{detailText(language, 'paid')}</h3>
+                    {verifiedPayment && <section className="space-y-3 rounded-2xl border border-blue-200 bg-blue-50 p-6 text-sm">
+                        <h3 className="font-semibold text-blue-800">{detailText(language, 'paid')}</h3>
                         <dl className="space-y-3"><div className="flex flex-wrap justify-between gap-2"><dt>{pt('amount')}</dt><dd className="font-semibold">CHF {formatMoney(evidence.paid)}</dd></div><div><dt>{dt.txReference}</dt><dd className="font-mono">{selectedRequest.payment?.transactionId}</dd></div>{selectedRequest.payment?.gateway && <div><dt>{dt.securePaymentAudit}</dt><dd>{selectedRequest.payment.gateway}</dd></div>}</dl>
                     </section>}
 
                     {/* 6) Contact access credentials card */}
-                    <div className="bg-[#f4f8f8] rounded-2xl p-6 border border-[#dce6e8] space-y-4">
-                        <h3 className="text-lg font-semibold text-[#526574] ">
+                    <div className="bg-[#f3f7fc] rounded-2xl p-6 border border-[#dce5f0] space-y-4">
+                        <h3 className="text-lg font-semibold text-[#50647c] ">
                             {dt.operationalContact}
                         </h3>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm font-semibold">
                             <div className="space-y-3.5">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-[#eef7f5] border border-[#c8dedb] flex items-center justify-center text-[#087f73]">
+                                    <div className="w-8 h-8 rounded-lg bg-[#edf4fd] border border-[#c9dbef] flex items-center justify-center text-[#1464ad]">
                                         <User className="w-4 h-4" />
                                     </div>
                                     <div>
-                                        <span className="text-sm text-[#526574] block ">{dt.authorizedContact}</span>
-                                        <span className="text-[#082b45] font-semibold block">{selectedRequest.client}</span>
+                                        <span className="text-sm text-[#50647c] block ">{dt.authorizedContact}</span>
+                                        <span className="text-[#032b59] font-semibold block">{selectedRequest.client}</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-[#eef7f5] border border-[#c8dedb] flex items-center justify-center text-[#087f73]">
+                                    <div className="w-8 h-8 rounded-lg bg-[#edf4fd] border border-[#c9dbef] flex items-center justify-center text-[#1464ad]">
                                         <Mail className="w-4 h-4" />
                                     </div>
                                     <div>
-                                        <span className="text-sm text-[#526574] block ">{dt.officialEmail}</span>
-                                        <span className="text-[#526574] block normal-case font-semibold">{selectedRequest.email || '—'}</span>
+                                        <span className="text-sm text-[#50647c] block ">{dt.officialEmail}</span>
+                                        <span className="text-[#50647c] block normal-case font-semibold">{selectedRequest.email || '—'}</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-[#eef7f5] border border-[#c8dedb] flex items-center justify-center text-[#087f73]">
+                                    <div className="w-8 h-8 rounded-lg bg-[#edf4fd] border border-[#c9dbef] flex items-center justify-center text-[#1464ad]">
                                         <Phone className="w-4 h-4" />
                                     </div>
                                     <div>
-                                        <span className="text-sm text-[#526574] block ">{dt.phoneDirect}</span>
-                                        <span className="text-[#082b45] font-mono block font-semibold">{selectedRequest.phone || '—'}</span>
+                                        <span className="text-sm text-[#50647c] block ">{dt.phoneDirect}</span>
+                                        <span className="text-[#032b59] font-mono block font-semibold">{selectedRequest.phone || '—'}</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="space-y-3.5">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-[#eef7f5] border border-[#c8dedb] flex items-center justify-center text-[#087f73]">
+                                    <div className="w-8 h-8 rounded-lg bg-[#edf4fd] border border-[#c9dbef] flex items-center justify-center text-[#1464ad]">
                                         <MapPin className="w-4 h-4" />
                                     </div>
                                     <div className="min-w-0">
-                                        <span className="text-sm text-[#526574] block ">{dt.serviceLocation}</span>
-                                        <span className="text-[#082b45] font-semibold block truncate text-[#082b45]" title={selectedRequest.address}>{selectedRequest.address || '—'}</span>
+                                        <span className="text-sm text-[#50647c] block ">{dt.serviceLocation}</span>
+                                        <span className="text-[#032b59] font-semibold block truncate text-[#032b59]" title={selectedRequest.address}>{selectedRequest.address || '—'}</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-[#eef7f5] border border-[#c8dedb] flex items-center justify-center text-[#087f73]">
+                                    <div className="w-8 h-8 rounded-lg bg-[#edf4fd] border border-[#c9dbef] flex items-center justify-center text-[#1464ad]">
                                         <Key className="w-4 h-4" />
                                     </div>
                                     <div>
-                                        <span className="text-sm text-[#526574] block ">{dt.buildingAccess}</span>
-                                        <span className="text-[#082b45] font-semibold block text-[#082b45]">
+                                        <span className="text-sm text-[#50647c] block ">{dt.buildingAccess}</span>
+                                        <span className="text-[#032b59] font-semibold block text-[#032b59]">
                                             {detailAccessText(selectedRequest.accessMethod, language)}
                                         </span>
                                     </div>
@@ -697,50 +697,50 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                     </div>
 
                     {/* 7) Scheduling timestamps audit tracker */}
-                    <div className="bg-[#f4f8f8] rounded-2xl p-6 border border-[#dce6e8] space-y-4">
-                        <h3 className="text-lg font-semibold text-[#526574] flex items-center gap-2">
+                    <div className="bg-[#f3f7fc] rounded-2xl p-6 border border-[#dce5f0] space-y-4">
+                        <h3 className="text-lg font-semibold text-[#50647c] flex items-center gap-2">
                             {dt.serviceTimeline}
                         </h3>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm font-semibold">
-                            <div className="bg-white p-4 rounded-xl border border-[#dce6e8]">
-                                <span className="text-sm text-[#526574] block font-semibold mb-1">{dt.serviceDate}</span>
-                                <span className="text-[#082b45] font-semibold">{selectedRequest.scheduling?.requestedDate || selectedRequest.date}</span>
+                            <div className="bg-white p-4 rounded-xl border border-[#dce5f0]">
+                                <span className="text-sm text-[#50647c] block font-semibold mb-1">{dt.serviceDate}</span>
+                                <span className="text-[#032b59] font-semibold">{selectedRequest.scheduling?.requestedDate || selectedRequest.date}</span>
                             </div>
-                            <div className="bg-white p-4 rounded-xl border border-[#dce6e8]">
-                                <span className="text-sm text-[#526574] block font-semibold mb-1">{dt.preferredSlot}</span>
-                                <span className="text-[#082b45] font-semibold ">{selectedRequest.scheduling?.preferredTimeWindow || '—'}</span>
+                            <div className="bg-white p-4 rounded-xl border border-[#dce5f0]">
+                                <span className="text-sm text-[#50647c] block font-semibold mb-1">{dt.preferredSlot}</span>
+                                <span className="text-[#032b59] font-semibold ">{selectedRequest.scheduling?.preferredTimeWindow || '—'}</span>
                             </div>
-                            <div className="bg-[#eef7f5] p-4 rounded-xl border border-[#c8dedb]">
-                                <span className="text-sm text-[#087f73] block font-semibold mb-1">{dt.allocatedDuration}</span>
-                                <span className="text-[#082b45] font-mono font-semibold block">{customDuration} {dt.hours}</span>
+                            <div className="bg-[#edf4fd] p-4 rounded-xl border border-[#c9dbef]">
+                                <span className="text-sm text-[#1464ad] block font-semibold mb-1">{dt.allocatedDuration}</span>
+                                <span className="text-[#032b59] font-mono font-semibold block">{customDuration} {dt.hours}</span>
                             </div>
-                            <div className="bg-white p-4 rounded-xl border border-[#dce6e8]">
-                                <span className="text-sm text-[#526574] block font-semibold mb-1">{dt.estCompletion}</span>
-                                <span className="text-[#087f73] font-mono font-semibold block">{selectedRequest.scheduling?.estimatedEndTime || '—'}</span>
+                            <div className="bg-white p-4 rounded-xl border border-[#dce5f0]">
+                                <span className="text-sm text-[#50647c] block font-semibold mb-1">{dt.estCompletion}</span>
+                                <span className="text-[#1464ad] font-mono font-semibold block">{selectedRequest.scheduling?.estimatedEndTime || '—'}</span>
                             </div>
                         </div>
 
-                        <div className="pt-2 border-t border-[#dce6e8]">
-                            <span className="text-sm text-[#087f73] font-semibold block ml-1 mb-3">
+                        <div className="pt-2 border-t border-[#dce5f0]">
+                            <span className="text-sm text-[#1464ad] font-semibold block ml-1 mb-3">
                                 {dt.auditChronology}
                             </span>
                             <div className="space-y-2.5">
-                                <div className="flex justify-between items-center px-4 py-3 bg-white rounded-xl border border-[#dce6e8] text-sm font-semibold text-[#526574]">
+                                <div className="flex justify-between items-center px-4 py-3 bg-white rounded-xl border border-[#dce5f0] text-sm font-semibold text-[#50647c]">
                                     <span>{dt.submitted}</span>
-                                    <span className="font-mono text-[#526574]">
+                                    <span className="font-mono text-[#50647c]">
                                         {formatRecordedDate(selectedRequest.createdAt)}
                                     </span>
                                 </div>
-                                <div className="flex justify-between items-center px-4 py-3 bg-white rounded-xl border border-[#dce6e8] text-sm font-semibold text-[#526574]">
+                                <div className="flex justify-between items-center px-4 py-3 bg-white rounded-xl border border-[#dce5f0] text-sm font-semibold text-[#50647c]">
                                     <span>{pt('amount')}</span>
-                                    <span className="font-mono text-[#087f73] font-semibold">
+                                    <span className="font-mono text-[#1464ad] font-semibold">
                                         {formatRecordedDate(selectedRequest.serverQuote?.createdAt)}
                                     </span>
                                 </div>
-                                <div className="flex justify-between items-center px-4 py-3 bg-white rounded-xl border border-[#dce6e8] text-sm font-semibold text-[#526574]">
+                                <div className="flex justify-between items-center px-4 py-3 bg-white rounded-xl border border-[#dce5f0] text-sm font-semibold text-[#50647c]">
                                     <span>{dt.securePaymentAudit}</span>
-                                    <span className="font-mono text-emerald-600 font-semibold">
+                                    <span className="font-mono text-blue-600 font-semibold">
                                         {verifiedPayment ? formatRecordedDate(selectedRequest.payment?.verifiedAt) : '—'}
                                     </span>
                                 </div>
@@ -749,8 +749,8 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                     </div>
 
                     {/* 8) Media attachments grid dynamically filled */}
-                    <div className="bg-[#f4f8f8] rounded-2xl p-6 border border-[#dce6e8] space-y-4">
-                        <h3 className="text-lg font-semibold text-[#526574] text-[#526574] ">
+                    <div className="bg-[#f3f7fc] rounded-2xl p-6 border border-[#dce5f0] space-y-4">
+                        <h3 className="text-lg font-semibold text-[#50647c] text-[#50647c] ">
                             {dt.clientUploadedMedia} ({selectedRequest.mediaUrls ? selectedRequest.mediaUrls.length : 0})
                         </h3>
 
@@ -761,9 +761,9 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                     const isImg = url.toLowerCase().includes('.jpg') || url.toLowerCase().includes('.png') || url.toLowerCase().includes('.jpeg') || url.toLowerCase().includes('unsplash') || url.includes('image');
 
                                     return (
-                                        <div key={i} className="bg-white rounded-xl border border-[#dce6e8] overflow-hidden group flex flex-col justify-between">
+                                        <div key={i} className="bg-white rounded-xl border border-[#dce5f0] overflow-hidden group flex flex-col justify-between">
                                             {isImg ? (
-                                                <div className="h-32 w-full overflow-hidden relative bg-[#f4f8f8] flex items-center justify-center">
+                                                <div className="h-32 w-full overflow-hidden relative bg-[#f3f7fc] flex items-center justify-center">
                                                     <img
                                                         src={url}
                                                         alt={name}
@@ -775,13 +775,13 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                                     />
                                                 </div>
                                              ) : (
-                                                <div className="h-32 w-full bg-[#f4f8f8] flex flex-col items-center justify-center text-[#526574] gap-2">
-                                                    <FileText className="w-8 h-8 text-[#087f73]" />
+                                                <div className="h-32 w-full bg-[#f3f7fc] flex flex-col items-center justify-center text-[#50647c] gap-2">
+                                                    <FileText className="w-8 h-8 text-[#1464ad]" />
                                                     <span className="text-sm font-mono">{dt.attachment} #{i+1}</span>
                                                 </div>
                                             )}
-                                            <div className="p-3 bg-[#f4f8f8] border-t border-[#dce6e8] flex items-center justify-between gap-2">
-                                                <span className="text-sm font-semibold text-[#526574] truncate" title={name}>{name}</span>
+                                            <div className="p-3 bg-[#f3f7fc] border-t border-[#dce5f0] flex items-center justify-between gap-2">
+                                                <span className="text-sm font-semibold text-[#50647c] truncate" title={name}>{name}</span>
                                                 <div className="flex items-center gap-1 shrink-0">
                                                     <button
                                                         type="button"
@@ -790,7 +790,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                                             name,
                                                             title: `${dt.attachment} • ${selectedRequest.client}`
                                                         })}
-                                                        className="kraken-control min-h-11 min-w-11 px-2.5 py-1.5 bg-[#087f73] hover:bg-[#087f73] text-white rounded-lg text-base font-semibold flex items-center gap-1 cursor-pointer"
+                                                        className="kraken-control min-h-11 min-w-11 px-2.5 py-1.5 bg-[#1464ad] hover:bg-[#1464ad] text-white rounded-lg text-base font-semibold flex items-center gap-1 cursor-pointer"
                                                         title={dt.view}
                                                     >
                                                         {dt.view}
@@ -799,7 +799,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                                     <button
                                                         type="button"
                                                         onClick={() => downloadFileSafely(url, name)}
-                                                        className="kraken-control min-h-11 min-w-11 px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-[#082b45] rounded-lg text-base font-semibold flex items-center gap-1 cursor-pointer"
+                                                        className="kraken-control min-h-11 min-w-11 px-2.5 py-1.5 bg-[#1464ad] hover:bg-[#0c4f92] text-white rounded-lg text-base font-semibold flex items-center gap-1 cursor-pointer"
                                                         title={dt.download}
                                                     >
                                                         {dt.download}
@@ -812,7 +812,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                 })}
                             </div>
                         ) : (
-                            <div className="bg-[#f4f8f8] border border-[#dce6e8] rounded-xl p-8 text-center text-sm text-[#526574] font-semibold">
+                            <div className="bg-[#f3f7fc] border border-[#dce5f0] rounded-xl p-8 text-center text-sm text-[#50647c] font-semibold">
                                 {dt.noMediaAttached}
                             </div>
                         )}
@@ -824,8 +824,8 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                 <div className="space-y-6">
 
                     {/* Operational Action Panel from Mockup */}
-                    <div className="bg-[#f4f8f8] rounded-2xl p-6 border border-[#dce6e8] space-y-5">
-                        <h3 className="text-lg font-semibold text-[#526574] ">
+                    <div className="bg-[#f3f7fc] rounded-2xl p-6 border border-[#dce5f0] space-y-5">
+                        <h3 className="text-lg font-semibold text-[#50647c] ">
                             {dt.interactiveCrewCommands}
                         </h3>
 
@@ -833,66 +833,66 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                             <button
                                 type="button"
                                 hidden={!isStaff} onClick={() => handleSendEmail(selectedRequest)}
-                                className="kraken-control min-h-11 w-full px-4 py-2.5 bg-white hover:bg-[#eef7f5] text-[#526574] hover:text-[#087f73] border border-[#dce6e8] hover:border-[#087f73] rounded-xl text-base font-semibold flex items-center justify-between transition-all"
+                                className="kraken-control min-h-11 w-full px-4 py-2.5 bg-white hover:bg-[#edf4fd] text-[#50647c] hover:text-[#1464ad] border border-[#dce5f0] hover:border-[#1464ad] rounded-xl text-base font-semibold flex items-center justify-between transition-all"
                             >
                                 {dt.sendCostConfirmation}
-                                <Send className="w-4 h-4 shrink-0 text-[#526574] group-hover:text-[#087f73]" />
+                                <Send className="w-4 h-4 shrink-0 text-[#50647c] group-hover:text-[#1464ad]" />
                             </button>
 
                             <button
                                 type="button"
                                 hidden={!isStaff} onClick={() => handleScheduleService(selectedRequest)}
-                                className="kraken-control min-h-11 w-full px-4 py-2.5 bg-white hover:bg-[#eef7f5] text-[#526574] hover:text-[#087f73] border border-[#dce6e8] hover:border-[#087f73] rounded-xl text-base font-semibold flex items-center justify-between transition-all"
+                                className="kraken-control min-h-11 w-full px-4 py-2.5 bg-white hover:bg-[#edf4fd] text-[#50647c] hover:text-[#1464ad] border border-[#dce5f0] hover:border-[#1464ad] rounded-xl text-base font-semibold flex items-center justify-between transition-all"
                             >
                                 {pt('calendarDraft').split('.')[0]}
-                                <Calendar className="w-4 h-4 shrink-0 text-[#526574]" />
+                                <Calendar className="w-4 h-4 shrink-0 text-[#50647c]" />
                             </button>
 
                             <button
                                 type="button"
                                 onClick={() => handleGenerateInvoice(selectedRequest)}
-                                className="kraken-control min-h-11 w-full px-4 py-2.5 bg-white hover:bg-[#eef7f5] text-[#526574] hover:text-[#087f73] border border-[#dce6e8] hover:border-[#087f73] rounded-xl text-base font-semibold flex items-center justify-between transition-all"
+                                className="kraken-control min-h-11 w-full px-4 py-2.5 bg-white hover:bg-[#edf4fd] text-[#50647c] hover:text-[#1464ad] border border-[#dce5f0] hover:border-[#1464ad] rounded-xl text-base font-semibold flex items-center justify-between transition-all"
                             >
                                 {pt('draftInvoice')}
-                                <FileText className="w-4 h-4 shrink-0 text-[#526574]" />
+                                <FileText className="w-4 h-4 shrink-0 text-[#50647c]" />
                             </button>
                         </div>
                     </div>
 
                     {/* Admin notes are visible to staff only. */}
-                    {isStaff && <div className="bg-[#f4f8f8] rounded-2xl p-5 sm:p-6 border border-[#dce6e8] space-y-4">
+                    {isStaff && <div className="bg-[#f3f7fc] rounded-2xl p-5 sm:p-6 border border-[#dce5f0] space-y-4">
                         <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-semibold text-[#526574] flex items-center gap-2">
-                                <MessageSquare className="w-4 h-4 text-[#087f73]" />
+                            <h3 className="text-lg font-semibold text-[#50647c] flex items-center gap-2">
+                                <MessageSquare className="w-4 h-4 text-[#1464ad]" />
                                 {dt.internalNotesHeading}
                             </h3>
-                            <span className="text-sm font-semibold px-2.5 py-0.5 rounded-full bg-blue-100 text-[#087f73]">
+                            <span className="text-sm font-semibold px-2.5 py-0.5 rounded-full bg-blue-100 text-[#1464ad]">
                                 {teamNotes.length} {teamNotes.length === 1 ? 'nota' : 'notas'}
                             </span>
                         </div>
 
                         {/* Form to add a new note */}
-                        <form onSubmit={handleAddNote} className="kraken-form bg-white rounded-xl p-3.5 border border-[#dce6e8] shadow-sm space-y-3">
+                        <form onSubmit={handleAddNote} className="kraken-form bg-white rounded-xl p-3.5 border border-[#dce5f0] shadow-sm space-y-3">
                             <div className="space-y-2">
                                 <div>
-                                    <label htmlFor="detailinspectormodal-field-1" className="kraken-label text-sm font-semibold text-[#526574] block mb-1">
+                                    <label htmlFor="detailinspectormodal-field-1" className="kraken-label text-sm font-semibold text-[#50647c] block mb-1">
                                         Nombre del Autor *
                                     </label>
                                     <div className="relative">
-                                        <User className="w-3.5 h-3.5 text-[#526574] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                        <User className="w-3.5 h-3.5 text-[#50647c] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                                         <input id="detailinspectormodal-field-1"
                                             type="text"
                                             value={noteAuthor}
                                             readOnly
                                             onChange={(e) => setNoteAuthor(e.target.value)}
                                             placeholder="Ej. Marco / Kai / Staff"
-                                            className="kraken-field w-full pl-8 pr-3 py-1.5 bg-[#f4f8f8] rounded-lg text-base text-[#082b45] font-semibold border border-[#dce6e8] focus:border-[#087f73] focus:bg-white outline-none placeholder-slate-400"
+                                            className="kraken-field w-full pl-8 pr-3 py-1.5 bg-[#f3f7fc] rounded-lg text-base text-[#032b59] font-semibold border border-[#dce5f0] focus:border-[#1464ad] focus:bg-white outline-none placeholder-slate-400"
                                             required
                                         />
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="detailinspectormodal-field-2" className="kraken-label text-sm font-semibold text-[#526574] block mb-1">
+                                    <label htmlFor="detailinspectormodal-field-2" className="kraken-label text-sm font-semibold text-[#50647c] block mb-1">
                                         Escribir Nota *
                                     </label>
                                     <textarea id="detailinspectormodal-field-2"
@@ -900,7 +900,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                         value={newNoteText}
                                         onChange={(e) => setNewNoteText(e.target.value)}
                                         placeholder="Escribe la nota o instrucción..."
-                                        className="kraken-field w-full p-2.5 bg-[#f4f8f8] rounded-lg text-base text-[#082b45] font-medium border border-[#dce6e8] focus:border-[#087f73] focus:bg-white outline-none placeholder-slate-400 leading-relaxed resize-y"
+                                        className="kraken-field w-full p-2.5 bg-[#f3f7fc] rounded-lg text-base text-[#032b59] font-medium border border-[#dce5f0] focus:border-[#1464ad] focus:bg-white outline-none placeholder-slate-400 leading-relaxed resize-y"
                                         required
                                     />
                                 </div>
@@ -909,7 +909,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                             <button
                                 type="submit"
                                 disabled={isSavingNotes || notesLoading || notesError || !newNoteText.trim() || !noteAuthor.trim()}
-                                className="kraken-control min-h-11 w-full py-2 bg-[#082b45] text-white rounded-xl text-base font-semibold transition-all shadow-md flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                                className="kraken-control min-h-11 w-full py-2 bg-[#032b59] text-white rounded-xl text-base font-semibold transition-all shadow-md flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                             >
                                 {isSavingNotes ? (
                                     <>
@@ -929,14 +929,14 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                         {notesError && <div role="alert" className="text-sm text-red-700"><p>{pt('loadError')}</p><button type="button" onClick={loadNotes} className="kraken-control min-h-11 min-w-11 underline">{pt('retry')}</button></div>}
                         {/* List of saved notes */}
                         <div className="space-y-2.5 pt-1">
-                            <span className="text-sm font-semibold text-[#526574] block">
+                            <span className="text-sm font-semibold text-[#50647c] block">
                                 Historial de Notas
                             </span>
 
                             {teamNotes.length === 0 ? (
-                                <div className="bg-white/80 rounded-xl p-4 text-center border border-dashed border-[#dce6e8]">
-                                    <FileText className="w-5 h-5 text-[#526574] mx-auto mb-1.5" />
-                                    <p className="text-base text-[#526574] font-medium">
+                                <div className="bg-white/80 rounded-xl p-4 text-center border border-dashed border-[#dce5f0]">
+                                    <FileText className="w-5 h-5 text-[#50647c] mx-auto mb-1.5" />
+                                    <p className="text-base text-[#50647c] font-medium">
                                         No hay notas guardadas aún.
                                     </p>
                                 </div>
@@ -948,17 +948,17 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                         return (
                                             <div
                                                 key={note.id}
-                                                className="bg-white rounded-xl p-3 border border-[#dce6e8] shadow-sm space-y-2 hover:border-[#c8dedb] transition-all text-sm"
+                                                className="bg-white rounded-xl p-3 border border-[#dce5f0] shadow-sm space-y-2 hover:border-[#c9dbef] transition-all text-sm"
                                             >
                                                 {/* Header */}
-                                                <div className="flex items-center justify-between gap-1 pb-1.5 border-b border-[#dce6e8]">
+                                                <div className="flex items-center justify-between gap-1 pb-1.5 border-b border-[#dce5f0]">
                                                     <div className="flex items-center gap-1.5 flex-wrap min-w-0">
-                                                        <span className="inline-flex items-center gap-1 bg-[#eef7f5] text-[#087f73] font-semibold text-sm px-2 py-0.5 rounded border border-[#c8dedb] truncate max-w-[110px]">
-                                                            <User className="w-3 h-3 text-[#087f73] shrink-0" />
+                                                        <span className="inline-flex items-center gap-1 bg-[#edf4fd] text-[#1464ad] font-semibold text-sm px-2 py-0.5 rounded border border-[#c9dbef] truncate max-w-[110px]">
+                                                            <User className="w-3 h-3 text-[#1464ad] shrink-0" />
                                                             {note.author}
                                                         </span>
-                                                        <span className="inline-flex items-center gap-1 text-sm font-semibold text-[#526574] bg-[#f4f8f8] px-1.5 py-0.5 rounded border border-[#dce6e8]">
-                                                            <Clock className="w-2.5 h-2.5 text-[#526574]" />
+                                                        <span className="inline-flex items-center gap-1 text-sm font-semibold text-[#50647c] bg-[#f3f7fc] px-1.5 py-0.5 rounded border border-[#dce5f0]">
+                                                            <Clock className="w-2.5 h-2.5 text-[#50647c]" />
                                                             {note.createdAt}
                                                         </span>
                                                     </div>
@@ -972,7 +972,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                                                   handleStartEditNote(note);
                                                                 }}
                                                                 title="Editar nota"
-                                                                className="kraken-control min-h-11 min-w-11 p-1 text-[#526574] hover:text-[#087f73] hover:bg-[#eef7f5] rounded transition-colors cursor-pointer"
+                                                                className="kraken-control min-h-11 min-w-11 p-1 text-[#50647c] hover:text-[#1464ad] hover:bg-[#edf4fd] rounded transition-colors cursor-pointer"
                                                             >
                                                                 <Edit className="w-3.5 h-3.5" />
                                                             </button>
@@ -980,7 +980,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                                                 type="button"
                                                                 onClick={() => setDeletingNoteId(deletingNoteId === note.id ? null : note.id)}
                                                                 title="Borrar nota"
-                                                                className="kraken-control min-h-11 min-w-11 p-1 text-[#526574] hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer"
+                                                                className="kraken-control min-h-11 min-w-11 p-1 text-[#50647c] hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer"
                                                             >
                                                                 <Trash2 className="w-3.5 h-3.5" />
                                                             </button>
@@ -998,7 +998,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                                             <button
                                                                 type="button"
                                                                 onClick={() => setDeletingNoteId(null)}
-                                                                className="kraken-control min-h-11 min-w-11 px-2 py-0.5 bg-white text-[#526574] hover:bg-[#f4f8f8] rounded text-base font-semibold border border-[#dce6e8]"
+                                                                className="kraken-control min-h-11 min-w-11 px-2 py-0.5 bg-white text-[#50647c] hover:bg-[#f3f7fc] rounded text-base font-semibold border border-[#dce5f0]"
                                                             >
                                                                 Cancelar
                                                             </button>
@@ -1006,7 +1006,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                                                 type="button"
                                                                 onClick={() => handleDeleteNote(note.id)}
                                                                 disabled={isSavingNotes}
-                                                                className="kraken-control min-h-11 min-w-11 px-2.5 py-0.5 bg-rose-600 hover:bg-rose-700 text-[#082b45] rounded text-base font-semibold shadow-xs flex items-center gap-1"
+                                                                className="kraken-control min-h-11 min-w-11 px-2.5 py-0.5 bg-rose-600 hover:bg-rose-700 text-[#032b59] rounded text-base font-semibold shadow-xs flex items-center gap-1"
                                                             >
                                                                 <Trash2 className="w-2.5 h-2.5" />
                                                                 Sí, borrar
@@ -1019,7 +1019,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                                 {isEditing ? (
                                                     <div className="space-y-2 pt-1">
                                                         <div>
-                                                            <label htmlFor="detailinspectormodal-field-3" className="kraken-label text-sm font-semibold text-[#526574] block mb-0.5">
+                                                            <label htmlFor="detailinspectormodal-field-3" className="kraken-label text-sm font-semibold text-[#50647c] block mb-0.5">
                                                                 Autor
                                                             </label>
                                                             <input id="detailinspectormodal-field-3"
@@ -1027,25 +1027,25 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                                                 value={editAuthor}
                                                                 readOnly
                                                                 onChange={(e) => setEditAuthor(e.target.value)}
-                                                                className="kraken-field w-full p-1.5 bg-[#f4f8f8] rounded-lg text-base font-semibold text-[#082b45] border border-[#dce6e8] focus:border-[#087f73] outline-none"
+                                                                className="kraken-field w-full p-1.5 bg-[#f3f7fc] rounded-lg text-base font-semibold text-[#032b59] border border-[#dce5f0] focus:border-[#1464ad] outline-none"
                                                             />
                                                         </div>
                                                         <div>
-                                                            <label htmlFor="detailinspectormodal-field-4" className="kraken-label text-sm font-semibold text-[#526574] block mb-0.5">
+                                                            <label htmlFor="detailinspectormodal-field-4" className="kraken-label text-sm font-semibold text-[#50647c] block mb-0.5">
                                                                 Texto
                                                             </label>
                                                             <textarea id="detailinspectormodal-field-4"
                                                                 rows={2}
                                                                 value={editText}
                                                                 onChange={(e) => setEditText(e.target.value)}
-                                                                className="kraken-field w-full p-2 bg-[#f4f8f8] rounded-lg text-base font-medium text-[#082b45] border border-[#dce6e8] focus:border-[#087f73] outline-none leading-relaxed"
+                                                                className="kraken-field w-full p-2 bg-[#f3f7fc] rounded-lg text-base font-medium text-[#032b59] border border-[#dce5f0] focus:border-[#1464ad] outline-none leading-relaxed"
                                                             />
                                                         </div>
                                                         <div className="flex justify-end gap-1.5">
                                                             <button
                                                                 type="button"
                                                                 onClick={() => setEditingNoteId(null)}
-                                                                className="kraken-control min-h-11 min-w-11 px-2.5 py-1 bg-[#f4f8f8] hover:bg-slate-200 text-[#526574] rounded text-base font-semibold "
+                                                                className="kraken-control min-h-11 min-w-11 px-2.5 py-1 bg-[#f3f7fc] hover:bg-slate-200 text-[#50647c] rounded text-base font-semibold "
                                                             >
                                                                 Cancelar
                                                             </button>
@@ -1053,7 +1053,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                                                 type="button"
                                                                 onClick={() => handleSaveEditNote(note.id)}
                                                                 disabled={isSavingNotes}
-                                                                className="kraken-control min-h-11 min-w-11 px-3 py-1 bg-[#087f73] hover:bg-[#087f73] text-white rounded text-base font-semibold flex items-center gap-1"
+                                                                className="kraken-control min-h-11 min-w-11 px-3 py-1 bg-[#1464ad] hover:bg-[#1464ad] text-white rounded text-base font-semibold flex items-center gap-1"
                                                             >
                                                                 <Check className="w-3 h-3" />
                                                                 Guardar
@@ -1061,7 +1061,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                                         </div>
                                                     </div>
                                                 ) : (
-                                                    <p className="text-base text-[#526574] font-medium whitespace-pre-wrap leading-relaxed pt-0.5">
+                                                    <p className="text-base text-[#50647c] font-medium whitespace-pre-wrap leading-relaxed pt-0.5">
                                                         {note.text}
                                                     </p>
                                                 )}
@@ -1093,14 +1093,14 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
             </div>
 
             {/* Modal Sticky Footer */}
-            <div className="kraken-dialog-footer p-4 sm:p-5 bg-[#f4f8f8] border-t border-[#dce6e8] border-[#dce6e8] flex gap-4 justify-between items-center mt-auto">
-                <span className="text-sm text-[#526574] font-semibold hidden sm:inline-block">
+            <div className="kraken-dialog-footer p-4 sm:p-5 bg-[#f3f7fc] border-t border-[#dce5f0] border-[#dce5f0] flex gap-4 justify-between items-center mt-auto">
+                <span className="text-sm text-[#50647c] font-semibold hidden sm:inline-block">
                     Kraken PFM
                 </span>
                 <button
                      type="button"
                      onClick={() => setSelectedRequest(null)}
-                     className="kraken-control min-h-11 min-w-11 bg-[#087f73] hover:bg-[#087f73] text-white px-8 py-2.5 rounded-xl text-base font-semibold transition-all ml-auto shadow-sm"
+                     className="kraken-control min-h-11 min-w-11 bg-[#1464ad] hover:bg-[#1464ad] text-white px-8 py-2.5 rounded-xl text-base font-semibold transition-all ml-auto shadow-sm"
                 >
                     {dt.dismissView}
                 </button>

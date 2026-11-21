@@ -14,6 +14,7 @@ export default defineConfig(() => {
       cacheDir: path.join(__dirname, '.cache/vite'),
       server: {
         port: 3000,
+        watch: { ignored: ['**/assets-source/**', '**/docs/**', '**/scripts/media/**'] },
         host: '0.0.0.0',
       },
       plugins: [

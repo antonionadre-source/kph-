@@ -141,7 +141,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
   ];
 
   return (
-    <div className="kraken-auth min-h-screen bg-[#f4f8f8] px-4 py-8 sm:px-6 sm:py-12">
+    <div className="kraken-auth min-h-screen bg-[#f3f7fc] px-4 py-8 sm:px-6 sm:py-12">
       <div className="kraken-auth-layout mx-auto grid max-w-2xl lg:max-w-6xl items-start gap-6 lg:grid-cols-[0.8fr_1.2fr]">
         <AccountIntro language={language} mode="register" />
       <motion.div
@@ -149,24 +149,24 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
         animate={{ opacity: 1, y: 0 }}
         className="w-full min-w-0"
       >
-        <div className="kraken-auth-card bg-white p-5 sm:p-8 rounded-3xl border border-[#dce6e8] shadow-sm">
+        <div className="kraken-auth-card bg-white p-5 sm:p-8 rounded-3xl border border-[#dce5f0] shadow-sm">
           {/* Custom Header */}
           <div className="mb-6 text-left">
-            <span className="inline-flex items-center gap-2 bg-[#eef7f5] border border-[#c8dedb] text-[#087f73] font-semibold text-sm px-4 py-2 rounded-2xl mb-4">
+            <span className="inline-flex items-center gap-2 bg-[#edf4fd] border border-[#c9dbef] text-[#1464ad] font-semibold text-sm px-4 py-2 rounded-2xl mb-4">
               <FolderPlus className="w-3.5 h-3.5" /> {rt('Interactive Onboarding')}
             </span>
-            <h1 className="text-3xl font-semibold text-[#082b45] ">{pt('createAccount')}</h1>
-            <p className="text-[#526574] font-semibold text-base mt-1.5">{pt('portal')}</p>
+            <h1 className="text-3xl font-semibold text-[#032b59] ">{pt('createAccount')}</h1>
+            <p className="text-[#50647c] font-semibold text-base mt-1.5">{pt('portal')}</p>
           </div>
 
-          <div className="kraken-stepper mb-7 border-b border-[#dce6e8] pb-6">
+          <div className="kraken-stepper mb-7 border-b border-[#dce5f0] pb-6">
             <ol className="grid grid-cols-4 gap-3" aria-label={rt('Interactive Onboarding')}>
               {[1, 2, 3, 4].map(s => <li key={s} aria-current={step === s ? 'step' : undefined} className="flex items-center gap-2">
-                <span className={`flex h-11 w-11 items-center justify-center rounded-xl text-base font-semibold ${step === s ? 'bg-[#087f73] text-white' : step > s ? 'bg-[#eef7f5] text-[#087f73]' : 'border border-[#dce6e8] bg-white text-[#526574]'}`}>{step > s ? <Check aria-hidden="true" className="h-5 w-5" /> : s}</span>
-                <span aria-hidden="true" className={`h-1 flex-1 rounded-full ${step > s ? 'bg-[#087f73]' : 'bg-[#dce6e8]'}`} />
+                <span className={`flex h-11 w-11 items-center justify-center rounded-xl text-base font-semibold ${step === s ? 'bg-[#1464ad] text-white' : step > s ? 'bg-[#edf4fd] text-[#1464ad]' : 'border border-[#dce5f0] bg-white text-[#50647c]'}`}>{step > s ? <Check aria-hidden="true" className="h-5 w-5" /> : s}</span>
+                <span aria-hidden="true" className={`h-1 flex-1 rounded-full ${step > s ? 'bg-[#1464ad]' : 'bg-[#dce5f0]'}`} />
               </li>)}
             </ol>
-            <p className="mt-4 text-base font-semibold text-[#082b45]">{rt(['Step 1: Contact Details', 'Step 2: Location & Physical Access', 'Step 3: Property Specifications', 'Step 4: Confirm Registration'][step - 1])}</p>
+            <p className="mt-4 text-base font-semibold text-[#032b59]">{rt(['Step 1: Contact Details', 'Step 2: Location & Physical Access', 'Step 3: Property Specifications', 'Step 4: Confirm Registration'][step - 1])}</p>
           </div>
 
           {/* Display Successful Submission screen! */}
@@ -176,20 +176,20 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
               animate={{ scale: 1, opacity: 1 }}
               className="text-center py-10 space-y-4"
             >
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-emerald-50 border border-emerald-100 text-emerald-600 mb-4 ">
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-blue-50 border border-blue-100 text-blue-600 mb-4 ">
                 <Check className="w-10 h-10" />
               </div>
-              <h3 className="text-2xl font-semibold text-[#082b45] ">{pt('accountCreated')}</h3>
-              <p className="text-[#526574] text-base leading-relaxed max-w-md mx-auto font-semibold">
+              <h3 className="text-2xl font-semibold text-[#032b59] ">{pt('accountCreated')}</h3>
+              <p className="text-[#50647c] text-base leading-relaxed max-w-md mx-auto font-semibold">
                 {pt('verifyHint')}
               </p>
-              <p className="text-[#526574] text-base leading-relaxed max-w-md mx-auto">
+              <p className="text-[#50647c] text-base leading-relaxed max-w-md mx-auto">
                 {pt('saved')}
               </p>
               <div className="pt-4">
                 {(notice || warning) && <p role="status" className="text-base text-amber-800 mb-4">{notice || pt('notificationPending')}</p>}
-                <button type="button" className="kraken-control min-h-11 min-w-11 px-5 py-3 bg-[#087f73] text-white rounded-xl font-semibold" onClick={() => onNavigate('dashboard')}>{pt('dashboard')}</button>
-                <button type="button" className="kraken-control min-h-11 min-w-11 block mx-auto mt-4 text-[#087f73]" onClick={async () => { try { await resendVerification(); setNotice(pt('verificationSent')); } catch { setNotice(pt('notificationPending')); } }}>{pt('verify')}</button>
+                <button type="button" className="kraken-control min-h-11 min-w-11 px-5 py-3 bg-[#1464ad] text-white rounded-xl font-semibold" onClick={() => onNavigate('dashboard')}>{pt('dashboard')}</button>
+                <button type="button" className="kraken-control min-h-11 min-w-11 block mx-auto mt-4 text-[#1464ad]" onClick={async () => { try { await resendVerification(); setNotice(pt('verificationSent')); } catch { setNotice(pt('notificationPending')); } }}>{pt('verify')}</button>
               </div>
             </motion.div>
           ) : (
@@ -213,13 +213,13 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                     exit={{ x: -20, opacity: 0 }}
                     className="space-y-6"
                   >
-                    <div className="border border-[#dce6e8] bg-[#f4f8f8] p-6 rounded-2xl">
+                    <div className="border border-[#dce5f0] bg-[#f3f7fc] p-6 rounded-2xl">
 
                       <div className="space-y-4">
                         <div className="space-y-1.5">
-                          <label htmlFor="registerpage-field-1" className="kraken-label block text-sm font-semibold text-[#526574] ml-2">{pt('name')}</label>
+                          <label htmlFor="registerpage-field-1" className="kraken-label block text-sm font-semibold text-[#50647c] ml-2">{pt('name')}</label>
                           <div className="relative">
-                            <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#526574]" />
+                            <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#50647c]" />
                             <input id="registerpage-field-1"
                               type="text"
                               required
@@ -227,16 +227,16 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                               autoComplete="name"
                               maxLength={100}
                               onChange={(e) => setName(e.target.value)}
-                              className="kraken-field w-full bg-white border border-[#dce6e8] rounded-2xl py-3 pl-11 pr-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:ring-2 focus:ring-[#c8dedb] transition-all placeholder:text-[#526574]"
+                              className="kraken-field w-full bg-white border border-[#dce5f0] rounded-2xl py-3 pl-11 pr-5 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:ring-2 focus:ring-[#c9dbef] transition-all placeholder:text-[#50647c]"
                               placeholder="John Doe"
                             />
                           </div>
                         </div>
 
                         <div className="space-y-1.5">
-                          <label htmlFor="registerpage-field-2" className="kraken-label block text-sm font-semibold text-[#526574] ml-2">{pt('email')}</label>
+                          <label htmlFor="registerpage-field-2" className="kraken-label block text-sm font-semibold text-[#50647c] ml-2">{pt('email')}</label>
                           <div className="relative">
-                            <MailIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#526574]" />
+                            <MailIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#50647c]" />
                             <input id="registerpage-field-2"
                               type="email"
                               required
@@ -245,16 +245,16 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                               autoComplete="email"
                               maxLength={254}
                               onChange={(e) => setEmail(e.target.value)}
-                              className="kraken-field w-full bg-white border border-[#dce6e8] rounded-2xl py-3 pl-11 pr-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:ring-2 focus:ring-[#c8dedb] transition-all placeholder:text-[#526574]"
+                              className="kraken-field w-full bg-white border border-[#dce5f0] rounded-2xl py-3 pl-11 pr-5 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:ring-2 focus:ring-[#c9dbef] transition-all placeholder:text-[#50647c]"
                               placeholder="name@example.ch"
                             />
                           </div>
                         </div>
 
                         <div className="space-y-1.5">
-                          <label htmlFor="registerpage-field-3" className="kraken-label block text-sm font-semibold text-[#526574] ml-2">{pt('phone')}</label>
+                          <label htmlFor="registerpage-field-3" className="kraken-label block text-sm font-semibold text-[#50647c] ml-2">{pt('phone')}</label>
                           <div className="relative">
-                            <PhoneIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#526574]" />
+                            <PhoneIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#50647c]" />
                             <input id="registerpage-field-3"
                               type="tel"
                               required
@@ -262,16 +262,16 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                               autoComplete="tel"
                               maxLength={50}
                               onChange={(e) => setPhone(e.target.value)}
-                              className="kraken-field w-full bg-white border border-[#dce6e8] rounded-2xl py-3 pl-11 pr-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:ring-2 focus:ring-[#c8dedb] transition-all placeholder:text-[#526574]"
+                              className="kraken-field w-full bg-white border border-[#dce5f0] rounded-2xl py-3 pl-11 pr-5 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:ring-2 focus:ring-[#c9dbef] transition-all placeholder:text-[#50647c]"
                               placeholder="+41 79 123 45 67"
                             />
                           </div>
                         </div>
 
                         <div className="space-y-1.5">
-                          <label htmlFor="register-password" className="kraken-label block text-sm font-semibold text-[#526574] ml-2">{pt('password')} ({pt('passwordHint')})</label>
+                          <label htmlFor="register-password" className="kraken-label block text-sm font-semibold text-[#50647c] ml-2">{pt('password')} ({pt('passwordHint')})</label>
                           <div className="relative">
-                            <LockIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#526574]" />
+                            <LockIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#50647c]" />
                             <input
                               id="register-password"
                               type={showPassword ? 'text' : 'password'}
@@ -280,7 +280,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                               required
                               value={password}
                               onChange={(e) => setPassword(e.target.value)}
-                              className="kraken-field w-full bg-white border border-[#dce6e8] rounded-2xl py-3 pl-11 pr-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:ring-2 focus:ring-[#c8dedb] transition-all placeholder:text-[#526574]"
+                              className="kraken-field w-full bg-white border border-[#dce5f0] rounded-2xl py-3 pl-11 pr-5 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:ring-2 focus:ring-[#c9dbef] transition-all placeholder:text-[#50647c]"
                               placeholder="••••••••"
                               style={{ paddingRight: '3.5rem' }}
                             />
@@ -291,7 +291,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                               title={pt(showPassword ? 'hidePassword' : 'showPassword')}
                               aria-controls="register-password"
                               aria-pressed={showPassword}
-                              className="kraken-control min-h-11 min-w-11 absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 inline-flex items-center justify-center rounded-xl text-[#526574] hover:bg-[#f4f8f8] focus-visible:outline-2 focus-visible:outline-blue-600"
+                              className="kraken-control min-h-11 min-w-11 absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 inline-flex items-center justify-center rounded-xl text-[#50647c] hover:bg-[#f3f7fc] focus-visible:outline-2 focus-visible:outline-blue-600"
                             >
                               {showPassword ? <EyeOff aria-hidden="true" className="w-5 h-5" /> : <Eye aria-hidden="true" className="w-5 h-5" />}
                             </button>
@@ -310,55 +310,55 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                     exit={{ x: -20, opacity: 0 }}
                     className="space-y-6"
                   >
-                    <div className="border border-[#dce6e8] bg-[#f4f8f8] p-6 rounded-2xl space-y-5">
+                    <div className="border border-[#dce5f0] bg-[#f3f7fc] p-6 rounded-2xl space-y-5">
 
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div className="sm:col-span-2 space-y-1.5">
-                          <label htmlFor="registerpage-field-4" className="kraken-label block text-sm font-semibold text-[#526574] ml-2">{rt('Street and House Number')}</label>
+                          <label htmlFor="registerpage-field-4" className="kraken-label block text-sm font-semibold text-[#50647c] ml-2">{rt('Street and House Number')}</label>
                           <div className="relative">
-                            <MapPinIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#526574]" />
+                            <MapPinIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#50647c]" />
                             <input id="registerpage-field-4"
                               type="text"
                               required
                               value={street}
                               maxLength={250}
                               onChange={(e) => setStreet(e.target.value)}
-                              className="kraken-field w-full bg-white border border-[#dce6e8] rounded-2xl py-3 pl-11 pr-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:ring-2 focus:ring-[#c8dedb] transition-all placeholder:text-[#526574]"
+                              className="kraken-field w-full bg-white border border-[#dce5f0] rounded-2xl py-3 pl-11 pr-5 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:ring-2 focus:ring-[#c9dbef] transition-all placeholder:text-[#50647c]"
                               placeholder="Bahnhofstrasse 12"
                             />
                           </div>
                         </div>
 
                         <div className="space-y-1.5">
-                          <label htmlFor="registerpage-field-5" className="kraken-label block text-sm font-semibold text-[#526574] ml-2">{rt('Postal Code')}</label>
+                          <label htmlFor="registerpage-field-5" className="kraken-label block text-sm font-semibold text-[#50647c] ml-2">{rt('Postal Code')}</label>
                           <input id="registerpage-field-5"
                             type="text"
                             required
                             value={postcode}
                             maxLength={10}
                             onChange={(e) => setPostcode(e.target.value)}
-                            className="kraken-field w-full bg-white border border-[#dce6e8] rounded-2xl py-3 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:ring-2 focus:ring-[#c8dedb] transition-all placeholder:text-[#526574]"
+                            className="kraken-field w-full bg-white border border-[#dce5f0] rounded-2xl py-3 px-5 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:ring-2 focus:ring-[#c9dbef] transition-all placeholder:text-[#50647c]"
                             placeholder="8001"
                           />
                         </div>
                       </div>
 
                       <div className="space-y-1.5">
-                        <label htmlFor="registerpage-field-6" className="kraken-label block text-sm font-semibold text-[#526574] ml-2">{rt('City')}</label>
+                        <label htmlFor="registerpage-field-6" className="kraken-label block text-sm font-semibold text-[#50647c] ml-2">{rt('City')}</label>
                         <input id="registerpage-field-6"
                           type="text"
                           required
                           value={city}
                           maxLength={120}
                           onChange={(e) => setCity(e.target.value)}
-                          className="kraken-field w-full bg-white border border-[#dce6e8] rounded-2xl py-3 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:ring-2 focus:ring-[#c8dedb] transition-all placeholder:text-[#526574]"
+                          className="kraken-field w-full bg-white border border-[#dce5f0] rounded-2xl py-3 px-5 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:ring-2 focus:ring-[#c9dbef] transition-all placeholder:text-[#50647c]"
                           placeholder="Zürich"
                         />
                       </div>
 
                       <div className="space-y-3 pt-2">
-                        <label className="kraken-label block text-sm font-semibold text-[#526574] ml-2">
-                          <span className="flex items-center gap-1.5"><KeyIcon className="w-3.5 h-3.5 text-[#087f73]" />{rt('Access Protocol')}</span>
+                        <label className="kraken-label block text-sm font-semibold text-[#50647c] ml-2">
+                          <span className="flex items-center gap-1.5"><KeyIcon className="w-3.5 h-3.5 text-[#1464ad]" />{rt('Access Protocol')}</span>
                         </label>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -369,17 +369,17 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                               onClick={() => setAccessType(opt.name)}
                               className={`kraken-control min-h-11 min-w-11 p-4 rounded-2xl border text-left transition-all relative overflow-hidden flex flex-col justify-between cursor-pointer ${
                                 accessType === opt.name
-                                  ? 'bg-[#eef7f5] border-[#087f73] text-[#087f73] shadow-sm'
-                                  : 'bg-white border-[#dce6e8] text-[#526574] hover:border-[#dce6e8]'
+                                  ? 'bg-[#edf4fd] border-[#1464ad] text-[#1464ad] shadow-sm'
+                                  : 'bg-white border-[#dce5f0] text-[#50647c] hover:border-[#dce5f0]'
                               }`}
                             >
                               <div className="flex items-center justify-between w-full mb-1">
                                 <span className="text-sm font-semibold ">{rt(opt.name)}</span>
                                 {accessType === opt.name && (
-                                  <span className="w-4 h-4 rounded-full bg-[#087f73] flex items-center justify-center text-sm text-white">✓</span>
+                                  <span className="w-4 h-4 rounded-full bg-[#1464ad] flex items-center justify-center text-sm text-white">✓</span>
                                 )}
                               </div>
-                              <span className="text-sm text-[#526574] font-medium leading-tight">{opt.desc}</span>
+                              <span className="text-sm text-[#50647c] font-medium leading-tight">{opt.desc}</span>
                             </button>
                           ))}
                         </div>
@@ -396,31 +396,31 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                     exit={{ x: -20, opacity: 0 }}
                     className="space-y-6"
                   >
-                    <div className="border border-[#dce6e8] bg-[#f4f8f8] p-6 rounded-2xl space-y-5">
+                    <div className="border border-[#dce5f0] bg-[#f3f7fc] p-6 rounded-2xl space-y-5">
 
                       {/* Room Quantity Selector */}
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 rounded-2xl bg-white border border-[#dce6e8]">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 rounded-2xl bg-white border border-[#dce5f0]">
                         <div className="space-y-0.5">
-                          <span className="text-sm font-semibold text-[#082b45] flex items-center gap-1.5">
-                            <LayersIcon className="w-4 h-4 text-[#087f73]" /> {rt('Number of Rooms')}
+                          <span className="text-sm font-semibold text-[#032b59] flex items-center gap-1.5">
+                            <LayersIcon className="w-4 h-4 text-[#1464ad]" /> {rt('Number of Rooms')}
                           </span>
-                          <p className="text-base text-[#526574] font-medium">{rt('Includes bedrooms, living rooms, and office rooms')}</p>
+                          <p className="text-base text-[#50647c] font-medium">{rt('Includes bedrooms, living rooms, and office rooms')}</p>
                         </div>
                         <div className="flex items-center gap-4 self-center">
                           <button
                             type="button"
                             aria-label={rt('Decrease number of rooms')}
                             onClick={() => setRooms(Math.max(1, rooms - 1))}
-                            className="kraken-control min-h-11 min-w-11 w-9 h-9 rounded-xl bg-[#f4f8f8] border border-[#dce6e8] hover:bg-slate-200 transition-colors flex items-center justify-center font-semibold text-[#526574] text-base cursor-pointer"
+                            className="kraken-control min-h-11 min-w-11 w-9 h-9 rounded-xl bg-[#f3f7fc] border border-[#dce5f0] hover:bg-slate-200 transition-colors flex items-center justify-center font-semibold text-[#50647c] text-base cursor-pointer"
                           >
                             -
                           </button>
-                          <span className="text-base font-semibold text-[#082b45] min-w-[20px] text-center">{rooms}</span>
+                          <span className="text-base font-semibold text-[#032b59] min-w-[20px] text-center">{rooms}</span>
                           <button
                             type="button"
                             aria-label={rt('Increase number of rooms')}
                             onClick={() => setRooms(Math.min(100, rooms + 1))}
-                            className="kraken-control min-h-11 min-w-11 w-9 h-9 rounded-xl bg-[#f4f8f8] border border-[#dce6e8] hover:bg-slate-200 transition-colors flex items-center justify-center font-semibold text-[#526574] text-base cursor-pointer"
+                            className="kraken-control min-h-11 min-w-11 w-9 h-9 rounded-xl bg-[#f3f7fc] border border-[#dce5f0] hover:bg-slate-200 transition-colors flex items-center justify-center font-semibold text-[#50647c] text-base cursor-pointer"
                           >
                             +
                           </button>
@@ -428,28 +428,28 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                       </div>
 
                       {/* Toilet Quantity Selector */}
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 rounded-2xl bg-white border border-[#dce6e8]">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 rounded-2xl bg-white border border-[#dce5f0]">
                         <div className="space-y-0.5">
-                          <span className="text-sm font-semibold text-[#082b45] flex items-center gap-1.5">
-                            <Bath className="w-4 h-4 text-[#087f73]" /> {rt('Number of Toilets / Bathrooms')}
+                          <span className="text-sm font-semibold text-[#032b59] flex items-center gap-1.5">
+                            <Bath className="w-4 h-4 text-[#1464ad]" /> {rt('Number of Toilets / Bathrooms')}
                           </span>
-                          <p className="text-base text-[#526574] font-medium">{rt('Includes main bathroom, guest toilets, and en-suites')}</p>
+                          <p className="text-base text-[#50647c] font-medium">{rt('Includes main bathroom, guest toilets, and en-suites')}</p>
                         </div>
                         <div className="flex items-center gap-4 self-center">
                           <button
                             type="button"
                             aria-label={rt('Decrease number of bathrooms')}
                             onClick={() => setToilets(Math.max(1, toilets - 1))}
-                            className="kraken-control min-h-11 min-w-11 w-9 h-9 rounded-xl bg-[#f4f8f8] border border-[#dce6e8] hover:bg-slate-200 transition-colors flex items-center justify-center font-semibold text-[#526574] text-base cursor-pointer"
+                            className="kraken-control min-h-11 min-w-11 w-9 h-9 rounded-xl bg-[#f3f7fc] border border-[#dce5f0] hover:bg-slate-200 transition-colors flex items-center justify-center font-semibold text-[#50647c] text-base cursor-pointer"
                           >
                             -
                           </button>
-                          <span className="text-base font-semibold text-[#082b45] min-w-[20px] text-center">{toilets}</span>
+                          <span className="text-base font-semibold text-[#032b59] min-w-[20px] text-center">{toilets}</span>
                           <button
                             type="button"
                             aria-label={rt('Increase number of bathrooms')}
                             onClick={() => setToilets(Math.min(100, toilets + 1))}
-                            className="kraken-control min-h-11 min-w-11 w-9 h-9 rounded-xl bg-[#f4f8f8] border border-[#dce6e8] hover:bg-slate-200 transition-colors flex items-center justify-center font-semibold text-[#526574] text-base cursor-pointer"
+                            className="kraken-control min-h-11 min-w-11 w-9 h-9 rounded-xl bg-[#f3f7fc] border border-[#dce5f0] hover:bg-slate-200 transition-colors flex items-center justify-center font-semibold text-[#50647c] text-base cursor-pointer"
                           >
                             +
                           </button>
@@ -458,9 +458,9 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
 
                       {/* Balcony and Garden Yes/No custom buttons */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="p-4 rounded-2xl bg-white border border-[#dce6e8] space-y-3">
-                          <span className="text-sm font-semibold text-[#082b45] flex items-center gap-1.5">
-                            <Home className="w-4 h-4 text-[#087f73]" /> {rt('Balcony?')}
+                        <div className="p-4 rounded-2xl bg-white border border-[#dce5f0] space-y-3">
+                          <span className="text-sm font-semibold text-[#032b59] flex items-center gap-1.5">
+                            <Home className="w-4 h-4 text-[#1464ad]" /> {rt('Balcony?')}
                           </span>
                           <div className="flex gap-2.5">
                             <button
@@ -468,8 +468,8 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                               onClick={() => setHasBalcony(true)}
                               className={`kraken-control min-h-11 flex-1 py-2.5 text-base font-semibold rounded-xl transition-all border cursor-pointer ${
                                 hasBalcony
-                                  ? 'bg-[#087f73] border-transparent text-white shadow-md'
-                                  : 'bg-[#f4f8f8] border-[#dce6e8] text-[#526574] hover:bg-[#f4f8f8]'
+                                  ? 'bg-[#1464ad] border-transparent text-white shadow-md'
+                                  : 'bg-[#f3f7fc] border-[#dce5f0] text-[#50647c] hover:bg-[#f3f7fc]'
                               }`}
                             >
                               {rt('YES')}
@@ -479,8 +479,8 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                               onClick={() => setHasBalcony(false)}
                               className={`kraken-control min-h-11 flex-1 py-2.5 text-base font-semibold rounded-xl transition-all border cursor-pointer ${
                                 !hasBalcony
-                                  ? 'bg-slate-200 border-transparent text-[#526574] font-semibold'
-                                  : 'bg-[#f4f8f8] border-[#dce6e8] text-[#526574] hover:bg-[#f4f8f8]'
+                                  ? 'bg-slate-200 border-transparent text-[#50647c] font-semibold'
+                                  : 'bg-[#f3f7fc] border-[#dce5f0] text-[#50647c] hover:bg-[#f3f7fc]'
                               }`}
                             >
                               {rt('NO')}
@@ -488,9 +488,9 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                           </div>
                         </div>
 
-                        <div className="p-4 rounded-2xl bg-white border border-[#dce6e8] space-y-3">
-                          <span className="text-sm font-semibold text-[#082b45] flex items-center gap-1.5">
-                            <Trees className="w-4 h-4 text-emerald-600" /> {rt('Garden?')}
+                        <div className="p-4 rounded-2xl bg-white border border-[#dce5f0] space-y-3">
+                          <span className="text-sm font-semibold text-[#032b59] flex items-center gap-1.5">
+                            <Trees className="w-4 h-4 text-blue-600" /> {rt('Garden?')}
                           </span>
                           <div className="flex gap-2.5">
                             <button
@@ -498,8 +498,8 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                               onClick={() => setHasGarden(true)}
                               className={`kraken-control min-h-11 flex-1 py-2.5 text-base font-semibold rounded-xl transition-all border cursor-pointer ${
                                 hasGarden
-                                  ? 'bg-emerald-600 border-transparent text-white shadow-md'
-                                  : 'bg-[#f4f8f8] border-[#dce6e8] text-[#526574] hover:bg-[#f4f8f8]'
+                                  ? 'bg-blue-600 border-transparent text-white shadow-md'
+                                  : 'bg-[#f3f7fc] border-[#dce5f0] text-[#50647c] hover:bg-[#f3f7fc]'
                               }`}
                             >
                               {rt('YES')}
@@ -509,8 +509,8 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                               onClick={() => setHasGarden(false)}
                               className={`kraken-control min-h-11 flex-1 py-2.5 text-base font-semibold rounded-xl transition-all border cursor-pointer ${
                                 !hasGarden
-                                  ? 'bg-slate-200 border-transparent text-[#526574] font-semibold'
-                                  : 'bg-[#f4f8f8] border-[#dce6e8] text-[#526574] hover:bg-[#f4f8f8]'
+                                  ? 'bg-slate-200 border-transparent text-[#50647c] font-semibold'
+                                  : 'bg-[#f3f7fc] border-[#dce5f0] text-[#50647c] hover:bg-[#f3f7fc]'
                               }`}
                             >
                               {rt('NO')}
@@ -521,13 +521,13 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
 
                       {/* Additional comments/requirements */}
                       <div className="space-y-1.5">
-                        <label htmlFor="registerpage-field-7" className="kraken-label block text-sm font-semibold text-[#526574] ml-2">{rt('Extra Notes / Special Instructions')}</label>
+                        <label htmlFor="registerpage-field-7" className="kraken-label block text-sm font-semibold text-[#50647c] ml-2">{rt('Extra Notes / Special Instructions')}</label>
                         <textarea id="registerpage-field-7"
                           value={extraNotes}
                           maxLength={5000}
                           onChange={(e) => setExtraNotes(e.target.value)}
                           rows={3}
-                          className="kraken-field w-full bg-white border border-[#dce6e8] rounded-2xl py-3 px-5 text-base text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:ring-2 focus:ring-[#c8dedb] transition-all placeholder:text-[#526574] resize-none"
+                          className="kraken-field w-full bg-white border border-[#dce5f0] rounded-2xl py-3 px-5 text-base text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:ring-2 focus:ring-[#c9dbef] transition-all placeholder:text-[#50647c] resize-none"
                           placeholder={rt('Additional relevant information')}
                         />
                       </div>
@@ -543,54 +543,54 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                     exit={{ x: -20, opacity: 0 }}
                     className="space-y-6"
                   >
-                    <div className="border border-[#dce6e8] bg-[#f4f8f8] p-6 rounded-2xl space-y-4">
+                    <div className="border border-[#dce5f0] bg-[#f3f7fc] p-6 rounded-2xl space-y-4">
 
-                      <p className="text-base text-[#526574] leading-relaxed font-semibold">
+                      <p className="text-base text-[#50647c] leading-relaxed font-semibold">
                         {rt('Review profile')}
                       </p>
 
-                      <div className="bg-white border border-[#dce6e8] rounded-2xl p-5 space-y-4 shadow-sm">
-                        <div className="grid grid-cols-2 gap-y-3 text-sm border-b border-[#dce6e8] pb-3">
+                      <div className="bg-white border border-[#dce5f0] rounded-2xl p-5 space-y-4 shadow-sm">
+                        <div className="grid grid-cols-2 gap-y-3 text-sm border-b border-[#dce5f0] pb-3">
                           <div>
-                            <span className="block text-sm text-[#526574] font-semibold ">{pt('name')}</span>
-                            <span className="text-[#082b45] font-semibold">{name}</span>
+                            <span className="block text-sm text-[#50647c] font-semibold ">{pt('name')}</span>
+                            <span className="text-[#032b59] font-semibold">{name}</span>
                           </div>
                           <div>
-                            <span className="block text-sm text-[#526574] font-semibold ">{pt('email')}</span>
+                            <span className="block text-sm text-[#50647c] font-semibold ">{pt('email')}</span>
                             <span className="text-slate-850 font-semibold truncate block">{email}</span>
                           </div>
                           <div>
-                            <span className="block text-sm text-[#526574] font-semibold ">{pt('phone')}</span>
-                            <span className="text-[#082b45] font-semibold">{phone}</span>
+                            <span className="block text-sm text-[#50647c] font-semibold ">{pt('phone')}</span>
+                            <span className="text-[#032b59] font-semibold">{phone}</span>
                           </div>
                           <div>
-                            <span className="block text-sm text-[#526574] font-semibold ">{rt('Access Protocol')}</span>
-                            <span className="text-[#087f73] font-semibold">{rt(accessType)}</span>
+                            <span className="block text-sm text-[#50647c] font-semibold ">{rt('Access Protocol')}</span>
+                            <span className="text-[#1464ad] font-semibold">{rt(accessType)}</span>
                           </div>
                         </div>
 
                         <div className="grid grid-cols-4 gap-2 text-sm pt-1">
                           <div>
-                            <span className="block text-sm text-[#526574] font-semibold ">{rt('Number of Rooms')}</span>
-                            <span className="text-[#082b45] font-semibold text-base">{rooms}</span>
+                            <span className="block text-sm text-[#50647c] font-semibold ">{rt('Number of Rooms')}</span>
+                            <span className="text-[#032b59] font-semibold text-base">{rooms}</span>
                           </div>
                           <div>
-                            <span className="block text-sm text-[#526574] font-semibold ">{rt('Number of Toilets / Bathrooms')}</span>
-                            <span className="text-[#082b45] font-semibold text-base">{toilets}</span>
+                            <span className="block text-sm text-[#50647c] font-semibold ">{rt('Number of Toilets / Bathrooms')}</span>
+                            <span className="text-[#032b59] font-semibold text-base">{toilets}</span>
                           </div>
                           <div>
-                            <span className="block text-sm text-[#526574] font-semibold ">{rt('Balcony?')}</span>
-                            <span className="text-[#526574] font-semibold text-sm">{hasBalcony ? rt('YES') : rt('NO')}</span>
+                            <span className="block text-sm text-[#50647c] font-semibold ">{rt('Balcony?')}</span>
+                            <span className="text-[#50647c] font-semibold text-sm">{hasBalcony ? rt('YES') : rt('NO')}</span>
                           </div>
                           <div>
-                            <span className="block text-sm text-[#526574] font-semibold ">{rt('Garden?')}</span>
-                            <span className="text-emerald-600 font-semibold text-sm">{hasGarden ? rt('YES') : rt('NO')}</span>
+                            <span className="block text-sm text-[#50647c] font-semibold ">{rt('Garden?')}</span>
+                            <span className="text-blue-600 font-semibold text-sm">{hasGarden ? rt('YES') : rt('NO')}</span>
                           </div>
                         </div>
 
-                        <div className="text-sm border-t border-[#dce6e8] pt-3">
-                          <span className="block text-sm text-[#526574] font-semibold ">{pt('address')}</span>
-                          <span className="text-[#526574] font-semibold leading-relaxed">{street}, {postcode} {city}</span>
+                        <div className="text-sm border-t border-[#dce5f0] pt-3">
+                          <span className="block text-sm text-[#50647c] font-semibold ">{pt('address')}</span>
+                          <span className="text-[#50647c] font-semibold leading-relaxed">{street}, {postcode} {city}</span>
                         </div>
                       </div>
                     </div>
@@ -604,7 +604,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                   <button
                     type="button"
                     disabled={isLoading} onClick={handlePrevStep}
-                    className="kraken-control min-h-11 min-w-11 flex items-center gap-1.5 text-base font-semibold text-[#526574] hover:text-[#526574] transition-colors cursor-pointer"
+                    className="kraken-control min-h-11 min-w-11 flex items-center gap-1.5 text-base font-semibold text-[#50647c] hover:text-[#50647c] transition-colors cursor-pointer"
                   >
                     <ChevronLeft className="w-4 h-4" /> {pt('back')}
                   </button>
@@ -612,7 +612,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                   <button
                     type="button"
                     onClick={() => onNavigate('login')}
-                    className="kraken-control min-h-11 min-w-11 text-base font-semibold text-[#087f73] hover:text-[#087f73] transition-colors cursor-pointer"
+                    className="kraken-control min-h-11 min-w-11 text-base font-semibold text-[#1464ad] hover:text-[#1464ad] transition-colors cursor-pointer"
                   >
                     {pt('signIn')}
                   </button>
@@ -622,7 +622,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                   <button
                     type="button"
                     disabled={isLoading} onClick={handleNextStep}
-                    className="kraken-control min-h-11 min-w-11 bg-[#087f73] hover:bg-[#087f73] text-white font-semibold text-base px-7 py-3.5 rounded-2xl flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
+                    className="kraken-control min-h-11 min-w-11 bg-[#1464ad] hover:bg-[#1464ad] text-white font-semibold text-base px-7 py-3.5 rounded-2xl flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
                   >
                     {pt('continue')} <ChevronRight className="w-4 h-4" />
                   </button>
@@ -631,7 +631,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                     type="button"
                     onClick={handleSubmitRegistration}
                     disabled={isLoading}
-                    className="kraken-control min-h-11 min-w-11 bg-emerald-600 hover:bg-emerald-500 text-[#082b45] font-semibold text-base px-8 py-4 rounded-2xl shadow-md disabled:opacity-50 transition-all cursor-pointer"
+                    className="kraken-control min-h-11 min-w-11 bg-[#1464ad] hover:bg-[#0c4f92] text-white font-semibold text-base px-8 py-4 rounded-2xl shadow-md disabled:opacity-50 transition-all cursor-pointer"
                   >
                     {isLoading ? pt('loading') : createdAccount ? pt('retry') : pt('createAccount')}
                   </button>
@@ -642,12 +642,12 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
 
           {/* Account link */}
           {!success && (
-            <div className="mt-10 text-center border-t border-[#dce6e8] pt-6">
-              <p className="text-[#526574] text-base font-semibold">
+            <div className="mt-10 text-center border-t border-[#dce5f0] pt-6">
+              <p className="text-[#50647c] text-base font-semibold">
                 {pt('portal')}{' '}
                 <button
                   onClick={() => onNavigate('login')}
-                  className="kraken-control min-h-11 min-w-11 text-[#087f73] hover:text-[#087f73] transition-colors ml-1 cursor-pointer font-semibold text-base"
+                  className="kraken-control min-h-11 min-w-11 text-[#1464ad] hover:text-[#1464ad] transition-colors ml-1 cursor-pointer font-semibold text-base"
                 >
                   {pt('signIn')}
                 </button>

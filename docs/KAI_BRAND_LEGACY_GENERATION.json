@@ -1,0 +1,569 @@
+{
+  "version": 1,
+  "tool": "built-in image_gen",
+  "master_reference": "/Users/Projects/.codex/generated_images/01a1f9dc-5f42-7310-aa2d-7bb026bd8931/exec-c6825d1e-7b6d-42ef-a826-28fb9ca9c96e.png",
+  "logo_reference": "/Users/Projects/Downloads/another-star---kraken-properties/public/kai-calendar/optimized/brand/logo-white-480.webp",
+  "note": "Generation originals only; public assets and derivatives remain untouched. Each entry is an independent image_gen request. status=copied records the saved project original; qa_status=reviewed records visual inspection. Original generated tool outputs have been retained.",
+  "assets": [
+    {
+      "id": 1,
+      "slug": "servicio-privado-limpieza-apartamento",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/servicio-privado-limpieza-apartamento.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/servicio-privado-limpieza-apartamento.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished landscape asset, matching the target aspect ratio, crisp enough for a premium website.\nScene-specific direction: Preserve the bright modern Swiss apartment cleaning scene: large left windows, pale wood floor and kitchen background, cleaning kit foreground, human workers wiping glass, mopping and checking a clipboard. Kai is the primary foreground subject operating a vacuum cleaner. Replace Kai with the exact premium 3D blue mascot identity and realistic fabric/skin materials of Image2.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-d207c34d-32c0-4134-a003-c66e452c97ef.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-d207c34d-32c0-4134-a003-c66e452c97ef.png",
+      "review_notes": "Reviewed generated image: Kai identity, navy cap/polo and both white logo placements visible; scene action retained.",
+      "qa_status": "reviewed",
+      "transparent_background": false,
+      "saved_file": {
+        "bytes": 2433710,
+        "width": 1448,
+        "height": 1086,
+        "png_color_type": 2,
+        "sha256": "1a5fe88d19126143e237ebdf9c3ddf16279d1711e8b5b04113903a15affbb691"
+      }
+    },
+    {
+      "id": 2,
+      "slug": "servicio-privado-limpieza-cocina",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/servicio-privado-limpieza-cocina.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/servicio-privado-limpieza-cocina.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished landscape asset, matching the target aspect ratio, crisp enough for a premium website.\nScene-specific direction: Preserve the premium modern Swiss kitchen cleaning scene: stone countertop and sink foreground, warm wood cabinetry, daylight through large windows, human workers wiping a counter and cleaning glass. Kai is visibly operating the vacuum in the kitchen. Replace Kai with the exact premium 3D blue mascot identity and material detail of Image2.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-17427ec9-1dfe-4a8b-892e-adc7f060cd09.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-17427ec9-1dfe-4a8b-892e-adc7f060cd09.png",
+      "review_notes": "Reviewed generated image: Kai identity, navy cap/polo and both white logo placements visible; scene action retained.",
+      "qa_status": "reviewed",
+      "transparent_background": false,
+      "saved_file": {
+        "bytes": 2427580,
+        "width": 1448,
+        "height": 1086,
+        "png_color_type": 2,
+        "sha256": "dd337363625a1b9f85f8ab6dd3c6f28e9bfafbc55b9fc04f8b782a13d4c46b55"
+      }
+    },
+    {
+      "id": 3,
+      "slug": "servicio-privado-limpieza-oficina-casa",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/servicio-privado-limpieza-oficina-casa.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/servicio-privado-limpieza-oficina-casa.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished landscape asset, matching the target aspect ratio, crisp enough for a premium website.\nScene-specific direction: Preserve the bright Swiss home-office cleaning scene: desks, computer screens, glass office partitions, pale wood floor and a discreet cleaning kit. Human workers wipe desk surfaces/glass while Kai vacuums the floor in the foreground. Match Kai exactly to the premium 3D blue character identity and material quality of Image2.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-656e19d5-7f86-42af-8df9-8de38e13203d.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-656e19d5-7f86-42af-8df9-8de38e13203d.png",
+      "review_notes": "Reviewed local generated image: same master Kai identity, navy cap and polo with both white logos; office-cleaning action retained.",
+      "qa_status": "reviewed",
+      "transparent_background": false,
+      "saved_file": {
+        "bytes": 2405383,
+        "width": 1448,
+        "height": 1086,
+        "png_color_type": 2,
+        "sha256": "4bedb5bc253c74b32690b88ef600f9fc021c1695b20f97bd89d9d0c2ec24b264"
+      }
+    },
+    {
+      "id": 4,
+      "slug": "servicio-privado-mudanza-cajas",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/servicio-privado-mudanza-cajas.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/servicio-privado-mudanza-cajas.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished landscape asset, matching the target aspect ratio, crisp enough for a premium website.\nScene-specific direction: Preserve the Swiss moving-service scene at a stone apartment entrance, with an open navy cargo van, sensible packed cardboard boxes, a hand truck and the human moving team. Kai is carrying or guiding a box in the foreground. Match Kai exactly to Image2, keep the moving action believable and the branded cap and chest both clearly visible.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-86fe1d54-a957-4e10-8c1e-54be1e4885b3.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-86fe1d54-a957-4e10-8c1e-54be1e4885b3.png",
+      "review_notes": "Reviewed generated image: Kai identity, navy cap/polo and both white logo placements visible; scene action retained.",
+      "qa_status": "reviewed",
+      "transparent_background": false,
+      "saved_file": {
+        "bytes": 2664740,
+        "width": 1448,
+        "height": 1086,
+        "png_color_type": 2,
+        "sha256": "bbf69f0121104c6d2af201fdb6cddef5a957d076d1fe5e653d00ff949ab878e2"
+      }
+    },
+    {
+      "id": 5,
+      "slug": "servicio-privado-control-plagas",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/servicio-privado-control-plagas.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/servicio-privado-control-plagas.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nScene-specific direction: Preserve the Swiss apartment pest-control inspection in a modern kitchen: two uniformed human technicians inspect the floor/baseboard with a small pump applicator and a tablet, while Kai kneels in the foreground using a flashlight. No insects close-ups, graphic pests or chemical text. Kai must have the master's exact blue 3D face and skin, not the older smooth cartoon; both official white logos remain clearly visible on the navy cap and chest.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-452c1905-035c-46c8-87cc-54834aee1355.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-452c1905-035c-46c8-87cc-54834aee1355.png",
+      "review_notes": "Reviewed generated image: master Kai face/materials, navy cap and polo, official white cap/chest marks visible, service action retained.",
+      "qa_status": "reviewed",
+      "transparent_background": false,
+      "saved_file": {
+        "bytes": 2497748,
+        "width": 1448,
+        "height": 1086,
+        "png_color_type": 2,
+        "sha256": "73ac7eef1ccf0695f2848c1faa42040f109f336d67268e9b4d262c58aa2983fe"
+      }
+    },
+    {
+      "id": 6,
+      "slug": "servicio-privado-residuos-desalojo",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/servicio-privado-residuos-desalojo.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/servicio-privado-residuos-desalojo.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nScene-specific direction: Preserve the waste-removal and recycling scene outside a modern Swiss building: a small service crew sorts materials into blue and green wheeled bins and handles black waste bags beside a service truck. Kai is actively helping carry/tie a bag in the foreground, in the exact premium master identity. Keep service action orderly and plausible, gloves/work clothing, daylight, realistic plastic and fabric textures. Both cap and chest logo on Kai are visible.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-ccc82fe1-a8bc-4db1-be75-fe038bd5c320.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-ccc82fe1-a8bc-4db1-be75-fe038bd5c320.png",
+      "review_notes": "Reviewed generated image: master Kai face/materials, navy cap and polo, official white cap/chest marks visible, service action retained.",
+      "qa_status": "reviewed",
+      "transparent_background": false,
+      "saved_file": {
+        "bytes": 2665382,
+        "width": 1448,
+        "height": 1086,
+        "png_color_type": 2,
+        "sha256": "b20f11518d2f54cf63b209fdeb99972097a9eb2eb21f6ce6dbbf4a16fd2f14a5"
+      }
+    },
+    {
+      "id": 7,
+      "slug": "servicio-privado-canalones",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/servicio-privado-canalones.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/servicio-privado-canalones.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nScene-specific direction: Preserve the Swiss gutter-cleaning scene: white modern house, dark tiled roof and leaf-filled gutter, a worker on a ladder collecting leaves and a helper below holding the collection bag. Kai leans at the gutter and removes leaves with the crew. Make Kai the exact premium blue master mascot and keep both the navy cap's front logo and navy polo's chest logo clear in the upper-body view. Preserve plausible ladder/work placement and the human worker's harness already in the scene.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-52bd8e45-1bbf-4606-9b80-3308a2bac7dd.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-52bd8e45-1bbf-4606-9b80-3308a2bac7dd.png",
+      "review_notes": "Reviewed generated image: master Kai face/materials, navy cap and polo, official white cap/chest marks visible, service action retained.",
+      "qa_status": "reviewed",
+      "transparent_background": false,
+      "saved_file": {
+        "bytes": 2743401,
+        "width": 1448,
+        "height": 1086,
+        "png_color_type": 2,
+        "sha256": "ffd0965a0b073dc626db3d95ef233d0c50bb316af39b989726362c5b7b39daf8"
+      }
+    },
+    {
+      "id": 8,
+      "slug": "servicio-privado-jardineria",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/servicio-privado-jardineria.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/servicio-privado-jardineria.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nScene-specific direction: Preserve the landscaped garden at a modern Swiss house: Kai in the foreground watering plants with a hose, a human worker pruning a hedge, and colleagues tending the lawn and flowers. Preserve the original portrait 4:5 framing and layered green plants, with cinematic natural light. Match Kai exactly to the master and show both official white logos clearly on his navy baseball cap and navy polo. Do not turn the portrait into a landscape crop.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-1afd2be2-663f-47ae-b65c-612924b46d52.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-1afd2be2-663f-47ae-b65c-612924b46d52.png",
+      "review_notes": "Reviewed portrait output: garden watering action and master Kai preserved; cap and chest white logos visible.",
+      "qa_status": "reviewed",
+      "transparent_background": false,
+      "saved_file": {
+        "bytes": 2806004,
+        "width": 1122,
+        "height": 1402,
+        "png_color_type": 2,
+        "sha256": "b601255927b122d15f13a74e9778cebb6c5b91cc85dfc7a234ad37167337165d"
+      }
+    },
+    {
+      "id": 9,
+      "slug": "servicio-privado-lavado-coche",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/servicio-privado-lavado-coche.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/servicio-privado-lavado-coche.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific direction: Preserve the portrait 4:5 car-detailing scene in a modern premium indoor Swiss garage: a black SUV, Kai polishing the hood with a microfiber cloth, and two human technicians cleaning bodywork. Keep the original service action and vehicle placement, no new car badges or slogans. Kai's new master identity is foreground, with crisp WHITE official logo artwork on navy cap and left chest; remove any low-contrast blue-on-navy logos. Any back-wall branding should use only the official artwork or be left clean, without invented text.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-2802a4e0-0f7c-46c8-951f-e11ee2879e79.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-2802a4e0-0f7c-46c8-951f-e11ee2879e79.png",
+      "review_notes": "Reviewed generated image: official WHITE cap/chest logos, navy work uniform and master Kai identity retained; source service setting/action preserved.",
+      "qa_status": "reviewed",
+      "transparent_background": false,
+      "saved_file": {
+        "bytes": 2326524,
+        "width": 1122,
+        "height": 1402,
+        "png_color_type": 2,
+        "sha256": "8c0285549fc8c2b5ac90a8768da884b3a537f1ebf73fca39fd9ea50708eefc0e"
+      }
+    },
+    {
+      "id": 10,
+      "slug": "servicio-privado-limpieza-exterior",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/servicio-privado-limpieza-exterior.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/servicio-privado-limpieza-exterior.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific direction: Preserve the portrait 4:5 exterior-cleaning scene at a contemporary Swiss commercial building with dark glass walls, stone steps and planted pots: Kai cleans low glass with a microfiber cloth, humans clean high glazing with a pole and wash the stone pavement. Match Kai exactly to the premium master and make both the WHITE cap and polo-chest logos visible. Keep the source architecture and action, without adding the master's skyline.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-ef54ad3c-c048-45c1-b5f1-65e4175b00c3.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-ef54ad3c-c048-45c1-b5f1-65e4175b00c3.png",
+      "review_notes": "Reviewed portrait exterior-cleaning output: cap and chest marks visible, original glass/pressure-washing actions retained, master face/blue texture consistent.",
+      "qa_status": "reviewed",
+      "transparent_background": false,
+      "saved_file": {
+        "bytes": 2611738,
+        "width": 1122,
+        "height": 1402,
+        "png_color_type": 2,
+        "sha256": "7bdb2283ab6262ddd7395b4f3783542599bdcb42f74f8317ea98a359674a64f4"
+      }
+    },
+    {
+      "id": 11,
+      "slug": "servicio-comercial-limpieza-escaleras",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/servicio-comercial-limpieza-escaleras.png",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/servicio-comercial-limpieza-escaleras.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific direction: Preserve the landscape Swiss apartment-building stairwell cleaning scene: stone stair treads, metal railing, entrance glass, mailboxes and plants. Kai is the central full-body main subject mopping the floor, while human staff clean railings/glass and care for the entrance area. Upgrade to the exact master mascot identity and premium materials. EVERY Kai and uniformed worker must now have a NAVY cap plus NAVY polo with official WHITE logo on the cap front and visible chest; add caps where absent in Image1.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-67d6c267-d280-4450-83d3-b4b2c37d6294.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-67d6c267-d280-4450-83d3-b4b2c37d6294.png",
+      "review_notes": "Reviewed generated image: official WHITE cap/chest logos, navy work uniform and master Kai identity retained; source service setting/action preserved.",
+      "qa_status": "reviewed",
+      "transparent_background": false,
+      "saved_file": {
+        "bytes": 2567345,
+        "width": 1448,
+        "height": 1086,
+        "png_color_type": 2,
+        "sha256": "87046cc0bd6a503e0f447902479b17a01142c4da1a139ea9bd8282c15e330151"
+      }
+    },
+    {
+      "id": 12,
+      "slug": "servicio-comercial-limpieza-showroom",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/servicio-comercial-limpieza-showroom.png",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/servicio-comercial-limpieza-showroom.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific direction: Preserve the landscape commercial showroom/interior cleaning scene with timber shelving, large glass windows and the original Swiss city view: Kai wipes a dark tabletop in the foreground, human staff clean shelves, windows and the floor. Precisely match the master Kai and materially realistic premium finish. Critical edit: replace the old BLUE cap/chest logos with the exact WHITE official logo artwork on NAVY cap and NAVY polo. Add branded caps to uniformed humans who are missing them.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-0291774c-0753-4014-a75e-be3af390f805.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-0291774c-0753-4014-a75e-be3af390f805.png",
+      "review_notes": "Reviewed generated image: official WHITE cap/chest logos, navy work uniform and master Kai identity retained; source service setting/action preserved.",
+      "qa_status": "reviewed",
+      "transparent_background": false,
+      "saved_file": {
+        "bytes": 2469356,
+        "width": 1448,
+        "height": 1086,
+        "png_color_type": 2,
+        "sha256": "ac34994d7652588866fe029fdb68ee93ac89371bcb090dc32c4e81d5a6199be1"
+      }
+    },
+    {
+      "id": 13,
+      "slug": "servicio-comercial-limpieza-retail",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/servicio-comercial-limpieza-retail.png",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/servicio-comercial-limpieza-retail.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific requirements: Preserve Image1 LANDSCAPE premium clothing boutique retail-cleaning scene: Kai foreground wiping a pale stone checkout table with microfiber cloth, staff fold garments and organize clothing rails, warm track lighting. Add branded navy caps to human staff who lack them. No foreign city skyline.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-5ffb0d23-ea59-4a16-a773-a86f33c0a2ef.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-5ffb0d23-ea59-4a16-a773-a86f33c0a2ef.png",
+      "qa_status": "reviewed",
+      "review_notes": "Retail boutique retained; all Kai and staff caps/polos show white marks; clear wipe action.",
+      "transparent_background": false,
+      "saved_file": {
+        "bytes": 2461287,
+        "width": 1448,
+        "height": 1086,
+        "png_color_type": 2,
+        "sha256": "0883944c9a0dde7eb4ae295989199e768ded17d056802f08a298bef6f36a5353"
+      }
+    },
+    {
+      "id": 14,
+      "slug": "servicio-comercial-limpieza-bar-restaurante",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/servicio-comercial-limpieza-bar-restaurante.png",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/servicio-comercial-limpieza-bar-restaurante.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific requirements: Preserve Image1 PORTRAIT upscale restaurant/bar cleaning scene: Kai foreground vacuuming marble floor with a realistic hose and wand, worker wipes glossy black bar with spray and cloth, colleagues with cleaning cart and tablet, warm pendant lights and vertical wood. All staff branded cap/polo.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-2431c7e6-a6bc-4214-986e-3f825afb1ef8.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-2431c7e6-a6bc-4214-986e-3f825afb1ef8.png",
+      "qa_status": "reviewed",
+      "review_notes": "Restaurant/bar portrait retained; branded uniforms, Kai vacuuming and staff cleaning.",
+      "transparent_background": false,
+      "saved_file": {
+        "bytes": 2351010,
+        "width": 1122,
+        "height": 1402,
+        "png_color_type": 2,
+        "sha256": "9bc648d25da42e9675affe18460f55dc659aa6c36e18a82592f07f81e4e7008b"
+      }
+    },
+    {
+      "id": 15,
+      "slug": "servicio-comercial-limpieza-industrial",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/servicio-comercial-limpieza-industrial.png",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/servicio-comercial-limpieza-industrial.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific requirements: Preserve Image1 PORTRAIT Swiss industrial facility scene: stainless steel tanks, pipes, conveyor and control panel; Kai kneels by an isolated machine with wrench and tool case, human staff inspecting tablet and cleaning machinery. Maintain sensible safety and clear paths; no sparks or active dangerous repairs. All staff branded cap/polo.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-611215e2-e2fc-4fe4-84a6-5d1bd775bfc0.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-611215e2-e2fc-4fe4-84a6-5d1bd775bfc0.png",
+      "qa_status": "reviewed",
+      "review_notes": "Industrial portrait retained; Kai and staff cap/polo white branding visible, master blue textured identity.",
+      "transparent_background": false,
+      "saved_file": {
+        "bytes": 2408095,
+        "width": 1122,
+        "height": 1402,
+        "png_color_type": 2,
+        "sha256": "ab77404449628e438000325955e7cff31ef36d134b9e0940f7b78065193f73b4"
+      }
+    },
+    {
+      "id": 16,
+      "slug": "imagen-02-google-ai",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/imagen-02-google-ai.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/imagen-02-google-ai.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific requirements: Preserve Image1 LANDSCAPE hospitality apartment turnover scene: Kai center with friendly tentacles, three human staff arranging a navy guest amenity tray with folded white towels, plain toiletries, bottled water and room keys on a low table in a welcoming neutral apartment living room. Add branded navy caps to all human staff; remove third-party product labels and keep packaging plain. Do not turn the room into a Zurich skyline master apartment.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-85c1c347-b5a9-4419-a479-23104a623dac.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-85c1c347-b5a9-4419-a479-23104a623dac.png",
+      "qa_status": "reviewed",
+      "review_notes": "Hospitality amenity tray retained; caps added to all staff, packaging plain, both Kai logos clear.",
+      "transparent_background": false,
+      "saved_file": {
+        "bytes": 2483931,
+        "width": 1448,
+        "height": 1086,
+        "png_color_type": 2,
+        "sha256": "d4da0fe7fd1817ab4c2cd3b00f91c50b986c54f52e2be23f285bc4968976f582"
+      }
+    },
+    {
+      "id": 17,
+      "slug": "kai-zurich",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/kai zurich.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/kai-zurich.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific requirements override scene-format generalities: IMPORTANT TARGET FORMAT: square, clean transparent-background studio cutout, NOT a landscape scene. Preserve Image1 full-body Kai holding the Zurich blue-and-white diagonal flag in one hand and a detailed little architectural model of Grossmuenster twin towers in the other. Match master's facial identity, skin and wardrobe. Keep flag and model distinct and faithful to Image1, with no new text, no city backdrop, no duplicate character, full hat/feet/tentacles inside frame. Premium tactile materials and subtle contact shading only on the character. Transparent background.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-9d71448f-2973-46c9-92b8-22e78e037699.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "transparent_background": true,
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-9d71448f-2973-46c9-92b8-22e78e037699.png",
+      "qa_status": "reviewed",
+      "review_notes": "Transparent square cutout preserved; Zurich flag and Grossmuenster miniature retained, official white cap/polo marks clear. Review alpha edge on final light-background derivative; native preview has sparse blue edge pixels against black.",
+      "saved_file": {
+        "bytes": 1652648,
+        "width": 1254,
+        "height": 1254,
+        "png_color_type": 6,
+        "sha256": "46bece787df6b71856a919a4b4a0081fb54e8a3c0e5326cfb49c8706564556d6"
+      }
+    },
+    {
+      "id": 18,
+      "slug": "kai-winterthur",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/kai winterthur.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/kai-winterthur.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific requirements override scene-format generalities: IMPORTANT TARGET FORMAT: square, clean transparent-background studio cutout, NOT a landscape scene. Preserve Image1 full-body Kai holding Winterthur's white flag with the red lion and red diagonal stripe, and a silver industrial gear in the other hand. Preserve source flag design and gear, not Zurich flag or landmark. Match master face/skin/wardrobe, keep both white branded cap/polo marks clear, full hat/feet/tentacles inside frame, no new words, no backdrop or mini characters. Transparent background.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-6ee8e56e-8076-4633-87a4-df8a87bf8c22.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "transparent_background": true,
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-6ee8e56e-8076-4633-87a4-df8a87bf8c22.png",
+      "qa_status": "reviewed",
+      "review_notes": "Transparent square cutout preserved; Winterthur flag/gear retained, official white cap/polo marks clear. Review alpha edge on final light-background derivative; native preview has sparse blue edge pixels against black.",
+      "saved_file": {
+        "bytes": 1807681,
+        "width": 1254,
+        "height": 1254,
+        "png_color_type": 6,
+        "sha256": "0f6254d1f27d37b4b27bf4fdbc9efe055b838d60bc2154497c76689ef7e6af63"
+      }
+    },
+    {
+      "id": 19,
+      "slug": "kai-schaffhausen",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/kai schaffhausen.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/kai-schaffhausen.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific requirements override scene-format generalities: IMPORTANT TARGET FORMAT: square, clean transparent-background studio cutout, NOT a landscape scene. Preserve Image1 full-body Kai holding the Schaffhausen yellow flag with its black ram and a miniature Rhine Falls landscape with castle and flowing water in other hand. Retain source regional cues, not Zurich landmark. Master face/skin/wardrobe, clearly branded white cap/polo marks, full hat/feet/tentacles inside frame. No new text or extra characters. Transparent background.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-9333e711-326e-404a-b1c9-6173193d9264.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "transparent_background": true,
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-9333e711-326e-404a-b1c9-6173193d9264.png",
+      "qa_status": "reviewed",
+      "review_notes": "Transparent square cutout preserved; Schaffhausen flag/Rhine Falls miniature retained, official white cap/polo marks clear. Review alpha edge on final light-background derivative; native preview has sparse blue edge pixels against black.",
+      "saved_file": {
+        "bytes": 1721331,
+        "width": 1254,
+        "height": 1254,
+        "png_color_type": 6,
+        "sha256": "5f278fba1885c46d807a4ecae1ab797c3eb03ffd43f67596eddb0f0fdfc06305"
+      }
+    },
+    {
+      "id": 20,
+      "slug": "kai-about-us",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/kai about us.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/kai-about-us.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific requirements override scene-format generalities: IMPORTANT TARGET FORMAT: square transparent-background studio cutout, NOT a landscape scene. Preserve Image1 Kai holding open an elegant navy-edged scrapbook and a small stack of loose prints. Recompose ALL tiny album and loose-print images into attractive photographs of Swiss properties, immaculate interiors, tools and landscaping WITHOUT ANY PEOPLE OR MASCOTS, to eliminate unbranded mini Kai. Main Kai only, complete master identity and navy cap/polo with exact white cap/front and left-chest logos. Keep the album slightly lower so left-chest logo visible. No readable captions or invented lettering. Full body/tentacles comfortably framed on transparent background.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-7ff2f72e-2452-4ea6-81b5-34a138c762d5.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "transparent_background": true,
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-7ff2f72e-2452-4ea6-81b5-34a138c762d5.png",
+      "qa_status": "reviewed",
+      "review_notes": "Transparent square cutout preserved; album and prints contain properties/tools/landscaping only, no miniature unbranded mascot; both main Kai marks visible. Review alpha edge on final light-background derivative; native preview has sparse blue edge pixels against black.",
+      "saved_file": {
+        "bytes": 1802804,
+        "width": 1254,
+        "height": 1254,
+        "png_color_type": 6,
+        "sha256": "af55fe140b00c4e4898676906bdd04cef7ac780125836053d4014fb2fbc12318"
+      }
+    },
+    {
+      "id": 21,
+      "slug": "about-consultancy",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/recovered-dropbox/about/consultancy.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/about-consultancy.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific requirements: Target portrait Swiss cafe consultation/planning photograph. Keep the two human team members seated at the wooden table with coffee, notebook, daylight window, old-town facades and Swiss flag outside. Give BOTH staff navy caps and navy polos with exact supplied white cap AND left-chest marks. Replace ALL tiny Kai art on laptop, sketchbook and loose sheets with simple property floorplans, cleaning checklists or tool drawings with no words or people. Include ONE full premium 3D master Kai seated naturally at the right end of the table as a friendly planning participant, clearly showing branded cap/chest; rearrange table framing if needed without overcrowding. No inset/miniature mascots anywhere. Photoreal cafe and humans, premium tactile Kai, portrait composition.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-8ad66936-a7fe-4921-9cfa-c716a5d04c82.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "transparent_background": false,
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-8ad66936-a7fe-4921-9cfa-c716a5d04c82.png",
+      "qa_status": "reviewed",
+      "review_notes": "Cafe consultation retained with one physical Kai; laptop/notes now property plans and tools, no mascot thumbnails; staff and Kai branded cap/polo.",
+      "saved_file": {
+        "bytes": 2448179,
+        "width": 1086,
+        "height": 1448,
+        "png_color_type": 2,
+        "sha256": "89d4a3587e58ce028fa9c127707f57efcfd4a52695b4da900a253a41a9a8303e"
+      }
+    },
+    {
+      "id": 22,
+      "slug": "about-team",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/recovered-dropbox/about/team.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/about-team.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific requirements: Target LANDSCAPE office meeting scene: one Kai at the table center-right and three uniformed human service-team members listening to two clients in ordinary neutral clothing at the near left/right edges. Preserve bright modern glass office, warm timber table, documents and tablet. Add navy branded caps to every uniformed staff member, not the two clients. All staff/Kai navy cap and polo white official marks; master Kai face and fine skin texture. No extra small mascot imagery on documents/screens, keep print abstract or property diagrams. Clear main Kai cap/chest and friendly professional eye contact.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-a076ad45-b77d-48cf-a5e5-516f2d13fa41.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "transparent_background": false,
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-a076ad45-b77d-48cf-a5e5-516f2d13fa41.png",
+      "qa_status": "reviewed",
+      "review_notes": "Office team/client meeting retained; clients in casual clothes, all service staff and main Kai in branded cap/polo.",
+      "saved_file": {
+        "bytes": 2104701,
+        "width": 1671,
+        "height": 941,
+        "png_color_type": 2,
+        "sha256": "b3dd8d26678e26f3638f02fd449b208c03a41b2c5a5442b109fb9f3d9575bc6a"
+      }
+    },
+    {
+      "id": 23,
+      "slug": "sobre-nosotros-equipo-con-cliente-en-zurich",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/sobre-nosotros-equipo-con-cliente-en-zurich.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/sobre-nosotros-equipo-con-cliente-en-zurich.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific requirements: Target LANDSCAPE Zurich riverside greeting: main Kai center-left shakes hand with woman client in beige coat and her casually dressed partner, female uniformed adviser uses tablet with older male client at right, other staff carry modest cleaning equipment. Keep coherent Zurich Limmat waterfront, Grossmuenster/Fraumuenster old-town skyline as in right/center of source. REMOVE the physically inconsistent Rhine Falls waterfall and hill castle at far left and replace with coherent Zurich riverside buildings/trees. Add navy branded caps to every navy-polo staff member; clients retain casual clothes and no uniforms. All workers and Kai cap+polo exact white marks, master Kai face/skin. No claims, no signage words.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-4ec8d74c-31eb-43b5-8699-5ccc69daa2d0.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "transparent_background": false,
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-4ec8d74c-31eb-43b5-8699-5ccc69daa2d0.png",
+      "qa_status": "reviewed",
+      "review_notes": "Zurich waterfront greeting retained; impossible source waterfall/castle replaced with coherent riverside, all service uniforms branded cap/polo.",
+      "saved_file": {
+        "bytes": 2657723,
+        "width": 1671,
+        "height": 941,
+        "png_color_type": 2,
+        "sha256": "df5c4cc538606d0e151588625455622c0ba0aaaccca37520466e575a76f2677d"
+      }
+    },
+    {
+      "id": 24,
+      "slug": "kai-jul16-interview",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/kai-jul16-interview.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/kai-jul16-interview.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific requirements: Target LANDSCAPE recruitment interview: master Kai behind curved white-and-navy reception desk courteously receives an application sheet from a male applicant in brown sweater, modern Zurich office glass partitions/plants, laptop on desk. Preserve applicant ordinary clothes (no staff uniform). Main Kai navy cap and polo with clear exact white front/left-chest logos; master facial identity and texture. The document may show a discreet neutral CV heading and abstract non-readable lines, no personal data. Reuse official white logo artwork for any retained wall/laptop mark; no duplicate/inset mascots or new slogans. Calm premium welcoming lighting.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-ee8e8f56-32a0-438a-a4a6-65e2a523c6f9.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "transparent_background": false,
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-ee8e8f56-32a0-438a-a4a6-65e2a523c6f9.png",
+      "qa_status": "reviewed",
+      "review_notes": "Recruitment interview retained; Kai white cap/polo marks clear, applicant ununiformed, CV has no personal information.",
+      "saved_file": {
+        "bytes": 2189577,
+        "width": 1672,
+        "height": 941,
+        "png_color_type": 2,
+        "sha256": "4ac2cc47bbc7bfdd3edab65edecd550ae9e1705a98103bef349b3c0b0e1e9aee"
+      }
+    },
+    {
+      "id": 25,
+      "slug": "kai-build-your-quote",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/kai build your quote.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/kai-build-your-quote.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific requirements override generalities: IMPORTANT TARGET FORMAT: square transparent-background studio cutout. Preserve Image1 friendly full-body quote-planning Kai holding a clipboard, calculator and pen. Preserve useful composition but remove dollar-sign speech bubble, price 1280.00 and any invented offer/guarantee badges. Calculator display can show a neutral '0'; clipboard has subtle abstract form rows, no readable prices, no extra English labels. Exact master Kai face/skin and navy cap/polo, BOTH exact official white logo marks clearly visible. No backdrop or tiny mascot art, full body/props/tentacles within square frame. Transparent background.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-9cb7886e-03ad-4e57-9632-6289dfb31a23.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "transparent_background": true,
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-9cb7886e-03ad-4e57-9632-6289dfb31a23.png",
+      "qa_status": "reviewed",
+      "review_notes": "Transparent square cutout retained; clipboard abstract rows, neutral calculator0, no dollar sign, price or guarantee badge. Both official white cap and polo marks clear.",
+      "saved_file": {
+        "bytes": 1647521,
+        "width": 1254,
+        "height": 1254,
+        "png_color_type": 6,
+        "sha256": "9198013c3686a3b31c6029b20a393a3aff69f03198ea27730d4f9403ce57dfa3"
+      }
+    },
+    {
+      "id": 26,
+      "slug": "kai-reviews",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/kai reviews.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/kai-reviews.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific requirements override generalities: IMPORTANT TARGET FORMAT: square transparent-background studio cutout. Preserve Image1 friendly full-body Kai making an encouraging thumbs-up and holding a white rounded feedback card. Replace Google wordmark and FIVE FILLED STARS entirely with a neutral navy/teal speech-bubble icon and two or three simple grey feedback lines (NO star rating, score, testimonial words or endorsement brand). Move card slightly right/lower so exact official white left-chest logo remains fully visible, along with white cap-front logo. Match master blue face, large eyes, textured skin and magenta suction cups, navy polo/cap/trousers. No extra characters. Transparent background.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-fd798af9-c104-425a-9756-80e2e9f78ade.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "transparent_background": true,
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-fd798af9-c104-425a-9756-80e2e9f78ade.png",
+      "qa_status": "reviewed",
+      "review_notes": "Transparent square cutout retained; neutral speech-bubble feedback card, Google/stars removed, no rating or endorsement claim. Both official white cap and polo marks clear.",
+      "saved_file": {
+        "bytes": 1498857,
+        "width": 1254,
+        "height": 1254,
+        "png_color_type": 6,
+        "sha256": "242df452e4a4bb873523ee350e39b206d1518603d76d155e1f9b98b4b9f5452c"
+      }
+    },
+    {
+      "id": 27,
+      "slug": "evolucion-mascota-kraken",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/evolucion-mascota-kraken.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/evolucion-mascota-kraken.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific requirements override generalities: Target LANDSCAPE clean white studio 'evolution of Kai' brand illustration: a progression of FIVE sharply rendered blue Kai figures from smaller on left to larger on right, each a polished variant of the SAME definitive Image2 identity, all dressed professionally. EVERY SINGLE FIGURE, including the smallest and rightmost, MUST have NAVY baseball cap AND NAVY short-sleeve polo with exact official WHITE Image3 artwork on BOTH cap front and visible left chest, and navy trousers. No nude/baby stage, no dummy/pacifier, no missing logos, no blur, no mysterious silhouette, no question marks or words. Five distinct friendly confident poses with balanced spacing, fine fabric and blue skin textures, magenta suction cups, soft floor contact shadows. Recompose source as a coherent premium current-brand design study; clothing and brand marks fully visible on all five.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-4f9b7600-4fd1-4bc5-b76e-09f45cd065af.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "transparent_background": false,
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-4f9b7600-4fd1-4bc5-b76e-09f45cd065af.png",
+      "qa_status": "reviewed",
+      "review_notes": "Landscape progression of five sharp Kai figures; ALL five in navy cap and polo with visible white marks, no nude or blurry stage.",
+      "saved_file": {
+        "bytes": 2039327,
+        "width": 1671,
+        "height": 941,
+        "png_color_type": 2,
+        "sha256": "8692279bcee74a778f59a4a3458406ec5eddeb5b8ef2ced96840c1d9e84c3a72"
+      }
+    },
+    {
+      "id": 28,
+      "slug": "comic-promotion",
+      "source_path": "/Users/Projects/Downloads/another-star---kraken-properties/public/comic-promotion.webp",
+      "output_path": "/Users/Projects/Downloads/another-star---kraken-properties/assets-source/kai-brand-v3/legacy/comic-promotion.png",
+      "status": "copied",
+      "prompt": "Use case: identity-preserve / premium service illustration. Inputs: Image1 is the existing scene/edit target; Image2 is the definitive Kai identity, wardrobe and premium 3D rendering master; Image3 is the official white Kraken logo artwork on transparency (its preview background is not part of the logo). Recreate the scene as polished, high-end 3D character advertising with photorealistic Swiss surroundings, soft natural light, precise shadows, tactile fabric weave and detailed blue skin. Preserve the target scene's action, Swiss setting, landscape composition and service meaning. Every visible Kai MUST wear a NAVY baseball cap and a NAVY short-sleeve polo; put the exact official white Image3 logo on the front of the cap AND the visible left chest. Copy that supplied artwork faithfully, not typed letters or a redesigned symbol; match the master's face, large blue eyes, blue skin and curled tentacles with magenta suction cups. Any human workers retain the same service roles and coordinated navy cap/polo with the same official white logos. Keep Kai's cap front and chest unobstructed enough for the two white marks to read. No unbranded/naked Kai, no extra mascot insets or background miniatures, no invented lettering, no watermarks, no new slogans. Source-scene composition is a guide, not a requirement to retain inferior character rendering or distorted logos. Output one finished asset matching the target aspect ratio, crisp enough for a premium website.\nThe master's apartment and skyline are NOT scene references: do not transplant them into a different Image1 location. Keep the setting and city cues from Image1.\nScene-specific requirements override generalities: Target PORTRAIT premium 3D comic-promotion cover. Preserve cinematic Swiss Rhine Falls at night, moonlit flowing water, cliff castle with discreet Swiss flag, rich navy starfield. ONE large physical Kai in foreground on a safe broad rock, facing front or gentle three-quarter FRONT so BOTH exact official white cap-front and left-chest polo marks are clear. Match Image2 blue identity, large blue eyes, navy cap and navy polo/trousers, tactile skin and fabrics, warm friendly adventurous expression. REMOVE the gigantic glowing mascot silhouette and question mark in sky and ALL tiny/background mascot figures; sky only subtle stars/moon/mist, no additional characters. Title near bottom can retain EXACT words 'THE LEGEND OF KAI' with elegant restrained luminous serif typography; a small supplied official white Kraken logo at footer. No other text, no fake logos. Premium storybook-advertising atmosphere, not horror.",
+      "output_hint": "Generated images are saved to /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38 as /Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-73b18827-58e6-47c2-9f00-2e6cbb6f43c9.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "transparent_background": false,
+      "generated_source_path": "/Users/Projects/.codex/generated_images/01a1f9de-5ec6-7411-9a17-9385d6750c38/exec-73b18827-58e6-47c2-9f00-2e6cbb6f43c9.png",
+      "qa_status": "reviewed",
+      "review_notes": "Portrait moonlit Rhine Falls comic cover; one front-facing branded Kai only, no ghost mascot/sky silhouette, exact retained title and official footer mark.",
+      "saved_file": {
+        "bytes": 2714379,
+        "width": 1055,
+        "height": 1491,
+        "png_color_type": 2,
+        "sha256": "24fb998683a120b232945b0adf5f512c977fabadeabcc22899fae49c25f4ac19"
+      }
+    }
+  ]
+}

@@ -48,7 +48,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="kraken-auth min-h-screen bg-[#f4f8f8] px-4 py-8 sm:px-6 sm:py-12">
+    <div className="kraken-auth min-h-screen bg-[#f3f7fc] px-4 py-8 sm:px-6 sm:py-12">
       <div className="kraken-auth-layout mx-auto grid max-w-xl lg:max-w-5xl items-stretch gap-6 lg:grid-cols-[0.95fr_1.05fr]">
         <AccountIntro language={language} mode="login" />
       <motion.div
@@ -56,10 +56,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
         animate={{ opacity: 1, y: 0 }}
         className="w-full min-w-0"
       >
-        <div className="kraken-auth-card h-full bg-white p-5 sm:p-8 rounded-3xl border border-[#dce6e8] shadow-sm">
+        <div className="kraken-auth-card h-full bg-white p-5 sm:p-8 rounded-3xl border border-[#dce5f0] shadow-sm">
           <div className="mb-7 text-left">
-            <h1 className="text-3xl font-semibold text-[#082b45] mb-1">{pt('signIn')}</h1>
-            <p className="text-[#526574] font-semibold text-base ">{pt('portal')}</p>
+            <h1 className="text-3xl font-semibold text-[#032b59] mb-1">{pt('signIn')}</h1>
+            <p className="text-[#50647c] font-semibold text-base ">{pt('portal')}</p>
           </div>
 
           {error && (
@@ -72,14 +72,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
             </motion.div>
           )}
 
-          {notice && <p role="status" className="bg-emerald-50 text-emerald-800 p-4 rounded-2xl mb-5 text-base">{notice}</p>}
+          {notice && <p role="status" className="bg-blue-50 text-blue-800 p-4 rounded-2xl mb-5 text-base">{notice}</p>}
           <form onSubmit={handleSubmit} className="kraken-form space-y-5 relative z-10">
             <div className="space-y-1.5">
-              <label htmlFor="email" className="kraken-label block text-sm font-semibold text-[#526574] ml-2">
+              <label htmlFor="email" className="kraken-label block text-sm font-semibold text-[#50647c] ml-2">
                 {pt('email')}
               </label>
               <div className="relative">
-                <MailIcon className="absolute left-4.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#526574]" />
+                <MailIcon className="absolute left-4.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#50647c]" />
                 <input
                   id="email"
                   name="email"
@@ -88,18 +88,18 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 pl-12 pr-5 text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574] text-base"
+                  className="kraken-field w-full bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl py-3.5 pl-12 pr-5 text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:bg-white transition-all placeholder:text-[#50647c] text-base"
                   placeholder="name@example.ch"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="password" className="kraken-label block text-sm font-semibold text-[#526574] ml-2">
+              <label htmlFor="password" className="kraken-label block text-sm font-semibold text-[#50647c] ml-2">
                 {pt('password')}
               </label>
               <div className="relative">
-                <LockIcon className="absolute left-4.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#526574]" />
+                <LockIcon className="absolute left-4.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#50647c]" />
                 <input
                   id="password"
                   name="password"
@@ -108,7 +108,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="kraken-field w-full bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl py-3.5 pl-12 pr-5 text-[#082b45] font-semibold focus:outline-none focus:border-[#087f73] focus:bg-white transition-all placeholder:text-[#526574] text-base"
+                  className="kraken-field w-full bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl py-3.5 pl-12 pr-5 text-[#032b59] font-semibold focus:outline-none focus:border-[#1464ad] focus:bg-white transition-all placeholder:text-[#50647c] text-base"
                   placeholder="••••••••"
                   style={{ paddingRight: '3.5rem' }}
                 />
@@ -119,7 +119,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                   title={pt(showPassword ? 'hidePassword' : 'showPassword')}
                   aria-controls="password"
                   aria-pressed={showPassword}
-                  className="kraken-control min-h-11 min-w-11 absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 inline-flex items-center justify-center rounded-xl text-[#526574] hover:bg-[#f4f8f8] focus-visible:outline-2 focus-visible:outline-blue-600"
+                  className="kraken-control min-h-11 min-w-11 absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 inline-flex items-center justify-center rounded-xl text-[#50647c] hover:bg-[#f3f7fc] focus-visible:outline-2 focus-visible:outline-blue-600"
                 >
                   {showPassword ? <EyeOff aria-hidden="true" className="w-5 h-5" /> : <Eye aria-hidden="true" className="w-5 h-5" />}
                 </button>
@@ -131,12 +131,12 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
               whileTap={{ scale: 0.99 }}
               type="submit"
               disabled={isLoading}
-              className="kraken-control min-h-11 w-full py-4.5 bg-[#087f73] hover:bg-[#087f73] text-white rounded-2xl font-semibold text-base shadow-sm disabled:opacity-50 transition-all cursor-pointer"
+              className="kraken-control min-h-11 w-full py-4.5 bg-[#1464ad] hover:bg-[#1464ad] text-white rounded-2xl font-semibold text-base shadow-sm disabled:opacity-50 transition-all cursor-pointer"
             >
               {isLoading ? pt('loading') : pt('signIn')}
             </motion.button>
           </form>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-6 text-base font-medium text-[#087f73]">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-6 text-base font-medium text-[#1464ad]">
             <button type="button" className="kraken-control min-h-11 text-left" disabled={isLoading} onClick={handleReset}>{pt('forgot')}</button>
             <a className="inline-flex min-h-11 items-center" href="/register" onClick={event => { if (!event.ctrlKey && !event.metaKey && !event.shiftKey) { event.preventDefault(); onNavigate('register'); } }}>{pt('createAccount')}</a>
           </div>

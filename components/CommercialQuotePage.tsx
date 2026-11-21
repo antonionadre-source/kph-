@@ -825,7 +825,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
   const zoneFeedback = getZoneByPostalCode(formData.postalCode);
 
   return (
-    <div className="kraken-page kraken-workflow min-h-screen bg-[#f4f8f8] text-[#082b45] py-12 sm:py-16">
+    <div className="kraken-page kraken-workflow min-h-screen bg-[#f3f7fc] text-[#032b59] py-12 sm:py-16">
 
       <div className="kraken-container max-w-6xl">
 
@@ -834,18 +834,18 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
         {/* Progress Timeline */}
         {!complete && (
           <div className="mb-8 max-w-2xl mx-auto px-4 select-none">
-            <div className="flex flex-wrap justify-between items-center gap-3 text-sm font-medium text-[#526574] mb-2.5">
+            <div className="flex flex-wrap justify-between items-center gap-3 text-sm font-medium text-[#50647c] mb-2.5">
               <span>{texts.step} {step} {texts.of} 4</span>
-              <span className="text-[#087f73]">
+              <span className="text-[#1464ad]">
                 {step === 1 && texts.step1Title}
                 {step === 2 && texts.step2Title}
                 {step === 3 && texts.step3Title}
                 {step === 4 && texts.step4Title}
               </span>
             </div>
-            <div className="w-full h-2 bg-[#f4f8f8] rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-[#f3f7fc] rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-[#087f73] rounded-full"
+                className="h-full bg-[#1464ad] rounded-full"
                 animate={{ width: `${(step / 4) * 100}%` }}
                 transition={{ duration: 0.35, ease: 'easeOut' }}
               />
@@ -857,7 +857,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
 
           {/* Main Wizard Card */}
           <div className={`${complete ? 'lg:col-span-12' : 'lg:col-span-7'}`}>
-            <div className="bg-white border border-[#dce6e8] rounded-3xl p-6 md:p-8 shadow-sm backdrop-blur-md relative overflow-hidden">
+            <div className="bg-white border border-[#dce5f0] rounded-3xl p-6 md:p-8 shadow-sm backdrop-blur-md relative overflow-hidden">
 
               <AnimatePresence mode="wait">
                 <motion.div
@@ -872,12 +872,12 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                   {step === 1 && (
                     <div className="space-y-6">
                       <div>
-                        <h2 className="text-lg md:text-xl font-bold text-[#082b45] mb-2">{texts.step1Title}</h2>
-                        <p className="text-[#526574] text-sm md:text-sm">{texts.step1Desc}</p>
+                        <h2 className="text-lg md:text-xl font-bold text-[#032b59] mb-2">{texts.step1Title}</h2>
+                        <p className="text-[#50647c] text-sm md:text-sm">{texts.step1Desc}</p>
                       </div>
 
                       <div className="space-y-4">
-                        <label className="block text-sm md:text-sm font-bold text-[#526574] normal-case tracking-normal">
+                        <label className="block text-sm md:text-sm font-bold text-[#50647c] normal-case tracking-normal">
                           {texts.buildingTypeLabel}
                         </label>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -894,8 +894,8 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                               onClick={() => setFormData(p => ({ ...p, buildingType: item.id }))}
                               className={`flex items-center gap-3 p-4 rounded-2xl border text-left text-sm md:text-sm font-semibold transition-all ${
                                 formData.buildingType === item.id
-                                  ? 'border-[#087f73] bg-sky-500/10 text-[#082b45] shadow-sm'
-                                  : 'border-[#dce6e8] bg-[#f4f8f8] hover:border-[#dce6e8] text-[#526574]'
+                                  ? 'border-[#1464ad] bg-sky-500/10 text-[#032b59] shadow-sm'
+                                  : 'border-[#dce5f0] bg-[#f3f7fc] hover:border-[#dce5f0] text-[#50647c]'
                               }`}
                             >
                               <span className="text-2xl select-none">{item.icon}</span>
@@ -907,26 +907,26 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                         <div className="space-y-3">
-                          <label className="block text-sm md:text-sm font-bold text-[#526574] normal-case tracking-normal select-none">
+                          <label className="block text-sm md:text-sm font-bold text-[#50647c] normal-case tracking-normal select-none">
                             {texts.numBuildingsLabel}
                           </label>
-                          <div className="flex items-center gap-4 bg-[#f4f8f8] border border-[#dce6e8] p-2 rounded-2xl w-fit">
+                          <div className="flex items-center gap-4 bg-[#f3f7fc] border border-[#dce5f0] p-2 rounded-2xl w-fit">
                             <button
                               type="button"
                               aria-label={`${texts.numBuildingsLabel}: −1`}
                               onClick={() => setFormData(p => ({ ...p, numBuildings: Math.max(1, p.numBuildings - 1) }))}
-                              className="min-w-11 min-h-11 flex items-center justify-center rounded-xl bg-[#f4f8f8] hover:bg-[#e6f0ef] active:scale-95 text-xl font-semibold transition-all select-none"
+                              className="min-w-11 min-h-11 flex items-center justify-center rounded-xl bg-[#f3f7fc] hover:bg-[#eaf1fa] active:scale-95 text-xl font-semibold transition-all select-none"
                             >
                               -
                             </button>
-                            <span className="text-xl font-semibold text-[#082b45] w-12 text-center select-none">
+                            <span className="text-xl font-semibold text-[#032b59] w-12 text-center select-none">
                               {formData.numBuildings}
                             </span>
                             <button
                               type="button"
                               aria-label={`${texts.numBuildingsLabel}: +1`}
                               onClick={() => setFormData(p => ({ ...p, numBuildings: Math.min(50, p.numBuildings + 1) }))}
-                              className="min-w-11 min-h-11 flex items-center justify-center rounded-xl bg-[#f4f8f8] hover:bg-[#e6f0ef] active:scale-95 text-xl font-semibold transition-all select-none"
+                              className="min-w-11 min-h-11 flex items-center justify-center rounded-xl bg-[#f3f7fc] hover:bg-[#eaf1fa] active:scale-95 text-xl font-semibold transition-all select-none"
                             >
                               +
                             </button>
@@ -935,10 +935,10 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
 
                         <div className="space-y-3">
                           <div className="flex justify-between items-center">
-                            <label htmlFor="commercialquote-area" className="block text-sm md:text-sm font-bold text-[#526574] normal-case tracking-normal">
+                            <label htmlFor="commercialquote-area" className="block text-sm md:text-sm font-bold text-[#50647c] normal-case tracking-normal">
                               {texts.areaLabel} (m²)
                             </label>
-                            <span className="text-lg font-semibold text-[#087f73]">
+                            <span className="text-lg font-semibold text-[#1464ad]">
                               {formData.totalArea.toLocaleString()} m²
                             </span>
                           </div>
@@ -950,9 +950,9 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                             step="10"
                             value={formData.totalArea}
                             onChange={(e) => setFormData(p => ({ ...p, totalArea: parseInt(e.target.value, 10) }))}
-                            className="min-h-11 w-full h-2 bg-[#f4f8f8] rounded-lg appearance-none cursor-pointer accent-sky-500"
+                            className="min-h-11 w-full h-2 bg-[#f3f7fc] rounded-lg appearance-none cursor-pointer accent-sky-500"
                           />
-                          <div className="flex justify-between text-sm text-[#526574] font-bold">
+                          <div className="flex justify-between text-sm text-[#50647c] font-bold">
                             <span>10 m²</span>
                             <span>15,000 m²</span>
                             <span>30,000 m²+</span>
@@ -966,8 +966,8 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                   {step === 2 && (
                     <div className="space-y-6">
                       <div>
-                        <h2 className="text-lg md:text-xl font-bold text-[#082b45] mb-2">{texts.step2Title}</h2>
-                        <p className="text-[#526574] text-sm md:text-sm">{texts.step2Desc}</p>
+                        <h2 className="text-lg md:text-xl font-bold text-[#032b59] mb-2">{texts.step2Title}</h2>
+                        <p className="text-[#50647c] text-sm md:text-sm">{texts.step2Desc}</p>
                       </div>
 
                       <div className="grid grid-cols-1 gap-3.5 pt-2">
@@ -987,16 +987,16 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                               onClick={() => toggleService(service.keyActual || service.key as keyof SelectedServices)}
                               className={`flex gap-4 p-4 rounded-2xl border text-left transition-all ${
                                 isSelected
-                                  ? 'border-[#087f73]/90 bg-sky-500/10 text-[#082b45] shadow-sm'
-                                  : 'border-[#dce6e8] bg-[#f4f8f8] hover:border-[#dce6e8] text-[#526574]'
+                                  ? 'border-[#1464ad]/90 bg-sky-500/10 text-[#032b59] shadow-sm'
+                                  : 'border-[#dce5f0] bg-[#f3f7fc] hover:border-[#dce5f0] text-[#50647c]'
                               }`}
                             >
-                              <div className={`w-10 h-10 shrink-0 flex items-center justify-center rounded-xl text-xl ${isSelected ? 'bg-sky-500' : 'bg-[#f4f8f8]'}`}>
+                              <div className={`w-10 h-10 shrink-0 flex items-center justify-center rounded-xl text-xl ${isSelected ? 'bg-sky-500' : 'bg-[#f3f7fc]'}`}>
                                 {service.icon}
                               </div>
                               <div>
                                 <h3 className="text-sm md:text-sm font-semibold tracking-tight">{service.label}</h3>
-                                <p className="text-sm md:text-sm text-[#526574] leading-normal mt-1">{service.desc}</p>
+                                <p className="text-sm md:text-sm text-[#50647c] leading-normal mt-1">{service.desc}</p>
                               </div>
                             </button>
                           );
@@ -1009,12 +1009,12 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                   {step === 3 && (
                     <div className="space-y-6">
                       <div>
-                        <h2 className="text-lg md:text-xl font-bold text-[#082b45] mb-2">{texts.step3Title}</h2>
-                        <p className="text-[#526574] text-sm md:text-sm">{texts.step3Desc}</p>
+                        <h2 className="text-lg md:text-xl font-bold text-[#032b59] mb-2">{texts.step3Title}</h2>
+                        <p className="text-[#50647c] text-sm md:text-sm">{texts.step3Desc}</p>
                       </div>
 
                       <div className="space-y-3">
-                        <label className="block text-sm md:text-sm font-bold text-[#526574] normal-case tracking-normal">
+                        <label className="block text-sm md:text-sm font-bold text-[#50647c] normal-case tracking-normal">
                           {texts.freqLabel}
                         </label>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5">
@@ -1032,8 +1032,8 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                               onClick={() => setFormData(p => ({ ...p, frequency: item.id }))}
                               className={`flex flex-col items-center justify-center p-3.5 rounded-2xl border text-center transition-all ${
                                 formData.frequency === item.id
-                                  ? 'border-[#087f73] bg-sky-500/15 text-[#082b45] font-semibold'
-                                  : 'border-[#dce6e8] bg-[#f4f8f8] hover:border-[#dce6e8] text-[#526574] text-sm font-semibold'
+                                  ? 'border-[#1464ad] bg-sky-500/15 text-[#032b59] font-semibold'
+                                  : 'border-[#dce5f0] bg-[#f3f7fc] hover:border-[#dce5f0] text-[#50647c] text-sm font-semibold'
                               }`}
                             >
                               <span className="text-xl mb-1">{item.icon}</span>
@@ -1043,8 +1043,8 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                         </div>
                       </div>
 
-                      <div className="space-y-3.5 pt-4 border-t border-[#dce6e8]">
-                        <label className="block text-sm md:text-sm font-bold text-[#526574] normal-case tracking-normal">
+                      <div className="space-y-3.5 pt-4 border-t border-[#dce5f0]">
+                        <label className="block text-sm md:text-sm font-bold text-[#50647c] normal-case tracking-normal">
                           {texts.additionalProtocols}
                         </label>
                         <div className="grid grid-cols-1 gap-3">
@@ -1062,17 +1062,17 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                                 onClick={() => toggleProtocol(opt.key as keyof SelectedProtocols)}
                                 className={`flex items-center gap-4 p-3.5 rounded-xl border text-left transition-all ${
                                   isSelected
-                                    ? 'border-emerald-500/90 bg-emerald-500/5 text-[#082b45]'
-                                    : 'border-[#dce6e8] bg-[#f4f8f8] hover:border-[#dce6e8] text-[#526574]'
+                                    ? 'border-blue-500/90 bg-blue-500/5 text-[#032b59]'
+                                    : 'border-[#dce5f0] bg-[#f3f7fc] hover:border-[#dce5f0] text-[#50647c]'
                                 }`}
                               >
-                                <div className={`w-4 h-4 rounded shrink-0 flex items-center justify-center border ${isSelected ? 'bg-emerald-500 border-emerald-400 text-slate-950' : 'border-slate-600'}`}>
+                                <div className={`w-4 h-4 rounded shrink-0 flex items-center justify-center border ${isSelected ? 'bg-blue-500 border-blue-400 text-slate-950' : 'border-slate-600'}`}>
                                   {isSelected && <span className="text-sm font-semibold">✓</span>}
                                 </div>
                                 <div className="shrink-0 text-xl select-none">{opt.icon}</div>
                                 <div>
                                   <h4 className="text-sm font-bold leading-tight">{opt.label}</h4>
-                                  <p className="text-sm text-[#526574] mt-0.5 leading-normal">{opt.desc}</p>
+                                  <p className="text-sm text-[#50647c] mt-0.5 leading-normal">{opt.desc}</p>
                                 </div>
                               </button>
                             );
@@ -1086,14 +1086,14 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                   {step === 4 && (
                     <div className="space-y-6">
                       <div>
-                        <h2 className="text-lg md:text-xl font-bold text-[#082b45] mb-2">{texts.step4Title}</h2>
-                        <p className="text-[#526574] text-sm md:text-sm">{texts.step4Desc}</p>
+                        <h2 className="text-lg md:text-xl font-bold text-[#032b59] mb-2">{texts.step4Title}</h2>
+                        <p className="text-[#50647c] text-sm md:text-sm">{texts.step4Desc}</p>
                       </div>
 
                       <div className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-1.5">
-                            <label htmlFor="commercialquote-field-1" className="block text-sm font-bold text-[#526574]">
+                            <label htmlFor="commercialquote-field-1" className="block text-sm font-bold text-[#50647c]">
                               {texts.postalCodeLabel} *
                             </label>
                             <input id="commercialquote-field-1"
@@ -1102,24 +1102,24 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                               placeholder={texts.postalCodePlaceholder}
                               value={formData.postalCode}
                               onChange={(e) => setFormData(p => ({ ...p, postalCode: e.target.value }))}
-                              className="min-h-11 w-full bg-white border border-[#dce6e8] rounded-xl px-4 py-2.5 text-base md:text-sm text-[#082b45] focus:outline-none focus:border-[#087f73] placeholder:text-[#526574]"
+                              className="min-h-11 w-full bg-white border border-[#dce5f0] rounded-xl px-4 py-2.5 text-base md:text-sm text-[#032b59] focus:outline-none focus:border-[#1464ad] placeholder:text-[#50647c]"
                             />
                           </div>
 
                           <div className="space-y-1.5 align-middle">
-                            <label className="block text-sm font-bold text-[#526574]">
+                            <label className="block text-sm font-bold text-[#50647c]">
                               {texts.regionBase}
                             </label>
-                            <div className="bg-[#f4f8f8] border border-[#dce6e8] rounded-xl px-4 py-3 text-sm font-bold text-[#526574] min-h-12 flex items-center">
+                            <div className="bg-[#f3f7fc] border border-[#dce5f0] rounded-xl px-4 py-3 text-sm font-bold text-[#50647c] min-h-12 flex items-center">
                               {formData.postalCode.trim() ? (
-                                <span className={zoneFeedback.zone === 'schaffhausen' ? 'text-[#087f73]' : 'text-[#087f73]'}>
+                                <span className={zoneFeedback.zone === 'schaffhausen' ? 'text-[#1464ad]' : 'text-[#1464ad]'}>
                                   {zoneFeedback.zone === 'schaffhausen' && texts.regionSH}
                                   {zoneFeedback.zone === 'zurich' && texts.regionZH}
                                   {zoneFeedback.zone === 'winterthur' && texts.regionWT}
                                   {zoneFeedback.zone === 'other' && texts.regionOther}
                                 </span>
                               ) : (
-                                <span className="text-[#526574] italic">{texts.postalCodePlaceholder}</span>
+                                <span className="text-[#50647c] italic">{texts.postalCodePlaceholder}</span>
                               )}
                             </div>
                           </div>
@@ -1127,7 +1127,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-1.5">
-                            <label htmlFor="commercialquote-field-2" className="block text-sm font-bold text-[#526574]">
+                            <label htmlFor="commercialquote-field-2" className="block text-sm font-bold text-[#50647c]">
                               {texts.cityLabel} *
                             </label>
                             <input id="commercialquote-field-2"
@@ -1135,12 +1135,12 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                               placeholder="e.g., Schaffhausen"
                               value={formData.city}
                               onChange={(e) => setFormData(p => ({ ...p, city: e.target.value }))}
-                              className="min-h-11 w-full bg-white border border-[#dce6e8] rounded-xl px-4 py-2.5 text-base md:text-sm text-[#082b45] focus:outline-none focus:border-[#087f73] placeholder:text-[#526574]"
+                              className="min-h-11 w-full bg-white border border-[#dce5f0] rounded-xl px-4 py-2.5 text-base md:text-sm text-[#032b59] focus:outline-none focus:border-[#1464ad] placeholder:text-[#50647c]"
                             />
                           </div>
 
                           <div className="space-y-1.5">
-                            <label htmlFor="commercialquote-field-3" className="block text-sm font-bold text-[#526574]">
+                            <label htmlFor="commercialquote-field-3" className="block text-sm font-bold text-[#50647c]">
                               {texts.hoursLabel} *
                             </label>
                             <input id="commercialquote-field-3"
@@ -1149,13 +1149,13 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                               max={168}
                               value={formData.hours}
                               onChange={(e) => setFormData(p => ({ ...p, hours: Math.max(1, parseInt(e.target.value, 10) || 1) }))}
-                              className="min-h-11 w-full bg-white border border-[#dce6e8] rounded-xl px-4 py-2.5 text-base md:text-sm text-[#082b45] focus:outline-none focus:border-[#087f73] placeholder:text-[#526574]"
+                              className="min-h-11 w-full bg-white border border-[#dce5f0] rounded-xl px-4 py-2.5 text-base md:text-sm text-[#032b59] focus:outline-none focus:border-[#1464ad] placeholder:text-[#50647c]"
                             />
                           </div>
                         </div>
 
                         <div className="space-y-1.5">
-                          <label htmlFor="commercialquote-field-4" className="block text-sm font-bold text-[#526574]">
+                          <label htmlFor="commercialquote-field-4" className="block text-sm font-bold text-[#50647c]">
                             {texts.addressLabel} *
                           </label>
                           <input id="commercialquote-field-4"
@@ -1163,16 +1163,16 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                             placeholder="e.g., Rheinstrasse 12, 8200 Schaffhausen"
                             maxLength={500} value={formData.address}
                             onChange={(e) => setFormData(p => ({ ...p, address: e.target.value }))}
-                            className="min-h-11 w-full bg-white border border-[#dce6e8] rounded-xl px-4 py-3 text-base md:text-sm text-[#082b45] focus:outline-none focus:border-[#087f73] placeholder:text-[#526574]"
+                            className="min-h-11 w-full bg-white border border-[#dce5f0] rounded-xl px-4 py-3 text-base md:text-sm text-[#032b59] focus:outline-none focus:border-[#1464ad] placeholder:text-[#50647c]"
                           />
                         </div>
 
                         <div className="space-y-2 pt-1">
-                          <label htmlFor="floor-plan-upload" className="block text-sm font-bold text-[#526574]">
+                          <label htmlFor="floor-plan-upload" className="block text-sm font-bold text-[#50647c]">
                             {texts.plansLabel}
                           </label>
                           <div
-                            className="border-2 border-dashed border-[#dce6e8] hover:border-[#087f73]/50 rounded-xl p-6 transition-all bg-[#f4f8f8] text-center cursor-pointer relative"
+                            className="border-2 border-dashed border-[#dce5f0] hover:border-[#1464ad]/50 rounded-xl p-6 transition-all bg-[#f3f7fc] text-center cursor-pointer relative"
                             role="button" tabIndex={0}
                             onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); document.getElementById('floor-plan-upload')?.click(); } }}
                             onDragOver={event => event.preventDefault()}
@@ -1189,10 +1189,10 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                             />
                             <div className="flex flex-col items-center justify-center gap-2 select-none">
                               <span className="text-3xl">📤</span>
-                              <p className="text-sm font-medium text-[#526574]">
+                              <p className="text-sm font-medium text-[#50647c]">
                                 {texts.plansDrop}
                               </p>
-                              <p className="text-sm text-[#526574]">
+                              <p className="text-sm text-[#50647c]">
                                 PDF / PNG / JPG / JPEG · 20 MiB
                               </p>
                             </div>
@@ -1201,11 +1201,11 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                           {formData.floorPlans && formData.floorPlans.length > 0 && (
                             <div className="space-y-1.5 pt-2">
                               {formData.floorPlans.map((plan, index) => (
-                                <div key={index} className="flex justify-between items-center bg-[#f4f8f8] border border-[#dce6e8] rounded-lg p-2 text-sm text-[#082b45]">
+                                <div key={index} className="flex justify-between items-center bg-[#f3f7fc] border border-[#dce5f0] rounded-lg p-2 text-sm text-[#032b59]">
                                   <div className="flex items-center gap-2 overflow-hidden">
-                                    <span className="shrink-0 text-[#526574]">📄</span>
+                                    <span className="shrink-0 text-[#50647c]">📄</span>
                                     <span className="truncate font-medium">{plan.name}</span>
-                                    <span className="shrink-0 text-sm text-[#526574] font-bold">({plan.size})</span>
+                                    <span className="shrink-0 text-sm text-[#50647c] font-bold">({plan.size})</span>
                                   </div>
                                   <button
                                     type="button"
@@ -1219,7 +1219,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                                         floorPlans: (p.floorPlans || []).filter((_, i) => i !== index)
                                       }));
                                     }}
-                                    className="min-h-11 p-1 hover:bg-[#f4f8f8] rounded text-red-400 hover:text-red-300 transition-all text-sm"
+                                    className="min-h-11 p-1 hover:bg-[#f3f7fc] rounded text-red-400 hover:text-red-300 transition-all text-sm"
                                   >
                                     🗑️
                                   </button>
@@ -1230,7 +1230,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                         </div>
 
                         <div className="space-y-1.5 pt-1">
-                          <label htmlFor="commercialquote-field-5" className="block text-sm font-bold text-[#526574]">
+                          <label htmlFor="commercialquote-field-5" className="block text-sm font-bold text-[#50647c]">
                             {texts.companyLabel} *
                           </label>
                           <input id="commercialquote-field-5"
@@ -1238,12 +1238,12 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                             placeholder={texts.companyPlaceholder}
                             maxLength={200} value={formData.companyName}
                             onChange={(e) => setFormData(p => ({ ...p, companyName: e.target.value }))}
-                            className="min-h-11 w-full bg-white border border-[#dce6e8] rounded-xl px-4 py-3 text-base md:text-sm text-[#082b45] focus:outline-none focus:border-[#087f73] placeholder:text-[#526574]"
+                            className="min-h-11 w-full bg-white border border-[#dce5f0] rounded-xl px-4 py-3 text-base md:text-sm text-[#032b59] focus:outline-none focus:border-[#1464ad] placeholder:text-[#50647c]"
                           />
                         </div>
 
                         <div className="space-y-1.5">
-                          <label htmlFor="commercialquote-field-6" className="block text-sm font-bold text-[#526574]">
+                          <label htmlFor="commercialquote-field-6" className="block text-sm font-bold text-[#50647c]">
                             {texts.contactLabel} *
                           </label>
                           <input id="commercialquote-field-6"
@@ -1251,13 +1251,13 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                             placeholder={texts.contactPlaceholder}
                             maxLength={150} value={formData.contactName}
                             onChange={(e) => setFormData(p => ({ ...p, contactName: e.target.value }))}
-                            className="min-h-11 w-full bg-white border border-[#dce6e8] rounded-xl px-4 py-3 text-base md:text-sm text-[#082b45] focus:outline-none focus:border-[#087f73] placeholder:text-[#526574]"
+                            className="min-h-11 w-full bg-white border border-[#dce5f0] rounded-xl px-4 py-3 text-base md:text-sm text-[#032b59] focus:outline-none focus:border-[#1464ad] placeholder:text-[#50647c]"
                           />
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-1.5">
-                            <label htmlFor="commercialquote-field-7" className="block text-sm font-bold text-[#526574]">
+                            <label htmlFor="commercialquote-field-7" className="block text-sm font-bold text-[#50647c]">
                               {texts.emailLabel} *
                             </label>
                             <input id="commercialquote-field-7"
@@ -1265,12 +1265,12 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                               placeholder={texts.emailPlaceholder}
                               maxLength={254} value={formData.contactEmail}
                               onChange={(e) => setFormData(p => ({ ...p, contactEmail: e.target.value }))}
-                              className="min-h-11 w-full bg-white border border-[#dce6e8] rounded-xl px-4 py-2.5 text-base md:text-sm text-[#082b45] focus:outline-none focus:border-[#087f73] placeholder:text-[#526574]"
+                              className="min-h-11 w-full bg-white border border-[#dce5f0] rounded-xl px-4 py-2.5 text-base md:text-sm text-[#032b59] focus:outline-none focus:border-[#1464ad] placeholder:text-[#50647c]"
                             />
                           </div>
 
                           <div className="space-y-1.5">
-                            <label htmlFor="commercialquote-field-8" className="block text-sm font-bold text-[#526574]">
+                            <label htmlFor="commercialquote-field-8" className="block text-sm font-bold text-[#50647c]">
                               {texts.phoneLabel}
                             </label>
                             <input id="commercialquote-field-8"
@@ -1278,7 +1278,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                               placeholder={texts.phonePlaceholder}
                               maxLength={50} value={formData.contactPhone}
                               onChange={(e) => setFormData(p => ({ ...p, contactPhone: e.target.value }))}
-                              className="min-h-11 w-full bg-white border border-[#dce6e8] rounded-xl px-4 py-2.5 text-base md:text-sm text-[#082b45] focus:outline-none focus:border-[#087f73] placeholder:text-[#526574]"
+                              className="min-h-11 w-full bg-white border border-[#dce5f0] rounded-xl px-4 py-2.5 text-base md:text-sm text-[#032b59] focus:outline-none focus:border-[#1464ad] placeholder:text-[#50647c]"
                             />
                           </div>
                         </div>
@@ -1296,47 +1296,47 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                   {/* STEP 5: SUCCESS BLOCK */}
                   {step === 5 && (
                     <div className="text-center py-6 space-y-6">
-                      <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 text-[#087f73] rounded-full flex items-center justify-center text-3xl mx-auto animate-bounce">
+                      <div className="w-16 h-16 bg-blue-500/10 border border-blue-500/30 text-[#1464ad] rounded-full flex items-center justify-center text-3xl mx-auto animate-bounce">
                         ✓
                       </div>
 
                       <div className="space-y-2">
-                        <h2 className="text-2xl md:text-3xl font-semibold text-[#082b45]">{portalText(language, 'saved')}</h2>
-                        <p className="text-[#526574] text-sm max-w-xl mx-auto leading-relaxed">{attachmentText(language, 'stored')}</p>
+                        <h2 className="text-2xl md:text-3xl font-semibold text-[#032b59]">{portalText(language, 'saved')}</h2>
+                        <p className="text-[#50647c] text-sm max-w-xl mx-auto leading-relaxed">{attachmentText(language, 'stored')}</p>
                       </div>
 
-                      <div className="bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl p-5 text-left max-w-lg mx-auto space-y-3.5">
-                        <h3 className="text-sm font-semibold normal-case text-[#087f73] tracking-normal">
+                      <div className="bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl p-5 text-left max-w-lg mx-auto space-y-3.5">
+                        <h3 className="text-sm font-semibold normal-case text-[#1464ad] tracking-normal">
                           {texts.successRec}
                         </h3>
-                        <div className="grid grid-cols-2 gap-3 text-sm text-[#526574]">
+                        <div className="grid grid-cols-2 gap-3 text-sm text-[#50647c]">
                           <div>
-                            <span className="text-[#526574] font-bold block">{texts.companyLabel}</span>
-                            <span className="font-semibold text-[#082b45]">{formData.companyName}</span>
+                            <span className="text-[#50647c] font-bold block">{texts.companyLabel}</span>
+                            <span className="font-semibold text-[#032b59]">{formData.companyName}</span>
                           </div>
                           <div>
-                            <span className="text-[#526574] font-bold block">{texts.numBuildingsLabel}</span>
-                            <span className="font-semibold text-[#082b45]">{formData.numBuildings}</span>
+                            <span className="text-[#50647c] font-bold block">{texts.numBuildingsLabel}</span>
+                            <span className="font-semibold text-[#032b59]">{formData.numBuildings}</span>
                           </div>
                           <div>
-                            <span className="text-[#526574] font-bold block">{texts.areaLabel}</span>
-                            <span className="font-semibold text-[#087f73]">{formData.totalArea.toLocaleString()} m²</span>
+                            <span className="text-[#50647c] font-bold block">{texts.areaLabel}</span>
+                            <span className="font-semibold text-[#1464ad]">{formData.totalArea.toLocaleString()} m²</span>
                           </div>
                           <div>
-                            <span className="text-[#526574] font-bold block">{texts.estRangeTitle}</span>
-                            <span className="font-bold text-[#087f73]">~ CHF {monthly.toLocaleString()}</span>
+                            <span className="text-[#50647c] font-bold block">{texts.estRangeTitle}</span>
+                            <span className="font-bold text-[#1464ad]">~ CHF {monthly.toLocaleString()}</span>
                           </div>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mx-auto text-left py-4">
-                        <div className="flex gap-3 bg-[#f4f8f8] border border-[#dce6e8] p-3.5 rounded-xl">
+                        <div className="flex gap-3 bg-[#f3f7fc] border border-[#dce5f0] p-3.5 rounded-xl">
                           <span className="text-lg">👔</span>
-                          <span className="text-sm text-[#526574] leading-normal">{attachmentText(language, 'estimate')}</span>
+                          <span className="text-sm text-[#50647c] leading-normal">{attachmentText(language, 'estimate')}</span>
                         </div>
-                        <div className="flex gap-3 bg-[#f4f8f8] border border-[#dce6e8] p-3.5 rounded-xl">
+                        <div className="flex gap-3 bg-[#f3f7fc] border border-[#dce5f0] p-3.5 rounded-xl">
                           <span className="text-lg">📄</span>
-                          <span className="text-sm text-[#526574] leading-normal">{attachmentText(language, formData.floorPlans.length ? 'attachmentsSaved' : 'noAttachments')}</span>
+                          <span className="text-sm text-[#50647c] leading-normal">{attachmentText(language, formData.floorPlans.length ? 'attachmentsSaved' : 'noAttachments')}</span>
                         </div>
                       </div>
 
@@ -1355,7 +1355,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
 
               {/* Action Buttons Footer (Not for complete page) */}
               {!complete && (
-                <div className="flex flex-wrap justify-between items-center mt-8 pt-6 border-t border-[#dce6e8] gap-4">
+                <div className="flex flex-wrap justify-between items-center mt-8 pt-6 border-t border-[#dce5f0] gap-4">
                   <button
                     type="button"
                     onClick={handleBack}
@@ -1363,7 +1363,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                     className={`kraken-button kraken-secondary ${
                       step === 1
                         ? 'opacity-30 cursor-not-allowed bg-transparent'
-                        : 'bg-[#f4f8f8] hover:bg-[#f4f8f8] active:scale-95'
+                        : 'bg-[#f3f7fc] hover:bg-[#f3f7fc] active:scale-95'
                     }`}
                   >
                     ← {texts.back}
@@ -1376,7 +1376,7 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                     className="min-h-11 kraken-button kraken-primary"
                   >
                     {submitting ? (
-                      <span className="w-4 h-4 border-2 border-[#dce6e8] border-t-transparent animate-spin rounded-full" />
+                      <span className="w-4 h-4 border-2 border-[#dce5f0] border-t-transparent animate-spin rounded-full" />
                     ) : (
                       <>
                         <span>{step === 4 ? texts.submit : texts.next}</span>
@@ -1392,25 +1392,25 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
           {/* Right Panel: B2B Price & Configuration Summary (Only visible when configuration is active) */}
           {!complete && (
             <div className="lg:col-span-5 space-y-6">
-              <div className="bg-white border border-[#dce6e8] rounded-3xl p-6 shadow-sm relative overflow-hidden">
+              <div className="bg-white border border-[#dce5f0] rounded-3xl p-6 shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-sky-500/5 rounded-full blur-2xl pointer-events-none" />
 
-                <h3 className="text-sm font-semibold text-[#526574] normal-case tracking-normal flex items-center gap-2 mb-4">
+                <h3 className="text-sm font-semibold text-[#50647c] normal-case tracking-normal flex items-center gap-2 mb-4">
                   <span className="w-1.5 h-1.5 bg-sky-400 rounded-full" />
                   {texts.estRangeTitle}
                 </h3>
 
-                <p className="text-[#526574] text-sm leading-relaxed mb-6">
+                <p className="text-[#50647c] text-sm leading-relaxed mb-6">
                   {texts.estSub}
                 </p>
 
-                <div className="space-y-5 pt-4 border-t border-[#dce6e8]">
+                <div className="space-y-5 pt-4 border-t border-[#dce5f0]">
                   <div className="space-y-1">
-                    <span className="text-[#526574] text-sm normal-case font-semibold tracking-normal block">
+                    <span className="text-[#50647c] text-sm normal-case font-semibold tracking-normal block">
                       {texts.perMonth}
                     </span>
                     <div className="flex items-baseline gap-1.5">
-                      <span className="text-3xl md:text-4xl font-semibold text-[#087f73]">
+                      <span className="text-3xl md:text-4xl font-semibold text-[#1464ad]">
                         CHF ~{monthly.toLocaleString()}
                       </span>
 
@@ -1418,11 +1418,11 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                   </div>
 
                   <div className="space-y-1">
-                    <span className="text-[#526574] text-sm normal-case font-semibold tracking-normal block font-medium">
+                    <span className="text-[#50647c] text-sm normal-case font-semibold tracking-normal block font-medium">
                       {texts.perYear}
                     </span>
                     <div className="flex items-baseline gap-1.5">
-                      <span className="text-xl md:text-2xl font-semibold text-[#526574]">
+                      <span className="text-xl md:text-2xl font-semibold text-[#50647c]">
                         CHF ~{annual.toLocaleString()}
                       </span>
 
@@ -1430,9 +1430,9 @@ const CommercialQuotePage: React.FC<CommercialQuotePageProps> = ({ onNavigate })
                   </div>
                 </div>
 
-                <div className="mt-6 p-3.5 bg-[#f4f8f8] border border-[#dce6e8] rounded-2xl flex gap-2.5">
-                  <InfoIcon className="w-4 h-4 shrink-0 text-[#526574] mt-0.5" />
-                  <p className="text-sm text-[#526574] leading-normal">
+                <div className="mt-6 p-3.5 bg-[#f3f7fc] border border-[#dce5f0] rounded-2xl flex gap-2.5">
+                  <InfoIcon className="w-4 h-4 shrink-0 text-[#50647c] mt-0.5" />
+                  <p className="text-sm text-[#50647c] leading-normal">
                     {texts.disclaimer}
                   </p>
                 </div>

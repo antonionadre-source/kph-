@@ -1,4 +1,4 @@
-# Renovar Kraken PFM: limpieza y mudanzas, portal y reservas seguras
+# Renovar Kraken PFM: limpieza, mudanzas, marca Kai y portal seguro
 
 La web mezclaba presentaciones extensas, formularios poco legibles y un área de
 clientes con errores de identidad, permisos y persistencia. Esta entrega convierte
@@ -21,11 +21,23 @@ Los diálogos gestionan altura, scroll, foco, teclado y visores anidados. Se ret
 estrellas, garantías de depósito, disponibilidad en tiempo real y otros reclamos
 sin respaldo. Kai mantiene el chat y su calendario Europe/Zurich.
 
-La entrega incluye 20 escenas Kai y sus derivados, archivo íntegro de imágenes
-históricas dañadas y diez nuevos WebP del catálogo privado: 61,1 % menos peso que
-sus fuentes. El JS inicial de entrada/modulepreloads ronda 752 kB (209 kB gzip),
-frente a 2,57 MB (731 kB gzip) de la versión original; quedan chunks diferidos de
-Firebase mayores de 500 kB. Estas medidas no son una puntuación Lighthouse.
+La cabecera y el pie incorporan «Properties and Facilities Management» junto al
+logo. Azul marino y azul sustituyen al acento verde en la web y el portal. El hero
+adapta la referencia Prisma con la dependencia existente motion/react: Kai
+limpiando, entrada de palabras, parallax, pausa y cambio de escena por calendario.
+La animación provisional fue elegida por el usuario; no se generó vídeo. Se detiene
+fuera de pantalla, en pestañas ocultas o con movimiento reducido. En móvil los
+controles quedan bajo la foto para despejar los logos.
+
+Se rehacen 50 fuentes de Kai con marca en gorra y polo: calendario, servicios,
+regiones, escenas institucionales y mascota transparente. Se generan 150 variantes
+con transparencia conservada y sin ampliar píxeles. Las 100 URLs activas están
+cubiertas, decodifican y responden HTTP 200; fuentes y hashes quedan documentados.
+Las tarjetas incorporan profundidad con puntero y entrada al aparecer en pantalla.
+La suma de entrada JS/modulepreloads es 886.117 B (253.788 B gzip calculado), frente
+a 2,57 MB (731 kB gzip) de la versión original. El movimiento añade unos 134 kB
+respecto a la entrega anterior. Los chunks de Firebase siguen diferidos; estas
+medidas no son una puntuación Lighthouse.
 
 Registro y login conservan la identidad anónima mediante enlace o transferencia
 servidor de borradores con dos tokens verificados. Sólo se transfieren Draft sin
@@ -45,7 +57,7 @@ Validación del 21 de noviembre de 2026:
 
 - Node 24: typecheck, build:vercel y npm test correctos; 46 unidades, 16 escenarios
   de formularios, 12 de subidas, servidor 2/2 y adaptador Vercel 5/5.
-- Navegador: portada de 320 a 1920 px; nueve familias de página en 320/768/1440 px;
+- Navegador: 54 combinaciones nuevas de portada (nueve anchos 320–1440 px y seis idiomas), pausa, escenas y movimiento reducido; portada previa de 320 a 1920 px; nueve familias de página en 320/768/1440 px;
   seis idiomas y 144 combinaciones de inventario/idioma/variante/ancho de la Transit.
 - Registro y perfil reales en Emulator Suite; nueva solicitud guardada y visible,
   acceso de cliente y staff con claim, detalle y chat fallback. Inventario del
@@ -61,9 +73,8 @@ La conexión remota sigue pendiente del acceso del propietario: Vercel no aloja 
 emuladores locales. La producción en krakenpfm.ch no se sustituye, el PR sigue en
 borrador y no se crean usuarios, datos, mensajes ni pagos productivos.
 
-Guías: docs/DESIGN_2026-11-21.md, docs/CODEX_SETUP.md, docs/INTEGRATIONS.md,
+Guías: docs/BRAND_MOTION_2026-11-21.md, docs/KAI_BRAND_V3_ASSETS.json, docs/DESIGN_2026-11-21.md, docs/CODEX_SETUP.md, docs/INTEGRATIONS.md,
 docs/BACKEND_SECURITY.md, docs/VERCEL_SETUP.md, docs/CATALOG_MEDIA.json, docs/TRANSIT_REFERENCE.md y docs/KAI_MEDIA.md.
 
-[Preview del rediseño](https://kpfm-2iyuijdf0-antonionadre2-5701s-projects.vercel.app):
-**READY** sobre `2987d40`, con SSO. [CI de ese código](https://github.com/antonionadre2-dev/kph-/actions/runs/44918828609):
-**success**. La producción se mantiene.
+La nueva preview y la CI de esta revisión se registrarán en
+`docs/PUBLICATION_BRAND_MOTION_2026-11-21.json` al completar la publicación.

@@ -143,8 +143,8 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
               disabled={isDownloading || isTextPlaceholder}
               className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-2 transition-all shadow-md cursor-pointer ${
                 downloadSuccess
-                  ? 'bg-emerald-500 text-white'
-                  : 'bg-emerald-600 hover:bg-emerald-500 text-white active:scale-95 disabled:opacity-50'
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-blue-600 hover:bg-blue-500 text-white active:scale-95 disabled:opacity-50'
               }`}
             >
               {isDownloading ? (
@@ -260,7 +260,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
                 </a>
                 <button
                   onClick={handleDownload}
-                  className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-600/30"
+                  className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-600/30"
                 >
                   <Download className="w-4 h-4" />
                   <span>Descargar Archivo</span>
