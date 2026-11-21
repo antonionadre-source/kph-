@@ -4,13 +4,13 @@ import { useTranslation } from '../i18n';
 import { salesCopy } from '../src/content/salesCopy';
 import { brandCopy } from '../src/content/brandCopy';
 
-export default function SalesFooter({onNavigate}:{onNavigate:(page:string)=>void}) {
+export default function SalesFooter({onNavigate,theme}:{onNavigate:(page:string)=>void;theme?:'retro'}) {
   const {language,t}=useTranslation(),copy=salesCopy(language),brand=brandCopy(language);
   const go=(event:React.MouseEvent<HTMLAnchorElement>,path:string)=>{if(event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||event.button!==0)return;event.preventDefault();onNavigate(path);};
   const serviceLinks=[[copy.services,'/services'],[copy.business,'/commercial'],[copy.coverage,'/einsatzgebiete'],[copy.account,'/dashboard']];
   const companyLinks=[[t('nav.about'),'/about'],[t('nav.sustainability'),'/sustainability'],[t('nav.blog'),'/blog'],[t('footer.careers'),'/careers']];
   const legalLinks=[[t('footer.privacy'),'/gdpr'],[t('footer.terms'),'/terms'],[brand.legal,'/impressum']];
-  return <footer className="kraken-footer">
+  return <footer className={`kraken-footer${theme === 'retro' ? ' kraken-footer--retro' : ''}`} data-theme={theme}>
     <div className="kraken-container">
       <div className="kraken-footer-grid">
         <div className="kraken-footer-brand"><a href="/" onClick={event=>go(event,'/')} lang="en" aria-label="Kraken PFM — Properties and Facilities Management" className="kraken-brand-lockup kraken-brand-lockup-footer inline-flex items-center gap-3"><img src="/kai-calendar/optimized/brand/logo-white-480.webp" width="480" height="206" alt="Kraken PFM" className="kraken-footer-logo kraken-brand-image" style={{ width: 'clamp(5.5rem, 9vw, 8rem)', marginBottom: 0 }} loading="lazy" /><span className="kraken-brand-descriptor max-w-[8rem] text-sm font-medium leading-snug text-white">Properties and Facilities Management</span></a><p className="mt-5 max-w-xs">{brand.tagline}</p></div>

@@ -39,6 +39,13 @@ a 2,57 MB (731 kB gzip) de la versión original. El movimiento añade unos 134 k
 respecto a la entrega anterior. Los chunks de Firebase siguen diferidos; estas
 medidas no son una puntuación Lighthouse.
 
+La portada añade una variante de revisión `?design=innerwebs`, inspirada en la
+referencia visual del usuario: monitor CSS con Kai, tipografía de puntos, crema,
+azul marino y tarjetas como ventanas clásicas. La carga es diferida y los estilos
+quedan limitados a esa variante; la portada principal sigue disponible. El
+presupuesto, el historial y los idiomas conservan sus rutas. Véase
+`docs/INNERWEBS_PREVIEW.md`.
+
 Registro y login conservan la identidad anónima mediante enlace o transferencia
 servidor de borradores con dos tokens verificados. Sólo se transfieren Draft sin
 pago, checkout, cotización, transacción ni adjuntos; el fallo conserva el login y
@@ -76,5 +83,7 @@ borrador y no se crean usuarios, datos, mensajes ni pagos productivos.
 Guías: docs/BRAND_MOTION_2026-11-21.md, docs/KAI_BRAND_V3_ASSETS.json, docs/DESIGN_2026-11-21.md, docs/CODEX_SETUP.md, docs/INTEGRATIONS.md,
 docs/BACKEND_SECURITY.md, docs/VERCEL_SETUP.md, docs/CATALOG_MEDIA.json, docs/TRANSIT_REFERENCE.md y docs/KAI_MEDIA.md.
 
-La nueva preview y la CI de esta revisión se registrarán en
-`docs/PUBLICATION_BRAND_MOTION_2026-11-21.json` al completar la publicación.
+La publicación de medios y hero `33e817b` queda registrada en
+`docs/PUBLICATION_BRAND_MOTION_2026-11-21.json`. La variante retro se describe en
+`docs/INNERWEBS_PREVIEW.md`; sus enlaces de preview y validación acompañan la
+descripción del PR y la entrega del chat.

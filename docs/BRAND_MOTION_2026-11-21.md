@@ -12,8 +12,8 @@ escena de Kai limpiando. Las tarjetas responden al puntero y aparecen al entrar
 en pantalla. El tacto mantiene el desplazamiento normal.
 
 La animación es provisional: imagen 3D con parallax y desplazamiento suave.
-El usuario eligió esta opción después del bloqueo de saldo en Fal. No se creó
-ningún vídeo ni se solicitó otro proveedor. El componente admite un vídeo local
+El usuario eligió esta versión provisional. El hero utiliza los WebP aprobados
+y el movimiento se aplica en el navegador. El componente admite un vídeo local
 posterior, con carga condicionada, pausa y cartel de respaldo.
 
 La portada empieza con Kai limpiando. Alterna con la escena seleccionada por el

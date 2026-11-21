@@ -7,7 +7,7 @@ import { salesCopy } from '../src/content/salesCopy';
 const skipLabels: Record<string,string> = {de:'Zum Inhalt springen',en:'Skip to content',es:'Saltar al contenido',fr:'Aller au contenu',it:'Salta al contenuto',pt:'Saltar para o conteúdo'};
 const navigationLabels: Record<string,string> = {de:'Hauptnavigation',en:'Main navigation',es:'Navegación principal',fr:'Navigation principale',it:'Navigazione principale',pt:'Navegação principal'};
 const activePages: Record<string,string[]> = {'/services':['services-page','seo-landing'],'/commercial':['commercial-services','commercial-quote'],'/einsatzgebiete':['coverage-hub','region-hub','municipality-page']};
-export default function SalesHeader({ onNavigate, currentPage }: { onNavigate: (page: string) => void; currentPage: string }) {
+export default function SalesHeader({ onNavigate, currentPage, theme }: { onNavigate: (page: string) => void; currentPage: string; theme?: 'retro' }) {
   const { language, setLanguage } = useTranslation(), copy = salesCopy(language), { user } = useAuth();
   const [open,setOpen] = useState(false);
   const toggle = useRef<HTMLButtonElement>(null), panel = useRef<HTMLDivElement>(null);
@@ -37,9 +37,9 @@ export default function SalesHeader({ onNavigate, currentPage }: { onNavigate: (
   const languages = (id:string) => <label htmlFor={id}><span className="sr-only">{copy.language}</span><select id={id} value={language} onChange={event => setLanguage(event.target.value as Language)} className="kraken-language" aria-label={copy.language}>{Object.entries(LANGUAGE_NAMES).map(([key,label]) => <option key={key} value={key}>{label}</option>)}</select></label>;
   return <>
     <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-3 z-[150] bg-white p-3 text-[#032b59]">{skipLabels[language.split('-')[0]] || skipLabels.de}</a>
-    <header className="kraken-header">
+    <header className={`kraken-header${theme === 'retro' ? ' kraken-header--retro' : ''}`} data-theme={theme}>
       <div className="kraken-container kraken-header-inner">
-        <a href="/" onClick={event => go(event,'/')} lang="en" aria-label="Kraken PFM — Properties and Facilities Management" className="kraken-brand kraken-brand-lockup min-w-0 gap-2 sm:gap-3"><img src="/kai-calendar/optimized/brand/logo-blue-480.webp" width="480" height="206" alt="Kraken PFM" className="kraken-brand-image" style={{ width: 'clamp(4.5rem, 10vw, 9rem)' }} /><span className="kraken-brand-descriptor max-w-[5.5rem] text-xs font-medium leading-tight sm:max-w-[9rem] sm:text-sm">Properties and Facilities Management</span></a>
+        <a href="/" onClick={event => go(event,'/')} lang="en" aria-label="Kraken PFM — Properties and Facilities Management" className="kraken-brand kraken-brand-lockup min-w-0 gap-2 sm:gap-3"><img src={theme === 'retro' ? '/kai-calendar/optimized/brand/logo-white-480.webp' : '/kai-calendar/optimized/brand/logo-blue-480.webp'} width="480" height="206" alt="Kraken PFM" className="kraken-brand-image" style={{ width: 'clamp(4.5rem, 10vw, 9rem)' }} /><span className="kraken-brand-descriptor max-w-[5.5rem] text-xs font-medium leading-tight sm:max-w-[9rem] sm:text-sm">Properties and Facilities Management</span></a>
         <nav className="kraken-navigation" aria-label={navigationLabels[language.split('-')[0]] || navigationLabels.de}>{links.map(([label,path]) => <a key={path} href={path} onClick={event => go(event,path)} aria-current={activePages[path]?.includes(currentPage) ? 'page' : undefined}>{label}</a>)}</nav>
         <div className="kraken-header-actions">
           <div className="kraken-header-language">{languages('header-language')}</div>

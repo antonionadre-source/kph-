@@ -57,6 +57,7 @@ const ComicShopPage = lazyWithRetry(() => import('./ComicShopPage'));
 const BlogPage = lazyWithRetry(() => import('./BlogPage'));
 const CommercialQuotePage = lazyWithRetry(() => import('./CommercialQuotePage'));
 const ReviewInvitePage = lazyWithRetry(() => import('./ReviewInvitePage'));
+const InnerwebsHero = lazyWithRetry(() => import('./InnerwebsHero'));
 const RegionHubPage = lazyWithRetry(() => import('./RegionHubPage').then(m => ({ default: m.RegionHubPage })));
 const MunicipalityPage = lazyWithRetry(() => import('./MunicipalityPage').then(m => ({ default: m.MunicipalityPage })));
 const CoverageHubPage = lazyWithRetry(() => import('./CoverageHubPage'));
@@ -105,6 +106,7 @@ const CART_STORAGE_KEY = 'kraken_cart_persistent';
 
 const App: React.FC = () => {
   const { language, t } = useTranslation();
+  const [innerwebsDesign, setInnerwebsDesign] = useState(() => typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('design') === 'innerwebs');
   const [page, setPage] = useState(() => {
     const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
     return parsePath(currentPath).page;
@@ -156,6 +158,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const change = () => {
       let location = internalDestination(window.location.pathname + window.location.search + window.location.hash, window.location.href);
+      setInnerwebsDesign(new URLSearchParams(location.search).get('design') === 'innerwebs');
       const route = parsePath(location.pathname);
       if (route.page === 'dashboard' && !authLoading && !user) {
         location = internalDestination('/login', window.location.href);
@@ -186,7 +189,15 @@ const App: React.FC = () => {
   const handleNavigate = (target: string) => {
     const path = target.startsWith('/') ? target : (PAGE_TO_PATH_MAP[target] || '/');
     let destination = internalDestination(path, window.location.href);
+    if (new URLSearchParams(window.location.search).get('design') === 'innerwebs') {
+      const search = new URLSearchParams(destination.search);
+      if (!search.has('design')) {
+        search.set('design', 'innerwebs');
+        destination = internalDestination(`${destination.pathname}?${search.toString()}${destination.hash}`, window.location.href);
+      }
+    }
     let route = parsePath(destination.pathname);
+    setInnerwebsDesign(new URLSearchParams(destination.search).get('design') === 'innerwebs');
     // The page renderer handles guests. A login callback may still hold the
     // previous render's user value, so it must not redirect a completed sign-in.
     if (destination.href !== window.location.pathname + window.location.search + window.location.hash) window.history.pushState(null, '', destination.href);
@@ -318,7 +329,7 @@ const App: React.FC = () => {
             default:
               return (
                 <main>
-                  <Hero onNavigate={handleNavigate} />
+                  {page === 'home' && innerwebsDesign ? <InnerwebsHero onNavigate={handleNavigate} /> : <Hero onNavigate={handleNavigate} />}
                   <SalesHome onNavigate={handleNavigate} />
                 </main>
               );
@@ -330,9 +341,10 @@ const App: React.FC = () => {
 };
 
   const isReviewPage = page === 'review-invite';
+  const isInnerwebsPreview = page === 'home' && innerwebsDesign;
 
   return (
-    <div className="kraken-app relative">
+    <div className={`kraken-app relative${isInnerwebsPreview ? ' kraken-innerwebs-preview' : ''}`}>
       {mounted && !isReviewPage && (
         <Suspense fallback={null}>
           <FloatingMascot currentPage={page} cart={cart} onNavigate={handleNavigate} seoCityId={seoCityId} />
@@ -340,11 +352,11 @@ const App: React.FC = () => {
         </Suspense>
       )}
 
-      {!isReviewPage && <Header onNavigate={handleNavigate} currentPage={page as any} />}
+      {!isReviewPage && <Header onNavigate={handleNavigate} currentPage={page as any} theme={isInnerwebsPreview ? 'retro' : undefined} />}
       <div id="main-content" className={'kraken-route kraken-route--' + page} data-page={page} tabIndex={-1}>{renderPage()}</div>
       {!isReviewPage && (
         <Suspense fallback={null}>
-          <Footer onNavigate={handleNavigate} />
+          <Footer onNavigate={handleNavigate} theme={isInnerwebsPreview ? 'retro' : undefined} />
         </Suspense>
       )}
       {mounted && !isReviewPage && (

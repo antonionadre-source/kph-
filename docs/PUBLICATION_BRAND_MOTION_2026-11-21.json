@@ -1,0 +1,51 @@
+{
+  "checkedAt": "2026-11-21T16:49:13.651487+00:00",
+  "commit": "33e817bd3ffc5b5ed4151acdc1a1dbf044792a1f",
+  "branch": "codex/local-migration-2026-11-20",
+  "httpStatus": {
+    "deployment": 200,
+    "project": 200,
+    "actions": 200
+  },
+  "preview": {
+    "id": "dpl_7hAQ4KA24S5Yvgx91QTymZeqbstY",
+    "url": "kpfm-j5ro0zu36-antonionadre2-5701s-projects.vercel.app",
+    "readyState": "READY",
+    "status": "READY",
+    "target": null,
+    "createdAt": 1795279378150,
+    "ready": 1795279440823,
+    "buildingAt": 1795279380843
+  },
+  "deploymentCommit": "33e817bd3ffc5b5ed4151acdc1a1dbf044792a1f",
+  "production": {
+    "id": "dpl_Ac9XCUhdt8EQnxtvgmMf6c5BQYMc",
+    "url": "kpfm-2xxopxxdf-antonionadre2-5701s-projects.vercel.app",
+    "readyState": "READY",
+    "target": "production"
+  },
+  "ssoProtection": {
+    "deploymentType": "all_except_custom_domains"
+  },
+  "productionUnchanged": true,
+  "ssoUnchanged": true,
+  "ci": {
+    "repository": "antonionadre2-dev/kph-",
+    "totalCount": 1,
+    "runs": [
+      {
+        "id": 44926041669,
+        "name": "Verify Kraken",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/antonionadre2-dev/kph-/actions/runs/44926041669",
+        "head_sha": "33e817bd3ffc5b5ed4151acdc1a1dbf044792a1f",
+        "head_branch": "codex/local-migration-2026-11-20",
+        "run_number": 7,
+        "created_at": "2026-11-21T16:42:34Z",
+        "updated_at": "2026-11-21T16:44:16Z"
+      }
+    ]
+  },
+  "errors": {}
+}
