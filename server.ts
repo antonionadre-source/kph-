@@ -13,11 +13,18 @@ import { MUNICIPALITIES } from "./src/data/locations.ts";
 
 dotenv.config({ path: [".env.local", ".env"] });
 const isBundled = typeof __filename !== "undefined" && __filename.endsWith("server.cjs");
-process.env.NODE_ENV = isBundled ? "production" : (process.env.NODE_ENV || "development");
+const runningOnVercel = process.env.VERCEL === "1";
+process.env.NODE_ENV = (isBundled || runningOnVercel) ? "production" : (process.env.NODE_ENV || "development");
 const isDev = process.env.NODE_ENV !== "production";
+const externalIntegrationsEnabled = process.env.VERCEL_ENV === "preview"
+  ? false
+  : (!isDev || process.env.ALLOW_EXTERNAL_INTEGRATIONS === "true");
+
+// Vercel imports the app; the ordinary dev/start commands retain their HTTP listener.
+const app = express();
+export default app;
 
 async function startServer() {
-  const app = express();
   const server = createServer(app);
 
   app.use(compression());
@@ -45,8 +52,8 @@ async function startServer() {
   // name is your Payrexx subdomain (e.g. "krakenpfm").
   // ====================================================================
   const handlePayrexxGateway = async (req: express.Request, res: express.Response) => {
-    if (isDev && process.env.ALLOW_EXTERNAL_INTEGRATIONS !== "true") {
-      return res.status(503).json({ success: false, error: "External payments are disabled in local development." });
+    if (!externalIntegrationsEnabled) {
+      return res.status(503).json({ success: false, error: "External payments are disabled in this environment." });
     }
     const {
       amount,
@@ -377,7 +384,7 @@ async function startServer() {
       const userText = lastMessage ? lastMessage.text : "";
 
       const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey || (isDev && process.env.ALLOW_EXTERNAL_INTEGRATIONS !== "true")) {
+      if (!apiKey || !externalIntegrationsEnabled) {
         console.warn("Gemini is not configured or is disabled for local development. Using local fallback responses.");
         return res.json({
           success: true,
@@ -568,8 +575,9 @@ async function startServer() {
     app.use(express.static(publicPath, {
       index: false,
       maxAge: isDev ? 0 : "1d",
-      setHeaders: (res) => {
-        res.setHeader("Cache-Control", isDev ? "no-cache" : "public, max-age=604800");
+      setHeaders: (res, filePath) => {
+        const immutableAsset = filePath.includes(`${path.sep}assets${path.sep}`);
+        res.setHeader("Cache-Control", isDev ? "no-cache" : (immutableAsset ? "public, max-age=31536000, immutable" : "public, max-age=604800"));
       }
     }));
   }
@@ -680,6 +688,8 @@ async function startServer() {
     return handleHtmlRequest(req, res);
   });
   if (!isDev) console.log(`Serving static production assets with caching headers from: ${distPath}`);
+
+  if (runningOnVercel) return; // The platform owns the listener and function lifecycle.
 
   const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
