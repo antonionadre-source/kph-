@@ -1,5 +1,5 @@
 Kraken PFM — continuación local, pruebas del 20 de noviembre de 2026
-Estado de GitHub actualizado el 21 de noviembre de 2026
+Estado de GitHub y Vercel actualizado el 21 de noviembre de 2026
 
 La carpeta aportada another-star---kraken-properties se ha comparado con el
 commit fd8cc1ee9c9947cb7e2c718bc433a896c3da244a. Su única diferencia era
@@ -16,5 +16,22 @@ upstream sigue el original https://github.com/antonionadre-source/kph-.
 La rama está publicada en el fork y propuesta al original mediante el PR borrador:
 https://github.com/antonionadre-source/kph-/pull/1
 El acceso directo al original sigue siendo de lectura. No se ha fusionado el PR
-ni se ha desplegado el sitio. Las integraciones y recursos pendientes constan en
-docs/CODEX_SETUP.md.
+ni se ha publicado a producción.
+
+El 21 de noviembre se creó por CLI una vista previa protegida en Vercel kpfm:
+https://kpfm-m1oddj90p-antonionadre2-5701s-projects.vercel.app
+Estado READY, despliegue dpl_6yv836BqyBvcB5P9563Lo6ZWhgbS, commit 10fbb52.
+La instalación, build y adaptación Express remotas completaron correctamente.
+El navegador necesita acceso SSO y completar MFA; las comprobaciones de páginas,
+rutas y /api/health remotas siguen pendientes. No se ha cambiado esa protección.
+El dominio krakenpfm.ch, la producción existente y el preset global Vite siguen
+intactos. No se han habilitado pagos, mensajes ni datos productivos en Preview.
+
+Pasaron hoy TypeScript, build:vercel, las pruebas de servidor/integraciones/
+formularios y cuatro regresiones Vercel. npm test incluye ahora test:vercel.
+Puedes continuar trabajando localmente con npm run dev. Para terminar de revisar
+la vista previa, completa MFA directamente en Vercel; no publiques códigos ni
+claves en el chat. Las integraciones y recursos pendientes constan en
+docs/CODEX_SETUP.md y los detalles del despliegue en docs/VERCEL_SETUP.md.
+Antes de certificar producción quedan también pendientes las actualizaciones
+de dependencias: npm audit informa 55 hallazgos, incluidos dos críticos.

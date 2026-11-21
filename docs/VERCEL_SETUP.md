@@ -1,8 +1,21 @@
 # Kraken PFM en Vercel
 
-Preparación técnica del **21 de noviembre de 2026**. Este documento describe la
-configuración y sus comprobaciones locales; un resultado local no acredita un
-despliegue remoto ni habilita integraciones comerciales.
+Estado actualizado el **21 de noviembre de 2026**. Se creó por CLI una
+[vista previa de Kraken](https://kpfm-m1oddj90p-antonionadre2-5701s-projects.vercel.app) en el proyecto Vercel `kpfm`. Vercel informa estado
+**READY** para `dpl_6yv836BqyBvcB5P9563Lo6ZWhgbS`, construido desde el commit
+`10fbb52`. Completó instalación, `build:vercel` y el adaptador Express remotos.
+
+La vista previa conserva la protección de acceso SSO del proyecto
+(`all_except_custom_domains`). La sesión de propietario necesaria para abrirla
+quedó pendiente de completar la verificación de dos pasos (MFA). No se ha
+modificado esa protección ni se ha eludido la autenticación. **Todavía no se han
+verificado por HTTP o navegador las páginas ni `/api/health` de la vista previa**;
+READY confirma la creación del despliegue, no el recorrido funcional completo.
+
+La producción existente `dpl_Ac9XCUhdt8EQnxtvgmMf6c5BQYMc`, el dominio
+`krakenpfm.ch` y el preset global **Vite** permanecen intactos. El preset Express
+se aplica mediante `vercel.json` a la vista previa. No se fusionó el PR, no se
+publicó a producción y no se habilitaron integraciones comerciales.
 
 ## Arquitectura y configuración
 
@@ -30,8 +43,9 @@ proyecto no usa esa estructura como raíz de despliegue.
   Express inyecte SEO y responda a rutas, idiomas y redirecciones.
 - No se copia `index.html` a `public`: eso eludiría Express para el inicio.
   El script rechaza un `public/index.html` accidental.
-- El tracing de la función excluye los recursos públicos y el resto de `dist`;
-  los HTML incluidos explícitamente siguen empaquetados. Así no se duplican los
+- El tracing de la función excluye los recursos públicos y el resto de `dist`
+  con `excludeFiles: "{public/**,dist/**,.env*}"`; el esquema de Vercel exige una
+  cadena para ese campo. Los HTML incluidos explícitamente siguen empaquetados. Así no se duplican los
   aproximadamente 133 MB de imágenes dentro de la función Node.js.
 - `public/assets/`, `.vercel/`, builds anteriores, entornos privados y dependencias
   locales se excluyen de Git o de la subida de código según corresponda. Los
@@ -77,9 +91,15 @@ Desde la raíz, con Node.js 24:
 npm ci
 npm run typecheck
 npm run build:vercel
-npm run test:vercel
 npm test
 ```
+
+El **21 de noviembre** pasaron `npm run typecheck`, `npm run build:vercel`, las
+pruebas de integraciones/formularios/servidor y las **cuatro pruebas Vercel**. Se
+corrigió una regresión de caché local: los bundles generados en `public/assets`
+conservan ahora la cabecera inmutable al usar `npm start`. `npm test` incluye ya
+`test:vercel`; las cuatro pruebas también se pueden ejecutar por separado con
+`npm run test:vercel`.
 
 Las regresiones focalizadas comprueban que Preview fuerza el modo emulador y
 bloquea envíos; que sólo se copian bundles CDN; que importar la app en Vercel no
@@ -87,8 +107,8 @@ abre un puerto; y que las rutas, SEO, 301 y 404 siguen funcionando mediante la a
 exportada. Payrexx y fetch están sustituidos por adaptadores inertes: claves
 heredadas de prueba no producen ninguna solicitud externa.
 
-Para comprobar la salida real en Vercel, revisar una **Preview** del proyecto
-autorizado. Deben pasar `/api/health`, inicio, seis idiomas, rutas de servicios,
+La siguiente comprobación pendiente es completar MFA en la sesión autorizada y
+abrir la vista previa protegida. Deben pasar `/api/health`, inicio, seis idiomas, rutas de servicios,
 301 de `/contacto`, página inexistente 404 y carga de JS/CSS/imágenes. La prueba de
 `/api/chat` debe informar `source: fallback`; Payrexx debe devolver 503 en Preview.
 No se debe introducir una cuenta, solicitud ni pago de producción para validar la
@@ -107,3 +127,21 @@ confirma Node.js 24 y el override mediante `engines`.
 detalla `framework`, build, funciones y salida.
 El [adaptador Express oficial](https://github.com/vercel/vercel/blob/main/packages/express/src/build.ts)
 permite contrastar la selección de entrada y el empaquetado de archivos.
+
+## Dependencias: comprobación del 21 de noviembre de 2026
+
+`npm audit --json` confirmó los **55 hallazgos** indicados por la instalación de
+Vercel: **2 críticos**, 43 altos, 9 moderados y 1 bajo. Se realizó un triaje limitado
+de los dos paquetes críticos, sin instalar, actualizar ni aplicar `npm audit fix`.
+
+| Paquete instalado | Advisory y rango afectado | Uso observado |
+| --- | --- | --- |
+| `proxy-addr@2.0.7` | [GHSA-jqcg-44mw-7w3h](https://github.com/jshttp/proxy-addr/security/advisories/GHSA-jqcg-44mw-7w3h), `>=1.1.0 <2.0.8`; corregido en `2.0.8` | Dependencia de Express en ejecución del servidor. El advisory describe suplantación de IP con determinadas subredes IPv6 mal configuradas en `trust proxy`. No se observó esa configuración ni uso de `req.ip`/`req.ips` en la aplicación. |
+| `websocket-driver@0.7.4` | [GHSA-xv26-6w52-cph6](https://github.com/faye/websocket-driver-node/security/advisories/GHSA-xv26-6w52-cph6), `<0.7.5`; corregido en `0.7.5` | Dependencia instalada de Firebase Realtime Database mediante `faye-websocket`. El advisory describe corrupción de mensajes por cabeceras de longitud del protocolo WebSocket antiguo. La aplicación importa Auth, Firestore y Storage; no se observó importación de Realtime Database. |
+
+Ambos paquetes pertenecen al árbol de dependencias de producción, no sólo a
+herramientas de compilación. No se ha confirmado explotación; la revisión del uso
+observado tampoco acredita ausencia de riesgo en el entorno desplegado. Quedan
+pendientes la actualización controlada de dependencias y su validación antes de
+certificar producción. Esta comprobación no constituye una auditoría completa de
+seguridad.

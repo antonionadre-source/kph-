@@ -1,7 +1,9 @@
 # Kraken PFM — estado verificado para Codex
 
 Pruebas realizadas el **20 de noviembre de 2026**, con Node.js **v24.12.0** y npm
-**11.6.2**. Estado de GitHub actualizado el **21 de noviembre de 2026**.
+**11.6.2**. Estado de GitHub y Vercel actualizado el **21 de noviembre de 2026**.
+El día 21 se repitieron TypeScript, `build:vercel`, las pruebas de
+integraciones/formularios/servidor y cuatro regresiones específicas de Vercel.
 
 ## Procedencia y carpeta de trabajo
 
@@ -124,8 +126,9 @@ npm run build
 npm test
 ```
 
-`npm test` ejecuta pruebas de límites de integraciones, entrega de formularios y
-regresiones HTTP. Las pruebas de servidor requieren la build previa. Cubren una
+`npm test` ejecuta pruebas de límites de integraciones, entrega de formularios,
+regresiones HTTP y cuatro comprobaciones de compatibilidad y aislamiento de
+Vercel Preview. Las pruebas de servidor requieren la build previa. Cubren una
 copia temporal limpia, presencia de una build antigua, entorno de producción
 heredado, rutas/404/redirecciones/SEO, recursos de producción, fallback de Kai y
 Payrexx firmado contra un adaptador axios inerte. Ningún gateway real se crea.
@@ -170,12 +173,27 @@ los cambios sin escribir directamente en su rama `main`.
 
 El [pull request #1](https://github.com/antonionadre-source/kph-/pull/1) está abierto
 como **borrador**, desde esa rama del fork hacia `antonionadre-source/kph-:main`.
-No se ha fusionado ni desplegado el sitio, ni se ha usado force push.
+No se ha fusionado el PR, publicado a producción ni usado force push.
 
-El PR disparó una comprobación automática de Vercel. `vercel[bot]` indica que la
-vista previa necesita autorización de un miembro del equipo. No se ha autorizado
-ni desplegado Vercel durante esta sesión; esta comprobación externa pendiente no
-cambia los resultados de las pruebas locales realizadas el 20 de noviembre.
+El PR disparó inicialmente una comprobación automática de Vercel que solicitaba
+autorización de un miembro del equipo. Después se comprobó acceso CLI de
+propietario al proyecto existente `kpfm` y el **21 de noviembre** se creó por CLI
+una [vista previa protegida](https://kpfm-m1oddj90p-antonionadre2-5701s-projects.vercel.app),
+`dpl_6yv836BqyBvcB5P9563Lo6ZWhgbS`, desde el commit `10fbb52`. Vercel informa
+**READY** tras instalación, build y empaquetado Express. Esto no implica que la
+comprobación automática inicial del PR haya quedado autorizada.
+
+La protección SSO sigue activa y la sesión de propietario quedó pendiente de
+completar MFA. No se han confirmado todavía por HTTP o navegador `/api/health`,
+las páginas ni las rutas remotas. El siguiente paso es completar esa verificación
+en Vercel y comprobar la vista previa sin enviar datos a producción. El entorno
+Preview bloquea Payrexx/Gemini incluso con claves heredadas, usa Firebase emulador
+y desactiva EmailJS/Make y los datos demo.
+
+Permanecen intactos el despliegue productivo `dpl_Ac9XCUhdt8EQnxtvgmMf6c5BQYMc`,
+el dominio `krakenpfm.ch` y el preset global Vite. La vista previa usa Express por
+la configuración del repositorio. Consulta [VERCEL_SETUP.md](VERCEL_SETUP.md)
+para configuración, pruebas y comprobaciones remotas pendientes.
 
 Los remotos de la carpeta principal son:
 

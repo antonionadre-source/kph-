@@ -14,7 +14,7 @@
     "test:server": "node --import tsx --test tests/server.test.ts",
     "test:integrations": "node scripts/test-integrations.mjs",
     "test:forms": "node scripts/test-form-delivery.mjs",
-    "test": "npm run test:integrations && npm run test:forms && npm run test:server",
+    "test": "npm run test:integrations && npm run test:forms && npm run test:server && npm run test:vercel",
     "build:vercel": "node scripts/build-vercel.mjs",
     "test:vercel": "node --import tsx --test tests/vercel.test.ts"
   },
