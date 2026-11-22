@@ -1,14 +1,14 @@
 import React from 'react';
 
 // This file centralizes URLs for static image assets, making them easier to manage.
-// Optimized local derivatives retain originals and provenance in docs/KAI_MEDIA*.json.
+// Using external URLs is more performant than embedding large images directly in the code.
 
-export const companyLogoUrl = '/kai-calendar/optimized/brand/logo-blue-480.webp';
-export const companyLogoWhiteUrl = '/kai-calendar/optimized/brand/logo-white-480.webp';
+export const companyLogoUrl = '/logo-kraken-azul.webp';
+export const companyLogoWhiteUrl = '/logo-kraken-blanco.webp';
 export const teamPhotoUrl = '/ChatGPT Image Jun 29, 2026, 02_32_15 AM.png';
-export const mascotImageUrl = '/kai-calendar/optimized/kai/mascota-kraken-homepage-320.webp';
+export const mascotImageUrl = '/mascota-kraken-homepage.webp';
 export const mascotVideoUrl = '';
-export const tentacleImageUrl = mascotImageUrl;
+export const tentacleImageUrl = '/mascota-kraken-homepage.webp';
 export const heroVideoUrl = 'https://storage.googleapis.com/aai-web-samples/services-montage.mp4';
 export const heroImageUrl = '/mascota-kraken-noche-zurich-home.webp';
 export const aboutHeroImageUrl = '/kai about us.webp';
@@ -44,30 +44,42 @@ export const cityImages = {
   zurich: '/kai zurich.webp',
   schaffhausen: '/kai schaffhausen.webp',
   stgallen: '/oficina-moderna-homepage.webp',
-  thurgau: '/kai-services/thurgau.webp',
+  thurgau: '/ChatGPT%20Image%20Jul%2011,%202026,%2003_32_16%20AM.png',
   winterthur: '/kai winterthur.webp',
   bern: '/kai about us.webp'
 };
 
-// The 13 former Schaffhausen-specific files were corrupt, not recovered.
-// SEO pages use verified service or regional images; retain this export for compatibility.
-// Original paths and archive: docs/ASSET_PENDING_ORIGINALS.json.
-export const schaffhausenServiceImages: Record<string, string> = {};
+// Schaffhausen-specific SEO service+city images (13 pages, one photo each)
+export const schaffhausenServiceImages: Record<string, string> = {
+  'car-detailing': '/car-detailing-schaffhausen.webp',
+    'common-area-cleaning': '/common-area-cleaning-schaffhausen.webp',
+      'daily-cleaning': '/daily-recurring-cleaning-schaffhausen.webp',
+        'deep-cleaning': '/deep-cleaning-schaffhausen.webp',
+          'exterior-cleaning': '/exterior-cleaning-schaffhausen.webp',
+            'moving-furniture': '/furniture-moving-schaffhausen.webp',
+              'gardening': '/gardening-schaffhausen.webp',
+                'gutter-cleaning': '/gutter-cleaning-schaffhausen.webp',
+                  'industrial-maintenance': '/industrial-maintenance-schaffhausen.webp',
+                    'office-cleaning': '/office-cleaning-schaffhausen.webp',
+                      'pest-control': '/pest-control-schaffhausen.webp',
+                        'retail-management': '/retail-cleaning-schaffhausen.webp',
+                          'waste-management': '/waste-management-schaffhausen.webp',
+                          };
 
-export const cardCleaningUrl = '/servicio-privado-limpieza-apartamento.webp';
-export const cardMaintenanceUrl = '/kai-calendar/optimized/commercial/industry-logistics/768.webp';
+export const cardCleaningUrl = 'https://www.dropbox.com/scl/fi/cylyo5ytzkmj4znb6o5xa/servicio-privado-limpieza-apartamento.webp?rlkey=05qwqg9i2v625pu4l8zewc9mo&st=xk7ablnv&raw=1';
+export const cardMaintenanceUrl = '/servicio-comercial-limpieza-industrial.webp';
 export const cardTabletUrl = '/kai build your quote.webp';
-export const cardMovingUrl = '/servicio-privado-mudanza-cajas.webp';
-export const cardCarDetailingUrl = '/servicio-privado-lavado-coche.webp';
+export const cardMovingUrl = 'https://www.dropbox.com/scl/fi/vaw5n8iqx3r42f3co5qir/servicio-privado-mudanza-cajas.webp?rlkey=ogss3ftloq89pknwq5hixihxu&st=7d1jd2im&raw=1';
+export const cardCarDetailingUrl = 'https://www.dropbox.com/scl/fi/5o1s20a1gbnpkweux0yio/servicio-privado-lavado-coche.webp?rlkey=lmlin1t29zbx5fqwte24kpvkt&st=cx497a9l&raw=1';
 
 // Refined Specialization Images (User Mapping)
 export const pestControlImg = '/servicio-privado-control-plagas.webp'; // Fallback to maintenance img
-export const carDetailingImg = '/servicio-privado-lavado-coche.webp'; // Imagen 2 (from previous Gutter)
+export const carDetailingImg = 'https://www.dropbox.com/scl/fi/5o1s20a1gbnpkweux0yio/servicio-privado-lavado-coche.webp?rlkey=lmlin1t29zbx5fqwte24kpvkt&st=cx497a9l&raw=1'; // Imagen 2 (from previous Gutter)
 export const wasteManagementImg = '/servicio-privado-residuos-desalojo.webp'; // Imagen 3
-export const gardeningImg = '/servicio-privado-jardineria.webp'; // Imagen 4 (from previous Exterior)
+export const gardeningImg = 'https://www.dropbox.com/scl/fi/xkpuoqlnlukig2tk4dokm/servicio-privado-jardineria.webp?rlkey=ook2125yt3u6p04izvaak8ei2&st=fnadpn2e&raw=1'; // Imagen 4 (from previous Exterior)
 
 // Exterior Cleaning now uses the "Berna" architecture image
-export const exteriorCleaningImg = '/servicio-privado-limpieza-exterior.webp';
+export const exteriorCleaningImg = 'https://www.dropbox.com/scl/fi/s584iq3w3ton5cpfoz92s/servicio-privado-limpieza-exterior.webp?rlkey=4uzfn7m99h3os1gl8sbnxiqg2&st=67943x7s&raw=1';
 export const gutterCleaningImg = '/servicio-privado-canalones.webp';
 
 export const sustainabilityImage1Url = '/sustainability-ops.png';
@@ -77,14 +89,16 @@ export const sustainabilityBackgroundUrl = '/sustainability-hero.png';
 export const csrImageUrl = '/sustainability-people.png';
 
 export const clientLogos = [
-  { url: '/new-200-Aldersgate-Logo.jpg', name: '200 Aldersgate', width: 3841, height: 2161 },
-  { url: '/MOZUR-gold-logo-1024x884.png', name: 'Mandarin Oriental Savoy Zurich', width: 1024, height: 884 },
-  { url: '/Meili-Logo-black-cmyc-png.webp', name: 'Meili', width: 709, height: 299 },
-  { url: '/images-2.png', name: 'Board of Deputies of British Jews', width: 432, height: 117 },
-  { url: '/head-logo-Basque-Trade-jpg.webp', name: 'Basque Trade & Investment', width: 230, height: 100 },
-  { url: '/Crisis-logo-1024x366.jpg', name: 'Crisis', width: 1024, height: 366 },
-  { url: '/Amazon-logo-svg.png', name: 'Amazon', width: 1280, height: 387 },
-  { url: '/display-green-mountain-as-logo.png', name: 'Green Mountain', width: 700, height: 492 },
+  { url: '/new-200-Aldersgate-Logo.jpg', name: '200 Aldersgate' },
+  { url: '/MOZUR-gold-logo-1024x884.png', name: 'Mandarin Oriental Savoy Zurich' },
+  { url: '/Meili-Logo-black-cmyc-png.webp', name: 'Meili' },
+  { url: '/Logo.jpg', name: 'Government of Senegal' },
+  { url: '/images-2.png', name: 'Board of Deputies of British Jews' },
+  { url: '/head-logo-Basque-Trade-jpg.webp', name: 'Basque Trade & Investment' },
+  { url: '/Crisis-logo-1024x366.jpg', name: 'Crisis' },
+  { url: '/Asset-47-jpg.webp', name: 'One One Six' },
+  { url: '/Amazon-logo-svg.png', name: 'Amazon' },
+  { url: '/display-green-mountain-as-logo.png', name: 'Green Mountain' },
 ];
 
 export const sustainabilityPartnerLogos = {
@@ -93,7 +107,7 @@ export const sustainabilityPartnerLogos = {
   steinfels: '/Logo-Steinfels-Swiss-RGB.png',
   ecolab: '',
   ebp: '/Logo_EBP_Logo.jpg',
-  climeworks: '', // Historical logo is unavailable; do not render a broken or invented logo.
+  climeworks: '/images-3.png',
 };
 
 // Restored Original Sustainability Page Images
@@ -122,7 +136,7 @@ export const services: Service[] = [
     titleKey: 'services.endOfTenancy.title',
     descriptionKey: 'services.endOfTenancy.description',
     marketingDescKey: 'services.endOfTenancy.marketingDesc',
-    imageUrl: '/servicio-privado-limpieza-apartamento.webp',
+    imageUrl: 'https://www.dropbox.com/scl/fi/cylyo5ytzkmj4znb6o5xa/servicio-privado-limpieza-apartamento.webp?rlkey=05qwqg9i2v625pu4l8zewc9mo&st=xk7ablnv&raw=1',
   },
   {
     id: 'deep-cleaning',
@@ -130,7 +144,7 @@ export const services: Service[] = [
     titleKey: 'services.deepCleaning.title',
     descriptionKey: 'services.deepCleaning.description',
     marketingDescKey: 'services.deepCleaning.marketingDesc',
-    imageUrl: '/servicio-privado-limpieza-cocina.webp',
+    imageUrl: 'https://www.dropbox.com/scl/fi/59bzz6p4e7r2eiy83bzin/servicio-privado-limpieza-cocina.webp?rlkey=2fwi4lpzcuopld7js0kdadgok&st=bu3p7in6&raw=1',
   },
   {
     id: 'daily-cleaning',
@@ -138,7 +152,7 @@ export const services: Service[] = [
     titleKey: 'services.dailyCleaning.title',
     descriptionKey: 'services.dailyCleaning.description',
     marketingDescKey: 'services.dailyCleaning.marketingDesc',
-    imageUrl: '/servicio-privado-limpieza-oficina-casa.webp',
+    imageUrl: 'https://www.dropbox.com/scl/fi/h0mvnnlclm631kn5zxqnh/servicio-privado-limpieza-oficina-casa.webp?rlkey=9b3nvjjm1syt3d9r86qt6jtx4&st=4nt8efqc&raw=1',
   },
   {
     id: 'moving-furniture',
@@ -146,7 +160,7 @@ export const services: Service[] = [
     titleKey: 'services.movingFurniture.title',
     descriptionKey: 'services.movingFurniture.description',
     marketingDescKey: 'services.movingFurniture.marketingDesc',
-    imageUrl: '/servicio-privado-mudanza-cajas.webp',
+    imageUrl: 'https://www.dropbox.com/scl/fi/vaw5n8iqx3r42f3co5qir/servicio-privado-mudanza-cajas.webp?rlkey=ogss3ftloq89pknwq5hixihxu&st=7d1jd2im&raw=1',
   },
   {
     id: 'car-detailing',
@@ -154,7 +168,7 @@ export const services: Service[] = [
     titleKey: 'services.car.title',
     descriptionKey: 'services.car.subtitle',
     marketingDescKey: 'services.car.marketingDesc',
-    imageUrl: '/servicio-privado-lavado-coche.webp',
+    imageUrl: 'https://www.dropbox.com/scl/fi/5o1s20a1gbnpkweux0yio/servicio-privado-lavado-coche.webp?rlkey=lmlin1t29zbx5fqwte24kpvkt&st=cx497a9l&raw=1',
   },
   {
     id: 'gardening',
@@ -162,7 +176,7 @@ export const services: Service[] = [
     titleKey: 'services.gardening.title',
     descriptionKey: 'services.gardening.desc',
     marketingDescKey: 'services.gardening.marketingDesc',
-    imageUrl: '/servicio-privado-jardineria.webp',
+    imageUrl: 'https://www.dropbox.com/scl/fi/xkpuoqlnlukig2tk4dokm/servicio-privado-jardineria.webp?rlkey=ook2125yt3u6p04izvaak8ei2&st=fnadpn2e&raw=1',
   },
   {
     id: 'exterior-cleaning',
@@ -170,7 +184,7 @@ export const services: Service[] = [
     titleKey: 'services.exterior.title',
     descriptionKey: 'services.exterior.desc',
     marketingDescKey: 'services.exterior.marketingDesc',
-    imageUrl: '/servicio-privado-limpieza-exterior.webp',
+    imageUrl: 'https://www.dropbox.com/scl/fi/s584iq3w3ton5cpfoz92s/servicio-privado-limpieza-exterior.webp?rlkey=4uzfn7m99h3os1gl8sbnxiqg2&st=67943x7s&raw=1',
   },
   {
     id: 'pest-control',
@@ -202,7 +216,7 @@ export const services: Service[] = [
     titleKey: 'services.upholstery.title',
     descriptionKey: 'services.upholstery.desc',
     marketingDescKey: 'services.upholstery.marketingDesc',
-    imageUrl: '/kai-services/upholstery.webp',
+    imageUrl: '/servicio-privado-limpieza-tapiceria-1.webp',
   },
   {
     id: 'window-cleaning',
@@ -210,7 +224,7 @@ export const services: Service[] = [
     titleKey: 'services.window.title',
     descriptionKey: 'services.window.desc',
     marketingDescKey: 'services.window.marketingDesc',
-    imageUrl: '/kai-services/windows.webp',
+    imageUrl: '/servicio-privado-limpieza-ventanas-1.webp',
   },
   {
     id: 'mudanza-cajas',
@@ -218,7 +232,7 @@ export const services: Service[] = [
     titleKey: 'services.mudanzaCajas.title',
     descriptionKey: 'services.mudanzaCajas.desc',
     marketingDescKey: 'services.mudanzaCajas.marketingDesc',
-    imageUrl: '/kai-services/moving.webp',
+    imageUrl: '/servicio-privado-mudanza-cajas-1.webp',
   },
   {
     id: 'pulido-suelos',
@@ -226,7 +240,7 @@ export const services: Service[] = [
     titleKey: 'services.pulidoSuelos.title',
     descriptionKey: 'services.pulidoSuelos.desc',
     marketingDescKey: 'services.pulidoSuelos.marketingDesc',
-    imageUrl: '/kai-services/floor-care.webp',
+    imageUrl: '/servicio-privado-pulido-suelos-1.webp',
   },
   {
     id: 'common-area-cleaning',
@@ -234,7 +248,7 @@ export const services: Service[] = [
     titleKey: 'commercial.service.common.title',
     descriptionKey: 'commercial.service.common.desc',
     marketingDescKey: 'commercial.service.common.desc',
-    imageUrl: '/kai-calendar/optimized/commercial/property-managers/768.webp',
+    imageUrl: '/servicio-comercial-limpieza-escaleras.webp',
   },
   {
     id: 'property-managers',
@@ -242,7 +256,7 @@ export const services: Service[] = [
     titleKey: 'services.propertyManagers.title',
     descriptionKey: 'services.propertyManagers.desc',
     marketingDescKey: 'services.propertyManagers.marketingDesc',
-    imageUrl: '/kai-calendar/optimized/commercial/property-managers/1440.webp',
+    imageUrl: '/servicio-comercial-limpieza-escaleras.png',
   },
   {
     id: 'airbnb-rentals',
@@ -250,7 +264,7 @@ export const services: Service[] = [
     titleKey: 'services.airbnbRentals.title',
     descriptionKey: 'services.airbnbRentals.desc',
     marketingDescKey: 'services.airbnbRentals.marketingDesc',
-    imageUrl: '/kai-calendar/optimized/commercial/airbnb-rentals/1440.webp',
+    imageUrl: '/imagen-02-google-ai.webp',
   },
   {
     id: 'offices-corporate',
@@ -258,7 +272,7 @@ export const services: Service[] = [
     titleKey: 'services.officesCorporate.title',
     descriptionKey: 'services.officesCorporate.desc',
     marketingDescKey: 'services.officesCorporate.marketingDesc',
-    imageUrl: '/kai-calendar/optimized/commercial/offices-corporate/1440.webp',
+    imageUrl: '/servicio-comercial-limpieza-showroom.png',
   },
   {
     id: 'retail-showrooms',
@@ -266,7 +280,7 @@ export const services: Service[] = [
     titleKey: 'services.retailShowrooms.title',
     descriptionKey: 'services.retailShowrooms.desc',
     marketingDescKey: 'services.retailShowrooms.marketingDesc',
-    imageUrl: '/kai-calendar/optimized/commercial/retail-showrooms/1440.webp',
+    imageUrl: '/servicio-comercial-limpieza-retail.png',
   },
   {
     id: 'gastronomy-restaurants',
@@ -274,7 +288,7 @@ export const services: Service[] = [
     titleKey: 'services.gastronomyRestaurants.title',
     descriptionKey: 'services.gastronomyRestaurants.desc',
     marketingDescKey: 'services.gastronomyRestaurants.marketingDesc',
-    imageUrl: '/kai-calendar/optimized/commercial/gastronomy-restaurants/1440.webp',
+    imageUrl: '/servicio-comercial-limpieza-bar-restaurante.png',
   },
   {
     id: 'industry-logistics',
@@ -282,6 +296,6 @@ export const services: Service[] = [
     titleKey: 'services.industryLogistics.title',
     descriptionKey: 'services.industryLogistics.desc',
     marketingDescKey: 'services.industryLogistics.marketingDesc',
-    imageUrl: '/kai-calendar/optimized/commercial/industry-logistics/1440.webp',
+    imageUrl: '/servicio-comercial-limpieza-industrial.png',
   },
 ];

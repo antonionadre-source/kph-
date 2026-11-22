@@ -1995,7 +1995,7 @@ const SegmentationSection: React.FC<SegmentationSectionProps> = ({ onNavigate })
                     const target = e.currentTarget;
                     if (!target.dataset.fallback) {
                       target.dataset.fallback = 'true';
-                      target.src = '/oven-before.webp';
+                      target.src = '/antes-limpieza-experiencia.webp';
                     }
                   }}
                 />

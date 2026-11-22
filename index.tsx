@@ -1,17 +1,65 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './components/App';
-import { I18nProvider, detectLanguage, preloadLanguage } from './i18n';
+import { I18nProvider } from './i18n';
 import { AuthProvider } from './components/Auth';
 
-async function bootstrap() {
-  const element = document.getElementById('root');
-  if (!element) throw new Error('Application root is missing.');
-  const language = detectLanguage();
-  await preloadLanguage(language).catch(() => undefined);
-  document.documentElement.lang = language.startsWith('de') ? 'de' : language;
-  ReactDOM.createRoot(element).render(
-    <React.StrictMode><I18nProvider><AuthProvider><App /></AuthProvider></I18nProvider></React.StrictMode>
-  );
+// Suppress and handle benign development WebSocket errors from the Vite HMR client in sandboxed preview environments
+if (typeof window !== 'undefined') {
+  window.addEventListener('unhandledrejection', (event) => {
+    try {
+      const reason = event.reason;
+      if (reason) {
+        const msg = typeof reason === 'string' 
+          ? reason 
+          : (reason.message || (reason.toString && reason.toString()) || '');
+        if (
+          /websocket|ws|vite|hmr/i.test(msg) ||
+          msg.indexOf('WebSocket closed without opened') !== -1 ||
+          msg.indexOf('failed to connect') !== -1
+        ) {
+          console.warn('Prevented unhandled rejection from development WebSocket:', reason);
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      }
+    } catch (e) {
+      // Resilient
+    }
+  });
+
+  window.addEventListener('error', (event) => {
+    try {
+      const msg = event.message || (event.error && event.error.message) || '';
+      if (
+        /websocket|ws|vite|hmr/i.test(msg) ||
+        msg.indexOf('WebSocket closed without opened') !== -1 ||
+        msg.indexOf('failed to connect') !== -1
+      ) {
+        console.warn('Prevented error event from development WebSocket:', msg);
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    } catch (e) {
+      // Resilient
+    }
+  }, true);
 }
-void bootstrap();
+
+const rootElement = document.getElementById('root');
+if (!rootElement) {
+  throw new Error("Could not find root element to mount to");
+}
+
+const appEl = (
+  <React.StrictMode>
+    <I18nProvider>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </I18nProvider>
+  </React.StrictMode>
+);
+
+const root = ReactDOM.createRoot(rootElement);
+root.render(appEl);

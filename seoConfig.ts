@@ -1,9 +1,5 @@
 import { translations } from "./i18n.ts";
 import { MUNICIPALITIES } from "./src/data/locations.ts";
-import { catalogCopy, fillCopy } from "./src/content/catalogCopy";
-import { serviceName, serviceDescription } from "./src/content/serviceCatalog";
-import { portalText } from "./components/portalText";
-import { brandCopy } from "./src/content/brandCopy";
 
 export type Language = "de" | "en" | "fr" | "it" | "es" | "pt";
 
@@ -131,27 +127,27 @@ export const getServiceLinkForMunicipality = (municipalitySlug: string, serviceS
   if (!mun) {
     return `/services/zurich/${serviceSlug.toLowerCase()}`;
   }
-
+  
   const mSlug = mun.slug;
   const urlCitySlug = mSlug === "neuhausen-am-rheinfall" ? "neuhausen" : mSlug;
-
+  
   // Tier 1 municipalities have standalone service subpages
   if (mun.tier === 1 && VALID_CITIES.includes(urlCitySlug)) {
     return `/services/${urlCitySlug}/${serviceSlug.toLowerCase()}`;
   }
-
+  
   // Tier 2 municipalities use anchor sections on their location page
   if (mun.tier === 2) {
     return `/reinigung/${mSlug}#${serviceSlug.toLowerCase()}`;
   }
-
+  
   // Tier 3 municipalities link to parent region hub
   const targetRegion = mun.region === "zuerich" ? "region-zuerich" : mun.region === "winterthur" ? "region-winterthur" : "kanton-schaffhausen";
   return `/reinigung/${targetRegion}#${serviceSlug.toLowerCase()}`;
 };
 
 export const isRouteValid = (path: string): boolean => {
-  const cleanPath = path.split(/[?#]/)[0];
+  const cleanPath = path.split("?")[0];
   if (PATH_TO_PAGE_MAP[cleanPath]) {
     return true;
   }
@@ -169,7 +165,7 @@ export const isRouteValid = (path: string): boolean => {
     const slug = munMatch[1].toLowerCase();
     return MUNICIPALITIES.some(m => m.slug === slug);
   }
-
+  
   // Dynamic pattern: /services/:city/:serviceId
   const servicesRegex = /^\/services\/([a-zA-Z0-9_-]+)\/([a-zA-Z0-9_-]+)$/i;
   const match = cleanPath.match(servicesRegex);
@@ -204,7 +200,7 @@ export const isRouteValid = (path: string): boolean => {
 };
 
 export const parsePath = (path: string) => {
-  const cleanPath = path.split(/[?#]/)[0];
+  const cleanPath = path.split("?")[0];
   if (PATH_TO_PAGE_MAP[cleanPath]) {
     return { page: PATH_TO_PAGE_MAP[cleanPath], cityId: "", serviceId: "" };
   }
@@ -214,10 +210,10 @@ export const parsePath = (path: string) => {
   const regionMatch = cleanPath.match(regionRegex);
   if (regionMatch) {
     const regionSlug = regionMatch[1].toLowerCase();
-    const regionId = regionSlug === "kanton-schaffhausen"
-      ? "schaffhausen"
-      : regionSlug === "region-winterthur"
-      ? "winterthur"
+    const regionId = regionSlug === "kanton-schaffhausen" 
+      ? "schaffhausen" 
+      : regionSlug === "region-winterthur" 
+      ? "winterthur" 
       : "zuerich";
     return {
       page: "region-hub",
@@ -239,7 +235,7 @@ export const parsePath = (path: string) => {
       };
     }
   }
-
+  
   // Dynamic pattern: /services/:city/:serviceId
   const servicesRegex = /^\/services\/([a-zA-Z0-9_-]+)\/([a-zA-Z0-9_-]+)$/i;
   const match = cleanPath.match(servicesRegex);
@@ -766,22 +762,6 @@ export function translateKey(key: string, lang: Language): string {
   return "";
 }
 
-// Metadata shares the neutral catalogue copy without importing React page modules.
-const accessDescriptions: Record<Language, { login: string; register: string }> = {
-  de: { login: "Melden Sie sich im Kraken-PFM-Portal an, um Ihre Anfragen und deren Status einzusehen.", register: "Erstellen Sie ein Kraken-PFM-Konto, um Ihr Profil und Ihre Serviceanfragen zu verwalten." },
-  en: { login: "Sign in to the Kraken PFM portal to view your requests and their status.", register: "Create a Kraken PFM account to manage your profile and service requests." },
-  es: { login: "Accede al portal de Kraken PFM para consultar tus solicitudes y su estado.", register: "Crea una cuenta de Kraken PFM para gestionar tu perfil y tus solicitudes de servicio." },
-  fr: { login: "Connectez-vous au portail Kraken PFM pour consulter vos demandes et leur statut.", register: "Créez un compte Kraken PFM pour gérer votre profil et vos demandes de service." },
-  it: { login: "Accedi al portale Kraken PFM per consultare le tue richieste e il loro stato.", register: "Crea un account Kraken PFM per gestire il profilo e le richieste di servizio." },
-  pt: { login: "Entre no portal Kraken PFM para consultar os seus pedidos e o respetivo estado.", register: "Crie uma conta Kraken PFM para gerir o perfil e os pedidos de serviço." },
-};
-function metadataPlaceName(language: Language, slug: string) {
-  const normalized = slug === "zuerich" ? "zurich" : slug === "neuhausen" ? "neuhausen-am-rheinfall" : slug;
-  if (normalized === "zurich" && language === "en") return "Zürich";
-  if (normalized === "winterthur" && language === "fr") return "Winterthour";
-  return cityMap[slug]?.[language] || MUNICIPALITIES.find(m => m.slug === normalized)?.name || slug;
-}
-
 export function getMetadataForPath(
   pathname: string,
   langParam?: string
@@ -853,55 +833,92 @@ export function getMetadataForPath(
   let h2 = "";
   let bodyText = "";
 
-  const copy = catalogCopy(currentLang);
-  const home = brandCopy(currentLang).hero;
-  const neutralPages: Record<string, { title: string; description: string }> = {
-    "home": { title: home.title.replace(/[.]$/, ""), description: home.intro },
-    "services-page": { title: copy.all, description: copy.privateIntro },
-    "commercial-services": { title: copy.business, description: copy.businessIntro },
-    "coverage-hub": { title: copy.coverageLabel, description: copy.coverageIntro },
-    "consultation": { title: copy.configure, description: copy.prepareIntro },
-    "commercial-quote": { title: `${copy.business} · ${copy.request}`, description: copy.businessIntro },
-    "login": { title: portalText(currentLang, "signIn"), description: accessDescriptions[currentLang].login },
-    "register": { title: portalText(currentLang, "createAccount"), description: accessDescriptions[currentLang].register },
-  };
-
   if (page === "seo-landing" && seoCityId && seoServiceId) {
-    const place = metadataPlaceName(currentLang, seoCityId.toLowerCase());
-    const name = serviceName(currentLang, seoServiceId.toLowerCase()) || copy.all;
-    h1 = fillCopy(copy.serviceIn, { service: name, place });
-    title = `${h1.replace(/[.]$/, "")} | ${BRAND}`;
-    description = `${serviceDescription(currentLang, seoServiceId.toLowerCase()) || copy.prepareIntro} ${copy.confirmIntro}`;
-    h2 = place;
+    const cName = cityMap[seoCityId.toLowerCase()]?.[currentLang] || seoCityId;
+    const i18nKey = wizardToI18nService[seoServiceId.toLowerCase()] || seoServiceId;
+    const sName = translateKey(`services.${i18nKey}.title`, currentLang) || seoServiceId;
+
+    const titleTemplates: Record<string, string> = {
+      de: `${sName} in ${cName} | Schweizer Meisterklasse | ${BRAND}`,
+      en: `${sName} in ${cName} | Swiss Masterclass | ${BRAND}`,
+      fr: `${sName} à ${cName} | Classe de Maître Suisse | ${BRAND}`,
+      it: `${sName} a ${cName} | Classe Magistrale Svizzera | ${BRAND}`,
+      es: `${sName} en ${cName} | Clase Maestra Suiza | ${BRAND}`,
+      pt: `${sName} em ${cName} | Classe Mestre Suíça | ${BRAND}`
+    };
+
+    const descTemplates: Record<string, string> = {
+      de: `Professionelle ${sName} in ${cName} mit Festpreisgarantie. Erfahrenes, versichertes Team, modernste Ausrüstung und 100% ökologische Verantwortung.`,
+      en: `Professional ${sName} in ${cName} with fixed price guarantee. Experienced, insured team, state-of-the-art equipment and 100% ecological responsibility.`,
+      fr: `${sName} professionnel à ${cName} avec garantie de prix fixe. Équipe expérimentée et assurée, équipement de pointe et responsabilité 100% écologique.`,
+      it: `${sName} professionale a ${cName} con garanzia di prezzo fisso. Team esperto e assicurato, attrezzature all'avanguardia e responsabilità ecologica al 100%.`,
+      es: `${sName} profesional en ${cName} con garantía de precio fijo. Equipo experimentado y asegurado, equipos de última generación y responsabilidad 100% ecológica.`,
+      pt: `${sName} profissional em ${cName} com garantia de preço fixo. Equipa experiente e segurada, equipamentos de última geração e responsabilidade 100% ecológica.`
+    };
+
+    title = titleTemplates[currentLang] || titleTemplates["de"];
+    description = descTemplates[currentLang] || descTemplates["de"];
+
+    if (currentLang === "de") {
+      let fromPrice = "";
+      const mun = MUNICIPALITIES.find(m => m.slug === seoCityId.toLowerCase());
+      if (mun) {
+        if (seoServiceId.toLowerCase() === "end-of-tenancy") {
+          fromPrice = `${mun.priceAnchors.endOfTenancyFrom}`;
+        } else if (seoServiceId.toLowerCase() === "deep-cleaning") {
+          fromPrice = `${mun.priceAnchors.deepCleaningFrom}`;
+        }
+      }
+      if (!fromPrice) {
+        if (seoServiceId.toLowerCase() === "end-of-tenancy") {
+          fromPrice = "520";
+        } else if (seoServiceId.toLowerCase() === "deep-cleaning") {
+          fromPrice = "320";
+        } else {
+          fromPrice = seoCityId.toLowerCase() === "schaffhausen" ? "45" : seoCityId.toLowerCase() === "winterthur" ? "50" : "55";
+        }
+      }
+      title = `${sName} ${cName} ab CHF ${fromPrice} | ${BRAND}`;
+      description = `Professionelle ${sName} in ${cName} ab CHF ${fromPrice}. Mit 100% Abnahmegarantie, GAV-konformem Team & bester Ausrüstung. Jetzt Online-Preis berechnen!`;
+    }
+
+    h1 = sName;
+    h2 = cName;
     bodyText = description;
   } else if (page === "region-hub" && seoCityId) {
-    const key = seoCityId === "schaffhausen" ? "regionSchaffhausen" : seoCityId === "winterthur" ? "regionWinterthur" : "regionZuerich";
-    const region = copy[key];
-    h1 = fillCopy(copy.locationTitle, { place: region });
-    title = `${h1.replace(/[.]$/, "")} | ${BRAND}`;
-    description = copy.locationIntro;
-    h2 = region;
-    bodyText = description;
-  } else if (page === "municipality-page" && seoCityId) {
-    const municipality = MUNICIPALITIES.find(m => m.slug === seoCityId);
-    const place = metadataPlaceName(currentLang, seoCityId);
-    h1 = fillCopy(copy.locationTitle, { place });
-    title = `${h1.replace(/[.]$/, "")} | ${BRAND}`;
-    description = copy.locationIntro;
-    h2 = municipality ? `${place} (${municipality.plz.join(', ')})` : BRAND;
-    bodyText = description;
-  } else if (neutralPages[page]) {
-    const meta = neutralPages[page];
-    title = `${meta.title} | ${BRAND}`;
-    description = meta.description;
-    h1 = meta.title;
+    const regionName = seoCityId === "schaffhausen" 
+      ? "Kanton Schaffhausen" 
+      : seoCityId === "winterthur" 
+      ? "Region Winterthur" 
+      : "Region Zürich";
+
+    title = `Reinigung & Facility Management im ${regionName} | ${BRAND}`;
+    description = `Professionelle Reinigung und Facility Services im ${regionName}. GAV-konforme Teams, versichert bis CHF 10 Mio., Übergabegarantie & Sofort-Offerte.`;
+    h1 = `Reinigung & Facility Management im ${regionName}`;
     h2 = BRAND;
     bodyText = description;
+  } else if (page === "municipality-page" && seoCityId) {
+    const mun = MUNICIPALITIES.find(m => m.slug === seoCityId);
+    if (mun) {
+      const plzStr = mun.plz.join(', ');
+      title = `Reinigungsfirma in ${mun.name} (${plzStr}) | ${BRAND}`;
+      description = `Professionelle Reinigungsfirma in ${mun.name} (${plzStr}). Umzugsreinigung mit Abnahmegarantie ab CHF ${mun.priceAnchors.endOfTenancyFrom}. GAV-konform & versichert.`;
+      h1 = `Reinigungsfirma in ${mun.name}`;
+      h2 = `${mun.name} (${plzStr})`;
+      bodyText = description;
+    } else {
+      title = `Reinigungsfirma | ${BRAND}`;
+      description = `Professionelle Reinigungsdienstleistungen mit Schweizer Qualitätsstandard.`;
+      h1 = "Reinigungsfirma";
+      h2 = BRAND;
+      bodyText = description;
+    }
   } else {
     const chosenMap = mapsByLang[currentLang] || {};
     const meta = chosenMap[page] || defaults[page] || defaults["home"];
     title = meta.title;
     description = meta.description;
+
     h1 = title.split("|")[0].trim();
     h2 = BRAND;
     bodyText = description;

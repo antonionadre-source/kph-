@@ -8,7 +8,6 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-.cache/
 # Build & env
 dist
 dist-ssr
@@ -30,10 +29,3 @@ dist-ssr
 *.sln
 *.sw?
 
-
-# Local image audit environment
-.venv-assets/
-
-# Vercel local linkage and generated CDN assets
-.vercel/
-public/assets/

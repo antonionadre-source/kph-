@@ -39,6 +39,21 @@ const WhyKrakenSection: React.FC = () => {
           </motion.p>
         </div>
 
+        <div className="max-w-6xl mx-auto">
+          <motion.img 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            src="/payrexx-checkout-banner.png" 
+            alt="Why Kraken Icons" 
+            className="w-full h-auto rounded-3xl"
+            loading="lazy"
+            width="1200"
+            height="200"
+            referrerPolicy="no-referrer"
+          />
+        </div>
       </div>
     </section>
   );

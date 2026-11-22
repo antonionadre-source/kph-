@@ -1,22 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from '../i18n';
 import { getDashboardTranslation } from './dashboardTranslations';
-import { FilePreviewModal, useDialogFocus } from './FilePreviewModal';
+import { FilePreviewModal } from './FilePreviewModal';
 import { downloadFileSafely } from './fileUtils';
 import { scheduleCalendarEventForKai } from './calendarUtils';
-import {
-  Mail,
-  Phone,
-  MapPin,
-  FileText,
-  ExternalLink,
-  X,
-  AlertTriangle,
-  Briefcase,
-  Clipboard,
-  Info,
-  DollarSign,
+import { 
+  Mail, 
+  Phone, 
+  MapPin, 
+  FileText, 
+  ExternalLink, 
+  X, 
+  AlertTriangle, 
+  Briefcase, 
+  Clipboard, 
+  Info, 
+  DollarSign, 
   Image as ImageIcon,
   ArrowLeft,
   Edit,
@@ -36,19 +36,13 @@ import {
   Trash2,
   MessageSquare
 } from 'lucide-react';
-import { doc, updateDoc, collection, getDocs, query, orderBy, limit, writeBatch } from 'firebase/firestore';
-import { useAuth } from './Auth';
+import { doc, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db, sanitizeFirestoreData } from './firebase';
-import { detailAccessText, detailEvidence, detailText } from './detailPresentation';
-import { portalText } from './portalText';
-import { openInvoiceSummary } from './invoiceDocument';
-import { portalAmount } from './portalRecords';
-import { withPortalTimeout } from './portalIdentity';
+import { detectZone } from './ConsultationPage';
 
 export interface TeamNote {
     id: string;
     author: string;
-    authorId?: string;
     text: string;
     createdAt: string;
     updatedAt?: string;
@@ -56,15 +50,12 @@ export interface TeamNote {
 
 export type MaintenanceRequest = {
     id: string;
-    userId?: string;
-    postcode?: string;
     client: string;
     service: string;
     date: string;
     status: 'Pending' | 'In Progress' | 'Completed' | 'Draft';
     priority: 'Low' | 'Medium' | 'High';
     amount: number;
-    estimatedAmount?: number;
     email?: string;
     phone?: string;
     address?: string;
@@ -88,9 +79,6 @@ export type MaintenanceRequest = {
       amountCharged: number;
       currency: string;
       status: 'pending' | 'captured' | 'failed' | 'refunded';
-      verified?: boolean;
-      verifiedAt?: unknown;
-      amountDue?: number;
       billingPostal: string;
     } | null;
     mediaAttachments?: Array<{
@@ -115,8 +103,6 @@ export type MaintenanceRequest = {
       estimatedDurationHours: number;
       estimatedEndTime: string | null;
     } | null;
-    checkout?: unknown;
-    serverQuote?: Record<string, any>;
     createdAt?: any;
     updatedAt?: any;
 };
@@ -142,10 +128,14 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
 }) => {
   const { language } = useTranslation();
   const dt = getDashboardTranslation(language);
-  const { user } = useAuth();
-  const pt = (key: Parameters<typeof portalText>[1]) => portalText(language, key);
   const [teamNotes, setTeamNotes] = useState<TeamNote[]>([]);
-  const [noteAuthor, setNoteAuthor] = useState(user?.name || '');
+  const [noteAuthor, setNoteAuthor] = useState(() => {
+    try {
+      return localStorage.getItem('kraken_last_author') || '';
+    } catch {
+      return '';
+    }
+  });
   const [newNoteText, setNewNoteText] = useState('');
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
   const [deletingNoteId, setDeletingNoteId] = useState<string | null>(null);
@@ -154,51 +144,89 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
   const [isSavingNotes, setIsSavingNotes] = useState(false);
   const [actionAlert, setActionAlert] = useState<string | null>(null);
   const [previewFile, setPreviewFile] = useState<{ url: string; name: string; title?: string } | null>(null);
-  const dialogRef = useRef<HTMLDivElement>(null);
-  const closeRef = useRef<HTMLButtonElement>(null);
-  useDialogFocus(true, dialogRef, closeRef, () => setSelectedRequest(null), Boolean(previewFile));
 
-  const [notesLoading, setNotesLoading] = useState(false);
-  const [notesError, setNotesError] = useState(false);
-  const notesVersion = useRef(0);
-  const loadNotes = async () => {
-    const current = ++notesVersion.current;
-    setTeamNotes([]); setNotesError(false);
-    if (!isStaff) return;
-    setNotesLoading(true);
-    try {
-      const snapshot = await withPortalTimeout(getDocs(query(collection(db, 'maintenance_requests', selectedRequest.id, 'team_notes'), orderBy('createdAt', 'desc'), limit(100))));
-      if (current === notesVersion.current) setTeamNotes(snapshot.docs.map(note => ({ ...note.data(), id: note.id } as TeamNote)));
-    } catch { if (current === notesVersion.current) setNotesError(true); }
-    finally { if (current === notesVersion.current) setNotesLoading(false); }
-  };
   useEffect(() => {
-    loadNotes(); setNewNoteText(''); setEditingNoteId(null);
-    return () => { notesVersion.current++; };
-  }, [selectedRequest.id, isStaff]);
+    let notesList: TeamNote[] = [];
 
-  const updateAndPersistTeamNotes = async (updatedNotes: TeamNote[], _successMsg: string) => {
-    if (!isStaff || !user?.uid) return false;
+    if (selectedRequest.teamNotes && Array.isArray(selectedRequest.teamNotes) && selectedRequest.teamNotes.length > 0) {
+      notesList = selectedRequest.teamNotes;
+    } else if (selectedRequest.id) {
+      try {
+        const localKey = `kraken_team_notes_${selectedRequest.id}`;
+        const stored = localStorage.getItem(localKey);
+        if (stored) {
+          notesList = JSON.parse(stored);
+        }
+      } catch (e) {
+        console.warn('Error reading team notes from local storage:', e);
+      }
+    }
+
+    if (notesList.length === 0 && selectedRequest.notes && selectedRequest.notes.trim()) {
+      notesList = [{
+        id: 'legacy_note_1',
+        author: 'Sistema / Equipo',
+        text: selectedRequest.notes,
+        createdAt: selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' }) : 'Fecha registrada'
+      }];
+    }
+
+    setTeamNotes(notesList);
+    setNewNoteText('');
+    setEditingNoteId(null);
+  }, [selectedRequest]);
+
+  const updateAndPersistTeamNotes = async (updatedNotes: TeamNote[], successMsg: string) => {
     setIsSavingNotes(true);
     try {
-      const batch = writeBatch(db);
-      const previous = new Map<string, TeamNote>(teamNotes.map(note => [note.id, note]));
-      for (const note of updatedNotes) {
-        const old = previous.get(note.id);
-        if (old && JSON.stringify(old) === JSON.stringify(note)) continue;
-        const persisted = { ...note, authorId: old?.authorId || user!.uid };
-        batch.set(doc(db, 'maintenance_requests', selectedRequest.id, 'team_notes', note.id), sanitizeFirestoreData(persisted));
-      }
-      for (const old of teamNotes) {
-        if (!updatedNotes.some(note => note.id === old.id)) batch.delete(doc(db, 'maintenance_requests', selectedRequest.id, 'team_notes', old.id));
-      }
-      await withPortalTimeout(batch.commit());
       setTeamNotes(updatedNotes);
-      setActionAlert(pt('saved')); return true;
-    } catch { setActionAlert(pt('saveError')); return false; }
-    finally { setIsSavingNotes(false); }
-  };
 
+      const summaryText = updatedNotes
+        .map(n => `[${n.author} - ${n.createdAt}]: ${n.text}`)
+        .join('\n\n');
+
+      const updatedList = requests.map(req => {
+        if (req.id === selectedRequest.id) {
+          const updated = { 
+            ...req, 
+            teamNotes: updatedNotes, 
+            notes: summaryText 
+          };
+          if (selectedRequest?.id === req.id) {
+            setSelectedRequest(updated);
+          }
+          return updated;
+        }
+        return req;
+      });
+      setRequests(updatedList);
+
+      try {
+        localStorage.setItem(`kraken_team_notes_${selectedRequest.id}`, JSON.stringify(updatedNotes));
+      } catch (e) {
+        console.warn('LocalStorage save error:', e);
+      }
+
+      try {
+        await setDoc(doc(db, 'maintenance_requests', selectedRequest.id), sanitizeFirestoreData({
+          teamNotes: updatedNotes,
+          notes: summaryText,
+          updatedAt: serverTimestamp()
+        }), { merge: true });
+      } catch (dbErr) {
+        console.warn('Firestore sync note warning:', dbErr);
+      }
+
+      setActionAlert(successMsg);
+      setTimeout(() => setActionAlert(null), 3500);
+    } catch (err) {
+      console.error('Error persisting notes:', err);
+      setActionAlert("Error al guardar las notas.");
+      setTimeout(() => setActionAlert(null), 3500);
+    } finally {
+      setIsSavingNotes(false);
+    }
+  };
 
   const handleAddNote = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -206,12 +234,12 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
     const cleanText = newNoteText.trim();
 
     if (!cleanAuthor) {
-      setActionAlert(pt('required'));
+      setActionAlert("Por favor, introduce tu nombre como autor de la nota.");
       setTimeout(() => setActionAlert(null), 3500);
       return;
     }
     if (!cleanText) {
-      setActionAlert(pt('required'));
+      setActionAlert("Por favor, escribe el texto de la nota antes de guardar.");
       setTimeout(() => setActionAlert(null), 3500);
       return;
     }
@@ -222,18 +250,24 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
       // ignore
     }
 
-    const nowStr = new Date().toISOString();
+    const nowStr = new Date().toLocaleString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
 
     const newNoteObj: TeamNote = {
       id: `note_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-      author: user?.name || cleanAuthor,
-      authorId: user?.uid,
+      author: cleanAuthor,
       text: cleanText,
       createdAt: nowStr
     };
 
     const updated = [newNoteObj, ...teamNotes];
-    if (await updateAndPersistTeamNotes(updated, "")) setNewNoteText('');
+    await updateAndPersistTeamNotes(updated, "Nota guardada e historial actualizado correctamente.");
+    setNewNoteText('');
   };
 
   const handleStartEditNote = (note: TeamNote) => {
@@ -247,17 +281,24 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
     const cleanAuthor = editAuthor.trim();
 
     if (!cleanText || !cleanAuthor) {
-      setActionAlert(pt('required'));
+      setActionAlert("El autor y la nota no pueden estar vacíos.");
       setTimeout(() => setActionAlert(null), 3500);
       return;
     }
 
-    const nowStr = new Date().toISOString();
+    const nowStr = new Date().toLocaleString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
 
     const updated = teamNotes.map(n => {
       if (n.id === noteId) {
         return {
           ...n,
+          author: cleanAuthor,
           text: cleanText,
           updatedAt: nowStr
         };
@@ -265,22 +306,23 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
       return n;
     });
 
-    if (await updateAndPersistTeamNotes(updated, "")) setEditingNoteId(null);
+    await updateAndPersistTeamNotes(updated, "Nota editada correctamente.");
+    setEditingNoteId(null);
   };
 
   const handleDeleteNote = async (noteId: string) => {
     const updated = teamNotes.filter(n => n.id !== noteId);
-    if (await updateAndPersistTeamNotes(updated, "")) setDeletingNoteId(null);
+    await updateAndPersistTeamNotes(updated, "Nota eliminada correctamente.");
+    setDeletingNoteId(null);
   };
 
   const extractPostcode = (addr?: string): string => {
-    if (!addr) return '';
+    if (!addr) return '8000';
     const match = addr.match(/\b\d{4}\b/);
-    return match ? match[0] : '';
+    return match ? match[0] : '8000';
   };
 
   const handleSendEmail = (req: MaintenanceRequest) => {
-      if (!isStaff) return;
       const subject = encodeURIComponent(`${dt.emailDefaultSubject} (${req.service})`);
       const body = encodeURIComponent(
           `${dt.emailGreeting} ${req.client},\n\n` +
@@ -288,12 +330,12 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
           `• ${dt.emailServiceLabel} ${req.service}\n` +
           `• ${dt.emailDateLabel} ${req.date || '—'}\n` +
           `• ${dt.emailAddressLabel} ${req.address || '—'}\n` +
-          `• ${pt(portalAmount(req).confirmed ? 'quotedAmount' : 'amount')} ${portalAmount(req).value?.toLocaleString() ?? '—'}\n\n` +
+          `• ${dt.emailAmountLabel} CHF ${(req.amount || 0).toLocaleString()}\n\n` +
           `${dt.emailQuestions}\n\n` +
           `${dt.emailSincerely}`
       );
       if (req.email) {
-          window.open(`mailto:${encodeURIComponent(req.email)}?subject=${subject}&body=${body}`, '_blank', 'noopener');
+          window.open(`mailto:${req.email}?subject=${subject}&body=${body}`, '_blank');
           setActionAlert(`SUCCESS: Email client opened to send confirmation to ${req.email}`);
       } else {
           setActionAlert(`WARNING: Request has no registered client email.`);
@@ -301,112 +343,179 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
       setTimeout(() => setActionAlert(null), 4000);
   };
 
-  const handleScheduleService = async (request: MaintenanceRequest) => {
-    if (!isStaff) return;
-    try { scheduleCalendarEventForKai(request); setActionAlert(pt('calendarDraft')); }
-    catch { setActionAlert(pt('calendarInvalid')); }
-  };
-  const handleGenerateInvoice = (request: MaintenanceRequest) => {
-    if (!openInvoiceSummary(request, language)) setActionAlert(pt('saveError'));
+  const handleScheduleService = async (req: MaintenanceRequest) => {
+      try {
+          await updateDoc(doc(db, 'maintenance_requests', req.id), {
+              status: 'In Progress',
+              scheduledAt: serverTimestamp(),
+              updatedAt: serverTimestamp()
+          });
+
+          const updatedList = requests.map(r => {
+              if (r.id === req.id) {
+                  const updated = { ...r, status: 'In Progress' };
+                  if (selectedRequest?.id === req.id) {
+                      setSelectedRequest(updated);
+                  }
+                  return updated;
+              }
+              return r;
+          });
+          setRequests(updatedList);
+
+          // Trigger Outlook Calendar event & .ics download for kai@krakenpfm.ch with 1h reminder
+          scheduleCalendarEventForKai(req);
+
+          setActionAlert(`SUCCESS: Event scheduled in Outlook for kai@krakenpfm.ch with 1h reminder. Synchronized in Firebase.`);
+      } catch (err) {
+          console.error('Error actualizando programación:', err);
+          setActionAlert(`ERROR: No se pudo guardar la programación en Firebase.`);
+      }
+      setTimeout(() => setActionAlert(null), 5000);
   };
 
-  const postcode = selectedRequest.postcode || extractPostcode(selectedRequest.address);
+  const handleGenerateInvoice = (req: MaintenanceRequest) => {
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+          setActionAlert("WARNING: Por favor permita las ventanas emergentes para ver/guardar la factura PDF.");
+          return;
+      }
 
+      const invoiceNum = `INV-${req.id.substring(0, 8).toUpperCase()}`;
+      const dateStr = new Date().toLocaleDateString(language.startsWith('de') ? 'de-CH' : language.startsWith('fr') ? 'fr-CH' : language.startsWith('it') ? 'it-CH' : language.startsWith('es') ? 'es-ES' : 'en-CH', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${dt.pdfInvoiceTitle} ${invoiceNum} - Kraken PFM</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; color: #1e293b; max-width: 800px; margin: 0 auto; }
+            .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0284c7; padding-bottom: 20px; margin-bottom: 30px; }
+            .logo { font-size: 24px; font-weight: 900; color: #0f172a; letter-spacing: -0.5px; }
+            .logo span { color: #0284c7; }
+            .inv-title { font-size: 28px; font-weight: 800; color: #0284c7; text-align: right; }
+            .details { display: flex; justify-content: space-between; margin-bottom: 30px; line-height: 1.6; }
+            .box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; width: 45%; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th { background: #0f172a; color: white; text-align: left; padding: 12px; font-size: 12px; text-transform: uppercase; }
+            td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+            .total-row { font-weight: 800; font-size: 16px; background: #f0f9ff; }
+            .footer { margin-top: 50px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+            .btn-print { background: #0284c7; color: white; border: none; padding: 12px 24px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-bottom: 20px; }
+            @media print { .btn-print { display: none; } }
+          </style>
+        </head>
+        <body>
+          <button class="btn-print" onclick="window.print()">${dt.pdfPrintBtn}</button>
+          
+          <div class="header">
+            <div class="logo">KRAKEN <span>PFM</span></div>
+            <div class="inv-title">${dt.pdfInvoiceHeader}<br><span style="font-size:14px; color:#64748b;">${invoiceNum}</span></div>
+          </div>
+
+          <div class="details">
+            <div class="box">
+              <strong>${dt.pdfIssuer}</strong><br>
+              Kraken Properties & Facilities Management<br>
+              Bahnhofstrasse 42, 8001 Zürich<br>
+              Suiza • CHE-109.823.411 TVA<br>
+              kai@krakenpfm.ch
+            </div>
+            <div class="box">
+              <strong>${dt.pdfClient}</strong><br>
+              ${req.client}<br>
+              ${req.email || dt.pdfNoEmail}<br>
+              ${req.address || dt.pdfAddressOnRecord}<br>
+              <strong>${dt.pdfIssueDate}</strong> ${dateStr}
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>${dt.pdfServiceDesc}</th>
+                <th>${dt.pdfDate}</th>
+                <th style="text-align:right;">${dt.pdfAmount}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>${req.service}</strong><br><span style="font-size:12px; color:#64748b;">${dt.pdfPropertyMaint}</span></td>
+                <td>${req.date || dateStr}</td>
+                <td style="text-align:right;">CHF ${(req.amount || 0).toLocaleString('de-CH', { minimumFractionDigits: 2 })}</td>
+              </tr>
+              <tr class="total-row">
+                <td colspan="2" style="text-align:right;">${dt.pdfTotalVatInc}</td>
+                <td style="text-align:right; color:#0284c7;">CHF ${(req.amount || 0).toLocaleString('de-CH', { minimumFractionDigits: 2 })}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="footer">
+            ${dt.pdfFooterIban}<br>
+            ${dt.pdfFooterDocNotice}
+          </div>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+      setActionAlert(`SUCCESS: Invoice PDF generated and ready to print/save.`);
+      setTimeout(() => setActionAlert(null), 4000);
+  };
+
+  const postcode = extractPostcode(selectedRequest.address);
+  const zoneInfo = detectZone(postcode);
+  
   // Safe extraction of structured service details if available
-  const serviceItem = selectedRequest.services && selectedRequest.services.length > 0
-      ? selectedRequest.services[0]
+  const serviceItem = selectedRequest.services && selectedRequest.services.length > 0 
+      ? selectedRequest.services[0] 
       : null;
   const details = serviceItem?.details || {};
-
-  const roomsCount = details.rooms ?? '—';
-  const bathroomsCount = details.bathrooms ?? '—';
-  const carpetCount = details.carpets ?? '—';
-  const balconyCount = details.balconies ?? '—';
-  const customDuration = details.customDuration ?? selectedRequest.scheduling?.estimatedDurationHours ?? '—';
-  const formatMoney = (value: unknown) => typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value.toFixed(2) : '—';
-  const formatRecordedDate = (value: any) => {
-    if (!value) return '—';
-    const date = new Date(value?.toDate?.() || value);
-    return Number.isNaN(date.getTime()) ? '—' : date.toLocaleString(language === 'de-CH' ? 'de-CH' : language);
-  };
-  const evidence = detailEvidence(selectedRequest, user?.uid);
-  const financial = evidence.financial;
-  const totalAmount = financial.value;
-  const travelFee = evidence.travel;
-  const surchargePercent = evidence.surchargePercent;
-  const calculatedBase = evidence.base;
-  const calculatedSurcharge = evidence.surcharge;
-  const depositDue = evidence.deposit;
-  const verifiedPayment = evidence.verifiedPayment;
-  const clientStatus = selectedRequest.status === 'Draft' ? dt.draftLabel : selectedRequest.status === 'Pending' ? dt.statusPending : selectedRequest.status === 'In Progress' ? dt.statusInProgress : selectedRequest.status === 'Completed' ? dt.statusCompleted : selectedRequest.status;
-  const clientFiles = (selectedRequest.mediaUrls || []).flatMap((url, index) => {
-    if (typeof url !== 'string' || !/^https?:\/\//i.test(url)) return [];
-    const candidateName = selectedRequest.mediaNames?.[index];
-    return [{ url, name: typeof candidateName === 'string' && candidateName.trim() ? candidateName : `${dt.clientUploadedMedia} ${index + 1}` }];
-  });
-
-  if (!isStaff) return (
-    <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="request-summary-heading" className="kraken-portal kraken-overlay fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/40 p-3 sm:p-6">
-      <section className="kraken-dialog flex max-h-[90dvh] w-full max-w-2xl min-w-0 flex-col overflow-hidden rounded-2xl bg-white shadow-sm [overflow-wrap:anywhere]">
-        <header className="kraken-dialog-header flex items-start justify-between gap-3 border-b border-[#dce5f0] p-4 sm:p-6">
-          <div className="min-w-0"><p className="text-base font-medium text-[#50647c]">{detailText(language, 'summary')}</p><h2 id="request-summary-heading" className="mt-1 text-xl font-semibold text-[#032b59]">{selectedRequest.service}</h2></div>
-          <button ref={closeRef} type="button" onClick={() => setSelectedRequest(null)} aria-label={detailText(language, 'close')} className="kraken-control min-h-11 min-w-11 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-[#50647c] hover:bg-[#f3f7fc] focus-visible:outline-2 focus-visible:outline-blue-600"><X aria-hidden="true" className="h-5 w-5" /></button>
-        </header>
-        <div className="kraken-dialog-body min-h-0 space-y-5 overflow-y-auto p-4 sm:p-6">
-          {actionAlert && <p role="alert" className="rounded-xl bg-[#edf4fd] p-3 text-base text-[#1464ad]">{actionAlert}</p>}
-          <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
-            <div><dt className="text-[#50647c]">{detailText(language, 'reference')}</dt><dd className="mt-1 font-medium text-[#032b59]">{selectedRequest.id}</dd></div>
-            <div><dt className="text-[#50647c]">{detailText(language, 'status')}</dt><dd className="mt-1 font-medium text-[#032b59]">{clientStatus}</dd></div>
-            {selectedRequest.date && <div><dt className="text-[#50647c]">{pt('date')}</dt><dd className="mt-1 font-medium text-[#032b59]">{selectedRequest.date}{selectedRequest.time ? ` · ${selectedRequest.time}` : ''}</dd></div>}
-            <div><dt className="text-[#50647c]">{pt('client')}</dt><dd className="mt-1 font-medium text-[#032b59]">{selectedRequest.client}</dd></div>
-            {selectedRequest.email && <div><dt className="text-[#50647c]">{pt('email')}</dt><dd className="mt-1 font-medium text-[#032b59]">{selectedRequest.email}</dd></div>}
-            {selectedRequest.phone && <div><dt className="text-[#50647c]">{pt('phone')}</dt><dd className="mt-1 font-medium text-[#032b59]">{selectedRequest.phone}</dd></div>}
-            {selectedRequest.address && <div className="sm:col-span-2"><dt className="text-[#50647c]">{pt('address')}</dt><dd className="mt-1 font-medium text-[#032b59]">{selectedRequest.address}</dd></div>}
-            <div className="sm:col-span-2"><dt className="text-[#50647c]">{dt.buildingAccess}</dt><dd className="mt-1 font-medium text-[#032b59]">{detailAccessText(selectedRequest.accessMethod, language)}</dd></div>
-          </dl>
-          {totalAmount !== undefined && <dl className="space-y-3 rounded-xl border border-[#dce5f0] bg-[#f3f7fc] p-4 text-sm">
-            <div className="flex flex-wrap justify-between gap-2"><dt className="text-[#50647c]">{pt(financial.confirmed ? 'quotedAmount' : 'amount')}</dt><dd className="font-semibold text-[#032b59]">CHF {formatMoney(totalAmount)}</dd></div>
-            {depositDue !== undefined && <div className="flex flex-wrap justify-between gap-2"><dt className="text-[#50647c]">{detailText(language, 'deposit')}</dt><dd className="font-semibold text-[#032b59]">CHF {formatMoney(depositDue)}</dd></div>}
-          </dl>}
-          {verifiedPayment && <dl className="space-y-2 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm"><div className="flex flex-wrap justify-between gap-2"><dt>{detailText(language, 'paid')}</dt><dd className="font-semibold">CHF {formatMoney(evidence.paid)}</dd></div><div><dt className="text-[#50647c]">{dt.txReference}</dt><dd className="font-mono">{selectedRequest.payment?.transactionId}</dd></div></dl>}
-          {selectedRequest.notes && <section><h3 className="mb-2 text-lg font-semibold text-[#50647c]">{pt('notes')}</h3><p className="whitespace-pre-wrap text-base text-[#032b59]">{selectedRequest.notes}</p></section>}
-          {clientFiles.length > 0 && <section><h3 className="mb-2 text-lg font-semibold text-[#50647c]">{dt.clientUploadedMedia}</h3><ul className="space-y-2">{clientFiles.map((file, index) => <li key={index}><a href={file.url} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm font-medium text-[#1464ad] underline"><ExternalLink aria-hidden="true" className="h-4 w-4 shrink-0" />{file.name}</a></li>)}</ul></section>}
-        </div>
-        <footer className="kraken-dialog-footer flex flex-wrap gap-2 border-t border-[#dce5f0] p-4 sm:p-6">
-          <button type="button" onClick={() => handleGenerateInvoice(selectedRequest)} className="kraken-control min-h-11 min-w-11 min-h-11 rounded-xl bg-[#1464ad] px-4 py-2 text-base font-semibold text-white hover:bg-blue-800">{detailText(language, 'download')}</button>
-          <button type="button" onClick={() => setSelectedRequest(null)} className="kraken-control min-h-11 min-w-11 min-h-11 rounded-xl border border-[#dce5f0] px-4 py-2 text-base font-semibold text-[#50647c] hover:bg-[#f3f7fc]">{detailText(language, 'close')}</button>
-          {evidence.canDeleteDraft && <button type="button" onClick={() => handleDelete(selectedRequest.id)} className="kraken-control min-h-11 min-w-11 min-h-11 rounded-xl px-4 py-2 text-base font-semibold text-red-700 hover:bg-red-50">{detailText(language, 'deleteDraft')}</button>}
-        </footer>
-      </section>
-    </div>
-  );
+  
+  const roomsCount = details.rooms || 3;
+  const bathroomsCount = details.bathrooms || 1;
+  const carpetCount = details.carpets || 0;
+  const balconyCount = details.balconies || 0;
+  const customDuration = details.customDuration || selectedRequest.scheduling?.estimatedDurationHours || 4;
+  
+  // Dynamic financial calculations backported from the main total amount
+  const totalAmount = selectedRequest.amount || 600;
+  const travelFee = zoneInfo.travelBase || 45;
+  const remainingTotal = Math.max(0, totalAmount - travelFee);
+  const surchargePercent = zoneInfo.surchargePercent || 8;
+  
+  // math formula: totalAmount = (base * multiplier) + travelFee
+  const multiplier = zoneInfo.multiplier || 1.08;
+  const calculatedBase = Math.round((remainingTotal / multiplier) * 100) / 100;
+  const calculatedSurcharge = Math.round((remainingTotal - calculatedBase) * 100) / 100;
+  const depositDue = Math.round((totalAmount * 0.15) * 100) / 100;
 
   return (
-    <div ref={dialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label={pt('service')} className="kraken-portal kraken-overlay fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 md:p-8 z-[200] overflow-y-auto [overflow-wrap:anywhere]">
-        <motion.div
+    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 md:p-8 z-[200] overflow-y-auto">
+        <motion.div 
             initial={{ opacity: 0, scale: 0.97, y: 15 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: 15 }}
-            className="kraken-dialog max-h-[92dvh] bg-white border border-[#dce5f0] w-full max-w-6xl rounded-[2rem] md:rounded-3xl shadow-sm overflow-hidden flex flex-col text-[#032b59] font-sans"
+            className="bg-white border border-slate-200 w-full max-w-6xl rounded-[2rem] md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col text-slate-800 font-sans my-8"
         >
             {/* Sticky Nav top bar from Mockup */}
-            <div className="kraken-dialog-header px-5 py-4 sm:px-6 border-b border-[#dce5f0] bg-[#f3f7fc] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="px-6 py-4 sm:px-8 border-b border-slate-100 bg-slate-50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#edf4fd] border border-[#c9dbef] flex items-center justify-center text-[#1464ad] font-semibold text-lg">
+                    <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 font-black text-lg">
                         K
                     </div>
-                    <div className="flex items-center gap-2 text-sm sm:text-sm font-semibold text-[#50647c]">
-                        <span className="text-[#032b59] hover:text-[#1464ad] font-semibold ">Kraken PFM</span>
-                        <span className="text-[#50647c]">/</span>
-                        <span className="text-[#50647c] hover:text-[#032b59] font-semibold transition-all truncate max-w-[120px] sm:max-w-none">{dt.tabRequests}</span>
+                    <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-500">
+                        <span className="text-slate-800 hover:text-blue-600 font-bold tracking-tight">Kraken PFM</span>
+                        <span className="text-slate-300">/</span>
+                        <span className="text-slate-500 hover:text-slate-800 font-bold transition-all truncate max-w-[120px] sm:max-w-none">{dt.tabRequests}</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                    <button
-                        ref={closeRef}
+                    <button 
                         type="button"
                         onClick={() => setSelectedRequest(null)}
-                        className="kraken-control min-h-11 min-w-11 px-4 py-2 bg-[#f3f7fc] hover:bg-slate-200/85 text-[#50647c] rounded-lg text-base font-semibold flex items-center gap-1.5 transition-all border border-[#dce5f0]"
+                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200/85 active:scale-95 text-slate-600 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all border border-slate-200"
                     >
                         <ArrowLeft className="w-3.5 h-3.5" />
                         {dt.backToDashboard}
@@ -417,11 +526,11 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
             {/* Banner Toast Notification overlay */}
             <AnimatePresence>
                 {actionAlert && (
-                    <motion.div
+                    <motion.div 
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="bg-blue-50 border-b border-blue-100 px-6 py-3 text-blue-700 text-sm font-semibold flex items-center gap-2"
+                        className="bg-emerald-50 border-b border-emerald-100 px-6 py-3 text-emerald-700 text-xs font-semibold flex items-center gap-2"
                     >
                         <CheckCircle className="w-4 h-4 shrink-0" />
                         <span>{actionAlert}</span>
@@ -430,44 +539,46 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
             </AnimatePresence>
 
             {/* Detailed Header layout from Mockup */}
-            <div className="p-6 sm:p-8 border-b border-[#dce5f0] bg-[#f3f7fc] flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="p-6 sm:p-8 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="space-y-2">
                     <div className="flex items-center gap-2.5 flex-wrap">
-                        <span className="font-mono text-sm bg-[#f3f7fc] text-[#50647c] px-2 py-0.5 rounded font-semibold border border-[#dce5f0] ">
+                        <span className="font-mono text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-black tracking-wide border border-slate-200 uppercase">
                             #{selectedRequest.id.toUpperCase()}
                         </span>
-                        <span className="text-sm text-[#50647c] font-semibold">
-                            {dt.submitted} {selectedRequest.createdAt ? new Date(selectedRequest.createdAt?.toDate?.() || selectedRequest.createdAt).toLocaleDateString() : 'online'}
+                        <span className="text-xs text-slate-400 font-bold">
+                            {dt.submitted} {selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleDateString() : 'online'}
                         </span>
                     </div>
-                    <h2 className="text-2xl sm:text-3xl font-medium text-[#032b59]">
+                    <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-slate-900">
                         {selectedRequest.service.split(' ').map((word, wIdx, arr) => {
                             if (wIdx >= arr.length - 2) {
-                                return <span key={wIdx} className="text-[#1464ad] font-semibold">{word} </span>;
+                                return <span key={wIdx} className="text-blue-600 font-extrabold">{word} </span>;
                             }
                             return <span key={wIdx}>{word} </span>;
                         })}
-                    </h2>
+                    </h1>
                 </div>
 
                 <div className="flex items-center gap-2.5 flex-wrap">
                     {selectedRequest.priority === 'High' && (
-                        <span className="px-3 py-1 bg-rose-50 text-rose-700 border border-rose-200 text-sm font-semibold rounded-full shadow-sm ">
+                        <span className="px-3 py-1 bg-rose-50 text-rose-700 border border-rose-200 text-[9px] font-black uppercase tracking-widest rounded-full shadow-[0_4px_12px_rgba(239,68,68,0.06)] animate-pulse">
                             {dt.highPriorityBadge}
                         </span>
                     )}
-                    {surchargePercent !== undefined && <span className="px-3 py-1 bg-[#edf4fd] text-[#1464ad] border border-[#c9dbef] text-sm font-semibold rounded-full">{dt.regionSurcharge} +{surchargePercent}%</span>}
+                    <span className="px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 text-[9px] font-black uppercase tracking-widest rounded-full">
+                        {zoneInfo.label} {dt.surchargeApplied} ×{zoneInfo.multiplier}
+                    </span>
                 </div>
             </div>
 
             {/* Dual Columns Content Workspace */}
-            <div className="kraken-dialog-body min-h-0 flex-1 p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-y-auto scrollbar-thin bg-white">
+            <div className="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8 overflow-y-auto max-h-[65vh] scrollbar-thin bg-white">
                 {/* LEFT + CENTER COLUMN - 2/3 wide */}
                 <div className="lg:col-span-2 space-y-8">
-
+                    
                     {/* 1) Inline Pipeline progress steps from mockup */}
-                    <div className="bg-[#f3f7fc] rounded-2xl border border-[#dce5f0] overflow-hidden shadow-sm">
-                        <div className="flex flex-col sm:flex-row bg-[#f3f7fc]">
+                    <div className="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                        <div className="flex flex-col sm:flex-row bg-slate-100/50">
                             {([
                                 { label: dt.pendingUnscheduled, val: 'Pending', displayVal: dt.filterPending },
                                 { label: dt.inProgressAssigned, val: 'In Progress', displayVal: dt.filterInProgress },
@@ -477,31 +588,31 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                 const currentIdx = statuses.indexOf(selectedRequest.status);
                                 const isActive = selectedRequest.status === st.val;
                                 const isCompleted = statuses.indexOf(st.val) < currentIdx;
-
+                                
                                 return (
-                                    <div
-                                        key={st.val}
-                                        className={`flex-1 flex items-center justify-between px-5 py-4 border-r border-[#dce5f0] last:border-r-0 transition-all ${
-                                            isActive ? 'bg-[#edf4fd] border-b-2 border-b-blue-500' :
-                                            isCompleted ? 'bg-blue-50 text-blue-700' : 'text-[#50647c]'
+                                    <div 
+                                        key={st.val} 
+                                        className={`flex-1 flex items-center justify-between px-5 py-4 border-r border-slate-200/80 last:border-r-0 transition-all ${
+                                            isActive ? 'bg-blue-50 border-b-2 border-b-blue-500' : 
+                                            isCompleted ? 'bg-emerald-50 text-emerald-700' : 'text-slate-400'
                                         }`}
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className={`w-6 h-6 rounded-lg font-mono text-sm font-semibold flex items-center justify-center border ${
-                                                isActive ? 'bg-blue-100 text-[#1464ad] border-[#c9dbef]' :
-                                                isCompleted ? 'bg-blue-100 text-blue-700 border-blue-250' : 'bg-slate-200 border-[#dce5f0] text-[#50647c]'
+                                            <div className={`w-6 h-6 rounded-lg font-mono text-[10px] font-black flex items-center justify-center border ${
+                                                isActive ? 'bg-blue-100 text-blue-700 border-blue-250' :
+                                                isCompleted ? 'bg-emerald-100 text-emerald-700 border-emerald-250' : 'bg-slate-200 border-slate-300 text-slate-500'
                                             }`}>
                                                 {isCompleted ? '✓' : stepIdx + 1}
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className={`text-sm font-semibold leading-none ${
-                                                    isActive ? 'text-[#1464ad]' : isCompleted ? 'text-blue-700' : 'text-[#50647c]'
+                                                <span className={`text-[10px] uppercase tracking-widest font-black leading-none ${
+                                                    isActive ? 'text-blue-700' : isCompleted ? 'text-emerald-700' : 'text-slate-400'
                                                 }`}>{st.displayVal}</span>
-                                                <span className="text-sm text-[#50647c] mt-0.5">{st.label}</span>
+                                                <span className="text-[9px] text-slate-550 mt-0.5">{st.label}</span>
                                             </div>
                                         </div>
                                         {isActive && (
-                                            <span className="w-2 h-2 rounded-full bg-[#1464ad] shrink-0" />
+                                            <span className="w-2 h-2 rounded-full bg-blue-500 animate-ping shrink-0" />
                                         )}
                                     </div>
                                 );
@@ -510,11 +621,11 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
 
                         {/* Dynamic Admin status controls switcher (exclusive to staff/crew ops) */}
                         {isStaff && (
-                            <div className="p-4 bg-[#f3f7fc] border-t border-[#dce5f0] flex flex-col sm:flex-row items-center justify-between gap-3">
-                                <span className="text-sm font-semibold text-[#50647c] ">
+                            <div className="p-4 bg-slate-100 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+                                <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider">
                                     {dt.manualOverride}
                                 </span>
-                                <div className="grid grid-cols-1 sm:flex gap-2 w-full sm:w-auto">
+                                <div className="flex gap-2 w-full sm:w-auto">
                                     {([
                                       { key: 'Pending', label: dt.filterPending },
                                       { key: 'In Progress', label: dt.filterInProgress },
@@ -524,10 +635,10 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                             key={st.key}
                                             type="button"
                                             onClick={() => updateStatusDirect(selectedRequest.id, st.key as any)}
-                                            className={`kraken-control min-h-11 flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-base font-semibold whitespace-nowrap border transition-all ${
-                                                selectedRequest.status === st.key
-                                                    ? 'bg-[#1464ad] text-white border-[#1464ad] shadow-md'
-                                                    : 'bg-white text-[#50647c] hover:text-slate-850 border-[#dce5f0] hover:bg-[#f3f7fc]'
+                                            className={`flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider border transition-all ${
+                                                selectedRequest.status === st.key 
+                                                    ? 'bg-blue-600 text-white border-blue-500 shadow-md' 
+                                                    : 'bg-white text-slate-550 hover:text-slate-850 border-slate-200 hover:bg-slate-50'
                                             }`}
                                         >
                                             {st.label}
@@ -538,157 +649,249 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                         )}
                     </div>
 
+                    {/* 2) Zürich +22% / Other +8% zone multiplier alert bar */}
+                    <div className="bg-blue-50 px-6 py-4 rounded-xl border border-blue-150 flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-lg bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-600 shrink-0">
+                            <MapPin className="w-5 h-5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <span className="text-[10px] uppercase font-black tracking-widest text-blue-700 block mb-0.5">{dt.billingPostalZone} {zoneInfo.label}</span>
+                            <p className="text-xs text-slate-500 truncate font-medium">
+                                Postcode <strong className="text-slate-805">{postcode}</strong>: {dt.surchargeApplied} (+{surchargePercent}%).
+                            </p>
+                        </div>
+                        <div className="text-right shrink-0">
+                            <span className="text-sm font-black text-blue-600 font-mono">CHF {calculatedSurcharge.toFixed(2)}</span>
+                            <span className="text-[9px] block text-slate-400 font-bold uppercase">{dt.zoneExtra}</span>
+                        </div>
+                    </div>
+
                     {/* 3) Detailed Quote calculation inputs (Room metrics etc.) */}
-                    <div className="bg-[#f3f7fc] rounded-2xl p-6 border border-[#dce5f0] space-y-4">
-                        <h3 className="text-lg font-semibold text-[#50647c] flex items-center gap-2">
+                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-4">
+                        <h3 className="text-xs font-black uppercase text-slate-500 tracking-widest flex items-center gap-2">
                             {dt.quoteParameters}
                         </h3>
-
+                        
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div className="bg-white p-4 rounded-xl border border-[#dce5f0]">
-                                <span className="text-sm text-[#50647c] block font-semibold mb-1.5 flex items-center gap-1">
-                                    <Bed className="w-3 h-3 text-[#1464ad]" /> {dt.bedRooms}
+                            <div className="bg-white p-4 rounded-xl border border-slate-200">
+                                <span className="text-[9px] text-slate-500 uppercase tracking-widest block font-bold mb-1.5 flex items-center gap-1">
+                                    <Bed className="w-3 h-3 text-blue-600" /> {dt.bedRooms}
                                 </span>
-                                <span className="text-sm font-semibold text-[#032b59] font-mono">
+                                <span className="text-sm font-black text-slate-800 font-mono">
                                     {roomsCount}
                                 </span>
                             </div>
-                            <div className="bg-white p-4 rounded-xl border border-[#dce5f0]">
-                                <span className="text-sm text-[#50647c] block font-semibold mb-1.5 flex items-center gap-1">
-                                    <Droplets className="w-3 h-3 text-[#1464ad]" /> {dt.bathrooms}
+                            <div className="bg-white p-4 rounded-xl border border-slate-200">
+                                <span className="text-[9px] text-slate-500 uppercase tracking-widest block font-bold mb-1.5 flex items-center gap-1">
+                                    <Droplets className="w-3 h-3 text-blue-600" /> {dt.bathrooms}
                                 </span>
-                                <span className="text-sm font-semibold text-[#032b59] font-mono">
+                                <span className="text-sm font-black text-slate-800 font-mono">
                                     {bathroomsCount}
                                 </span>
                             </div>
-                            <div className="bg-white p-4 rounded-xl border border-[#dce5f0]">
-                                <span className="text-sm text-[#50647c] block font-semibold mb-1.5 flex items-center gap-1">
-                                    <Layers className="w-3 h-3 text-[#1464ad]" /> {dt.carpetArea}
+                            <div className="bg-white p-4 rounded-xl border border-slate-200">
+                                <span className="text-[9px] text-slate-500 uppercase tracking-widest block font-bold mb-1.5 flex items-center gap-1">
+                                    <Layers className="w-3 h-3 text-blue-600" /> {dt.carpetArea}
                                 </span>
-                                <span className="text-sm font-semibold text-[#032b59] font-mono">
+                                <span className="text-sm font-black text-slate-800 font-mono">
                                     {carpetCount > 0 ? `${carpetCount} m²` : '—'}
                                 </span>
                             </div>
-                            <div className="bg-white p-4 rounded-xl border border-[#dce5f0]">
-                                <span className="text-sm text-[#50647c] block font-semibold mb-1.5 flex items-center gap-1">
-                                    <Clock className="w-3.5 h-3.5 text-[#1464ad]" /> {dt.allocatedDuration}
+                            <div className="bg-white p-4 rounded-xl border border-slate-200">
+                                <span className="text-[9px] text-slate-500 uppercase tracking-widest block font-bold mb-1.5 flex items-center gap-1">
+                                    <Clock className="w-3.5 h-3.5 text-blue-600" /> {dt.allocatedDuration}
                                 </span>
-                                <span className="text-sm font-semibold text-[#1464ad] font-mono">
-                                    {customDuration} <span className="text-sm font-semibold">{dt.hours}</span>
+                                <span className="text-sm font-black text-blue-600 font-mono">
+                                    {customDuration} <span className="text-[10px] uppercase font-bold">{dt.hours}</span>
                                 </span>
                             </div>
                         </div>
 
                         {/* Checked Configuration items visually */}
                         <div className="pt-2">
-                            <span className="text-sm text-[#50647c] font-semibold block mb-2">{dt.requestedAddons}</span>
+                            <span className="text-[9px] uppercase tracking-widest text-slate-400 font-bold block mb-2">{dt.requestedAddons}</span>
                             <div className="flex flex-wrap gap-2">
-                                <span className={`px-3 py-1.5 rounded-lg text-sm font-semibold border transition-colors flex items-center gap-1.5 ${
-                                    balconyCount > 0
-                                        ? 'bg-[#edf4fd] border-[#c9dbef] text-[#1464ad] font-semibold'
-                                        : 'bg-[#f3f7fc] border-[#dce5f0] text-[#50647c]'
+                                <span className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-colors flex items-center gap-1.5 ${
+                                    balconyCount > 0 
+                                        ? 'bg-blue-50 border-blue-200 text-blue-700 font-extrabold' 
+                                        : 'bg-slate-100 border-slate-200/80 text-slate-400'
                                 }`}>
-                                    <CheckSquare className="w-3.5 h-3.5" />
+                                    <CheckSquare className="w-3.5 h-3.5" /> 
                                     {dt.balconiesCleaner} {balconyCount > 0 ? `(${balconyCount})` : ''}
                                 </span>
-                                <span className={`px-3 py-1.5 rounded-lg text-sm font-semibold border transition-colors flex items-center gap-1.5 ${
-                                    details.storageUnits
-                                        ? 'bg-[#edf4fd] border-[#c9dbef] text-[#1464ad] font-semibold'
-                                        : 'bg-[#f3f7fc] border-[#dce5f0] text-[#50647c]'
+                                <span className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-colors flex items-center gap-1.5 ${
+                                    details.storageUnits 
+                                        ? 'bg-blue-50 border-blue-200 text-blue-700 font-extrabold' 
+                                        : 'bg-slate-100 border-slate-200/80 text-slate-400'
                                 }`}>
-                                    <CheckSquare className="w-3.5 h-3.5" />
+                                    <CheckSquare className="w-3.5 h-3.5" /> 
                                     {dt.cellarGarages}
                                 </span>
-                                <span className={`px-3 py-1.5 rounded-lg text-sm font-semibold border transition-colors flex items-center gap-1.5 ${
-                                    details.furniture
-                                        ? 'bg-[#edf4fd] border-[#c9dbef] text-[#1464ad] font-semibold'
-                                        : 'bg-[#f3f7fc] border-[#dce5f0] text-[#50647c]'
+                                <span className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-colors flex items-center gap-1.5 ${
+                                    details.furniture 
+                                        ? 'bg-blue-50 border-blue-200 text-blue-700 font-extrabold' 
+                                        : 'bg-slate-100 border-slate-200/80 text-slate-400'
                                 }`}>
-                                    <CheckSquare className="w-3.5 h-3.5" />
+                                    <CheckSquare className="w-3.5 h-3.5" /> 
                                     {dt.furnishedCleaning}
                                 </span>
-                                <span className={`px-3 py-1.5 rounded-lg text-sm font-semibold border transition-colors flex items-center gap-1.5 ${
-                                    selectedRequest.bookingMode === 'instant'
-                                        ? 'bg-[#edf4fd] border-[#c9dbef] text-[#1464ad] font-semibold'
-                                        : 'bg-[#f3f7fc] border-[#dce5f0] text-[#50647c]'
+                                <span className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-colors flex items-center gap-1.5 ${
+                                    selectedRequest.bookingMode === 'instant' 
+                                        ? 'bg-blue-50 border-blue-200 text-blue-700 font-extrabold' 
+                                        : 'bg-slate-100 border-slate-200/80 text-slate-400'
                                 }`}>
-                                    <CheckSquare className="w-3.5 h-3.5" />
+                                    <CheckSquare className="w-3.5 h-3.5" /> 
                                     {dt.instantBookingPriority}
                                 </span>
                             </div>
                         </div>
                     </div>
 
-                    {totalAmount !== undefined && <section className="space-y-3 rounded-2xl border border-[#dce5f0] bg-[#f3f7fc] p-6 text-sm">
-                        <h3 className="font-semibold text-[#50647c]">{dt.pricingMatrix}</h3>
-                        <dl className="space-y-3">
-                            {calculatedBase !== undefined && <div className="flex flex-wrap justify-between gap-2"><dt>{dt.baseQuote}</dt><dd>CHF {formatMoney(calculatedBase)}</dd></div>}
-                            {calculatedSurcharge !== undefined && <div className="flex flex-wrap justify-between gap-2"><dt>{dt.regionSurcharge}{surchargePercent !== undefined ? ` (+${surchargePercent}%)` : ''}</dt><dd>CHF {formatMoney(calculatedSurcharge)}</dd></div>}
-                            {travelFee !== undefined && <div className="flex flex-wrap justify-between gap-2"><dt>{dt.localTravelFee}</dt><dd>CHF {formatMoney(travelFee)}</dd></div>}
-                            <div className="flex flex-wrap justify-between gap-2 font-semibold"><dt>{pt(financial.confirmed ? 'quotedAmount' : 'amount')}</dt><dd>CHF {formatMoney(totalAmount)}</dd></div>
-                            {depositDue !== undefined && <div className="flex flex-wrap justify-between gap-2"><dt>{detailText(language, 'deposit')}</dt><dd>CHF {formatMoney(depositDue)}</dd></div>}
-                        </dl>
-                    </section>}
-                    {verifiedPayment && <section className="space-y-3 rounded-2xl border border-blue-200 bg-blue-50 p-6 text-sm">
-                        <h3 className="font-semibold text-blue-800">{detailText(language, 'paid')}</h3>
-                        <dl className="space-y-3"><div className="flex flex-wrap justify-between gap-2"><dt>{pt('amount')}</dt><dd className="font-semibold">CHF {formatMoney(evidence.paid)}</dd></div><div><dt>{dt.txReference}</dt><dd className="font-mono">{selectedRequest.payment?.transactionId}</dd></div>{selectedRequest.payment?.gateway && <div><dt>{dt.securePaymentAudit}</dt><dd>{selectedRequest.payment.gateway}</dd></div>}</dl>
-                    </section>}
+                    {/* 4) Financial price breakdown ledger */}
+                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-4">
+                        <h3 className="text-xs font-black uppercase text-slate-500 tracking-widest flex items-center gap-2">
+                            {dt.pricingMatrix}
+                        </h3>
+                        
+                        <div className="space-y-3 font-medium text-xs">
+                            <div className="flex justify-between items-center py-2 border-b border-slate-200/60">
+                                <span className="text-slate-500">{dt.baseQuote}</span>
+                                <span className="font-mono text-slate-705 text-slate-800">CHF {calculatedBase.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between items-center py-2 border-b border-slate-200/60">
+                                <span className="text-slate-500">{dt.regionSurcharge} (+{surchargePercent}%)</span>
+                                <span className="font-mono text-slate-705 text-slate-800">+ CHF {calculatedSurcharge.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between items-center py-2 border-b border-slate-200/60">
+                                <span className="text-slate-500">{dt.localTravelFee}</span>
+                                <span className="font-mono text-slate-705 text-slate-800">+ CHF {travelFee.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between items-center py-3 text-sm bg-blue-50 px-4 rounded-xl border border-blue-150">
+                                <span className="text-slate-700 font-bold">{dt.totalEstimated}</span>
+                                <span className="font-mono font-black text-blue-600">CHF {totalAmount.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between items-center py-2 border-t border-slate-200 border-dashed text-[10px] text-emerald-600 font-bold px-4">
+                                <span>{dt.depositPayment}</span>
+                                <span className="font-mono">CHF {depositDue.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 5) Visual VISA card & stripe reference integration */}
+                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-4">
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-xs font-black uppercase text-slate-500 tracking-widest">
+                                {dt.securePaymentAudit}
+                            </h3>
+                            <span className="text-[10px] font-black uppercase bg-emerald-50 text-emerald-700 border border-emerald-250 border-emerald-200 px-3 py-1 rounded-full">
+                                {selectedRequest.payment?.status || 'Authorized'}
+                            </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                            {/* Micro Visa Card Rendering */}
+                            <div className="bg-gradient-to-br from-[#1d273a] to-[#0d121c] p-5 rounded-2xl border border-white/10 relative overflow-hidden shadow-2xl h-36 flex flex-col justify-between">
+                                <div className="flex justify-between items-start">
+                                    <div className="flex flex-col">
+                                        <span className="text-[8px] font-black tracking-widest text-[#60a5fa] uppercase">Payrexx Platform</span>
+                                        <span className="text-xs font-bold font-mono tracking-widest text-slate-300 mt-1">
+                                            •••• •••• •••• {selectedRequest.payment?.last4 || '4242'}
+                                        </span>
+                                    </div>
+                                    <span className="text-slate-100 font-bold text-sm italic font-mono uppercase">
+                                        {selectedRequest.payment?.method || 'VISA'}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-end">
+                                    <div className="flex flex-col">
+                                        <span className="text-[7px] text-slate-550 uppercase tracking-widest font-black">{dt.authorizedCardholder}</span>
+                                        <span className="text-[11px] font-black tracking-tight text-white uppercase truncate max-w-[130px]">
+                                            {selectedRequest.payment?.cardholderName || selectedRequest.client}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-col text-right">
+                                        <span className="text-[7px] text-slate-550 uppercase tracking-widest font-black">{dt.holdDeposit}</span>
+                                        <span className="text-xs font-mono font-black text-emerald-400">CHF {depositDue.toFixed(2)}</span>
+                                    </div>
+                                </div>
+                                <span className="absolute -bottom-8 -right-8 w-16 h-16 bg-blue-500/10 rounded-full blur-xl" />
+                            </div>
+
+                            {/* Payment details list */}
+                            <div className="space-y-3 text-xs font-semibold">
+                                <div>
+                                    <span className="text-[9px] text-slate-400 uppercase tracking-wider block">{dt.txReference}</span>
+                                    <span className="font-mono text-blue-600 word-break text-[10px] break-all block mt-0.5">
+                                        {selectedRequest.payment?.transactionId || `tx_payrexx_7w9q8f${selectedRequest.id.substring(0, 6)}`}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span className="text-[9px] text-slate-400 uppercase tracking-wider block">{dt.gatewayProvider}</span>
+                                    <span className="text-slate-600 block mt-0.5 uppercase font-bold">
+                                        {selectedRequest.payment?.gateway || 'Payrexx AG'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     {/* 6) Contact access credentials card */}
-                    <div className="bg-[#f3f7fc] rounded-2xl p-6 border border-[#dce5f0] space-y-4">
-                        <h3 className="text-lg font-semibold text-[#50647c] ">
+                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-4">
+                        <h3 className="text-xs font-black uppercase text-slate-500 tracking-widest">
                             {dt.operationalContact}
                         </h3>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm font-semibold">
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs font-semibold">
                             <div className="space-y-3.5">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-[#edf4fd] border border-[#c9dbef] flex items-center justify-center text-[#1464ad]">
+                                    <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
                                         <User className="w-4 h-4" />
                                     </div>
                                     <div>
-                                        <span className="text-sm text-[#50647c] block ">{dt.authorizedContact}</span>
-                                        <span className="text-[#032b59] font-semibold block">{selectedRequest.client}</span>
+                                        <span className="text-[9px] text-slate-400 block uppercase">{dt.authorizedContact}</span>
+                                        <span className="text-slate-800 font-bold block">{selectedRequest.client}</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-[#edf4fd] border border-[#c9dbef] flex items-center justify-center text-[#1464ad]">
+                                    <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
                                         <Mail className="w-4 h-4" />
                                     </div>
                                     <div>
-                                        <span className="text-sm text-[#50647c] block ">{dt.officialEmail}</span>
-                                        <span className="text-[#50647c] block normal-case font-semibold">{selectedRequest.email || '—'}</span>
+                                        <span className="text-[9px] text-slate-400 block uppercase">{dt.officialEmail}</span>
+                                        <span className="text-slate-700 block normal-case font-bold">{selectedRequest.email || '—'}</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-[#edf4fd] border border-[#c9dbef] flex items-center justify-center text-[#1464ad]">
+                                    <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
                                         <Phone className="w-4 h-4" />
                                     </div>
                                     <div>
-                                        <span className="text-sm text-[#50647c] block ">{dt.phoneDirect}</span>
-                                        <span className="text-[#032b59] font-mono block font-semibold">{selectedRequest.phone || '—'}</span>
+                                        <span className="text-[9px] text-slate-400 block uppercase">{dt.phoneDirect}</span>
+                                        <span className="text-slate-800 font-mono block font-bold">{selectedRequest.phone || '—'}</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="space-y-3.5">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-[#edf4fd] border border-[#c9dbef] flex items-center justify-center text-[#1464ad]">
+                                    <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
                                         <MapPin className="w-4 h-4" />
                                     </div>
                                     <div className="min-w-0">
-                                        <span className="text-sm text-[#50647c] block ">{dt.serviceLocation}</span>
-                                        <span className="text-[#032b59] font-semibold block truncate text-[#032b59]" title={selectedRequest.address}>{selectedRequest.address || '—'}</span>
+                                        <span className="text-[9px] text-slate-400 block uppercase">{dt.serviceLocation}</span>
+                                        <span className="text-slate-800 font-bold block truncate text-slate-800" title={selectedRequest.address}>{selectedRequest.address || 'Zürich Area, Switzerland'}</span>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-[#edf4fd] border border-[#c9dbef] flex items-center justify-center text-[#1464ad]">
+                                    <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600">
                                         <Key className="w-4 h-4" />
                                     </div>
                                     <div>
-                                        <span className="text-sm text-[#50647c] block ">{dt.buildingAccess}</span>
-                                        <span className="text-[#032b59] font-semibold block text-[#032b59]">
-                                            {detailAccessText(selectedRequest.accessMethod, language)}
+                                        <span className="text-[9px] text-slate-400 block uppercase">{dt.buildingAccess}</span>
+                                        <span className="text-slate-800 font-bold block uppercase text-slate-800">
+                                            {selectedRequest.accessMethod === 'keys' ? '🔑 Keybox / code collection' :
+                                             selectedRequest.accessMethod === 'onSite' ? '🤝 Person on-site meet' :
+                                             '🔑 Left at mailbox / Code registered'}
                                         </span>
                                     </div>
                                 </div>
@@ -697,51 +900,51 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                     </div>
 
                     {/* 7) Scheduling timestamps audit tracker */}
-                    <div className="bg-[#f3f7fc] rounded-2xl p-6 border border-[#dce5f0] space-y-4">
-                        <h3 className="text-lg font-semibold text-[#50647c] flex items-center gap-2">
+                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-4">
+                        <h3 className="text-xs font-black uppercase text-slate-500 tracking-widest flex items-center gap-2">
                             {dt.serviceTimeline}
                         </h3>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm font-semibold">
-                            <div className="bg-white p-4 rounded-xl border border-[#dce5f0]">
-                                <span className="text-sm text-[#50647c] block font-semibold mb-1">{dt.serviceDate}</span>
-                                <span className="text-[#032b59] font-semibold">{selectedRequest.scheduling?.requestedDate || selectedRequest.date}</span>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs font-semibold">
+                            <div className="bg-white p-4 rounded-xl border border-slate-200">
+                                <span className="text-[9px] text-slate-450 uppercase tracking-widest block font-black mb-1">{dt.serviceDate}</span>
+                                <span className="text-slate-800 font-bold">{selectedRequest.scheduling?.requestedDate || selectedRequest.date}</span>
                             </div>
-                            <div className="bg-white p-4 rounded-xl border border-[#dce5f0]">
-                                <span className="text-sm text-[#50647c] block font-semibold mb-1">{dt.preferredSlot}</span>
-                                <span className="text-[#032b59] font-semibold ">{selectedRequest.scheduling?.preferredTimeWindow || '—'}</span>
+                            <div className="bg-white p-4 rounded-xl border border-slate-200">
+                                <span className="text-[9px] text-slate-450 uppercase tracking-widest block font-black mb-1">{dt.preferredSlot}</span>
+                                <span className="text-slate-800 font-bold uppercase">{selectedRequest.scheduling?.preferredTimeWindow || '08:00 - 12:00'}</span>
                             </div>
-                            <div className="bg-[#edf4fd] p-4 rounded-xl border border-[#c9dbef]">
-                                <span className="text-sm text-[#1464ad] block font-semibold mb-1">{dt.allocatedDuration}</span>
-                                <span className="text-[#032b59] font-mono font-semibold block">{customDuration} {dt.hours}</span>
+                            <div className="bg-blue-50 p-4 rounded-xl border border-blue-150">
+                                <span className="text-[9px] text-blue-700 uppercase tracking-widest block font-black mb-1">{dt.allocatedDuration}</span>
+                                <span className="text-slate-800 font-mono font-bold block">{customDuration} {dt.hours}</span>
                             </div>
-                            <div className="bg-white p-4 rounded-xl border border-[#dce5f0]">
-                                <span className="text-sm text-[#50647c] block font-semibold mb-1">{dt.estCompletion}</span>
-                                <span className="text-[#1464ad] font-mono font-semibold block">{selectedRequest.scheduling?.estimatedEndTime || '—'}</span>
+                            <div className="bg-white p-4 rounded-xl border border-slate-200">
+                                <span className="text-[9px] text-slate-450 uppercase tracking-widest block font-black mb-1">{dt.estCompletion}</span>
+                                <span className="text-blue-600 font-mono font-bold block">{selectedRequest.scheduling?.estimatedEndTime || 'Flexible'}</span>
                             </div>
                         </div>
 
-                        <div className="pt-2 border-t border-[#dce5f0]">
-                            <span className="text-sm text-[#1464ad] font-semibold block ml-1 mb-3">
+                        <div className="pt-2 border-t border-slate-200/80">
+                            <span className="text-[9px] uppercase tracking-widest text-blue-700 font-black block ml-1 mb-3">
                                 {dt.auditChronology}
                             </span>
                             <div className="space-y-2.5">
-                                <div className="flex justify-between items-center px-4 py-3 bg-white rounded-xl border border-[#dce5f0] text-sm font-semibold text-[#50647c]">
-                                    <span>{dt.submitted}</span>
-                                    <span className="font-mono text-[#50647c]">
-                                        {formatRecordedDate(selectedRequest.createdAt)}
+                                <div className="flex justify-between items-center px-4 py-3 bg-white rounded-xl border border-slate-200 text-[11px] font-semibold text-slate-500">
+                                    <span>1) Booking submission transmitted</span>
+                                    <span className="font-mono text-slate-700">
+                                        {selectedRequest.timestamps?.formSubmittedAt ? new Date(selectedRequest.timestamps.formSubmittedAt).toLocaleString() : new Date().toLocaleString()}
                                     </span>
                                 </div>
-                                <div className="flex justify-between items-center px-4 py-3 bg-white rounded-xl border border-[#dce5f0] text-sm font-semibold text-[#50647c]">
-                                    <span>{pt('amount')}</span>
-                                    <span className="font-mono text-[#1464ad] font-semibold">
-                                        {formatRecordedDate(selectedRequest.serverQuote?.createdAt)}
+                                <div className="flex justify-between items-center px-4 py-3 bg-white rounded-xl border border-slate-200 text-[11px] font-semibold text-slate-500">
+                                    <span>2) Automated price matrix verification</span>
+                                    <span className="font-mono text-blue-600 font-bold">
+                                        {selectedRequest.timestamps?.priceCalculatedAt ? new Date(selectedRequest.timestamps.priceCalculatedAt).toLocaleString() : new Date().toLocaleString()}
                                     </span>
                                 </div>
-                                <div className="flex justify-between items-center px-4 py-3 bg-white rounded-xl border border-[#dce5f0] text-sm font-semibold text-[#50647c]">
-                                    <span>{dt.securePaymentAudit}</span>
-                                    <span className="font-mono text-blue-600 font-semibold">
-                                        {verifiedPayment ? formatRecordedDate(selectedRequest.payment?.verifiedAt) : '—'}
+                                <div className="flex justify-between items-center px-4 py-3 bg-white rounded-xl border border-slate-200 text-[11px] font-semibold text-slate-500">
+                                    <span>3) Payrexx AG pre-auth capture check</span>
+                                    <span className="font-mono text-emerald-600 font-bold">
+                                        {selectedRequest.timestamps?.depositCapturedAt ? new Date(selectedRequest.timestamps.depositCapturedAt).toLocaleString() : 'Authorized'}
                                     </span>
                                 </div>
                             </div>
@@ -749,57 +952,57 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                     </div>
 
                     {/* 8) Media attachments grid dynamically filled */}
-                    <div className="bg-[#f3f7fc] rounded-2xl p-6 border border-[#dce5f0] space-y-4">
-                        <h3 className="text-lg font-semibold text-[#50647c] text-[#50647c] ">
+                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-4">
+                        <h3 className="text-xs font-black uppercase text-slate-550 text-slate-500 tracking-widest">
                             {dt.clientUploadedMedia} ({selectedRequest.mediaUrls ? selectedRequest.mediaUrls.length : 0})
                         </h3>
-
+                        
                         {selectedRequest.mediaUrls && selectedRequest.mediaUrls.length > 0 ? (
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {selectedRequest.mediaUrls.map((url, i) => {
                                     const name = selectedRequest.mediaNames?.[i] || `attachment_${i + 1}`;
                                     const isImg = url.toLowerCase().includes('.jpg') || url.toLowerCase().includes('.png') || url.toLowerCase().includes('.jpeg') || url.toLowerCase().includes('unsplash') || url.includes('image');
-
+                                    
                                     return (
-                                        <div key={i} className="bg-white rounded-xl border border-[#dce5f0] overflow-hidden group flex flex-col justify-between">
+                                        <div key={i} className="bg-white rounded-xl border border-slate-200 overflow-hidden group flex flex-col justify-between">
                                             {isImg ? (
-                                                <div className="h-32 w-full overflow-hidden relative bg-[#f3f7fc] flex items-center justify-center">
-                                                    <img
-                                                        src={url}
-                                                        alt={name}
+                                                <div className="h-32 w-full overflow-hidden relative bg-slate-100 flex items-center justify-center">
+                                                    <img 
+                                                        src={url} 
+                                                        alt={name} 
                                                         referrerPolicy="no-referrer"
-                                                        className="w-full h-full object-cover transition-transform"
+                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform" 
                                                         onError={(e) => {
                                                             (e.target as HTMLElement).style.display = 'none';
                                                         }}
                                                     />
                                                 </div>
                                              ) : (
-                                                <div className="h-32 w-full bg-[#f3f7fc] flex flex-col items-center justify-center text-[#50647c] gap-2">
-                                                    <FileText className="w-8 h-8 text-[#1464ad]" />
-                                                    <span className="text-sm font-mono">{dt.attachment} #{i+1}</span>
+                                                <div className="h-32 w-full bg-slate-100 flex flex-col items-center justify-center text-slate-400 gap-2">
+                                                    <FileText className="w-8 h-8 text-blue-600" />
+                                                    <span className="text-[10px] font-mono">{dt.attachment} #{i+1}</span>
                                                 </div>
                                             )}
-                                            <div className="p-3 bg-[#f3f7fc] border-t border-[#dce5f0] flex items-center justify-between gap-2">
-                                                <span className="text-sm font-semibold text-[#50647c] truncate" title={name}>{name}</span>
+                                            <div className="p-3 bg-slate-50/85 border-t border-slate-100 flex items-center justify-between gap-2">
+                                                <span className="text-[10px] font-bold text-slate-500 truncate" title={name}>{name}</span>
                                                 <div className="flex items-center gap-1 shrink-0">
-                                                    <button
+                                                    <button 
                                                         type="button"
                                                         onClick={() => setPreviewFile({
                                                             url,
                                                             name,
                                                             title: `${dt.attachment} • ${selectedRequest.client}`
                                                         })}
-                                                        className="kraken-control min-h-11 min-w-11 px-2.5 py-1.5 bg-[#1464ad] hover:bg-[#1464ad] text-white rounded-lg text-base font-semibold flex items-center gap-1 cursor-pointer"
+                                                        className="px-2.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1 cursor-pointer"
                                                         title={dt.view}
                                                     >
                                                         {dt.view}
                                                         <Eye className="w-3 h-3" />
                                                     </button>
-                                                    <button
+                                                    <button 
                                                         type="button"
                                                         onClick={() => downloadFileSafely(url, name)}
-                                                        className="kraken-control min-h-11 min-w-11 px-2.5 py-1.5 bg-[#1464ad] hover:bg-[#0c4f92] text-white rounded-lg text-base font-semibold flex items-center gap-1 cursor-pointer"
+                                                        className="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-1 cursor-pointer"
                                                         title={dt.download}
                                                     >
                                                         {dt.download}
@@ -812,7 +1015,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                 })}
                             </div>
                         ) : (
-                            <div className="bg-[#f3f7fc] border border-[#dce5f0] rounded-xl p-8 text-center text-sm text-[#50647c] font-semibold">
+                            <div className="bg-slate-100 border border-slate-200 rounded-xl p-8 text-center text-xs text-slate-400 font-semibold">
                                 {dt.noMediaAttached}
                             </div>
                         )}
@@ -822,94 +1025,120 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
 
                 {/* RIGHT SIDEBAR COLUMN - 1/3 wide */}
                 <div className="space-y-6">
+                    
+                    {/* Summary Estimate Badge Widget from Mockup */}
+                    <div className="bg-gradient-to-br from-blue-700 to-indigo-900 rounded-2xl p-6 border border-indigo-700/35 shadow-lg relative overflow-hidden text-white">
+                        <span className="text-[10px] font-black uppercase text-indigo-200 tracking-widest block mb-1">{dt.dynamicTotalEstimate}</span>
+                        <div className="text-3xl font-black text-white font-mono mt-2 mb-4">
+                            CHF {totalAmount.toFixed(2)}
+                        </div>
+                        <div className="border-t border-indigo-500/30 pt-4 space-y-2.5 text-xs font-semibold">
+                            <div className="flex justify-between text-indigo-200">
+                                <span>{dt.baseQuote}</span>
+                                <span className="font-mono text-white">CHF {calculatedBase.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between text-indigo-200">
+                                <span>{zoneInfo.label} (+{surchargePercent}%)</span>
+                                <span className="font-mono text-white">CHF {calculatedSurcharge.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between text-indigo-200">
+                                <span>{dt.localTravelFee}</span>
+                                <span className="font-mono text-cyan-200">CHF {travelFee.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between border-t border-indigo-500/30 pt-3 text-[#a5f3fc] font-bold text-[11px]">
+                                <span>{dt.depositPayment}</span>
+                                <span className="font-mono">CHF {depositDue.toFixed(2)}</span>
+                            </div>
+                        </div>
+                        <span className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl" />
+                    </div>
 
                     {/* Operational Action Panel from Mockup */}
-                    <div className="bg-[#f3f7fc] rounded-2xl p-6 border border-[#dce5f0] space-y-5">
-                        <h3 className="text-lg font-semibold text-[#50647c] ">
+                    <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 space-y-5">
+                        <h3 className="text-xs font-black uppercase text-slate-500 tracking-widest">
                             {dt.interactiveCrewCommands}
                         </h3>
-
+                        
                         <div className="space-y-3 flex flex-col">
-                            <button
+                            <button 
                                 type="button"
-                                hidden={!isStaff} onClick={() => handleSendEmail(selectedRequest)}
-                                className="kraken-control min-h-11 w-full px-4 py-2.5 bg-white hover:bg-[#edf4fd] text-[#50647c] hover:text-[#1464ad] border border-[#dce5f0] hover:border-[#1464ad] rounded-xl text-base font-semibold flex items-center justify-between transition-all"
+                                onClick={() => handleSendEmail(selectedRequest)}
+                                className="w-full px-4 py-2.5 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 hover:border-blue-300 rounded-xl text-xs font-black uppercase tracking-widest flex items-center justify-between transition-all"
                             >
                                 {dt.sendCostConfirmation}
-                                <Send className="w-4 h-4 shrink-0 text-[#50647c] group-hover:text-[#1464ad]" />
+                                <Send className="w-4 h-4 shrink-0 text-slate-400 group-hover:text-blue-600" />
                             </button>
 
-                            <button
+                            <button 
                                 type="button"
-                                hidden={!isStaff} onClick={() => handleScheduleService(selectedRequest)}
-                                className="kraken-control min-h-11 w-full px-4 py-2.5 bg-white hover:bg-[#edf4fd] text-[#50647c] hover:text-[#1464ad] border border-[#dce5f0] hover:border-[#1464ad] rounded-xl text-base font-semibold flex items-center justify-between transition-all"
+                                onClick={() => handleScheduleService(selectedRequest)}
+                                className="w-full px-4 py-2.5 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 hover:border-blue-300 rounded-xl text-xs font-black uppercase tracking-widest flex items-center justify-between transition-all"
                             >
-                                {pt('calendarDraft').split('.')[0]}
-                                <Calendar className="w-4 h-4 shrink-0 text-[#50647c]" />
+                                {dt.scheduleOutlookBtn}
+                                <Calendar className="w-4 h-4 shrink-0 text-slate-400" />
                             </button>
 
-                            <button
+                            <button 
                                 type="button"
                                 onClick={() => handleGenerateInvoice(selectedRequest)}
-                                className="kraken-control min-h-11 w-full px-4 py-2.5 bg-white hover:bg-[#edf4fd] text-[#50647c] hover:text-[#1464ad] border border-[#dce5f0] hover:border-[#1464ad] rounded-xl text-base font-semibold flex items-center justify-between transition-all"
+                                className="w-full px-4 py-2.5 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 hover:border-blue-300 rounded-xl text-xs font-black uppercase tracking-widest flex items-center justify-between transition-all"
                             >
-                                {pt('draftInvoice')}
-                                <FileText className="w-4 h-4 shrink-0 text-[#50647c]" />
+                                {dt.generateInvoiceBtn}
+                                <FileText className="w-4 h-4 shrink-0 text-slate-400" />
                             </button>
                         </div>
                     </div>
 
-                    {/* Admin notes are visible to staff only. */}
-                    {isStaff && <div className="bg-[#f3f7fc] rounded-2xl p-5 sm:p-6 border border-[#dce5f0] space-y-4">
+                    {/* Admin notes memo text area */}
+                    <div className="bg-slate-50 rounded-2xl p-5 sm:p-6 border border-slate-200 space-y-4">
                         <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-semibold text-[#50647c] flex items-center gap-2">
-                                <MessageSquare className="w-4 h-4 text-[#1464ad]" />
+                            <h3 className="text-xs font-black uppercase text-slate-700 tracking-widest flex items-center gap-2">
+                                <MessageSquare className="w-4 h-4 text-blue-600" />
                                 {dt.internalNotesHeading}
                             </h3>
-                            <span className="text-sm font-semibold px-2.5 py-0.5 rounded-full bg-blue-100 text-[#1464ad]">
+                            <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700">
                                 {teamNotes.length} {teamNotes.length === 1 ? 'nota' : 'notas'}
                             </span>
                         </div>
 
                         {/* Form to add a new note */}
-                        <form onSubmit={handleAddNote} className="kraken-form bg-white rounded-xl p-3.5 border border-[#dce5f0] shadow-sm space-y-3">
+                        <form onSubmit={handleAddNote} className="bg-white rounded-xl p-3.5 border border-slate-200/90 shadow-sm space-y-3">
                             <div className="space-y-2">
                                 <div>
-                                    <label htmlFor="detailinspectormodal-field-1" className="kraken-label text-sm font-semibold text-[#50647c] block mb-1">
+                                    <label className="text-[9px] font-black uppercase text-slate-500 tracking-wider block mb-1">
                                         Nombre del Autor *
                                     </label>
                                     <div className="relative">
-                                        <User className="w-3.5 h-3.5 text-[#50647c] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                                        <input id="detailinspectormodal-field-1"
-                                            type="text"
+                                        <User className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                        <input 
+                                            type="text" 
                                             value={noteAuthor}
-                                            readOnly
                                             onChange={(e) => setNoteAuthor(e.target.value)}
                                             placeholder="Ej. Marco / Kai / Staff"
-                                            className="kraken-field w-full pl-8 pr-3 py-1.5 bg-[#f3f7fc] rounded-lg text-base text-[#032b59] font-semibold border border-[#dce5f0] focus:border-[#1464ad] focus:bg-white outline-none placeholder-slate-400"
+                                            className="w-full pl-8 pr-3 py-1.5 bg-slate-50 rounded-lg text-xs text-slate-800 font-bold border border-slate-200 focus:border-blue-500 focus:bg-white outline-none placeholder-slate-400"
                                             required
                                         />
                                     </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="detailinspectormodal-field-2" className="kraken-label text-sm font-semibold text-[#50647c] block mb-1">
+                                    <label className="text-[9px] font-black uppercase text-slate-500 tracking-wider block mb-1">
                                         Escribir Nota *
                                     </label>
-                                    <textarea id="detailinspectormodal-field-2"
+                                    <textarea 
                                         rows={2}
                                         value={newNoteText}
                                         onChange={(e) => setNewNoteText(e.target.value)}
                                         placeholder="Escribe la nota o instrucción..."
-                                        className="kraken-field w-full p-2.5 bg-[#f3f7fc] rounded-lg text-base text-[#032b59] font-medium border border-[#dce5f0] focus:border-[#1464ad] focus:bg-white outline-none placeholder-slate-400 leading-relaxed resize-y"
+                                        className="w-full p-2.5 bg-slate-50 rounded-lg text-xs text-slate-800 font-medium border border-slate-200 focus:border-blue-500 focus:bg-white outline-none placeholder-slate-400 leading-relaxed resize-y"
                                         required
                                     />
                                 </div>
                             </div>
 
-                            <button
+                            <button 
                                 type="submit"
-                                disabled={isSavingNotes || notesLoading || notesError || !newNoteText.trim() || !noteAuthor.trim()}
-                                className="kraken-control min-h-11 w-full py-2 bg-[#032b59] text-white rounded-xl text-base font-semibold transition-all shadow-md flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                                disabled={isSavingNotes || !newNoteText.trim() || !noteAuthor.trim()}
+                                className="w-full py-2 bg-gradient-to-r from-blue-700 to-indigo-800 hover:from-blue-600 hover:to-indigo-700 active:scale-[0.99] text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-md flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                             >
                                 {isSavingNotes ? (
                                     <>
@@ -925,18 +1154,16 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                             </button>
                         </form>
 
-                        {notesLoading && <p role="status" className="text-base">{pt('loading')}</p>}
-                        {notesError && <div role="alert" className="text-sm text-red-700"><p>{pt('loadError')}</p><button type="button" onClick={loadNotes} className="kraken-control min-h-11 min-w-11 underline">{pt('retry')}</button></div>}
                         {/* List of saved notes */}
                         <div className="space-y-2.5 pt-1">
-                            <span className="text-sm font-semibold text-[#50647c] block">
+                            <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider block">
                                 Historial de Notas
                             </span>
 
                             {teamNotes.length === 0 ? (
-                                <div className="bg-white/80 rounded-xl p-4 text-center border border-dashed border-[#dce5f0]">
-                                    <FileText className="w-5 h-5 text-[#50647c] mx-auto mb-1.5" />
-                                    <p className="text-base text-[#50647c] font-medium">
+                                <div className="bg-white/80 rounded-xl p-4 text-center border border-dashed border-slate-200">
+                                    <FileText className="w-5 h-5 text-slate-300 mx-auto mb-1.5" />
+                                    <p className="text-[11px] text-slate-400 font-medium">
                                         No hay notas guardadas aún.
                                     </p>
                                 </div>
@@ -946,41 +1173,41 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                         const isEditing = editingNoteId === note.id;
 
                                         return (
-                                            <div
-                                                key={note.id}
-                                                className="bg-white rounded-xl p-3 border border-[#dce5f0] shadow-sm space-y-2 hover:border-[#c9dbef] transition-all text-sm"
+                                            <div 
+                                                key={note.id} 
+                                                className="bg-white rounded-xl p-3 border border-slate-200 shadow-sm space-y-2 hover:border-blue-200 transition-all text-xs"
                                             >
                                                 {/* Header */}
-                                                <div className="flex items-center justify-between gap-1 pb-1.5 border-b border-[#dce5f0]">
+                                                <div className="flex items-center justify-between gap-1 pb-1.5 border-b border-slate-100">
                                                     <div className="flex items-center gap-1.5 flex-wrap min-w-0">
-                                                        <span className="inline-flex items-center gap-1 bg-[#edf4fd] text-[#1464ad] font-semibold text-sm px-2 py-0.5 rounded border border-[#c9dbef] truncate max-w-[110px]">
-                                                            <User className="w-3 h-3 text-[#1464ad] shrink-0" />
+                                                        <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 font-bold text-[10px] px-2 py-0.5 rounded border border-blue-100 truncate max-w-[110px]">
+                                                            <User className="w-3 h-3 text-blue-600 shrink-0" />
                                                             {note.author}
                                                         </span>
-                                                        <span className="inline-flex items-center gap-1 text-sm font-semibold text-[#50647c] bg-[#f3f7fc] px-1.5 py-0.5 rounded border border-[#dce5f0]">
-                                                            <Clock className="w-2.5 h-2.5 text-[#50647c]" />
+                                                        <span className="inline-flex items-center gap-1 text-[9px] font-semibold text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">
+                                                            <Clock className="w-2.5 h-2.5 text-slate-400" />
                                                             {note.createdAt}
                                                         </span>
                                                     </div>
 
                                                     {!isEditing && (
                                                         <div className="flex items-center gap-0.5 shrink-0">
-                                                            <button
+                                                            <button 
                                                                 type="button"
                                                                 onClick={() => {
                                                                   setDeletingNoteId(null);
                                                                   handleStartEditNote(note);
                                                                 }}
                                                                 title="Editar nota"
-                                                                className="kraken-control min-h-11 min-w-11 p-1 text-[#50647c] hover:text-[#1464ad] hover:bg-[#edf4fd] rounded transition-colors cursor-pointer"
+                                                                className="p-1 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors cursor-pointer"
                                                             >
                                                                 <Edit className="w-3.5 h-3.5" />
                                                             </button>
-                                                            <button
+                                                            <button 
                                                                 type="button"
                                                                 onClick={() => setDeletingNoteId(deletingNoteId === note.id ? null : note.id)}
                                                                 title="Borrar nota"
-                                                                className="kraken-control min-h-11 min-w-11 p-1 text-[#50647c] hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer"
+                                                                className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer"
                                                             >
                                                                 <Trash2 className="w-3.5 h-3.5" />
                                                             </button>
@@ -991,14 +1218,14 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                                 {/* Inline Deletion Confirmation */}
                                                 {deletingNoteId === note.id && (
                                                     <div className="bg-rose-50 rounded-lg p-2.5 border border-rose-200 flex flex-wrap items-center justify-between gap-2">
-                                                        <span className="text-sm font-semibold text-rose-700">
+                                                        <span className="text-[10px] font-bold text-rose-700">
                                                             ¿Seguro que deseas eliminar esta nota?
                                                         </span>
                                                         <div className="flex items-center gap-1.5 ml-auto">
                                                             <button
                                                                 type="button"
                                                                 onClick={() => setDeletingNoteId(null)}
-                                                                className="kraken-control min-h-11 min-w-11 px-2 py-0.5 bg-white text-[#50647c] hover:bg-[#f3f7fc] rounded text-base font-semibold border border-[#dce5f0]"
+                                                                className="px-2 py-0.5 bg-white text-slate-600 hover:bg-slate-100 rounded text-[9px] font-bold uppercase tracking-wider border border-slate-200"
                                                             >
                                                                 Cancelar
                                                             </button>
@@ -1006,7 +1233,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                                                 type="button"
                                                                 onClick={() => handleDeleteNote(note.id)}
                                                                 disabled={isSavingNotes}
-                                                                className="kraken-control min-h-11 min-w-11 px-2.5 py-0.5 bg-rose-600 hover:bg-rose-700 text-[#032b59] rounded text-base font-semibold shadow-xs flex items-center gap-1"
+                                                                className="px-2.5 py-0.5 bg-rose-600 hover:bg-rose-700 text-white rounded text-[9px] font-black uppercase tracking-wider shadow-xs flex items-center gap-1"
                                                             >
                                                                 <Trash2 className="w-2.5 h-2.5" />
                                                                 Sí, borrar
@@ -1019,41 +1246,40 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                                 {isEditing ? (
                                                     <div className="space-y-2 pt-1">
                                                         <div>
-                                                            <label htmlFor="detailinspectormodal-field-3" className="kraken-label text-sm font-semibold text-[#50647c] block mb-0.5">
+                                                            <label className="text-[9px] font-bold uppercase text-slate-400 block mb-0.5">
                                                                 Autor
                                                             </label>
-                                                            <input id="detailinspectormodal-field-3"
-                                                                type="text"
+                                                            <input 
+                                                                type="text" 
                                                                 value={editAuthor}
-                                                                readOnly
                                                                 onChange={(e) => setEditAuthor(e.target.value)}
-                                                                className="kraken-field w-full p-1.5 bg-[#f3f7fc] rounded-lg text-base font-semibold text-[#032b59] border border-[#dce5f0] focus:border-[#1464ad] outline-none"
+                                                                className="w-full p-1.5 bg-slate-50 rounded-lg text-xs font-bold text-slate-800 border border-slate-200 focus:border-blue-500 outline-none"
                                                             />
                                                         </div>
                                                         <div>
-                                                            <label htmlFor="detailinspectormodal-field-4" className="kraken-label text-sm font-semibold text-[#50647c] block mb-0.5">
+                                                            <label className="text-[9px] font-bold uppercase text-slate-400 block mb-0.5">
                                                                 Texto
                                                             </label>
-                                                            <textarea id="detailinspectormodal-field-4"
+                                                            <textarea 
                                                                 rows={2}
                                                                 value={editText}
                                                                 onChange={(e) => setEditText(e.target.value)}
-                                                                className="kraken-field w-full p-2 bg-[#f3f7fc] rounded-lg text-base font-medium text-[#032b59] border border-[#dce5f0] focus:border-[#1464ad] outline-none leading-relaxed"
+                                                                className="w-full p-2 bg-slate-50 rounded-lg text-xs font-medium text-slate-800 border border-slate-200 focus:border-blue-500 outline-none leading-relaxed"
                                                             />
                                                         </div>
                                                         <div className="flex justify-end gap-1.5">
-                                                            <button
+                                                            <button 
                                                                 type="button"
                                                                 onClick={() => setEditingNoteId(null)}
-                                                                className="kraken-control min-h-11 min-w-11 px-2.5 py-1 bg-[#f3f7fc] hover:bg-slate-200 text-[#50647c] rounded text-base font-semibold "
+                                                                className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded text-[9px] font-bold uppercase tracking-wider"
                                                             >
                                                                 Cancelar
                                                             </button>
-                                                            <button
+                                                            <button 
                                                                 type="button"
                                                                 onClick={() => handleSaveEditNote(note.id)}
                                                                 disabled={isSavingNotes}
-                                                                className="kraken-control min-h-11 min-w-11 px-3 py-1 bg-[#1464ad] hover:bg-[#1464ad] text-white rounded text-base font-semibold flex items-center gap-1"
+                                                                className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-[9px] font-black uppercase tracking-wider flex items-center gap-1"
                                                             >
                                                                 <Check className="w-3 h-3" />
                                                                 Guardar
@@ -1061,7 +1287,7 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                                                         </div>
                                                     </div>
                                                 ) : (
-                                                    <p className="text-base text-[#50647c] font-medium whitespace-pre-wrap leading-relaxed pt-0.5">
+                                                    <p className="text-xs text-slate-700 font-medium whitespace-pre-wrap leading-relaxed pt-0.5">
                                                         {note.text}
                                                     </p>
                                                 )}
@@ -1073,16 +1299,14 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
                         </div>
                     </div>
 
-                    }
-
                     {/* Danger Zone: Delete Option */}
-                    {isStaff && !Object.hasOwn(selectedRequest, 'payment') && (
+                    {(isStaff || selectedRequest.status === 'Pending') && (
                         <div className="bg-rose-50 rounded-2xl p-5 border border-rose-200 transition-all text-center">
-                            <span className="text-sm font-semibold text-rose-600 block mb-2">{dt.dangerZone}</span>
-                            <button
+                            <span className="text-[9px] uppercase tracking-widest font-black text-rose-600 block mb-2">{dt.dangerZone}</span>
+                            <button 
                                 type="button"
                                 onClick={() => handleDelete(selectedRequest.id)}
-                                className="kraken-control min-h-11 py-1.5 w-full bg-rose-100 hover:bg-rose-600 text-rose-700 hover:text-white rounded-xl text-base font-semibold transition-all border border-rose-200"
+                                className="py-1.5 w-full bg-rose-100 hover:bg-rose-600 text-rose-700 hover:text-white rounded-xl text-[9px] font-black uppercase tracking-widest transition-all border border-rose-200"
                             >
                                 {dt.deleteRequestLedger}
                             </button>
@@ -1093,14 +1317,14 @@ export const DetailInspectorModal: React.FC<DetailInspectorModalProps> = ({
             </div>
 
             {/* Modal Sticky Footer */}
-            <div className="kraken-dialog-footer p-4 sm:p-5 bg-[#f3f7fc] border-t border-[#dce5f0] border-[#dce5f0] flex gap-4 justify-between items-center mt-auto">
-                <span className="text-sm text-[#50647c] font-semibold hidden sm:inline-block">
+            <div className="p-6 sm:p-8 bg-slate-50 border-t border-slate-205 border-slate-200 flex gap-4 justify-between items-center mt-auto">
+                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider hidden sm:inline-block">
                     Kraken PFM
                 </span>
-                <button
+                <button 
                      type="button"
                      onClick={() => setSelectedRequest(null)}
-                     className="kraken-control min-h-11 min-w-11 bg-[#1464ad] hover:bg-[#1464ad] text-white px-8 py-2.5 rounded-xl text-base font-semibold transition-all ml-auto shadow-sm"
+                     className="bg-blue-600 hover:bg-blue-500 hover:scale-[1.01] active:scale-95 text-white px-8 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ml-auto shadow-[0_4px_20px_rgba(59,130,246,0.15)]"
                 >
                     {dt.dismissView}
                 </button>

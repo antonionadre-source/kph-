@@ -3,13 +3,15 @@ import React, { useState, useRef, useEffect } from 'react';
 import { XMarkIcon, ChatBubbleLeftRightIcon, PaperAirplaneIcon, PaperClipIcon, TrashIcon } from './icons';
 import { useTranslation } from '../i18n';
 import { mascotImageUrl, mascotVideoUrl } from '../assets';
-import emailjs, { EMAIL_SERVICE_ID as SERVICE_ID, EMAIL_TEMPLATE_ID as TEMPLATE_ID, EMAIL_PUBLIC_KEY as PUBLIC_KEY } from './emailClient';
+import emailjs from '@emailjs/browser';
 import JSZip from 'jszip';
 import { sendLead } from './leadWebhook';
-import { bookingConfirmation } from './integrationConfig';
 import { uploadFilesToStorage } from './fileUploadHelper';
 
 // EmailJS Configuration
+const SERVICE_ID = 'service_aiv15bc';
+const TEMPLATE_ID = 'template_aktj7t9';
+const PUBLIC_KEY = 'sH5K84ChHyssJrarm';
 const STORAGE_KEY = 'kraken_chat_history_v2';
 
 const SYSTEM_INSTRUCTION = `You are Kai, the professional and multilingual AI assistant for Kraken Properties & Facility Management, based in Schaffhausen, Switzerland (serving Schaffhausen, Zürich, and Winterthur).
@@ -314,9 +316,7 @@ const ChatWidget: React.FC = () => {
                 try {
                     const bookingData = JSON.parse(jsonMatch[1]);
                     if (bookingData.action === "BOOK_RESERVATION") {
-                        if (window.confirm(bookingConfirmation[language] || bookingConfirmation.en)) {
-                            await handleBooking(bookingData.data);
-                        }
+                        await handleBooking(bookingData.data);
                     }
                 } catch (e) {
                     console.error("JSON parse error", e);

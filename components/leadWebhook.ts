@@ -1,19 +1,4 @@
-import { assertExternalSubmissionsEnabled, requireWebhookUrl } from './integrationConfig';
-
-const env: Partial<ImportMetaEnv> = import.meta.env ?? {};
-export const MAKE_WEBHOOK_URL = env.VITE_MAKE_LEAD_WEBHOOK_URL || '';
-
-export async function postWebhook(url: string, payload: Record<string, any>): Promise<void> {
-  assertExternalSubmissionsEnabled();
-  const configuredUrl = requireWebhookUrl(url, 'VITE_MAKE_*_WEBHOOK_URL');
-  const response = await fetch(configuredUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-    signal: AbortSignal.timeout(5000),
-  });
-  if (!response.ok) throw new Error(`Webhook returned HTTP ${response.status}.`);
-}
+export const MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/ucxeqjygku2w6zyf9ynut5oantantx58';
 
 export async function sendLead(payload: Record<string, any>): Promise<void> {
   const controller = new AbortController();
@@ -36,9 +21,7 @@ export async function sendLead(payload: Record<string, any>): Promise<void> {
 
     fullPayload.summary = summary.length > 650 ? summary.slice(0, 650) + '…' : summary;
 
-    assertExternalSubmissionsEnabled();
-    const url = requireWebhookUrl(MAKE_WEBHOOK_URL, 'VITE_MAKE_LEAD_WEBHOOK_URL');
-    const response = await fetch(url, {
+    await fetch(MAKE_WEBHOOK_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -46,7 +29,6 @@ export async function sendLead(payload: Record<string, any>): Promise<void> {
       body: JSON.stringify(fullPayload),
       signal: controller.signal,
     });
-    if (!response.ok) throw new Error(`Lead webhook returned HTTP ${response.status}.`);
   } catch (error) {
     // Fire-and-forget: silently log or ignore errors to never block user flow
     console.warn('sendLead webhook dispatch failed or timed out:', error);

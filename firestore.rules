@@ -1,114 +1,121 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function signedIn() { return request.auth != null; }
-    function staff() { return signedIn() && request.auth.token.get('staff', false) == true && request.auth.token.get('email_verified', false) == true; }
-    function owner(data) { return signedIn() && data.userId == request.auth.uid; }
-    function text(value, minimum, maximum) { return value is string && value.size() >= minimum && value.size() <= maximum; }
-    function email(value) { return text(value, 3, 254) && value.matches('^[^@ ]+@[^@ ]+[.][^@ ]+$'); }
-    function requestShape(data) {
-      return data.keys().hasOnly(['id','userId','client','service','date','time','status','priority','amount','estimatedAmount','email','phone','address','postcode','notes','mediaUrls','mediaNames','bookingMode','accessMethod','services','mediaAttachments','scheduling','createdAt','updatedAt','serverQuote','checkout','payment','timestamps','teamNotes','scheduledAt','requestedPaymentMethod'])
-        && text(data.id, 1, 128) && text(data.userId, 1, 128)
-        && text(data.client, 1, 100) && text(data['service'], 1, 100)
-        && text(data.date, 1, 30) && text(data.get('time',''), 0, 100)
-        && data.status in ['Draft','Pending','In Progress','Completed','Cancelled']
-        && data.priority in ['Low','Medium','High']
-        && data.amount is number && data.amount >= 0 && data.amount <= 1000000
-        && data.get('estimatedAmount',0) is number && data.get('estimatedAmount',0) >= 0 && data.get('estimatedAmount',0) <= 1000000
-        && text(data.get('email',''),0,254) && text(data.get('phone',''),0,50)
-        && text(data.get('address',''),0,500) && text(data.get('postcode',''),0,10)
-        && text(data.get('notes',''),0,10000) && text(data.get('accessMethod',''),0,200)
-        && data.get('mediaUrls',[]) is list && data.get('mediaUrls',[]).size() <= 30
-        && data.get('mediaNames',[]) is list && data.get('mediaNames',[]).size() <= 30
-        && data.get('services',[]) is list && data.get('services',[]).size() <= 20
-        && data.get('mediaAttachments',[]) is list && data.get('mediaAttachments',[]).size() <= 30;
+    
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
     }
-    match /maintenance_requests/{id} {
-      allow read: if owner(resource.data) || staff();
-      allow create: if owner(request.resource.data) && requestShape(request.resource.data)
-        && request.resource.data.id == id
-        && request.resource.data.status in ['Draft','Pending']
-        && (request.resource.data.amount == 0 || staff())
-        && !request.resource.data.keys().hasAny(['payment','serverQuote','checkout','timestamps','teamNotes','scheduledAt','requestedPaymentMethod'])
-        && request.resource.data.createdAt == request.time && request.resource.data.updatedAt == request.time;
-      allow update: if requestShape(request.resource.data)
-        && request.resource.data.id == resource.data.id && request.resource.data.userId == resource.data.userId
-        && request.resource.data.createdAt == resource.data.createdAt && request.resource.data.updatedAt == request.time
-        && ((staff()
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['client','service','date','time','status','priority','amount','estimatedAmount','email','phone','address','postcode','notes','mediaUrls','mediaNames','bookingMode','accessMethod','services','mediaAttachments','scheduling','scheduledAt','updatedAt'])
-          && (!('serverQuote' in resource.data) || request.resource.data.amount == resource.data.amount))
-        || (owner(resource.data) && !('checkout' in resource.data) && !('serverQuote' in resource.data)
-          && resource.data.status in ['Draft','Pending'] && request.resource.data.status in ['Draft','Pending']
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['client','service','date','time','status','estimatedAmount','email','phone','address','postcode','notes','mediaUrls','mediaNames','bookingMode','accessMethod','services','mediaAttachments','scheduling','requestedPaymentMethod','updatedAt'])));
-      allow delete: if (owner(resource.data) && resource.data.status in ['Draft','Pending'] && !('checkout' in resource.data)) || (staff() && !('payment' in resource.data));
+
+    function isStaffOrAdmin() {
+      return request.auth != null 
+        && 'email' in request.auth.token 
+        && request.auth.token.email != null
+        && (
+          request.auth.token.email.lower().endsWith('@krakenpfm.ch') ||
+          request.auth.token.email.lower() == 'antonio.nadre@anotherstar.com' ||
+          request.auth.token.email.lower() == 'kai@krakenpfm.ch'
+        );
     }
-    match /maintenance_requests/{id}/team_notes/{noteId} {
-      allow read, delete: if staff();
-      allow create: if staff() && request.resource.data.keys().hasOnly(['id','author','authorId','text','createdAt','updatedAt'])
-        && request.resource.data.id == noteId && request.resource.data.authorId == request.auth.uid
-        && text(request.resource.data.author,1,150) && text(request.resource.data.text,1,10000)
-        && text(request.resource.data.createdAt,1,50);
-      allow update: if staff() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['text','updatedAt'])
-        && text(request.resource.data.text,1,10000) && text(request.resource.data.updatedAt,1,50);
+
+    match /maintenance_requests/{requestId} {
+      allow read: if request.auth != null 
+        && (resource.data.userId == request.auth.uid || isStaffOrAdmin());
+        
+      allow create: if request.auth != null
+        && requestId is string
+        && requestId.size() > 0
+        && requestId.size() <= 128
+        && request.resource.data.id == requestId
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.client is string
+        && request.resource.data.client.size() >= 0
+        && request.resource.data.client.size() <= 100
+        && request.resource.data['service'] is string
+        && request.resource.data['service'].size() >= 0
+        && request.resource.data['service'].size() <= 100
+        && request.resource.data['date'] is string
+        && request.resource.data['date'].size() >= 0
+        && request.resource.data['date'].size() <= 30
+        && (request.resource.data.status == 'Draft' || request.resource.data.status == 'Pending')
+        && (request.resource.data.priority == 'Low' || request.resource.data.priority == 'Medium' || request.resource.data.priority == 'High')
+        && request.resource.data.amount >= 0
+        && request.resource.data.amount <= 1000000
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+        
+      allow update: if request.auth != null
+        && (
+          (resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid) ||
+          (isStaffOrAdmin() && request.resource.data.userId == resource.data.userId)
+        )
+        && request.resource.data.id == resource.data.id
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.updatedAt == request.time
+        && (resource.data.status != 'Completed' || isStaffOrAdmin())
+        && request.resource.data.client is string
+        && request.resource.data.client.size() >= 0
+        && request.resource.data.client.size() <= 100
+        && request.resource.data['service'] is string
+        && request.resource.data['service'].size() >= 0
+        && request.resource.data['service'].size() <= 100
+        && request.resource.data['date'] is string
+        && request.resource.data['date'].size() >= 0
+        && request.resource.data['date'].size() <= 30
+        && (request.resource.data.status == 'Draft' || request.resource.data.status == 'Pending' || request.resource.data.status == 'In Progress' || request.resource.data.status == 'Completed')
+        && (request.resource.data.priority == 'Low' || request.resource.data.priority == 'Medium' || request.resource.data.priority == 'High')
+        && request.resource.data.amount >= 0
+        && request.resource.data.amount <= 1000000;
+        
+      allow delete: if request.auth != null
+        && (resource.data.userId == request.auth.uid || isStaffOrAdmin())
+        && (resource.data.status != 'Completed' || isStaffOrAdmin());
     }
-    match /profiles/{uid} {
-      function validProfile(d) {
-        return d.keys().hasOnly(['userId','name','email','phone','address','accessType','rooms','toilets','hasBalcony','hasGarden','notes','createdAt','updatedAt'])
-          && d.userId == uid && text(d.name,1,100) && email(d.email)
-          && d.email == request.auth.token.get('email','') && text(d.get('phone',''),0,50)
-          && d.address is map && d.address.keys().hasOnly(['street','postcode','city'])
-          && text(d.address.street,0,250) && text(d.address.postcode,0,10) && text(d.address.city,0,120)
-          && text(d.get('accessType',''),0,200) && text(d.get('notes',''),0,5000)
-          && d.rooms is number && d.rooms >= 0 && d.rooms <= 100 && d.toilets is number && d.toilets >= 0 && d.toilets <= 100
-          && d.hasBalcony is bool && d.hasGarden is bool;
-      }
-      allow read: if signedIn() && (request.auth.uid == uid || staff());
-      allow create: if signedIn() && request.auth.uid == uid && validProfile(request.resource.data) && request.resource.data.createdAt == request.time && request.resource.data.updatedAt == request.time;
-      allow update: if signedIn() && request.auth.uid == uid && validProfile(request.resource.data) && request.resource.data.createdAt == resource.data.createdAt && request.resource.data.updatedAt == request.time;
+
+    match /job_applications/{applicationId} {
+      allow read: if request.auth != null 
+        && (resource.data.userId == request.auth.uid || isStaffOrAdmin());
+
+      allow create: if request.auth != null
+        && applicationId is string
+        && applicationId.size() > 0
+        && applicationId.size() <= 128
+        && request.resource.data.id == applicationId
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 150
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() > 0
+        && request.resource.data.phone.size() <= 50
+        && request.resource.data.position is string
+        && request.resource.data.position.size() > 0
+        && request.resource.data.position.size() <= 150
+        && request.resource.data.status == 'Pending'
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+
+      allow update: if request.auth != null
+        && (
+          (resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid) ||
+          isStaffOrAdmin()
+        )
+        && request.resource.data.id == resource.data.id
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.updatedAt == request.time;
+
+      allow delete: if request.auth != null
+        && (resource.data.userId == request.auth.uid || isStaffOrAdmin());
     }
-    match /job_applications/{id} {
-      function validApplication(d) {
-        return d.keys().hasOnly(['id','userId','name','phone','position','region','permit','startDate','pensum','certificates','languages','message','cvName','cvData','cvUrl','cvType','status','createdAt','updatedAt'])
-          && d.id == id && text(d.userId,1,128) && text(d.name,1,150) && text(d.phone,1,50) && text(d.position,1,150)
-          && text(d.get('message',''),0,10000) && text(d.get('cvName',''),0,250) && text(d.get('cvUrl',''),0,3000)
-          && text(d.get('cvData',''),0,3000) && text(d.get('cvType',''),0,150);
-      }
-      allow read: if owner(resource.data) || staff();
-      allow create: if owner(request.resource.data) && validApplication(request.resource.data) && request.resource.data.status == 'Pending' && request.resource.data.createdAt == request.time && request.resource.data.updatedAt == request.time;
-      allow update: if staff() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt']) && request.resource.data.status in ['Pending','Reviewed','Contacted','Interview','Hired','Rejected'] && request.resource.data.updatedAt == request.time;
-      allow delete: if staff();
+
+    match /b2b_quotes/{quoteId} {
+      allow create: if true;
+      allow read, update, delete: if isStaffOrAdmin();
     }
-    match /contact_messages/{id} {
-      allow create: if request.resource.data.keys().hasOnly(['name','email','subject','message','language','status','createdAt'])
-        && text(request.resource.data.name,1,150) && email(request.resource.data.email)
-        && text(request.resource.data.get('subject',''),0,250) && text(request.resource.data.message,1,10000)
-        && request.resource.data.language in ['de','de-CH','en','fr','it','es','pt']
-        && request.resource.data.status == 'new' && request.resource.data.createdAt == request.time;
-      allow read, delete: if staff();
-      allow update: if staff() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','updatedAt']) && request.resource.data.status in ['new','done'] && request.resource.data.updatedAt == request.time;
+
+    match /contact_messages/{messageId} {
+      allow create: if true;
+      allow read, update, delete: if isStaffOrAdmin();
     }
-    match /b2b_quotes/{id} {
-      allow create: if request.resource.data.keys().hasOnly(['userId','type','buildingType','numBuildings','totalArea','services','frequency','protocols','postalCode','city','hours','address','companyName','contactName','contactEmail','contactPhone','floorPlans','estimatedMonthlyBudget','estimatedAnnualBudget','createdAt','language','status'])
-        && owner(request.resource.data) && request.resource.data.type == 'commercial_b2b' && text(request.resource.data.companyName,1,200)
-        && text(request.resource.data.contactName,1,150) && email(request.resource.data.contactEmail)
-        && text(request.resource.data.contactPhone,1,50) && text(request.resource.data.address,0,500)
-        && request.resource.data.services is list && request.resource.data.services.size() <= 30
-        && request.resource.data.floorPlans is list && request.resource.data.floorPlans.size() <= 30
-        && request.resource.data.estimatedMonthlyBudget is number && request.resource.data.estimatedMonthlyBudget >= 0 && request.resource.data.estimatedMonthlyBudget <= 10000000
-        && request.resource.data.estimatedAnnualBudget is number && request.resource.data.estimatedAnnualBudget >= 0 && request.resource.data.estimatedAnnualBudget <= 120000000
-        && request.resource.data.createdAt == request.time && request.resource.data.status == 'pending';
-      allow read: if staff() || owner(resource.data);
-      allow delete: if staff();
-      allow update: if staff() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status','notes','updatedAt']) && request.resource.data.updatedAt == request.time;
-    }
-    match /reviews/{id} {
-      allow create: if signedIn() && request.resource.data.keys().hasOnly(['uid','name','email','rating','comment','tags','source','createdAt'])
-        && request.resource.data.uid == request.auth.uid && text(request.resource.data.name,1,150)
-        && request.resource.data.email == request.auth.token.get('email','') && email(request.resource.data.email) && request.resource.data.rating is int && request.resource.data.rating >= 1 && request.resource.data.rating <= 5
-        && text(request.resource.data.get('comment',''),0,5000) && request.resource.data.tags is list && request.resource.data.tags.size() <= 20
-        && request.resource.data.source == 'review-invite' && request.resource.data.createdAt == request.time;
-      allow read: if staff() || (signedIn() && resource.data.uid == request.auth.uid);
-    }
-    match /{document=**} { allow read, write: if false; }
   }
 }

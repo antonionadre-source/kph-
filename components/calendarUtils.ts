@@ -1,58 +1,140 @@
-/** Calendar exports are local drafts; they never send invitations or claim Outlook synchronization. */
-export interface CalendarRequest {
-  id?: string; service: string; client: string; date?: string; email?: string; phone?: string; address?: string; amount?: number;
-  time?: string;
-  scheduling?: { requestedDate?: string; specificTime?: string | null; estimatedDurationHours?: number } | null;
-}
-export function escapeCalendarText(value: unknown): string {
-  return String(value ?? '').replace(/\\/g, '\\\\').replace(/\r\n|\r|\n/g, '\\n').replace(/;/g, '\\;').replace(/,/g, '\\,');
-}
-function parseDate(raw: string): string {
-  const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  const european = raw.match(/^(\d{2})[/.](\d{2})[/.](\d{4})$/);
-  const [year, month, day] = iso ? [Number(iso[1]), Number(iso[2]), Number(iso[3])] : european ? [Number(european[3]), Number(european[2]), Number(european[1])] : [];
-  const date = new Date(Date.UTC(year, month - 1, day));
-  if (!year || date.getUTCFullYear() !== year || date.getUTCMonth() + 1 !== month || date.getUTCDate() !== day) throw new Error('calendar/date-required');
-  return `${year}${String(month).padStart(2, '0')}${String(day).padStart(2, '0')}`;
-}
-const formatUtc = (date: Date) => date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
-export function foldCalendarLine(line: string): string {
-  let output = ''; let bytes = 0;
-  for (const char of line) {
-    const length = new TextEncoder().encode(char).length;
-    if (bytes + length > 75) { output += '\r\n '; bytes = 1; }
-    output += char; bytes += length;
+/**
+ * Utility functions for generating Outlook Calendar links and .ics calendar files
+ * specifically configured with a 1-hour reminder for kai@krakenpfm.ch
+ */
+
+export function scheduleCalendarEventForKai(req: {
+  service: string;
+  client: string;
+  date?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  amount?: number;
+  scheduling?: {
+    requestedDate?: string;
+    specificTime?: string | null;
+    estimatedDurationHours?: number;
+  } | null;
+}) {
+  const staffEmail = 'kai@krakenpfm.ch';
+
+  // Default values: start date is today or parsed from req
+  let year = new Date().getFullYear();
+  let month = new Date().getMonth() + 1;
+  let day = new Date().getDate();
+  let startHour = 9;
+  let startMinute = 0;
+  let durationHours = req.scheduling?.estimatedDurationHours || 1;
+
+  // Try parsing date string (e.g., "2026-08-15" or "15/08/2026" or "15.08.2026")
+  const rawDateStr = req.scheduling?.requestedDate || req.date || '';
+  if (rawDateStr) {
+    const dateMatch = rawDateStr.match(/(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/) || rawDateStr.match(/(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})/);
+    if (dateMatch) {
+      if (dateMatch[1].length === 4) {
+        year = parseInt(dateMatch[1], 10);
+        month = parseInt(dateMatch[2], 10);
+        day = parseInt(dateMatch[3], 10);
+      } else {
+        day = parseInt(dateMatch[1], 10);
+        month = parseInt(dateMatch[2], 10);
+        year = parseInt(dateMatch[3], 10);
+      }
+    }
   }
-  return output;
-}
-export function createCalendarDraft(request: CalendarRequest, now = new Date()) {
-  const date = parseDate(request.scheduling?.requestedDate || request.date || '');
-  const rawTime = request.scheduling?.specificTime || request.time || '';
-  const time = rawTime.match(/^(\d{2}):(\d{2})$/);
-  let dateLines: string[];
-  if (time) {
-    if (Number(time[1]) > 23 || Number(time[2]) > 59) throw new Error('calendar/invalid-time');
-    dateLines = [`DTSTART;TZID=Europe/Zurich:${date}T${time[1]}${time[2]}00`];
-    const duration = request.scheduling?.estimatedDurationHours;
-    if (typeof duration === 'number' && Number.isFinite(duration) && duration > 0 && duration <= 24) dateLines.push(`DURATION:PT${Math.round(duration * 60)}M`);
-  } else {
-    if (rawTime && !['flexible', 'morning', 'afternoon', 'evening'].includes(rawTime)) throw new Error('calendar/invalid-time');
-    dateLines = [`DTSTART;VALUE=DATE:${date}`];
+
+  // Try parsing specific time if provided
+  if (req.scheduling?.specificTime) {
+    const timeMatch = req.scheduling.specificTime.match(/(\d{1,2}):(\d{2})/);
+    if (timeMatch) {
+      startHour = parseInt(timeMatch[1], 10);
+      startMinute = parseInt(timeMatch[2], 10);
+    }
   }
-  const uid = `${(request.id || crypto.randomUUID()).replace(/[^a-zA-Z0-9_-]/g, '')}@krakenpfm.ch`;
-  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Kraken PFM//Calendar draft//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'BEGIN:VTIMEZONE', 'TZID:Europe/Zurich', 'BEGIN:DAYLIGHT', 'DTSTART:19810329T020000', 'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU', 'TZOFFSETFROM:+0100', 'TZOFFSETTO:+0200', 'END:DAYLIGHT', 'BEGIN:STANDARD', 'DTSTART:19961027T030000', 'RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU', 'TZOFFSETFROM:+0200', 'TZOFFSETTO:+0100', 'END:STANDARD', 'END:VTIMEZONE', 'BEGIN:VEVENT', `UID:${uid}`, `DTSTAMP:${formatUtc(now)}`, 'STATUS:TENTATIVE', ...dateLines, `SUMMARY:${escapeCalendarText(`Kraken PFM: ${request.service} - ${request.client}`)}`, `LOCATION:${escapeCalendarText(request.address)}`, `DESCRIPTION:${escapeCalendarText('Draft export. Review the requested date and confirm in your own calendar. No invitation has been sent.')}`, 'END:VEVENT', 'END:VCALENDAR'];
-  // RFC 5545 uses CRLF; untrusted values cannot inject extra calendar properties.
-  const icsData = lines.map(foldCalendarLine).join('\r\n') + '\r\n';
-  return { icsData, uid, date, timezone: 'Europe/Zurich', draft: true as const };
+
+  // Format as UTC ISO strings format YYYYMMDDTHHmmssZ
+  const pad = (num: number) => String(num).padStart(2, '0');
+  
+  const startDateObj = new Date(Date.UTC(year, month - 1, day, startHour, startMinute, 0));
+  const endDateObj = new Date(startDateObj.getTime() + durationHours * 60 * 60 * 1000);
+
+  const formatICSDate = (d: Date) => {
+    return d.getUTCFullYear() +
+      pad(d.getUTCMonth() + 1) +
+      pad(d.getUTCDate()) + 'T' +
+      pad(d.getUTCHours()) +
+      pad(d.getUTCMinutes()) +
+      pad(d.getUTCSeconds()) + 'Z';
+  };
+
+  const startIso = formatICSDate(startDateObj);
+  const endIso = formatICSDate(endDateObj);
+
+  const cleanClient = req.client || 'Client';
+  const cleanService = req.service || 'Maintenance Service';
+  const title = `Kraken PFM: ${cleanService} - ${cleanClient}`;
+  const location = req.address || 'Client Location';
+  const descriptionText = 
+    `Kraken PFM Service assigned to Kai\n` +
+    `• Client: ${cleanClient}\n` +
+    `• Email: ${req.email || 'Not specified'}\n` +
+    `• Phone: ${req.phone || 'Not specified'}\n` +
+    `• Address: ${location}\n` +
+    `• Total Amount: CHF ${(req.amount || 0).toLocaleString()}\n\n` +
+    `Automatic 1-hour prior reminder configured.`;
+
+  const descriptionICS = descriptionText.replace(/\n/g, '\\n');
+
+  const toRecipients = `${staffEmail}${req.email ? ',' + req.email : ''}`;
+
+  // 1. Build Outlook Web Calendar Deeplink URL (Outlook Office 365 / Web Calendar)
+  const outlookUrl = `https://outlook.office.com/calendar/deeplink/compose?path=/calendar/action/compose&rru=addevent` +
+    `&subject=${encodeURIComponent(title)}` +
+    `&startdt=${encodeURIComponent(startDateObj.toISOString())}` +
+    `&enddt=${encodeURIComponent(endDateObj.toISOString())}` +
+    `&body=${encodeURIComponent(descriptionText)}` +
+    `&location=${encodeURIComponent(location)}` +
+    `&to=${encodeURIComponent(toRecipients)}`;
+
+  // 2. Build iCalendar .ics file string for Outlook with ORGANIZER kai@krakenpfm.ch and 1-hour VALARM reminder in English
+  const icsData = 
+`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Kraken Properties & Facilities Management//Outlook Calendar System//EN
+METHOD:REQUEST
+BEGIN:VEVENT
+ORGANIZER;CN=Kai (Kraken PFM):mailto:${staffEmail}
+SUMMARY:${title}
+DESCRIPTION:${descriptionICS}
+LOCATION:${location}
+ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=Kai (Kraken PFM):mailto:${staffEmail}
+${req.email ? `ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;CN=${cleanClient}:mailto:${req.email}\n` : ''}DTSTART:${startIso}
+DTEND:${endIso}
+BEGIN:VALARM
+TRIGGER:-PT1H
+ACTION:DISPLAY
+DESCRIPTION:Reminder: 1 hour until Kraken PFM service for ${cleanClient}
+END:VALARM
+END:VEVENT
+END:VCALENDAR`;
+
+  // Download .ics file (opens directly in Outlook Desktop/App)
+  try {
+    const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `outlook_kai_kraken_${cleanClient.replace(/\s+/g, '_')}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (err) {
+    console.warn('Error downloading .ics file:', err);
+  }
+
+  // Open Outlook Web in new tab
+  window.open(outlookUrl, '_blank');
+
+  return { outlookUrl, startIso, endIso };
 }
-export function scheduleCalendarEventForKai(request: CalendarRequest) {
-  const draft = createCalendarDraft(request);
-  const blob = new Blob([draft.icsData], { type: 'text/calendar;charset=utf-8' });
-  const objectUrl = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = objectUrl;
-  link.download = `kraken_${(request.id || draft.date).replace(/[^a-zA-Z0-9_-]/g, '_')}.ics`;
-  document.body.appendChild(link); link.click(); link.remove();
-  setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
-  return draft;
-}
+

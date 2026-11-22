@@ -1,13 +1,15 @@
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
-import { getStorage, connectStorageEmulator } from 'firebase/storage';
-import { app, auth, usingFirebaseEmulators, connectEmulatorOnce, emulatorHost, firebaseDatabaseId } from './firebaseAuth';
-export { auth, usingFirebaseEmulators };
-export const db = getFirestore(app, firebaseDatabaseId);
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
+import firebaseConfig from '../firebase-applet-config.json';
+
+const app = initializeApp(firebaseConfig);
+
+// Initialize Firestore with the provisioned database ID
+export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+export const auth = getAuth(app);
 export const storage = getStorage(app);
-if (usingFirebaseEmulators) {
-  connectEmulatorOnce('firestore', () => connectFirestoreEmulator(db, emulatorHost, 8080));
-  connectEmulatorOnce('storage', () => connectStorageEmulator(storage, emulatorHost, 9199));
-}
 
 function isPlainObjectOrArray(obj: any): boolean {
   if (obj === null || typeof obj !== 'object') return false;

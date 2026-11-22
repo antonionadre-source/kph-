@@ -28,9 +28,6 @@
   },
   "exclude": [
     "dist",
-    "public/assets",
-    ".cache",
-    ".vercel",
     "node_modules"
   ]
 }

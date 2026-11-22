@@ -13,8 +13,3 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
-# Local secrets and test outputs
-.env
-.env.*
-!.env.example
