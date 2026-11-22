@@ -3,7 +3,8 @@
 .cache
 node_modules
 server.js
-dist
+dist/**
+!dist/*.html
 public/assets
 **/.env*
 assets-source
