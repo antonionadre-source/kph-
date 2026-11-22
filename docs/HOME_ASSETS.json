@@ -1,0 +1,177 @@
+{
+  "sourcePackage": "kraken-home-codex.zip",
+  "sourceZipSha256": "d9a54cca66efae78d8332024a5dbac7d93b9cc511063c24eee90f832851cd8f0",
+  "assetsIdenticalToSuppliedPackage": true,
+  "assets": [
+    {
+      "file": "public/home-approved/assets/hero-room-day-v4.webp",
+      "bytes": 239284,
+      "sha256": "fda36c26fd2b1242d7a682ed313c5eb0e3e226bcf992dae2a9fe33f2eddd5372",
+      "format": "WEBP",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/hero-room-night-v4.webp",
+      "bytes": 194984,
+      "sha256": "11ca3631fda6344ae86f949f8917ed267730ad20f3bf0b39679a9b7eefef5599",
+      "format": "WEBP",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/holiday-decor.webp",
+      "bytes": 296292,
+      "sha256": "e7c1db34e4eae09d3d3e23b713e75b92276529b662dc0b3bc89d4a2d27d4c320",
+      "format": "WEBP",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/kai-rest-v3.webp",
+      "bytes": 277214,
+      "sha256": "a9398a2fed2837ad3b63e27a3600e7d93922f5a289282da2b9785abdadc02b2f",
+      "format": "WEBP",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/kai-tasks-cold-v3.webp",
+      "bytes": 306008,
+      "sha256": "241ae8be2b6105231425056549bc03111954bc3904ac655a8cb7192c178295fe",
+      "format": "WEBP",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/kai-tasks.webp",
+      "bytes": 309518,
+      "sha256": "a36a5c0c55d5f2315c4d4474e3f6e0871d7ff45213d9566bbf71e67d617a8017",
+      "format": "WEBP",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/kai-windows-cold-v3.webp",
+      "bytes": 242002,
+      "sha256": "878fcd4a038cc39bc1ae60406e62955480b88a33d3232d732d62ac5de74f3b8f",
+      "format": "WEBP",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/kai-windows.webp",
+      "bytes": 242398,
+      "sha256": "f93785d728d08e1696ec982a698b1a770ba704c89a500e6f8687622c77c14598",
+      "format": "WEBP",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/kai.webp",
+      "bytes": 151698,
+      "sha256": "865a8003c20f966534aaf2a195a674d39bfce8d5dc88e10dec643b6c6ccbb128",
+      "format": "WEBP",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/kraken-icons.svg",
+      "bytes": 2396,
+      "sha256": "95f9176afb2fefb9ff330315e0f98a256cc16bda0c42948b6e8b6f79cc486b35",
+      "format": "SVG",
+      "symbols": [
+        "window",
+        "end",
+        "regular",
+        "deep",
+        "moving",
+        "team",
+        "time",
+        "distance"
+      ]
+    },
+    {
+      "file": "public/home-approved/assets/logo.webp",
+      "bytes": 59822,
+      "sha256": "8821afc66d10704dfa5adc9c1ed28aa1fb15d92e6dfe293a0d85cddf0fe21a68",
+      "format": "WEBP",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/seasons-window.webp",
+      "bytes": 506340,
+      "sha256": "ee295ad3b8e0371dd4b0ae157c78ab6309d62f1cd6cfcfc4488c9c9a6105baaa",
+      "format": "WEBP",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGB",
+      "alpha": false
+    },
+    {
+      "file": "public/home-approved/assets/service-scenes-branded-v4.webp",
+      "bytes": 320266,
+      "sha256": "45ed2fa136dc56b0b02a4fd6ff7c9e8cdf0d1c66e2492902b4b901de4e099ca6",
+      "format": "WEBP",
+      "width": 2172,
+      "height": 724,
+      "mode": "RGB",
+      "alpha": false
+    },
+    {
+      "file": "public/home-approved/assets/transit-loading-v4.webp",
+      "bytes": 243618,
+      "sha256": "681bc822697b2b54879adbe3e9f464e21c895f21290efd99453cbb13f6c5cd0e",
+      "format": "WEBP",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGB",
+      "alpha": false
+    }
+  ],
+  "css": {
+    "file": "components/home/approved-home.css",
+    "sha256": "69a2d9a2b313d8c01994d20c9dd7e1a3aab281f0dd0cee7b15d3035f4db4be14",
+    "sourceOrder": [
+      "styles.css",
+      "scene.css",
+      "brand.css",
+      "van.css",
+      "glass.css"
+    ],
+    "scope": ".kraken-home",
+    "documentStateClasses": [
+      "kraken-home-modal-open",
+      "kraken-home-scene-dialog-open"
+    ],
+    "keyframePrefix": "kh-",
+    "sourceHashes": {
+      "styles.css": "535df4f012c3a16e5c475ab24a10c8924c65830885224301062c1d8a241d6f21",
+      "scene.css": "1ac7ffd68eb5caf552e0ba5f171329435a9c10ce8222fd847638920c50d76c0b",
+      "brand.css": "02d94799c7c0b5733d87d4e27c4e3fc9c2e89f3f41ce0801e7edfb4d53d05dd2",
+      "van.css": "5323709c1896c5794a804061f788d67a0257128017e5b71a149b76f7a7474f75",
+      "glass.css": "b9bae34d30c4b93fa7fcd4d404f4408724a11cff85230b336ab196f35ed6bf75"
+    }
+  }
+}

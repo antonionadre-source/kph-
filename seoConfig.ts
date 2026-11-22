@@ -289,6 +289,11 @@ export const parsePath = (path: string) => {
   return { page: "404", cityId: "", serviceId: "" };
 };
 
+export const HOME_METADATA = {
+  title: "Kraken PFM – Reinigung & kleine Umzüge in Zürich, Schaffhausen und Winterthur",
+  description: "Persönliche Reinigung und kleine Umzüge für Privathaushalte in Zürich, Schaffhausen und Winterthur. Fensterreinigung, Umzugsreinigung, regelmässige Reinigung und Grundreinigung."
+};
+
 // Fallbacks or default values (German)
 export const defaults: Record<string, { title: string; description: string }> = {
   "404": {
@@ -780,6 +785,23 @@ export function getMetadataForPath(
   ogImageType: string;
 } {
   const cleanPath = pathname.split("?")[0];
+  // The approved public homepage is intentionally Swiss German in every session.
+  // Other routes retain the existing localized metadata and calculator contract.
+  if (cleanPath === "/") {
+    return {
+      ...HOME_METADATA,
+      canonical: `${BASE_URL}/`,
+      hreflangs: [],
+      pageType: "home",
+      h1: "Ihr Zuhause in guten Armen.",
+      h2: "Reinigung und kleine Umzüge in Zürich, Schaffhausen und Winterthur.",
+      bodyText: HOME_METADATA.description,
+      ogImage: DEFAULT_OG_IMAGE,
+      ogImageWidth: OG_IMAGE_WIDTH,
+      ogImageHeight: OG_IMAGE_HEIGHT,
+      ogImageType: OG_IMAGE_TYPE,
+    };
+  }
   if (cleanPath === "/blog/wohnungsabgabe-zurich-perfekte-uebergabe") {
     return {
       title: `Wohnungsabgabe in Zürich: So gelingt die perfekte Übergabe | ${BRAND}`,

@@ -7518,6 +7518,9 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     try {
+      // The approved homepage is German (Switzerland), including its consent UI.
+      // Other entry routes keep the existing URL/preference language selection.
+      if (typeof window !== 'undefined' && window.location.pathname === '/') return;
       let detectedLang: Language | null = null;
       // 1. Check URL parameters for explicit language overrides (e.g. ?lang=fr or ?hl=es)
       if (typeof window !== 'undefined' && window.location) {
@@ -7626,7 +7629,7 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         'es': 'es',
         'pt': 'pt',
       };
-      document.documentElement.lang = htmlLangMap[language] || 'de';
+      document.documentElement.lang = window.location.pathname === '/' ? 'de-CH' : htmlLangMap[language] || 'de';
     }
   }, [language]);
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, lazy, Suspense, Component, ReactNod
 import { useTranslation } from '../i18n';
 import { getMetadataForPath, parsePath } from '../seoConfig';
 import Header from './Header';
-import Hero from './Hero';
+import ApprovedHome from './home/ApprovedHome';
 import Footer from './Footer';
 import { useAuth } from './Auth';
 
@@ -27,17 +27,7 @@ const lazyWithRetry = <T extends { default: React.ComponentType<any> }>(
     }
   });
 
-// Lazy imports for below-the-fold Home sections
-const Section1Intro = lazyWithRetry(() => import('./Section1Intro'));
-const SegmentationSection = lazyWithRetry(() => import('./SegmentationSection'));
-const Section3Leistungen = lazyWithRetry(() => import('./Section3Leistungen'));
-const Section4Umzugsreinigung = lazyWithRetry(() => import('./Section4Umzugsreinigung'));
-const Section5Preise = lazyWithRetry(() => import('./Section5Preise'));
-const Section2Einsatzgebiete = lazyWithRetry(() => import('./Section2Einsatzgebiete'));
-const Section7Gruender = lazyWithRetry(() => import('./Section7Gruender'));
-const ValuesSection = lazyWithRetry(() => import('./ValuesSection'));
-const Section6FAQ = lazyWithRetry(() => import('./Section6FAQ'));
-const Section8Blog = lazyWithRetry(() => import('./Section8Blog'));
+
 const Clients = lazyWithRetry(() => import('./Clients'));
 const FloatingMascot = lazyWithRetry(() => import('./FloatingMascot'));
 const FloatingCTA = lazyWithRetry(() => import('./FloatingCTA'));
@@ -357,6 +347,13 @@ const App: React.FC = () => {
     const currentPath = window.location.pathname;
     const meta = getMetadataForPath(currentPath, language);
 
+    document.documentElement.lang = page === 'home' ? 'de-CH' : language;
+    const robots = document.querySelector('meta[name="robots"]');
+    if (robots) {
+      const publicHost = ['krakenpfm.ch', 'www.krakenpfm.ch'].includes(window.location.hostname);
+      robots.setAttribute('content', publicHost ? 'index, follow' : 'noindex, nofollow');
+    }
+
     document.title = meta.title;
     let desc = document.querySelector('meta[name="description"]');
     if (!desc) {
@@ -559,23 +556,7 @@ const App: React.FC = () => {
               );
             case 'home':
             default:
-              return (
-                <main className="pb-16 sm:pb-24">
-                  <Hero onNavigate={handleNavigate} />
-                  <Suspense fallback={null}>
-                    <Section1Intro onNavigate={handleNavigate} />
-                    <SegmentationSection onNavigate={handleNavigate} />
-                    <Section3Leistungen onNavigate={handleNavigate} />
-                    <Section4Umzugsreinigung onNavigate={handleNavigate} />
-                    <Section5Preise onNavigate={handleNavigate} />
-                    <Section2Einsatzgebiete onNavigate={handleNavigate} />
-                    <Section7Gruender onNavigate={handleNavigate} />
-                    <ValuesSection />
-                    <Section6FAQ onNavigate={handleNavigate} />
-                    <Section8Blog onNavigate={handleNavigate} />
-                  </Suspense>
-                </main>
-              );
+              return <ApprovedHome onNavigate={handleNavigate} />;
           }
         })()}
       </Suspense>
@@ -584,19 +565,20 @@ const App: React.FC = () => {
 };
 
   const isReviewPage = page === 'review-invite';
+  const isApprovedHome = page === 'home';
 
   return (
     <div className="bg-slate-50 text-gray-800 relative">
-      {mounted && !isReviewPage && (
+      {mounted && !isReviewPage && !isApprovedHome && (
         <Suspense fallback={null}>
           <FloatingMascot currentPage={page} cart={cart} onNavigate={handleNavigate} seoCityId={seoCityId} />
           <FloatingCTA onNavigate={handleNavigate} currentPage={page} />
         </Suspense>
       )}
       
-      {!isReviewPage && <Header onNavigate={handleNavigate} currentPage={page as any} />}
+      {!isReviewPage && !isApprovedHome && <Header onNavigate={handleNavigate} currentPage={page as any} />}
       {renderPage()}
-      {!isReviewPage && (
+      {!isReviewPage && !isApprovedHome && (
         <Suspense fallback={null}>
           <Footer onNavigate={handleNavigate} />
         </Suspense>

@@ -1,0 +1,20 @@
+/* Keep the entire approved apartment, including its leftmost wall, in frame.
+   The portable proposal used oversized, negatively offset mobile artwork. */
+@media (max-width: 1100px) {
+  .kraken-home .hero-visual {
+    width: calc(100% - 32px);
+    max-width: 100%;
+    margin: 6px 16px 0;
+    align-self: center;
+  }
+}
+
+/* Tailwind's important base reset otherwise removes the inactive panel from
+   the grid. Keep its dimensions reserved, while hidden and inert hide its UI. */
+@layer base {
+  .kraken-home .van-panels > [role="tabpanel"][hidden] {
+    display: block !important;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}

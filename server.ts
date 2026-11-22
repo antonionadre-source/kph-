@@ -8,6 +8,7 @@ import compression from "compression";
 import fs from "fs";
 import { getMetadataForPath, isRouteValid, VALID_CITIES } from "./seoConfig.ts";
 import { MUNICIPALITIES } from "./src/data/locations.ts";
+import { createHomeWeatherHandler } from "./server/homeWeather.ts";
 // No need to define currentDirname or use import.meta.url as they are unused and cause a parse-time SyntaxError in bundled CommonJS on startup.
 
 dotenv.config();
@@ -18,6 +19,14 @@ if (!process.env.NODE_ENV) {
 async function startServer() {
   const app = express();
 
+  app.use((req, res, next) => {
+    const hostname = req.hostname?.toLowerCase();
+    if (hostname !== "krakenpfm.ch" && hostname !== "www.krakenpfm.ch") {
+      res.setHeader("X-Robots-Tag", "noindex, nofollow");
+    }
+    next();
+  });
+
   app.use(compression());
   app.use(cors());
   app.use(express.json());
@@ -25,6 +34,8 @@ async function startServer() {
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
   });
+
+  app.get("/api/weather/zurich", createHomeWeatherHandler());
 
   app.get("/api/download-zip", (req, res) => {
     const zipPath = path.join(process.cwd(), "public", "sitio-web-completo.zip");
@@ -492,7 +503,7 @@ async function startServer() {
           ? path.join(distPath, "index.html")
           : path.join(distPath, `${cleanPath}.html`);
 
-        if (fs.existsSync(preRenderedFilePath)) {
+        if (cleanPath !== "" && fs.existsSync(preRenderedFilePath)) {
           res.setHeader("Content-Type", "text/html; charset=utf-8");
           return res.sendFile(preRenderedFilePath);
         }
@@ -576,6 +587,7 @@ async function startServer() {
   }
 
   app.use(express.static(distPath, {
+    index: false,
     maxAge: "1d",
     setHeaders: (res, filePath) => {
       if (filePath.includes("/assets/") || filePath.match(/\.[0-9a-f]{8,}\./)) {

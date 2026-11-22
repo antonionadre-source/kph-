@@ -50,6 +50,7 @@ import {
 } from '../src/data/municipalRegimes';
 
 import { sendLead } from './leadWebhook';
+import { consumeHomeCalculatorRequest, mergeConsultationDraft, type CalculatorServiceId } from '../src/home/calculator';
 
 const SERVICE_ID = 'service_aiv15bc'; 
 const TEMPLATE_ID = 'template_aktj7t9'; 
@@ -68,7 +69,7 @@ interface ConsultationPageProps {
 
 // --- Constants & Types ---
 
-type ServiceType = 'end-of-tenancy' | 'deep-cleaning' | 'daily-cleaning' | 'moving' | 'pest-control' | 'waste-management' | 'gutter-cleaning' | 'car-detailing' | 'gardening' | 'exterior-cleaning';
+type ServiceType = CalculatorServiceId;
 
 interface VehicleConfig {
     id: string;
@@ -2187,6 +2188,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   
   const { user } = useAuth();
   const [activeModal, setActiveModal] = useState<ServiceType | null>(null);
+  const [windowQuoteRequested, setWindowQuoteRequested] = useState(false);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [showInclusionsModal, setShowInclusionsModal] = useState<string | null>(null);
   const [comingSoonModalService, setComingSoonModalService] = useState<ServiceType | null>(null);
@@ -2263,6 +2265,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
   // New Booking Mode state
   const [bookingMode, setBookingMode] = useState<'direct' | 'validate' | null>(null);
+  const [contactDataHydrated, setContactDataHydrated] = useState(false);
+  const lastContactFields = useRef<string | null>(null);
 
   // Active page-level wizard step (1-Location, 2-Core services, 3-Additional services, 4-Photos)
   const [activeWizardStep, setActiveWizardStep] = useState(1);
@@ -2481,10 +2485,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
   // Load Persisted Contact Data on Mount
   useEffect(() => {
-    const savedData = localStorage.getItem(PERSISTENCE_KEY);
-    if (savedData) {
-        try {
+    let restored: Record<string, any> = {};
+    try {
+        const savedData = localStorage.getItem(PERSISTENCE_KEY);
+        if (savedData) {
             const data = JSON.parse(savedData);
+            if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Invalid saved consultation data');
+            restored = data;
             if (data.name) setClientName(data.name);
             if (data.email) setEmail(data.email);
             if (data.phonePrefix) setPhonePrefix(data.phonePrefix);
@@ -2500,29 +2507,33 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
             if (data.marketing !== undefined) setIsMarketingSubscribed(data.marketing);
             if (data.bookingMode) setBookingMode(data.bookingMode);
 
-            // Auto-focus selected service from SEO pages
-            const preselectedService = localStorage.getItem('kraken_preselected_service');
-            if (preselectedService) {
-                setActiveModal(preselectedService as ServiceType);
-                if (data.postcode && data.postcode.length === 4) {
-                    setActiveWizardStep(2);
-                }
-                localStorage.removeItem('kraken_preselected_service');
-            }
-        } catch (e) {
-            console.error("Failed to parse persisted data", e);
         }
-    } else {
-        const preselectedService = localStorage.getItem('kraken_preselected_service');
-        if (preselectedService) {
-            setActiveModal(preselectedService as ServiceType);
-            localStorage.removeItem('kraken_preselected_service');
-        }
+    } catch {
+        console.warn('Saved consultation data was not changed because it could not be loaded.');
     }
+
+    const request = consumeHomeCalculatorRequest();
+    if (request?.kind === 'windows') {
+        setWindowQuoteRequested(true);
+        setActiveModal(null);
+    } else if (request?.kind === 'service') {
+        const item = cart.find(item => item.type === request.service);
+        const selectedConfig = JSON.parse(JSON.stringify(item?.details || SERVICE_DEFAULT_CONFIGS[request.service] || {}));
+        if (!item && request.service === 'moving') {
+            selectedConfig.fromZip = restored.postcode || '';
+            selectedConfig.fromAddress = restored.address || '';
+        }
+        setConfig(selectedConfig);
+        setEditingItemId(item?.id || null);
+        setActiveModal(request.service);
+        if (restored.postcode && restored.postcode.length === 4) setActiveWizardStep(2);
+    }
+    setContactDataHydrated(true);
   }, []);
 
   // Save to LocalStorage whenever fields change
   useEffect(() => {
+    if (!contactDataHydrated) return;
     const dataToSave = {
         name: clientName,
         email,
@@ -2539,8 +2550,21 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         marketing: isMarketingSubscribed,
         bookingMode
     };
-    localStorage.setItem(PERSISTENCE_KEY, JSON.stringify(dataToSave));
-  }, [clientName, email, phonePrefix, phone, address, postcode, city, notes, selectedDate, selectedTime, isTermsAgreed, isMarketingSubscribed, bookingMode]);
+    const fields = JSON.stringify(dataToSave);
+    // Hydration and service selection must not rewrite the saved customer JSON.
+    if (lastContactFields.current === null) {
+        lastContactFields.current = fields;
+        return;
+    }
+    if (lastContactFields.current === fields) return;
+    try {
+        const saved = mergeConsultationDraft(localStorage.getItem(PERSISTENCE_KEY), dataToSave);
+        if (saved !== null) {
+            localStorage.setItem(PERSISTENCE_KEY, saved);
+            lastContactFields.current = fields;
+        }
+    } catch { /* Keep the existing draft if browser storage is unavailable. */ }
+  }, [contactDataHydrated, clientName, email, phonePrefix, phone, address, postcode, city, notes, accessMethod, selectedDate, selectedTime, isTermsAgreed, isMarketingSubscribed, bookingMode]);
 
   const lastScrollYRef = useRef(0);
 
@@ -4303,6 +4327,33 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         }} 
       />
     );
+  }
+
+  if (!contactDataHydrated) {
+    return <main className="min-h-screen bg-white px-5 pb-20 pt-28" role="status" aria-live="polite">
+      <p className="mx-auto max-w-2xl text-base text-[#032B59]">{mt('Loading calculator…', 'Cargando calculadora…', 'Rechner wird geladen…', 'Chargement du calculateur…', 'Caricamento del calcolatore…', 'A carregar o calculador…')}</p>
+    </main>;
+  }
+
+  if (windowQuoteRequested) {
+    return <main className="min-h-screen bg-slate-50 px-5 pb-20 pt-28 sm:px-8" aria-labelledby="window-quote-heading">
+      <div className="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
+        <h1 id="window-quote-heading" className="text-3xl font-bold text-[#032B59]">{mt('Window cleaning', 'Limpieza de ventanas', 'Fensterreinigung', 'Nettoyage des fenêtres', 'Pulizia delle finestre', 'Limpeza de janelas')}</h1>
+        <p role="status" className="mt-5 text-base leading-7 text-slate-700">{mt(
+          'Window cleaning is selected. No price estimate or online payment is offered for this service. We will clarify the scope with you. Your saved details and existing calculation remain unchanged.',
+          'Has seleccionado limpieza de ventanas. No se ofrece una estimación de precio ni pago en línea para este servicio. Acordaremos contigo el alcance. Tus datos guardados y el cálculo existente se conservan.',
+          'Fensterreinigung ist ausgewählt. Für diesen Service werden keine Preisschätzung und keine Online-Zahlung angeboten. Den Umfang klären wir mit Ihnen. Ihre gespeicherten Angaben und die bestehende Berechnung bleiben erhalten.',
+          'Le nettoyage des fenêtres est sélectionné. Ce service ne propose ni estimation de prix ni paiement en ligne. Nous préciserons le périmètre avec vous. Vos informations et votre calcul existants sont conservés.',
+          'Hai selezionato la pulizia delle finestre. Per questo servizio non sono previsti stima del prezzo o pagamento online. Definiremo i dettagli con te. I dati salvati e il calcolo esistente vengono conservati.',
+          'Selecionou a limpeza de janelas. Este serviço não apresenta uma estimativa de preço nem pagamento online. Confirmaremos consigo o âmbito. Os dados guardados e o cálculo existente são preservados.'
+        )}</p>
+        <p className="mt-5 text-base leading-7 text-slate-700">{mt('Contact:', 'Contacto:', 'Kontakt:', 'Contact :', 'Contatto:', 'Contacto:')}{' '}<a href="mailto:kai@krakenpfm.ch" className="font-semibold text-[#032B59] underline underline-offset-4">kai@krakenpfm.ch</a></p>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <button type="button" onClick={() => setWindowQuoteRequested(false)} className="min-h-11 rounded-xl bg-[#032B59] px-5 py-3 text-base font-semibold text-white">{mt('View existing calculation', 'Ver el cálculo existente', 'Bestehende Berechnung ansehen', 'Voir le calcul existant', 'Vedi il calcolo esistente', 'Ver o cálculo existente')}</button>
+          <button type="button" onClick={() => onNavigate('home')} className="min-h-11 rounded-xl border border-slate-300 px-5 py-3 text-base font-semibold text-[#032B59]">{mt('Back to home', 'Volver al inicio', 'Zur Startseite', 'Retour à l’accueil', 'Torna alla home', 'Voltar ao início')}</button>
+        </div>
+      </div>
+    </main>;
   }
 
   return (

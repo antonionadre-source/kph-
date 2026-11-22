@@ -9,7 +9,8 @@
     "start": "node dist/server.cjs",
     "lint": "tsc --noEmit",
     "preview": "vite preview",
-    "audit:images": "tsx scripts/audit-images.ts"
+    "audit:images": "tsx scripts/audit-images.ts",
+    "test:home": "node --import tsx --test tests/home-*.test.*"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
