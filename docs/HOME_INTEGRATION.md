@@ -76,7 +76,7 @@ hasta disponer de la URL oficial. Se incluye el enlace `Website made by seociety
 
 ## Validación
 
-`npm run build` y `npm run test:home` pasan: 33 pruebas de puente/borradores, hosting,
+`npm run build` y `npm run test:home` pasan: 38 pruebas de puente/borradores, hosting,
 clima, estado de Kai, limpieza del montaje y metadatos. `npm run lint` reproduce
 únicamente los tres errores que ya tenía la versión recibida: `webhookPromise`
 en `CareersPage.tsx` y `setConfetti`/`confetti` en `PaymentCelebrationPage.tsx`.
@@ -101,7 +101,22 @@ El lock se sincronizó con las dependencias ya declaradas; una instalación limp
 con Node 24 y `npm ci --include=dev` pasa. No se cambiaron las tarifas ni se
 introdujeron nuevas dependencias declaradas.
 
-La publicación usa el proyecto existente de krakenpfm.ch, primero con
-`--prod --skip-domain` y después promoción de la build READY. El despliegue
-anterior se conserva como punto de rollback. La preview local continúa en
-`http://localhost:3001/`.
+La publicación usa el proyecto existente de krakenpfm.ch. Para evitar que el
+colector remoto omita archivos generados, se construye y verifica el artefacto
+completo antes de enviarlo:
+
+```sh
+vercel pull --yes --environment=production
+vercel build --prod --yes
+node scripts/prepare-vercel-output.mjs
+node scripts/prepare-vercel-output.mjs --verify
+vercel deploy --prebuilt --prod --skip-domain --yes
+vercel promote <deployment-id>
+```
+
+El preparador incorpora sólo originales públicos versionados y bundles de la
+build actual; verifica hashes, referencias, enrutamiento y HTML de la función.
+`rewriteRelativeImportExtensions` asegura imports JavaScript ejecutables en el
+artefacto Node. Las pruebas ejecutan además la función compilada sin TSX.
+El despliegue anterior se conserva como punto de rollback. La preview local
+continúa en `http://localhost:3001/`.
