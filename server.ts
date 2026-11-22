@@ -12,12 +12,18 @@ import { createHomeWeatherHandler } from "./server/homeWeather.ts";
 // No need to define currentDirname or use import.meta.url as they are unused and cause a parse-time SyntaxError in bundled CommonJS on startup.
 
 dotenv.config();
-if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = "production";
-}
+const runningOnVercel = process.env.VERCEL === "1";
+const isBundled = typeof __filename !== "undefined" && __filename.endsWith("server.cjs");
+process.env.NODE_ENV = (runningOnVercel || isBundled) ? "production" : (process.env.NODE_ENV || "development");
+const isDev = process.env.NODE_ENV === "development";
 
-async function startServer() {
-  const app = express();
+// Vercel owns the listener. Every request waits for the same initialization,
+// including when local Vite middleware needs asynchronous setup.
+const app = express();
+export default app;
+app.use((_req, _res, next) => { appReady.then(() => next(), next); });
+
+async function configureApplication() {
 
   app.use((req, res, next) => {
     const hostname = req.hostname?.toLowerCase();
@@ -491,7 +497,7 @@ async function startServer() {
 
   const handleHtmlRequest = async (req: express.Request, res: express.Response) => {
     try {
-      const isProd = process.env.NODE_ENV === "production" || (typeof __filename !== "undefined" && __filename.endsWith("server.cjs"));
+      const isProd = !isDev;
       const distPath = (typeof __dirname !== "undefined" && path.basename(__dirname) === "dist")
         ? __dirname
         : path.join(process.cwd(), "dist");
@@ -551,10 +557,7 @@ async function startServer() {
   };
 
   // Vite middleware for development (with graceful fallback if not installed/present)
-  let viteLoaded = false;
   let viteInstance: any = null;
-  const hasBuiltAssets = fs.existsSync(path.join(process.cwd(), "dist", "index.html"));
-  const isDev = process.env.NODE_ENV === "development" && !hasBuiltAssets;
   if (isDev) {
     try {
       const { createServer: createViteServer } = await (specifier => import(specifier))("vite") as any;
@@ -563,7 +566,6 @@ async function startServer() {
         appType: "custom",
       });
       app.use(viteInstance.middlewares);
-      viteLoaded = true;
       console.log("Vite development server middleware loaded.");
     } catch (e) {
       console.warn("Could not load Vite middleware in development mode. Falling back to serving built files.", e);
@@ -576,6 +578,18 @@ async function startServer() {
     : path.join(process.cwd(), "dist");
 
   const publicPath = path.join(process.cwd(), "public");
+
+  // Local builds also contain a Node bundle and diagnostics. They are never
+  // public files, including requests with encoded dots in the filename.
+  app.use((req, res, next) => {
+    let pathname: string;
+    try { pathname = decodeURIComponent(req.path).toLowerCase(); }
+    catch { return res.status(400).type("text/plain").send("Bad request"); }
+    if (pathname.endsWith(".map") || /(?:^|\/)(?:server\.(?:cjs|mjs|js)|stats\.html)$/.test(pathname)) {
+      return res.status(404).type("text/plain").send("Not found");
+    }
+    next();
+  });
 
   if (fs.existsSync(publicPath)) {
     app.use(express.static(publicPath, {
@@ -693,9 +707,17 @@ async function startServer() {
   });
   console.log(`Serving static production assets with caching headers from: ${distPath}`);
 
+  return { close: () => viteInstance?.close() };
+}
+
+export const appReady = configureApplication();
+
+async function startServer() {
+  const lifecycle = await appReady;
+
   const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
-  const server = app.listen(PORT, "0.0.0.0", () => {
+  const server = app.listen(PORT, process.env.HOST || "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
   });
 
@@ -706,6 +728,7 @@ async function startServer() {
 
   process.on("SIGTERM", () => {
     console.log("SIGTERM signal received: closing HTTP server gracefully.");
+    void lifecycle.close();
     server.close(() => {
       console.log("HTTP server closed.");
       process.exit(0);
@@ -714,6 +737,7 @@ async function startServer() {
 
   process.on("SIGINT", () => {
     console.log("SIGINT signal received: closing HTTP server gracefully.");
+    void lifecycle.close();
     server.close(() => {
       console.log("HTTP server closed.");
       process.exit(0);
@@ -729,7 +753,11 @@ async function startServer() {
   });
 }
 
-startServer().catch((err) => {
-  console.error("Critical error starting the server:", err);
-  process.exit(1);
-});
+if (runningOnVercel) {
+  void appReady.catch(err => console.error("Critical error initializing the application:", err));
+} else {
+  startServer().catch((err) => {
+    console.error("Critical error starting the server:", err);
+    process.exit(1);
+  });
+}

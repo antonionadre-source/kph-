@@ -76,7 +76,7 @@ hasta disponer de la URL oficial. Se incluye el enlace `Website made by seociety
 
 ## Validación
 
-`npm run build` y `npm run test:home` pasan: 29 pruebas de puente/borradores,
+`npm run build` y `npm run test:home` pasan: 33 pruebas de puente/borradores, hosting,
 clima, estado de Kai, limpieza del montaje y metadatos. `npm run lint` reproduce
 únicamente los tres errores que ya tenía la versión recibida: `webhookPromise`
 en `CareersPage.tsx` y `setConfetti`/`confetti` en `PaymentCelebrationPage.tsx`.
@@ -88,5 +88,20 @@ Los accesos a la calculadora se prueban con las conexiones de Firebase, EmailJS
 y Payrexx bloqueadas temporalmente: no se crean usuarios, pagos ni solicitudes
 para validar esta portada. Esto no certifica el envío ni un pago de producción.
 
-La preview local está en `http://localhost:3001/`. Esta entrega modifica el código
-de la rama de trabajo; no sustituye por sí misma el despliegue de `krakenpfm.ch`.
+## Alojamiento en krakenpfm.ch
+
+`vercel.json` selecciona Express de forma explícita frente al antiguo preset Vite.
+El servidor exporta la aplicación y comparte su inicialización sin abrir un
+listener en la función. `npm run build:vercel` conserva el HTML para Express y
+copia sólo los recursos del frontend a `public/assets`. Se excluyen fuentes de
+mapas, estadísticas, bundles Node, registros y entornos privados. El launcher
+local `server.js` se conserva y queda fuera del detector de entrada de Vercel.
+
+El lock se sincronizó con las dependencias ya declaradas; una instalación limpia
+con Node 24 y `npm ci --include=dev` pasa. No se cambiaron las tarifas ni se
+introdujeron nuevas dependencias declaradas.
+
+La publicación usa el proyecto existente de krakenpfm.ch, primero con
+`--prod --skip-domain` y después promoción de la build READY. El despliegue
+anterior se conserva como punto de rollback. La preview local continúa en
+`http://localhost:3001/`.

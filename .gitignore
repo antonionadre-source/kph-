@@ -11,6 +11,9 @@ node_modules
 # Build & env
 dist
 dist-ssr
+.vercel
+.cache
+public/assets/
 *.local
 .env
 .env.*

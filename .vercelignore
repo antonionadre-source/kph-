@@ -1,0 +1,16 @@
+.git
+.vercel
+.cache
+node_modules
+server.js
+dist
+public/assets
+**/.env*
+assets-source
+work
+outputs
+tests
+logs
+**/*.log
+**/*.pem
+**/*.key
