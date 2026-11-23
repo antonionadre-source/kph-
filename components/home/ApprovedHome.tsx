@@ -135,6 +135,10 @@ export default function ApprovedHome({ onNavigate }: { onNavigate: (page: string
             <span className="scene-open-weather" aria-hidden="true"><svg id="sceneWeatherIcon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="M12 7v5l3 2"></path></svg></span>
             <span className="scene-open-copy"><strong id="sceneCityTime">{t("Zürich · Ortszeit")}</strong><span id="sceneShortStatus">{t("Szene entdecken")}</span></span><svg className="scene-open-settings icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h7m4 0h5M4 17h3m4 0h9"></path><circle cx="13" cy="7" r="2"></circle><circle cx="9" cy="17" r="2"></circle></svg>
           </button>
+          <button className="scene-motion-toggle" id="sceneMotionToggle" type="button" aria-label={t("Animation pausieren")} title={t("Animation pausieren")} aria-pressed={false}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><g className="scene-motion-pause" data-motion-icon="pause"><path d="M8 5v14m8-14v14" /></g><g className="scene-motion-play" data-motion-icon="play"><path d="m9 6 9 6-9 6Z" /></g></svg>
+            <span className="sr-only" data-scene-motion-label="">{t("Animation pausieren")}</span>
+          </button>
         </div>
         <dialog className="scene-dialog" id="sceneDialog" aria-labelledby="sceneDialogTitle" aria-describedby="scenePreviewExplanation">
           <div className="scene-dialog-inner">
@@ -254,20 +258,6 @@ export default function ApprovedHome({ onNavigate }: { onNavigate: (page: string
       <details><summary>{t("Welches Fahrzeug nutzen Sie für kleine Umzüge?")}<svg className="icon" aria-hidden="true"><use href="#i-plus"></use></svg></summary><p>{t("Wir nutzen einen Ford Transit. Teilen Sie uns mit, welche Möbel und Kartons transportiert werden sollen und wie die Zugänge aussehen. So können wir Fahrzeug, Helfer und benötigte Fahrten passend abstimmen.")}</p></details>
     </div></section>
   </main>
-
-  <footer className="site-footer" id="kontakt">
-    <div className="container">
-      <div className="footer-invitation"><div><p className="eyebrow">{t("Einfach miteinander sprechen")}</p><h2>{t("Ihr Zuhause.")}<br />{t("Unser nächster Auftrag?")}</h2></div><div><p>{t("Erzählen Sie uns, wobei wir helfen dürfen.")}</p><a className="button button-mint" href="/quote" data-calculator="">{t("Jetzt im Rechner starten")}</a></div></div>
-      <div className="footer-grid"><div className="footer-brand"><a className="logo logo-light" href="#" aria-label={t("Kraken PFM – nach oben")}><img src="/home-approved/assets/logo.webp" alt="Kraken" width="1024" height="1024" loading="lazy" /></a><p>{t("Reinigung und kleine Umzüge.")}<br />{t("Für private Haushalte.")}<br />{t("Für ein leichteres Ankommen.")}</p><p className="footer-tax">{t("Es wird keine Mehrwertsteuer verrechnet.")}</p></div>
-        <div className="footer-contact"><h3>{t("Hier sind wir zu Hause")}</h3><address>Kraken PFM<br />Seewadelstrasse 3<br />{t("8203 Schaffhausen, Schweiz")}</address><a className="footer-map" href="https://www.google.com/maps/search/?api=1&query=Seewadelstrasse%203%2C%208203%20Schaffhausen%2C%20Schweiz" target="_blank" rel="noopener noreferrer">{t("Adresse auf Google Maps")}</a><a className="footer-contact-link" href="tel:+41774505705"><svg className="icon" aria-hidden="true"><use href="#i-phone"></use></svg>+41 77 450 57 05</a><a className="footer-contact-link" href="mailto:kai@krakenpfm.ch"><svg className="icon" aria-hidden="true"><use href="#i-mail"></use></svg>kai@krakenpfm.ch</a></div>
-        <div className="footer-services"><h3>{t("So helfen wir Ihnen")}</h3><nav aria-label={t("Leistungen im Footer")}><a data-service="windows" href="/quote" data-calculator="">{t("Fensterreinigung")}</a><a data-service="end" href="/quote" data-calculator="">{t("Umzugsreinigung")}</a><a data-service="regular" href="/quote" data-calculator="">{t("Regelmässige Reinigung")}</a><a data-service="deep" href="/quote" data-calculator="">{t("Grundreinigung")}</a><a data-service="moving" href="/quote" data-calculator="">{t("Kleine Umzüge")}</a></nav></div>
-        <div className="footer-regions"><h3>{t("In Ihrer Nähe")}</h3><ul><li>{t("Zürich")}</li><li>{t("Schaffhausen")}</li><li>{t("Winterthur")}</li></ul><h3 className="footer-social-heading">{t("Bleiben wir in Kontakt")}</h3><div className="social-links"><a className="social-instagram is-pending" data-instagram="" role="link" aria-disabled="true" tabIndex={-1} target="_blank" rel="noopener noreferrer"><svg className="icon" aria-hidden="true"><use href="#i-instagram"></use></svg>Instagram</a><a href="https://www.linkedin.com/company/krakenpfm/" target="_blank" rel="noopener noreferrer"><svg className="icon" aria-hidden="true"><use href="#i-linkedin"></use></svg>LinkedIn</a><a href="https://wa.me/41774505705" target="_blank" rel="noopener noreferrer"><svg className="icon" aria-hidden="true"><use href="#i-message"></use></svg>WhatsApp</a></div></div>
-      </div>
-      <div className="footer-bottom"><p>© <span id="copyrightYear">2026</span> Kraken Properties and Facilities Management Gomes Mendes</p><nav aria-label={t("Rechtliches")}><a href="/impressum" target="_blank" rel="noopener noreferrer">{t("Impressum")}</a><a href="/gdpr" target="_blank" rel="noopener noreferrer">{t("Datenschutz")}</a><a href="/terms" target="_blank" rel="noopener noreferrer">{t("AGB")}</a></nav></div>
-      <p className="preview-note">{t("Die Bildwelten sind Illustrationen. Ihren Auftrag planen Sie im Service-Rechner.")}</p>
-      <p className="footer-credit">{t("Website made by")}{' '}<a href="https://seociety.ch" target="_blank" rel="noopener noreferrer">seociety.ch</a></p>
-    </div>
-  </footer>
 
   <div className="sr-only" id="globalStatus" aria-live="polite"></div>
 

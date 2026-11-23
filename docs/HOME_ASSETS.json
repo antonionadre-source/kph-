@@ -152,7 +152,7 @@
   ],
   "css": {
     "file": "components/home/approved-home.css",
-    "sha256": "aa676ed218801edefad5b526e9b332003c586d1d0a964d8980ea42de2a40e605",
+    "sha256": "954dbecb0c777ba496ad1ca1b012062469a048d5a41610bc49e7b14c20645fc9",
     "sourceOrder": [
       "styles.css",
       "scene.css",
@@ -191,13 +191,13 @@
       }
     ],
     "updatedFor": "Responsive devices and global Kai integration, 2026-11-23",
-    "bytes": 109495
+    "bytes": 110341
   },
   "components": [
     {
       "file": "components/home/ApprovedHome.tsx",
-      "bytes": 38463,
-      "sha256": "7acb8f971f67999d1c9ab5349577acb5facb5962f3fafececa06dc2e411053f1"
+      "bytes": 35245,
+      "sha256": "f551b55517f279efb7834b7a7491a036fa33011a49e88f737273bd032c4df99c"
     },
     {
       "file": "components/home/HomeLanguageSelector.tsx",
@@ -242,6 +242,27 @@
         "file": "src/kai/draft.ts",
         "bytes": 15687,
         "sha256": "7f64e96a9e5da756d327e748b4726e3b963d5131e08832987460d49b65686531"
+      }
+    ]
+  },
+  "automaticSceneAndSharedFooter": {
+    "updated": "2026-11-23",
+    "originalImageAssetsUnchanged": true,
+    "files": [
+      {
+        "file": "components/home/scene.js",
+        "bytes": 19468,
+        "sha256": "7b88b2a220e8cc62b13d4e11488bdf7e4f232f38739437688aaf632058177878"
+      },
+      {
+        "file": "components/home/scene-autoplay.js",
+        "bytes": 1224,
+        "sha256": "170640a08a225ce65801e113227d55c9e682d146867867b6694bbd6cd8405b50"
+      },
+      {
+        "file": "components/Footer.tsx",
+        "bytes": 7099,
+        "sha256": "888320482f2c9928195b00e2e7a5279b3094484812afb040c162510f739ca300"
       }
     ]
   }

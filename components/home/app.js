@@ -1,5 +1,4 @@
 import { createHomeScope } from './lifecycle.js';
-import { siteConfig } from './site-config.js';
 import { requestKaiOpen } from '../../src/kai/open.ts';
 
 export function initApprovedHome(homeRoot, openCalculator, t = source => source) {
@@ -38,13 +37,6 @@ export function initApprovedHome(homeRoot, openCalculator, t = source => source)
   $$('[data-open-kai]').forEach(button => scope.on(button, 'click', () => {
     requestKaiOpen(service, button);
   }));
-  const instagram = $('[data-instagram]');
-  if (instagram && siteConfig.instagramUrl) {
-    instagram.href = siteConfig.instagramUrl;
-    instagram.removeAttribute('aria-disabled');
-    instagram.removeAttribute('tabindex');
-    instagram.classList.remove('is-pending');
-  }
   const menuToggle = $('#menuToggle');
   const mobileNav = $('#mobileNav');
   function closeMenu() {
@@ -76,7 +68,6 @@ export function initApprovedHome(homeRoot, openCalculator, t = source => source)
     else $('#serviceHint').textContent = t('Was dürfen wir Ihnen abnehmen? Wählen Sie Ihren Service.');
   }
   scope.on(homeRoot, 'kraken:languagechange', refreshLanguage);
-  $('#copyrightYear').textContent = new Date().getFullYear();
   refreshLanguage();
   return () => scope.dispose();
 }

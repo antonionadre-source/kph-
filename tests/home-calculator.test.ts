@@ -1,10 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  CALCULATOR_SERVICE_STORAGE_KEY, HOME_CALCULATOR_INTENT_KEY,
-  consumeHomeCalculatorRequest, homeCalculatorRequest, mergeConsultationDraft, openHomeCalculator,
+  CALCULATOR_SERVICE_STORAGE_KEY, HOME_CALCULATOR_INTENT_KEY, HOME_CALCULATOR_REQUEST_EVENT,
+  consumeHomeCalculatorRequest, homeCalculatorRequest, mergeConsultationDraft, openHomeCalculator, subscribeHomeCalculatorRequests,
   type HomeService,
 } from '../src/home/calculator';
+import { consumeKaiTransfer, prepareKaiTransfer, subscribeKaiTransfers } from '../src/kai/draft';
+import { emptyKaiDraft } from '../src/kai/types';
 
 function storageFixture() {
   const draft = '{ "name": "Antonio", "postcode": "8200", "notes": "Behalten", "legacy": { "requestId": "existing-42" } }';
@@ -78,4 +80,68 @@ test('saving edited fields preserves unknown legacy draft data and refuses malfo
   assert.deepEqual(JSON.parse(merged!), { name: 'Antonio', postcode: '8200', notes: 'Aktualisiert', legacy: { requestId: 'existing-42' } });
   assert.equal(storage.getItem('kraken_consultation_data_v2'), storage.draft);
   for (const invalid of ['{broken', 'null', '[]', '"legacy text"']) assert.equal(mergeConsultationDraft(invalid, { name: 'New' }), null);
+});
+
+test('a mounted calculator is notified after navigation and can consume a service exactly once without changing customer data', async context => {
+  const target = new EventTarget();
+  const storage = storageFixture();
+  const received: unknown[] = [];
+  let notifications = 0;
+  target.addEventListener(HOME_CALCULATOR_REQUEST_EVENT, event => {
+    notifications++;
+    assert.equal('detail' in event, false); // No request, conversation or customer data on the notification.
+  });
+  const unsubscribe = subscribeHomeCalculatorRequests(() => received.push(consumeHomeCalculatorRequest(storage)), target);
+  context.after(unsubscribe);
+  openHomeCalculator('windows', route => {
+    assert.equal(route, '/quote');
+    assert.equal(notifications, 0);
+  }, storage, target);
+  assert.deepEqual(received, []);
+  await Promise.resolve();
+  assert.deepEqual(received, [{ kind: 'windows' }]);
+  assert.equal(notifications, 1);
+  assert.equal(consumeHomeCalculatorRequest(storage), null);
+  assert.equal(storage.getItem('kraken_consultation_data_v2'), storage.draft);
+  assert.equal(storage.getItem('pending_booking'), storage.pending);
+  assert.equal(storage.getItem('kraken_cart_persistent'), '[{"id":"existing-item","type":"moving"}]');
+  openHomeCalculator(null, () => undefined, storage, target);
+  await Promise.resolve();
+  assert.equal(notifications, 1);
+});
+
+test('leaving the calculator unsubscribes pending notifications but keeps the service available for its next mount', async () => {
+  const target = new EventTarget();
+  const storage = storageFixture();
+  let changes = 0;
+  const unsubscribe = subscribeHomeCalculatorRequests(() => changes++, target);
+  openHomeCalculator('regular', () => undefined, storage, target);
+  unsubscribe();
+  await Promise.resolve();
+  assert.equal(changes, 0);
+  assert.deepEqual(consumeHomeCalculatorRequest(storage), { kind: 'service', service: 'daily-cleaning' });
+});
+
+test('Kai consumes its earlier queued transfer before a footer-style service notification can change the active calculation', async context => {
+  const target = new EventTarget();
+  const storage = storageFixture();
+  const draft = { ...emptyKaiDraft('es'), service: 'windows' as const, services: ['windows' as const], fields: { windowsCount: '4' } };
+  let kaiApplied = 0;
+  let plainServiceChanges = 0;
+  context.after(subscribeKaiTransfers(() => {
+    const transfer = consumeKaiTransfer(null);
+    if (!transfer) return;
+    assert.equal(transfer.draft.fields.windowsCount, '4');
+    assert.deepEqual(consumeHomeCalculatorRequest(storage), { kind: 'windows' });
+    kaiApplied++;
+  }, target));
+  context.after(subscribeHomeCalculatorRequests(() => {
+    if (consumeHomeCalculatorRequest(storage)) plainServiceChanges++;
+  }, target));
+  prepareKaiTransfer(draft, 'preserve', null, target);
+  openHomeCalculator('windows', () => undefined, storage, target);
+  await Promise.resolve();
+  assert.equal(kaiApplied, 1);
+  assert.equal(plainServiceChanges, 0);
+  assert.equal(consumeKaiTransfer(null), null);
 });

@@ -1,5 +1,6 @@
 import { createHomeScope } from './lifecycle.js';
 import { resolveKaiState } from './scene-state.js';
+import { createSceneAutoplay } from './scene-autoplay.js';
 export function initApartmentScene(homeRoot, { t = source => source, getLocale = () => 'de-CH' } = {}) {
     const scope = createHomeScope();
     const byId = id => homeRoot.querySelector('#' + id);
@@ -13,6 +14,7 @@ export function initApartmentScene(homeRoot, { t = source => source, getLocale =
     const kai = $('#sceneKai');
     const room = $('#sceneRoom');
     const landscape = $('#sceneLandscape');
+    const motionToggle = $('#sceneMotionToggle');
     const controls = [...dialog.querySelectorAll('[data-scene-control]')];
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const overrides = { season: 'auto', celebration: 'auto', phase: 'auto', weather: 'auto', clothing: 'auto', motion: 'auto' };
@@ -37,10 +39,22 @@ export function initApartmentScene(homeRoot, { t = source => source, getLocale =
     let nextFetchAt = 0;
     let weatherTimer = null;
     let clockTimer = null;
-    let taskStartTimer = null;
     let taskEndTimer = null;
     let lastOpener = null;
     let selectedService = 'moving';
+    let sceneVisible = false;
+    const autoplay = createSceneAutoplay(scope, { play: animateTask, stop: stopTask });
+    function syncMotion() {
+        const paused = document.hidden || !sceneVisible || reducedMotion.matches || overrides.motion === 'still';
+        canvas.classList.toggle('is-paused', paused);
+        autoplay.setActive(!paused && canvas.dataset.phase !== 'night' && kai.classList.contains('is-ready'));
+        const label = t(overrides.motion === 'still' ? 'Animation fortsetzen' : 'Animation pausieren');
+        motionToggle.hidden = reducedMotion.matches;
+        motionToggle.setAttribute('aria-pressed', String(overrides.motion === 'still'));
+        motionToggle.setAttribute('aria-label', label);
+        motionToggle.title = label;
+        motionToggle.querySelector('[data-scene-motion-label]').textContent = label;
+    }
     function zurichParts(date) {
         return Object.fromEntries(dateFormatter.formatToParts(date)
             .filter(part => part.type !== 'literal')
@@ -116,7 +130,6 @@ export function initApartmentScene(homeRoot, { t = source => source, getLocale =
         const kaiState = resolveKaiState({ phase, temperatureC: observation?.temperatureC, clothing: overrides.clothing, service: selectedService });
         const preview = Object.values(overrides).some(value => value !== 'auto');
         Object.assign(canvas.dataset, { season, celebration, phase, weather, clothing: kaiState.clothing, lights: kaiState.lightsOn ? 'on' : 'off' });
-        canvas.classList.toggle('is-paused', document.hidden || overrides.motion === 'still');
         const roomSource = kaiState.lightsOn ? '/home-approved/assets/hero-room-day-v4.webp' : '/home-approved/assets/hero-room-night-v4.webp';
         if (room.getAttribute('src') !== roomSource)
             room.src = roomSource;
@@ -165,6 +178,7 @@ export function initApartmentScene(homeRoot, { t = source => source, getLocale =
         ];
         canvas.setAttribute('aria-label', sceneDescription.filter(Boolean).join(' '));
         updateWeatherIcon(weather, phase);
+        syncMotion();
     }
     function updateWeatherIcon(weather, phase) {
         const paths = {
@@ -227,39 +241,29 @@ export function initApartmentScene(homeRoot, { t = source => source, getLocale =
             clockTimer = scope.timeout(tickClock, 60000 - Date.now() % 60000 + 50);
     }
     function stopTask() {
-        scope.clearTimeout(taskStartTimer);
         scope.clearTimeout(taskEndTimer);
         kai.classList.remove('is-working', 'is-changing', 'is-settled');
         canvas.classList.remove('is-window-cleaning');
     }
+    function animateTask() {
+        const task = kai.dataset.task;
+        stopTask();
+        if (task === 'rest' || reducedMotion.matches || document.hidden || !sceneVisible || overrides.motion === 'still')
+            return;
+        void kai.offsetWidth;
+        kai.classList.add('is-working');
+        canvas.classList.toggle('is-window-cleaning', task === 'windows');
+        taskEndTimer = scope.timeout(() => {
+            kai.classList.remove('is-working');
+            canvas.classList.remove('is-window-cleaning');
+        }, 2750);
+    }
     function showTask(service) {
-        const task = service === 'windows' ? 'windows' : service === 'moving' ? 'moving' : ['end', 'regular', 'deep'].includes(service) ? 'mop' : null;
-        if (!task)
+        if (!['windows', 'moving', 'end', 'regular', 'deep'].includes(service))
             return;
         selectedService = service;
-        const changed = kai.dataset.task !== task;
         updateScene();
-        if (canvas.dataset.phase === 'night')
-            return;
-        stopTask();
-        if (reducedMotion.matches || document.hidden || overrides.motion === 'still') {
-            kai.dataset.task = task;
-            return;
-        }
-        if (changed)
-            kai.classList.add('is-changing');
-        taskStartTimer = scope.timeout(() => {
-            kai.dataset.task = task;
-            kai.classList.remove('is-changing');
-            void kai.offsetWidth;
-            kai.classList.add('is-working');
-            canvas.classList.toggle('is-window-cleaning', task === 'windows');
-            taskEndTimer = scope.timeout(() => {
-                kai.classList.remove('is-working');
-                kai.classList.toggle('is-settled', task === 'moving');
-                canvas.classList.remove('is-window-cleaning');
-            }, 2750);
-        }, changed ? 140 : 0);
+        autoplay.replay();
     }
     function createPrecipitation() {
         const namespace = 'http://www.w3.org/2000/svg';
@@ -301,10 +305,13 @@ export function initApartmentScene(homeRoot, { t = source => source, getLocale =
     });
     controls.forEach(control => scope.on(control, 'change', () => {
         overrides[control.dataset.sceneControl] = control.value;
-        if (control.dataset.sceneControl === 'motion' && control.value === 'still')
-            stopTask();
         updateScene();
     }));
+    scope.on(motionToggle, 'click', () => {
+        overrides.motion = overrides.motion === 'still' ? 'auto' : 'still';
+        controls.find(control => control.dataset.sceneControl === 'motion').value = overrides.motion;
+        updateScene();
+    });
     scope.on($('#sceneReset'), 'click', () => {
         controls.forEach(control => { control.value = 'auto'; overrides[control.dataset.sceneControl] = 'auto'; });
         updateScene();
@@ -312,7 +319,6 @@ export function initApartmentScene(homeRoot, { t = source => source, getLocale =
     scope.on(homeRoot, 'kraken:servicechange', event => showTask(event.detail?.service));
     scope.on(homeRoot, 'kraken:languagechange', () => { refreshFormatters(); updateScene(); });
     scope.on(document, 'visibilitychange', () => {
-        canvas.classList.toggle('is-paused', document.hidden || overrides.motion === 'still');
         if (document.hidden) {
             scope.clearTimeout(clockTimer);
             scope.clearTimeout(weatherTimer);
@@ -325,11 +331,18 @@ export function initApartmentScene(homeRoot, { t = source => source, getLocale =
             else
                 scheduleWeather();
         }
+        syncMotion();
     });
-    scope.on(reducedMotion, 'change', () => { if (reducedMotion.matches)
-        stopTask(); });
+    scope.on(reducedMotion, 'change', syncMotion);
+    const visibility = scope.observer(entries => {
+        const entry = entries.at(-1);
+        if (!entry) return;
+        sceneVisible = entry.isIntersecting && entry.intersectionRatio > 0;
+        syncMotion();
+    }, { threshold: 0 });
+    visibility.observe(canvas);
     const kaiImage = new Image();
-    scope.on(kaiImage, 'load', () => kai.classList.add('is-ready'));
+    scope.on(kaiImage, 'load', () => { kai.classList.add('is-ready'); syncMotion(); });
     kaiImage.src = '/home-approved/assets/kai-tasks.webp';
     // Warm and night variants are requested by their CSS only when they are needed.
     scope.cleanup(() => { if (dialog.open)

@@ -3,6 +3,7 @@ export type HomeService = 'windows' | 'end' | 'regular' | 'deep' | 'moving';
 export const CALCULATOR_ROUTE = '/quote';
 export const CALCULATOR_SERVICE_STORAGE_KEY = 'kraken_preselected_service';
 export const HOME_CALCULATOR_INTENT_KEY = 'kraken_home_calculator_intent';
+export const HOME_CALCULATOR_REQUEST_EVENT = 'kraken:calculator-service-request';
 
 export const CALCULATOR_SERVICE_IDS = ['end-of-tenancy', 'daily-cleaning', 'deep-cleaning', 'moving', 'pest-control', 'waste-management', 'gutter-cleaning', 'car-detailing', 'gardening', 'exterior-cleaning'] as const;
 export type CalculatorServiceId = typeof CALCULATOR_SERVICE_IDS[number];
@@ -15,6 +16,17 @@ function browserStorage(): HandoffStorage | null {
   try { return typeof window === 'undefined' ? null : window.localStorage; } catch { return null; }
 }
 
+function browserEvents(): EventTarget | null {
+  return typeof window !== 'undefined' && typeof window.dispatchEvent === 'function'
+    && typeof window.addEventListener === 'function' ? window : null;
+}
+
+/** Notify a mounted calculator without putting customer details on the event. */
+export function subscribeHomeCalculatorRequests(listener: () => void, target: EventTarget | null = browserEvents()): () => void {
+  target?.addEventListener(HOME_CALCULATOR_REQUEST_EVENT, listener);
+  return () => target?.removeEventListener(HOME_CALCULATOR_REQUEST_EVENT, listener);
+}
+
 export function homeCalculatorRequest(service: unknown): CalculatorRequest | null {
   if (service === 'windows') return { kind: 'windows' };
   if (typeof service === 'string' && Object.prototype.hasOwnProperty.call(serviceMap, service)) {
@@ -23,8 +35,9 @@ export function homeCalculatorRequest(service: unknown): CalculatorRequest | nul
   return null;
 }
 
-export function openHomeCalculator(service: HomeService | null | undefined, onNavigate: (page: string) => void, storage: HandoffStorage | null = browserStorage()): void {
-  pendingRequest = homeCalculatorRequest(service);
+export function openHomeCalculator(service: HomeService | null | undefined, onNavigate: (page: string) => void, storage: HandoffStorage | null = browserStorage(), target: EventTarget | null = browserEvents()): void {
+  const request = homeCalculatorRequest(service);
+  pendingRequest = request;
   try {
     storage?.removeItem(HOME_CALCULATOR_INTENT_KEY);
     storage?.removeItem(CALCULATOR_SERVICE_STORAGE_KEY);
@@ -32,6 +45,9 @@ export function openHomeCalculator(service: HomeService | null | undefined, onNa
     else if (pendingRequest?.kind === 'windows') storage?.setItem(HOME_CALCULATOR_INTENT_KEY, 'windows');
   } catch { /* The same-page hand-off also works in memory when storage is blocked. */ }
   onNavigate(CALCULATOR_ROUTE);
+  // Navigation/mount and Kai's earlier transfer notification can consume the intent first.
+  // A remaining mounted consumer reads the intent once; null is deliberately a no-op.
+  if (request && target) queueMicrotask(() => target.dispatchEvent(new Event(HOME_CALCULATOR_REQUEST_EVENT)));
 }
 
 export function consumeHomeCalculatorRequest(storage: HandoffStorage | null = browserStorage()): CalculatorRequest | null {

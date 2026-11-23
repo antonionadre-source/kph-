@@ -50,7 +50,7 @@ import {
 } from '../src/data/municipalRegimes';
 
 import { sendLead } from './leadWebhook';
-import { consumeHomeCalculatorRequest, homeCalculatorRequest, mergeConsultationDraft, type CalculatorServiceId } from '../src/home/calculator';
+import { consumeHomeCalculatorRequest, homeCalculatorRequest, mergeConsultationDraft, subscribeHomeCalculatorRequests, type CalculatorRequest, type CalculatorServiceId } from '../src/home/calculator';
 import { applyKaiToCalculation, consumeKaiTransfer, kaiDraftFieldLabel, subscribeKaiTransfers, registerKaiCalculationPreview } from '../src/kai/draft';
 import { KAI_FIELDS, type KaiDraft } from '../src/kai/types';
 
@@ -2597,8 +2597,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
     name: clientName, email, phonePrefix, phone, address, postcode, city, notes, accessMethod,
     date: selectedDate, time: selectedTime, terms: isTermsAgreed, marketing: isMarketingSubscribed, bookingMode,
   });
-  const currentKaiService = (draft: KaiDraft) => {
-    const request = homeCalculatorRequest(draft.service);
+  const currentCalculatorService = (request: CalculatorRequest | null) => {
     if (request?.kind !== 'service') return { request, base: {}, existing: {}, editingId: null };
     if (activeModal === request.service) return { request, base: config, existing: config, editingId: editingItemId };
     const retained = retainedKaiEdits.current.get(request.service);
@@ -2607,12 +2606,45 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
     const existing = validRetained?.config || item?.details || {};
     return { request, base: validRetained?.config || item?.details || SERVICE_DEFAULT_CONFIGS[request.service] || {}, existing, editingId: validRetained ? validRetained.editingItemId : item?.id || null };
   };
+  const currentKaiService = (draft: KaiDraft) => currentCalculatorService(homeCalculatorRequest(draft.service));
   const liveKaiHandlers = useRef({
     transfer: () => {},
+    calculatorRequest: () => {},
     preview: (_draft: KaiDraft) => ({ contact: {} as Record<string, unknown>, config: {} as Record<string, unknown> }),
   });
   liveKaiHandlers.current = {
     preview: draft => ({ contact: currentKaiContact(), config: currentKaiService(draft).existing }),
+    calculatorRequest: () => {
+      const request = consumeHomeCalculatorRequest();
+      // Kai's earlier notification may already have consumed this intention.
+      if (!request) return;
+      const target = currentCalculatorService(request);
+      if (activeModal && (request.kind === 'windows' || request.service !== activeModal)) {
+        retainedKaiEdits.current.set(activeModal, { config: JSON.parse(JSON.stringify(config)), editingItemId });
+      }
+      // The new service selection is explicit; existing contact, notes and cart stay in place.
+      setKaiTransferredDraft(null);
+      setKaiTransferConflicts([]);
+      setKaiTransferBlocked(false);
+      setShowWindowInfo(false);
+      if (request.kind === 'windows') {
+        setWindowQuoteRequested(true);
+        setActiveModal(null);
+        setEditingItemId(null);
+        return;
+      }
+      const next = JSON.parse(JSON.stringify(target.base));
+      if (request.service === 'moving') {
+        next.fromZip ||= postcode || '';
+        next.fromAddress ||= address || '';
+      }
+      retainedKaiEdits.current.delete(request.service);
+      setWindowQuoteRequested(false);
+      setConfig(next);
+      setEditingItemId(target.editingId);
+      setActiveModal(request.service);
+      setActiveWizardStep(postcode.trim().length === 4 ? 2 : 1);
+    },
     transfer: () => {
       const transfer = consumeKaiTransfer();
       if (!transfer) return;
@@ -2671,8 +2703,9 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   };
   useEffect(() => {
     const unsubscribe = subscribeKaiTransfers(() => liveKaiHandlers.current.transfer());
+    const unsubscribeCalculator = subscribeHomeCalculatorRequests(() => liveKaiHandlers.current.calculatorRequest());
     const unregister = registerKaiCalculationPreview(draft => liveKaiHandlers.current.preview(draft));
-    return () => { unsubscribe(); unregister(); };
+    return () => { unsubscribe(); unsubscribeCalculator(); unregister(); };
   }, []);
 
   // Save to LocalStorage whenever fields change

@@ -169,3 +169,31 @@ build actual; verifica hashes, referencias, enrutamiento y HTML de la función.
 artefacto Node. Las pruebas ejecutan además la función compilada sin TSX.
 El despliegue anterior se conserva como punto de rollback. La preview local
 continúa en `http://localhost:3001/`.
+
+## Kai automático y footer común — 23 de noviembre de 2026
+
+Kai empieza a animarse sin pulsaciones cuando su imagen está lista y la casa
+está visible. `scene-autoplay.js` repite la tarea visual actual cada siete
+segundos, con una acción breve y una pausa entre ciclos. Elegir un servicio
+mantiene su tarea correspondiente; la animación no selecciona servicios ni
+modifica el calculador. El movimiento de la caja vuelve a la posición inicial
+para evitar saltos entre ciclos. Por la noche se mantiene el descanso animado.
+
+El botón junto a los ajustes de la escena permite pausar y reanudar. Comparte
+el estado con el selector de movimiento. La escena se pausa fuera de pantalla,
+en una pestaña oculta o con movimiento reducido; los temporizadores y el
+observador se liberan al salir de la home. Las etiquetas del botón están en los
+seis idiomas del sitio. No se añadieron recursos gráficos ni dependencias.
+
+`Footer.tsx` contiene el footer aprobado completo y autónomo, con sus iconos,
+idiomas, enlaces y año de Zúrich. `App.tsx` lo monta una vez para todas las
+páginas, incluida la home. Los estilos originales permanecen limitados al
+wrapper `.kraken-home.kraken-site-footer`. Se elimina la copia incrustada y el
+footer anterior con su formulario y newsletter.
+
+Los enlaces de sus cinco servicios usan el contrato existente del calculador.
+Una notificación sin datos personales permite consumir la selección cuando
+`/quote` ya está abierto, conservando las ediciones interrumpidas, los datos de
+contacto y el carrito. La notificación previa de Kai tiene prioridad y evita
+aplicar dos veces una transferencia. La limpieza de ventanas mantiene su
+recorrido independiente sin precio ni pago en línea.

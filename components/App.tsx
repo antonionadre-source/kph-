@@ -584,11 +584,7 @@ const App: React.FC = () => {
       
       {!isReviewPage && !isApprovedHome && <Header onNavigate={handleNavigate} currentPage={page as any} />}
       {renderPage()}
-      {!isReviewPage && !isApprovedHome && (
-        <Suspense fallback={null}>
-          <Footer onNavigate={handleNavigate} />
-        </Suspense>
-      )}
+      <Footer onNavigate={handleNavigate} />
       {mounted && !isReviewPage && (
         <Suspense fallback={null}>
           <CookieConsent onNavigate={handleNavigate} />

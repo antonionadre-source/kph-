@@ -94,6 +94,8 @@ const rows = [
   ['Mit leichtem Polo', 'With a light polo shirt', 'Con polo ligero', 'Com polo leve', 'Con una polo leggera', 'Avec un polo léger'],
   ['Bewegung', 'Motion', 'Movimiento', 'Movimento', 'Movimento', 'Mouvement'],
   ['Sanfte Animation', 'Gentle animation', 'Animación suave', 'Animação suave', 'Animazione delicata', 'Animation douce'],
+  ['Animation pausieren', 'Pause animation', 'Pausar la animación', 'Pausar a animação', 'Mettere in pausa l’animazione', 'Mettre l’animation en pause'],
+  ['Animation fortsetzen', 'Resume animation', 'Reanudar la animación', 'Retomar a animação', 'Riprendere l’animazione', 'Reprendre l’animation'],
   ['Ruhiges Bild', 'Still image', 'Imagen estática', 'Imagem estática', 'Immagine statica', 'Image fixe'],
   ['Kai passt sich der Tageszeit und der Temperatur an.', 'Kai follows the time of day and temperature.', 'Kai se adapta a la hora del día y a la temperatura.', 'O Kai adapta-se à hora do dia e à temperatura.', 'Kai si adatta all’ora del giorno e alla temperatura.', 'Kai s’adapte à l’heure et à la température.'],
   ['Szene ansehen', 'View the scene', 'Ver la escena', 'Ver o cenário', 'Guarda la scena', 'Voir la scène'],
