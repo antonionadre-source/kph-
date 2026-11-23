@@ -1,4 +1,5 @@
 import { createHomeScope } from './lifecycle.js';
+import { KRAKEN_VEHICLE } from '../../src/vehicle.ts';
 export function initTransit(homeRoot, t = source => source) {
     const scope = createHomeScope();
     const byId = id => homeRoot.querySelector('#' + id);
@@ -35,7 +36,8 @@ export function initTransit(homeRoot, t = source => source) {
     let stage = 0;
     let playing = false;
     let started = false;
-    let userPaused = false;
+    // Let visitors read dimensions and use the fit checker without automatic tab changes.
+    let userPaused = true;
     let inView = false;
     let timer = null;
     let transitionTimer = null;
@@ -132,16 +134,21 @@ export function initTransit(homeRoot, t = source => source) {
             frame.dataset.frame = String(stage);
         steps.forEach((button, index) => button.setAttribute('aria-pressed', String(index === stage)));
         status.textContent = t(descriptions[stage]);
-        progress.style.width = `${(stage + 1) * 25}%`;
-        visual.setAttribute('aria-label', t('Illustrative Ansicht eines offenen Kraken Ford Transit mit {cargo}. Keine massstabsgetreue Kapazitätsangabe.', { cargo: t(imageDescriptions[stage]) }));
+        // Story steps, not an estimate of the vehicle's occupied capacity.
+        progress.style.width = `${stage / 3 * 100}%`;
+        visual.setAttribute('aria-label', t('Illustrative Ansicht des Ford Transit Custom 250 L1H1 mit {cargo}. Geometrisches Ladebeispiel; Gewicht und Sicherung werden separat geprüft.', { cargo: t(imageDescriptions[stage]) }));
+        if (visual.classList.contains('show-measures')) setMeasures(true);
         updatePlay();
     }
     function setMeasures(show) {
         visual.classList.toggle('show-measures', show);
         measures.setAttribute('aria-pressed', String(show));
         measures.textContent = t(show ? 'Messpunkte ausblenden' : 'Messpunkte anzeigen');
+        const number = value => new Intl.NumberFormat(homeRoot.lang || 'de-CH', { maximumFractionDigits: 1 }).format(value);
         status.textContent = show
-            ? t('Innenlänge, Innenbreite und Innenhöhe: Die Fahrzeugmasse bestätigen wir persönlich.')
+            ? t('Innenlänge: {length} cm · Radkästen: {width} cm · Hecktür: {doorWidth} × {doorHeight} cm.', {
+                length: number(KRAKEN_VEHICLE.interior.lengthCm), width: number(KRAKEN_VEHICLE.interior.betweenWheelArchesCm),
+                doorWidth: number(KRAKEN_VEHICLE.rearDoor.widthCm), doorHeight: number(KRAKEN_VEHICLE.rearDoor.heightCm) })
             : t(descriptions[stage]);
     }
     function nextStage() {
@@ -160,7 +167,6 @@ export function initTransit(homeRoot, t = source => source) {
     }
     function start() {
         stop();
-        setMeasures(false);
         if (reducedMotion.matches) {
             renderStage(stage === 3 ? 0 : 3, false);
             return;
@@ -205,7 +211,6 @@ export function initTransit(homeRoot, t = source => source) {
     });
     steps.forEach((button, index) => scope.on(button, 'click', () => {
         pauseAutoplay();
-        setMeasures(false);
         renderStage(index);
     }));
     scope.on(play, 'pointerdown', () => { playPointerIntent = playing; });
@@ -220,8 +225,6 @@ export function initTransit(homeRoot, t = source => source) {
     scope.on(measures, 'click', () => {
         const show = measures.getAttribute('aria-pressed') !== 'true';
         pauseAutoplay();
-        if (show)
-            renderStage(0);
         setMeasures(show);
     });
     scope.on(autoplay, 'click', () => {

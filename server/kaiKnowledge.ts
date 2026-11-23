@@ -1,14 +1,17 @@
 import { homeText, normalizeHomeLanguage, type HomeLanguage } from '../components/home/homeTranslations.ts';
 import type { KaiField, KaiService } from '../src/kai/types.ts';
+import { KRAKEN_VEHICLE } from '../src/vehicle.ts';
 
-/** Approved public-site facts. No price catalogue or unverified vehicle capacity. */
+/** Approved public-site facts. Vehicle measurements are nominal, not a load guarantee. */
 export const KAI_KNOWLEDGE = Object.freeze({
   company: 'Kraken Properties & Facilities Management',
   regions: ['Zürich', 'Schaffhausen', 'Winterthur'],
   email: 'kai@krakenpfm.ch',
   phone: '+41 77 450 57 05',
   address: 'Seewadelstrasse 3, 8203 Schaffhausen, Schweiz',
-  vehicle: 'Ford Transit; exact dimensions, capacity and number of trips require personal confirmation.',
+  vehicle: { ...KRAKEN_VEHICLE, nominalMeasurements: true, volumeApproximate: true, payloadKg: null,
+    notes: 'First-generation owner-confirmed L1H1. One-item fit is geometric only. Confirm actual lining, weight, handling, access and securement. Never infer payload from 250 or the roof limit; never guarantee a full room/studio in one trip.',
+    sources: ['https://www.fordpresse.be/content/old/2012_pdf_2012_ford_transit_custom_nl.pdf#page=46', 'https://www.smov.co.uk/pdf/Ford%20Transit%20Custom.pdf#page=21'] },
   vat: 'Es wird keine Mehrwertsteuer verrechnet.',
   services: {
     windows: 'Window cleaning: quantity, window type and accessibility; scope clarified personally. No standalone online estimate is configured.',
@@ -27,7 +30,7 @@ const copy = {
     multiple: 'Ich habe beide Anliegen notiert. Mit welchem Service möchten Sie im Rechner beginnen?',
     ready: 'Sie können den Entwurf jetzt prüfen und im Rechner ergänzen.',
     price: 'Die Kosten berechnen Sie im Kraken-Rechner. Ich kann Ihre Angaben für den Übergang vorbereiten.',
-    vehicle: 'Wir nutzen einen Ford Transit. Ob Ihre Ladung passt, bestätigen wir persönlich anhand der Möbelmasse, des Gewichts und der Zugänge.',
+    vehicle: "Wir nutzen einen Ford Transit Custom 250 L1H1 mit rund 6 m³: innen 255,5 × 177,5 × 140,6 cm (Länge × Breite × Höhe), zwischen den Radkästen 139 cm. Die Hecktüröffnung misst etwa 140 × 134 cm. Möbelmasse, Gewicht und Zugänge prüfen wir persönlich; daraus folgt keine Zusage für eine bestimmte Ladung oder eine einzige Fahrt.",
     regions: 'Wir unterstützen Privathaushalte in Zürich, Schaffhausen und Winterthur. Den Einsatz und die Anfahrt prüfen wir anhand Ihrer Angaben.',
     contact: 'Sie erreichen Kraken unter kai@krakenpfm.ch oder +41 77 450 57 05. Das Team kann die nächsten Schritte persönlich mit Ihnen klären.',
     includes: 'Den genauen Umfang und die Vorbereitung stimmen wir im Rechner und in Ihrer persönlichen Bestätigung ab.',
@@ -41,7 +44,7 @@ const copy = {
     multiple: 'I have noted both needs. Which service would you like to start with in the calculator?',
     ready: 'You can review the draft now and complete it in the calculator.',
     price: 'Use the Kraken calculator for costs. I can prepare your details so you can continue there.',
-    vehicle: 'We use a Ford Transit. We personally confirm whether a load fits after checking furniture dimensions, weight and access.',
+    vehicle: "We use a Ford Transit Custom 250 L1H1 with about 6 m³: inside 255.5 × 177.5 × 140.6 cm (length × width × height), 139 cm between the wheel arches. The rear opening is about 140 × 134 cm. We check item dimensions, weight and access personally; these figures do not guarantee a load or a single trip.",
     regions: 'We help private households in Zurich, Schaffhausen and Winterthur. We review the job and travel arrangements using your details.',
     contact: 'Contact Kraken at kai@krakenpfm.ch or +41 77 450 57 05. The team can discuss the next steps with you personally.',
     includes: 'The exact scope and preparation are agreed in the calculator and your personal confirmation.',
@@ -55,7 +58,7 @@ const copy = {
     multiple: 'He anotado ambas necesidades. ¿Por qué servicio desea empezar en el calculador?',
     ready: 'Puede revisar el borrador y completar los detalles en el calculador.',
     price: 'Puede calcular los costes en el calculador de Kraken. Puedo preparar sus datos para que continúe allí.',
-    vehicle: 'Utilizamos una Ford Transit. Confirmamos personalmente si la carga cabe según las medidas de los muebles, el peso y los accesos.',
+    vehicle: "Utilizamos una Ford Transit Custom 250 L1H1 de unos 6 m³: interior de 255,5 × 177,5 × 140,6 cm (largo × ancho × alto), con 139 cm entre pasos de rueda. La abertura trasera es de unos 140 × 134 cm. Revisamos las medidas, el peso y los accesos; esto no confirma una carga concreta ni un solo viaje.",
     regions: 'Ayudamos a hogares particulares en Zúrich, Schaffhausen y Winterthur. Revisamos el servicio y el desplazamiento según sus datos.',
     contact: 'Puede contactar con Kraken en kai@krakenpfm.ch o en el +41 77 450 57 05. El equipo le explicará personalmente los siguientes pasos.',
     includes: 'El alcance exacto y la preparación se acuerdan en el calculador y en su confirmación personal.',
@@ -69,7 +72,7 @@ const copy = {
     multiple: 'Anotei as duas necessidades. Por que serviço pretende começar no simulador?',
     ready: 'Pode rever o rascunho e completar os detalhes no simulador.',
     price: 'Pode calcular os custos no simulador Kraken. Posso preparar os seus dados para continuar por lá.',
-    vehicle: 'Utilizamos uma Ford Transit. Confirmamos pessoalmente se a carga cabe, tendo em conta as medidas dos móveis, o peso e os acessos.',
+    vehicle: "Utilizamos uma Ford Transit Custom 250 L1H1 com cerca de 6 m³: interior de 255,5 × 177,5 × 140,6 cm (comprimento × largura × altura), com 139 cm entre as cavas das rodas. A abertura traseira tem cerca de 140 × 134 cm. Confirmamos as medidas, o peso e os acessos; estes valores não garantem uma carga nem uma única viagem.",
     regions: 'Apoiamos casas particulares em Zurique, Schaffhausen e Winterthur. Analisamos o serviço e a deslocação com base nos seus dados.',
     contact: 'Pode contactar a Kraken em kai@krakenpfm.ch ou pelo +41 77 450 57 05. A equipa pode combinar pessoalmente os próximos passos.',
     includes: 'O âmbito exato e a preparação são combinados no simulador e na sua confirmação pessoal.',
@@ -83,7 +86,7 @@ const copy = {
     multiple: 'Ho annotato entrambe le esigenze. Da quale servizio desidera iniziare nel calcolatore?',
     ready: 'Può rivedere la bozza e completare i dettagli nel calcolatore.',
     price: 'Può calcolare i costi nel calcolatore Kraken. Posso preparare i suoi dati per proseguire da lì.',
-    vehicle: 'Utilizziamo un Ford Transit. Confermiamo personalmente se il carico entra in base alle misure dei mobili, al peso e agli accessi.',
+    vehicle: "Utilizziamo un Ford Transit Custom 250 L1H1 con circa 6 m³: interno di 255,5 × 177,5 × 140,6 cm (lunghezza × larghezza × altezza), con 139 cm tra i passaruota. Il vano delle porte posteriori misura circa 140 × 134 cm. Verifichiamo misure, peso e accessi; questi dati non garantiscono un carico specifico o un solo viaggio.",
     regions: 'Aiutiamo i privati a Zurigo, Schaffhausen e Winterthur. Verifichiamo l’intervento e il tragitto in base ai suoi dati.',
     contact: 'Può contattare Kraken a kai@krakenpfm.ch o al +41 77 450 57 05. Il team potrà concordare personalmente i prossimi passi.',
     includes: 'Il contenuto esatto del servizio e la preparazione vengono concordati nel calcolatore e nella conferma personale.',
@@ -97,7 +100,7 @@ const copy = {
     multiple: 'J’ai noté les deux besoins. Par quelle prestation souhaitez-vous commencer dans le calculateur ?',
     ready: 'Vous pouvez vérifier le brouillon et compléter les détails dans le calculateur.',
     price: 'Vous pouvez calculer les coûts dans le calculateur Kraken. Je peux préparer vos informations pour poursuivre là-bas.',
-    vehicle: 'Nous utilisons un Ford Transit. Nous confirmons personnellement si le chargement convient selon les dimensions des meubles, le poids et les accès.',
+    vehicle: "Nous utilisons un Ford Transit Custom 250 L1H1 d’environ 6 m³ : intérieur de 255,5 × 177,5 × 140,6 cm (longueur × largeur × hauteur), avec 139 cm entre les passages de roue. L’ouverture arrière mesure environ 140 × 134 cm. Nous vérifions dimensions, poids et accès ; ces données ne garantissent ni une charge précise ni un seul trajet.",
     regions: 'Nous accompagnons les particuliers à Zurich, Schaffhouse et Winterthour. Nous examinons la demande et le déplacement selon vos informations.',
     contact: 'Contactez Kraken à kai@krakenpfm.ch ou au +41 77 450 57 05. L’équipe pourra convenir personnellement des prochaines étapes avec vous.',
     includes: 'Le périmètre exact et la préparation sont convenus dans le calculateur et dans votre confirmation personnelle.',

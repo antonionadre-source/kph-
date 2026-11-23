@@ -6,10 +6,14 @@ import { HomeLanguageSelector } from './HomeLanguageSelector';
 import { initApprovedHome } from './app';
 import { initApartmentScene } from './scene';
 import { initTransit } from './van';
+import { TransitCargoVisual, TransitCustomExterior, TransitSpecifications } from './TransitCargoVisual';
+import { VehicleFitChecker } from './VehicleFitChecker';
+import { KRAKEN_VEHICLE } from '../../src/vehicle';
 import './approved-home.css';
 import './responsive-fixes.css';
 import './home-language.css';
 import './device-fixes.css';
+import './transit-custom.css';
 
 // The approved illustration layers and accessible controls remain one React route.
 export default function ApprovedHome({ onNavigate }: { onNavigate: (page: string) => void }) {
@@ -201,13 +205,13 @@ export default function ApprovedHome({ onNavigate }: { onNavigate: (page: string
       <div className="van-panels">
       <div id="vanOverview" role="tabpanel" aria-labelledby="vanOverviewTab" tabIndex={0}>
       <div className="moving-inner container">
-        <div className="moving-art atlas-panel panel-transit" role="img" aria-label={t("Illustration eines weissen Ford Transit mit Umzugskartons und Sofa")}></div>
-        <div className="moving-copy"><p className="eyebrow">{t("Für Ihren nächsten Anfang")}</p><h2 id="moving-title">{t("Kleiner Umzug.")}<br />{t("Klar geplant.")}</h2><p className="moving-description">{t("Ein paar Möbel oder eine kleine Wohnung? Mit unserem Ford Transit und einem erfahrenen Team bringen wir Bewegung in Ihre Pläne.")}</p>
+        <div className="moving-art transit-custom-exterior" role="img" aria-label={t("Schematische Ansicht unseres kompakten Ford Transit Custom 250 L1H1.")}><TransitCustomExterior /></div>
+        <div className="moving-copy"><p className="eyebrow">{t("Für Ihren nächsten Anfang")}</p><p className="transit-model-label">{KRAKEN_VEHICLE.model}<span>{KRAKEN_VEHICLE.variant} · ≈ {KRAKEN_VEHICLE.volumeM3} m³</span></p><h2 id="moving-title">{t("Kleiner Umzug.")}<br />{t("Klar geplant.")}</h2><p className="moving-description">{t("Einzelne Möbel, ein Zimmer oder ein kleines Studio: Wir planen Ihren Umzug nach der Inventarliste, bei Bedarf mit mehreren Fahrten.")}</p>
           <div className="move-features" aria-label={t("Ihr Umzug mit Kraken")}><div><svg className="icon brand-service-icon" aria-hidden="true" viewBox="0 0 32 32"><use href="/home-approved/assets/kraken-icons.svg#moving"></use></svg><span>{t("Unser Transit")}</span></div><div><svg className="icon brand-service-icon" aria-hidden="true" viewBox="0 0 32 32"><use href="/home-approved/assets/kraken-icons.svg#team"></use></svg><span>{t("Unser Team")}</span></div><div><svg className="icon brand-service-icon" aria-hidden="true" viewBox="0 0 32 32"><use href="/home-approved/assets/kraken-icons.svg#time"></use></svg><span>{t("Ihr Termin")}</span></div><div><svg className="icon brand-service-icon" aria-hidden="true" viewBox="0 0 32 32"><use href="/home-approved/assets/kraken-icons.svg#distance"></use></svg><span>{t("Ihre Strecke")}</span></div></div>
           <p className="moving-detail">{t("Vom Abholort bis zum Ziel: Beschreiben Sie Ihren Umzug Schritt für Schritt im Rechner.")}</p>
         </div>
         <div className="moving-planner calculator-planner"><div><strong>{t("Was zieht mit um?")}</strong><p>{t("Erzählen Sie uns im Rechner von Ihrem Umzug.")}</p></div><a className="button button-mint" href="/quote" data-service="moving" data-calculator="">{t("Umzug berechnen")}</a></div>
-        <p className="moving-caption">{t("Fahrzeugdarstellung illustrativ. Der konkrete Einsatz wird persönlich abgestimmt.")}</p>
+        <p className="moving-caption">{t("Kurzer Transit Custom mit normalem Dach. Fahrzeugdarstellung schematisch; Anzahl der Fahrten und Gewicht werden persönlich abgestimmt.")}</p>
       </div>
       </div>
       <div id="vanInside" role="tabpanel" aria-labelledby="vanInsideTab" tabIndex={0} hidden={true} inert={true}>
@@ -215,7 +219,7 @@ export default function ApprovedHome({ onNavigate }: { onNavigate: (page: string
           <div className="van-inside-copy">
             <p className="eyebrow">{t("Platz für Ihren nächsten Schritt")}</p>
             <h2>{t("Tür auf.")}<br />{t("Raum für Neues.")}</h2>
-            <p className="van-intro">{t("Kartons, Stühle und ein zerlegtes Möbelstück: Entdecken Sie, wie wir einen kleinen Umzug im Transit planen.")}</p>
+            <p className="van-intro">{t("Ein konkretes Ladebeispiel: 8 Kartons, 2 Stühle und ein flaches, zerlegtes Möbelteil. Die einzelnen Schritte zeigen die Anordnung, nicht die Auslastung.")}</p>
             <div className="van-load-steps" role="group" aria-label={t("Beladung ansehen")}>
               <button type="button" data-cargo-step="0" aria-pressed="true"><svg className="icon" aria-hidden="true"><use href="#i-truck"></use></svg><span>{t("Leer")}</span></button>
               <button type="button" data-cargo-step="1" aria-pressed="false"><svg className="icon" aria-hidden="true"><use href="#i-box"></use></svg><span>{t("Kartons")}</span></button>
@@ -225,24 +229,16 @@ export default function ApprovedHome({ onNavigate }: { onNavigate: (page: string
             <div className="van-load-status"><span className="van-load-progress" aria-hidden="true"><span id="cargoProgress"></span></span><p id="cargoStatus" role="status" aria-live="polite">{t("Alles beginnt mit einem freien Laderaum.")}</p></div>
             <div className="van-view-actions"><button className="van-play" id="cargoPlay" type="button"><span className="van-play-symbol" aria-hidden="true"></span><span id="cargoPlayLabel">{t("Laden ansehen")}</span></button><button className="van-measures-toggle" id="cargoMeasures" type="button" aria-pressed="false">{t("Messpunkte anzeigen")}</button></div>
           </div>
-          <div className="van-load-visual" id="cargoVisual" role="img" aria-label={t("Illustrative Ansicht eines offenen Kraken Ford Transit mit leerem Laderaum.")}>
-            <div className="van-load-atlas" id="cargoFrame" data-frame="0" aria-hidden="true"></div>
-            <div className="van-load-atlas van-load-incoming" id="cargoIncoming" data-frame="0" aria-hidden="true"></div>
-            <svg className="van-dimensions" viewBox="0 0 627 627" aria-hidden="true">
-              <g className="van-dimension-lines"><path d="M285 477H511M285 469v16M511 469v16M538 151v305M530 151h16M530 456h16M306 430l60-52M301 424l10 12M361 372l10 12"></path></g>
-            </svg>
-            <div className="van-dimension-tags" aria-hidden="true"><span className="van-tag-width">{t("Innenbreite")}</span><span className="van-tag-height">{t("Innenhöhe")}</span><span className="van-tag-length">{t("Innenlänge")}</span></div>
-            <span className="van-example-label">{t("Illustratives Ladebeispiel")}</span>
+          <div className="van-load-visual transit-cargo-visual" id="cargoVisual" role="img" aria-label={t("Schematische Ladeansicht des Ford Transit Custom 250 L1H1.")}>
+            <div className="van-load-atlas" id="cargoFrame" data-frame="0" aria-hidden="true"><TransitCargoVisual language={homeLanguage} /></div>
+            <div className="van-load-atlas van-load-incoming" id="cargoIncoming" data-frame="0" aria-hidden="true"><TransitCargoVisual language={homeLanguage} /></div>
+            <span className="van-example-label">{t("Geometrisches Ladebeispiel · keine Transportzusage")}</span>
           </div>
-          <div className="van-fit-card">
-            <div className="van-fit-icon" aria-hidden="true"><svg className="icon" viewBox="0 0 24 24"><path d="m4 16 12-12 5 5L9 21Zm5-5 3 3m0-6 3 3m0-6 3 3"></path></svg></div>
-            <div><h3>{t("Passt Ihr Möbelstück?")}</h3><p>{t("Innenlänge, Höhe, Radkästen und Türöffnungen zählen. Teilen Sie uns die Masse Ihrer Möbel mit – den verfügbaren Platz bestätigen wir vor dem Umzug persönlich.")}</p></div>
-            <a className="button button-mint" data-service="moving" href="/quote" data-calculator="">{t("Umzug im Rechner planen")}</a>
-          </div>
-          <p className="van-capacity-note">{t("Schematische Darstellung, nicht massstabsgetreu. Die gezeigte Ladung ist ein Beispiel. Was tatsächlich mitkommt, hängt von Abmessungen, Gewicht und Ladungssicherung ab.")}</p>
+          <p className="van-capacity-note">{t("Beispielmasse: Kartons 60 × 40 × 40 cm, Stühle 45 × 45 × 90 cm, Möbelteil 200 × 60 × 8 cm. Gewicht, Stapelbarkeit und Sicherung werden separat geprüft.")}</p>
         </div>
       </div>
       </div>
+      <div className="transit-shared container"><TransitSpecifications t={t} language={homeLanguage} /><VehicleFitChecker t={t} language={homeLanguage} /></div>
     </section>
 
     <section className="about-section section" id="ueber-uns" aria-labelledby="about-title"><div className="container">
@@ -255,7 +251,7 @@ export default function ApprovedHome({ onNavigate }: { onNavigate: (page: string
       <details><summary>{t("Wie plane ich meinen Auftrag?")}<svg className="icon" aria-hidden="true"><use href="#i-plus"></use></svg></summary><p>{t("Wählen Sie im Rechner die gewünschte Leistung und geben Sie die Details zu Ihrer Wohnung oder Ihrem Umzug an.")}{' '}<a href="/quote" data-calculator="">{t("Zum Service-Rechner")}</a></p></details>
       <details><summary>{t("Wird Mehrwertsteuer verrechnet?")}<svg className="icon" aria-hidden="true"><use href="#i-plus"></use></svg></summary><p>{t("Es wird keine Mehrwertsteuer verrechnet. Die Angaben zu Ihrem Auftrag erhalten Sie im Rechner und in Ihrer persönlichen Bestätigung.")}</p></details>
       <details><summary>{t("In welchen Regionen ist Kraken tätig?")}<svg className="icon" aria-hidden="true"><use href="#i-plus"></use></svg></summary><p>{t("Wir unterstützen Privathaushalte in Zürich, Schaffhausen und Winterthur. Geben Sie Ihre Postleitzahl an, damit wir Ihren Auftrag und die Anfahrt gemeinsam prüfen können.")}</p></details>
-      <details><summary>{t("Welches Fahrzeug nutzen Sie für kleine Umzüge?")}<svg className="icon" aria-hidden="true"><use href="#i-plus"></use></svg></summary><p>{t("Wir nutzen einen Ford Transit. Teilen Sie uns mit, welche Möbel und Kartons transportiert werden sollen und wie die Zugänge aussehen. So können wir Fahrzeug, Helfer und benötigte Fahrten passend abstimmen.")}</p></details>
+      <details><summary>{t("Welches Fahrzeug nutzen Sie für kleine Umzüge?")}<svg className="icon" aria-hidden="true"><use href="#i-plus"></use></svg></summary><p>{t("Wir nutzen einen Ford Transit Custom 250 L1H1 mit ungefähr 6 m³ Laderaum. Die Hecktür und die Radkästen begrenzen die möglichen Möbelmasse. Wir prüfen Ihre Inventarliste, das Gewicht und die Zugänge vor dem Umzug.")}</p></details>
     </div></section>
   </main>
 

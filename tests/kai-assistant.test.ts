@@ -174,6 +174,36 @@ test('valid structured provider data is marked AI and server recomputes missing 
   assert.equal(KAI_DEFAULT_MODEL, 'gemini-3.5-flash-lite');
 });
 
+test('approved Custom L1H1 dimensions are server-owned in every language, including space questions', async () => {
+  const questions = {
+    de: 'Wie viel Platz hat der Ford Transit?', en: 'How much space does your van have?',
+    es: '¿Cuánto espacio tiene la furgoneta?', pt: 'Quanto espaço tem a carrinha?',
+    it: 'Quali dimensioni ha il furgone?', fr: 'Quelle capacité a votre fourgon Transit ?',
+  } as const;
+  let providerCalls = 0;
+  for (const [language, message] of Object.entries(questions)) {
+    const draft = emptyKaiDraft(language as KaiDraft['language']);
+    const result = await respondKai(request(message, draft), { ...offline, provider: async input => { providerCalls++; return providerResult(input, 'A larger van will fit everything.'); } });
+    assert.equal(result.mode, 'guided');
+    assert.match(result.message, /Transit Custom 250 L1H1/);
+    assert.match(result.message, /6 m³/);
+    assert.match(result.message, /255[.,]5/);
+    assert.match(result.message, /140 × 134/);
+    assert.equal(hasMonetaryContent(result.message), false);
+  }
+  assert.equal(providerCalls, 0);
+  const dimensions = await respondKai(request('La Ford Transit mide 2555 mm de largo y 1406 mm de alto.'), offline);
+  assert.equal(dimensions.draft.fields.postcode, undefined);
+});
+
+test('a vehicle price question still goes to the calculator, not the dimensions FAQ', async () => {
+  for (const message of ['¿Cuánto cuesta la furgoneta?', 'How much for your van?', 'Combien coûte le Transit ?', 'Quanto custa a carrinha?', 'Quanto costa il furgone?', 'Was kostet der Ford Transit?']) {
+    const result = await respondKai(request(message), offline);
+    assert.doesNotMatch(result.message, /255[.,]5|6 m³/);
+    assert.equal(hasMonetaryContent(result.message), false);
+  }
+});
+
 test('provider prices, unsupported services and send actions are never shown or executed', async () => {
   for (const unsafe of [
     (input: KaiAssistantRequest) => providerResult(input, 'The price is CHF 500.'),

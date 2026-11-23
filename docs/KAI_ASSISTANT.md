@@ -79,6 +79,13 @@ rechaza afirmaciones no permitidas del proveedor. `server/kaiKnowledge.ts`
 contiene el conocimiento y las preguntas guiadas. Ninguna clave debe añadirse
 a variables públicas del frontend.
 
+Las medidas nominales de la Ford Transit Custom 250 L1H1 se comparten con la
+web mediante `src/vehicle.ts`. Las preguntas sobre el vehículo tienen una
+respuesta del servidor con estos datos aprobados; el proveedor no puede añadir
+dimensiones, carga útil o garantías. «Cuánto espacio» se distingue de «cuánto
+cuesta». Véase `docs/TRANSIT_CUSTOM.md` para las fuentes y los límites del
+comprobador geométrico.
+
 ## Verificación
 
 `tests/kai-assistant.test.ts` cubre extracción guiada, idiomas, varios servicios,
