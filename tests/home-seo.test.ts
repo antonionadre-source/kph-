@@ -38,7 +38,9 @@ test('calculator and informational routes retain their existing localized metada
   assert.equal(quote.canonical, 'https://krakenpfm.ch/quote');
   assert.equal(quote.pageType, 'consultation');
   const about = getMetadataForPath('/about', 'en');
-  assert.equal(about.title, 'About Us | Kraken Properties and Facilities Management');
+  assert.equal(about.title, 'About Kraken & Kai · Personal help for your home');
+  assert.equal(about.canonical, 'https://krakenpfm.ch/about');
+  assert.equal(getMetadataForPath('/ueber-kraken', 'en').canonical, about.canonical);
 });
 
 test('the initial HTML exposes the approved five services without fabricated prices, ratings or opening hours', () => {

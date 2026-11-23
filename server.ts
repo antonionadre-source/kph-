@@ -550,16 +550,31 @@ async function configureApplication() {
           res.status(404);
         }
 
-        if (isProd && req.path === '/leistungen') {
+        if (isProd && ['/leistungen', '/about'].includes(req.path.replace(/\/$/, ''))) {
           html = html.replace(/<link rel="preload" as="image" href="\/home-approved\/assets\/hero-room-day-v4\.webp"[^>]*>/, '');
           const servicesLocale = (normalizeSiteLanguage(detectedLang) || 'de').slice(0, 2);
-          const contentPath = path.join(distPath, `services-content-${servicesLocale}.html`);
+          const contentKind = req.path.replace(/\/$/, '') === '/about' ? 'about' : 'services';
+          const contentPath = path.join(distPath, `${contentKind}-content-${servicesLocale}.html`);
           const content = fs.readFileSync(contentPath, 'utf8');
           // Keep the stylesheet outside React's mount, which replaces this body.
           const styles = content.match(/<link rel="stylesheet" href="[^"]+">/g) || [];
           html = html.replace('</head>', () => styles.join('') + '</head>');
           const body = content.replace(/<link rel="stylesheet" href="[^"]+">/g, '');
-          html = html.replace(/<div id="root">[\s\S]*?<\/div>/, () => `<div id="root">${body}</div>`);
+          const rootPattern = html.includes('<!-- kraken-root-end -->')
+            ? /<div id="root">[\s\S]*?<\/div>(?=\s*<!-- kraken-root-end -->)/
+            : /<div id="root">[\s\S]*?<\/div>/;
+          html = html.replace(rootPattern, () => `<div id="root">${body}</div>`);
+        }
+        if (isProd && req.path === '/') {
+          const locale = (normalizeSiteLanguage(detectedLang) || 'de').slice(0, 2);
+          const fragmentPath = path.join(distPath, `why-content-${locale}.html`);
+          if (fs.existsSync(fragmentPath)) {
+            const fragment = fs.readFileSync(fragmentPath, 'utf8');
+            const styles = fragment.match(/<link rel="stylesheet" href="[^"]+">/g) || [];
+            html = html.replace('</head>', () => styles.join('') + '</head>');
+            const why = fragment.replace(/<link rel="stylesheet" href="[^"]+">/g, '');
+            html = html.replace('</main>', () => `</main>${why}`);
+          }
         }
         html = injectSeoMeta(html, req.path, detectedLang);
         res.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -640,6 +655,10 @@ async function configureApplication() {
 
     // 301 Redirect for legacy /consultation, /contact, /contacto URLs
     const lowerPath = req.path.toLowerCase().replace(/\/$/, "");
+    if (lowerPath === '/ueber-kraken' || (lowerPath === '/about' && req.path !== '/about')) {
+      const queryStr = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+      return res.redirect(301, `/about${queryStr}`);
+    }
     if (lowerPath === "/consultation") {
       const queryStr = req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : "";
       return res.redirect(301, `/quote${queryStr}`);

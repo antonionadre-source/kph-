@@ -37,7 +37,7 @@ const CookieConsent = lazyWithRetry(() => import('./CookieConsent'));
 // Lazy imports for subpages to reduce initial bundle size and enable route-based code splitting
 const ConsultationPage = lazyWithRetry(() => import('./ConsultationPage'));
 const SeoServiceCityPage = lazyWithRetry(() => import('./SeoServiceCityPage'));
-const AboutPage = lazyWithRetry(() => import('./AboutPage'));
+const AboutPage = lazyWithRetry(() => import('./about/ApprovedAbout'));
 const ComicPage = lazyWithRetry(() => import('./ComicPage'));
 const ServicesPage = lazyWithRetry(() => import('./ServicesPage'));
 const ApprovedServices = lazyWithRetry(() => import('./services/ApprovedServices'));
@@ -143,6 +143,7 @@ const PATH_TO_PAGE_MAP: Record<string, string> = {
   '/': 'home',
   '/quote': 'consultation',
   '/about': 'about',
+  '/ueber-kraken': 'about',
   '/services': 'services-page',
   '/leistungen': 'approved-services',
   '/commercial': 'commercial-services',
@@ -574,7 +575,7 @@ const App: React.FC = () => {
 };
 
   const isReviewPage = page === 'review-invite';
-  const isApprovedHome = page === 'home' || page === 'approved-services';
+  const isApprovedHome = page === 'home' || page === 'approved-services' || page === 'about';
 
   return (
     <div className="bg-slate-50 text-gray-800 relative">

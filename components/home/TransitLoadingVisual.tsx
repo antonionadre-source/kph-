@@ -70,7 +70,7 @@ export default function TransitLoadingVisual() {
     />)}
     <svg className="transit-cargo-branding" viewBox="0 0 1254 1254" aria-hidden="true" focusable="false">
       {stages.map((stage, index) => <g key={stage.name} data-brand-stage={index}>
-        {stage.logos.map((placement, logoIndex) => <OriginalLogo key={logoIndex} {...placement} />)}
+        {stage.logos.map((placement, logoIndex) => <g key={logoIndex}><OriginalLogo {...placement} /></g>)}
       </g>)}
     </svg>
   </>;

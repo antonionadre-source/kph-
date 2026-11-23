@@ -16,6 +16,7 @@ export const PATH_TO_PAGE_MAP: Record<string, string> = {
   "/": "home",
   "/quote": "consultation",
   "/about": "about",
+  "/ueber-kraken": "about",
   "/services": "services-page",
   "/leistungen": "approved-services",
   "/commercial": "commercial-services",
@@ -789,6 +790,18 @@ export function getMetadataForPath(
   ogImageType: string;
 } {
   const cleanPath = pathname.split("?")[0];
+  if (cleanPath === "/about" || cleanPath === "/ueber-kraken") {
+    const locale = normalizeHomeLanguage(langParam || languageFromSearch(pathname.includes('?') ? pathname.slice(pathname.indexOf('?')) : '') || 'de');
+    const copy = {
+      de: ['Über Kraken & Kai · Persönliche Hilfe für Ihr Zuhause', 'Lernen Sie Kraken PFM, Gründer Antonio Nadre Gomes Mendes und Maskottchen Kai kennen. Persönliche Reinigung und kleine Umzüge ab Schaffhausen für Zürich und Winterthur.', 'Persönlich da. Mit Erfahrung. Für Ihr Zuhause.'],
+      en: ['About Kraken & Kai · Personal help for your home', 'Meet Kraken PFM, founder Antonio Nadre Gomes Mendes and mascot Kai. Personal cleaning and small moves from Schaffhausen for Zurich and Winterthur.', 'Personally here. With experience. For your home.'],
+      es: ['Sobre Kraken y Kai · Ayuda personal para su hogar', 'Conozca Kraken PFM, a su fundador Antonio Nadre Gomes Mendes y a Kai. Limpieza y pequeñas mudanzas desde Schaffhausen para Zúrich y Winterthur.', 'Atención personal. Con experiencia. Para su hogar.'],
+      pt: ['Sobre a Kraken e o Kai · Apoio pessoal para a sua casa', 'Conheça a Kraken PFM, o fundador Antonio Nadre Gomes Mendes e a mascote Kai. Limpeza e pequenas mudanças a partir de Schaffhausen para Zurique e Winterthur.', 'Apoio pessoal. Com experiência. Para a sua casa.'],
+      it: ['Kraken e Kai · Un aiuto personale per la sua casa', 'Conosca Kraken PFM, il fondatore Antonio Nadre Gomes Mendes e la mascotte Kai. Pulizie e piccoli traslochi da Sciaffusa per Zurigo e Winterthur.', 'Un aiuto personale. Con esperienza. Per la sua casa.'],
+      fr: ['Kraken et Kai · Une aide personnelle pour votre maison', 'Découvrez Kraken PFM, son fondateur Antonio Nadre Gomes Mendes et sa mascotte Kai. Nettoyage et petits déménagements depuis Schaffhouse pour Zurich et Winterthour.', 'À vos côtés. Avec expérience. Pour votre maison.'],
+    }[locale];
+    return { title: copy[0], description: copy[1], canonical: `${BASE_URL}/about`, hreflangs: [], pageType: 'about', h1: copy[2], h2: BRAND, bodyText: copy[1], ogImage: DEFAULT_OG_IMAGE, ogImageWidth: OG_IMAGE_WIDTH, ogImageHeight: OG_IMAGE_HEIGHT, ogImageType: OG_IMAGE_TYPE };
+  }
   if (cleanPath === "/leistungen") {
     const locale = normalizeHomeLanguage(langParam || languageFromSearch(pathname.includes('?') ? pathname.slice(pathname.indexOf('?')) : '') || 'de');
     const copy = {

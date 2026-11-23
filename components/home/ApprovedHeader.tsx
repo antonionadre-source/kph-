@@ -4,14 +4,15 @@ import { homeText, normalizeHomeLanguage } from './homeTranslations';
 import { HomeLanguageSelector } from './HomeLanguageSelector';
 
 /** The approved navigation is shared by the home and the services page. */
-export default function ApprovedHeader({ servicesPage = false }: { onNavigate: (path: string) => void; servicesPage?: boolean }) {
+export default function ApprovedHeader({ servicesPage = false, page }: { onNavigate: (path: string) => void; servicesPage?: boolean; page?: 'home' | 'services' | 'about' }) {
   const { language } = useTranslation();
   const t = (source: string) => homeText(normalizeHomeLanguage(language), source);
   const [open, setOpen] = useState(false);
   const toggle = useRef<HTMLButtonElement>(null);
+  const currentPage = page || (servicesPage ? 'services' : 'home');
   const href = (path: string) => {
     const [pathname, hash] = path.split('#');
-    if (!servicesPage && hash && pathname === '/') return '#' + hash;
+    if (currentPage === 'home' && hash && pathname === '/') return '#' + hash;
     return `${pathname || '/'}?lang=${encodeURIComponent(language)}${hash ? '#' + hash : ''}`;
   };
   useEffect(() => {
@@ -25,9 +26,9 @@ export default function ApprovedHeader({ servicesPage = false }: { onNavigate: (
     return () => { media.removeEventListener('change', resize); document.removeEventListener('keydown', escape); };
   }, [open]);
   const links = <>
-    <a href={href('/leistungen')} aria-current={servicesPage ? 'page' : undefined}>{t('Leistungen')}</a>
+    <a href={href('/leistungen')} aria-current={currentPage === 'services' ? 'page' : undefined}>{t('Leistungen')}</a>
     <a href={href('/#umzug')}>{t('Kleine Umzüge')}</a>
-    <a href={href('/#ueber-uns')}>{t('Über Kraken')}</a>
+    <a href={href('/about')} aria-current={currentPage === 'about' ? 'page' : undefined}>{t('Über Kraken')}</a>
     <a href="#kontakt">{t('Kontakt')}</a>
   </>;
   return <>

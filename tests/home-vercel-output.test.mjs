@@ -12,7 +12,7 @@ function fixture() {
   write('.vercel/output/functions/index.func/.vc-config.json', JSON.stringify({ runtime: 'nodejs24.x', handler: 'server.js', framework: { slug: 'express' }, filePathMap: { 'dist/index.html': 'dist/index.html' } }));
   write('.vercel/output/functions/index.func/server.js', 'EXISTING_FUNCTION');
   write('dist/index.html', '<html><script src="/assets/index-a1b2.js"></script><link href="/assets/index-c3d4.css" rel="stylesheet"></html>');
-  for (const language of ['de', 'en', 'es', 'pt', 'it', 'fr']) write(`dist/services-content-${language}.html`, 'SERVICES_' + language);
+  for (const language of ['de', 'en', 'es', 'pt', 'it', 'fr']) for (const kind of ['services','about','why']) write(`dist/${kind}-content-${language}.html`, kind.toUpperCase() + '_' + language);
   write('dist/assets/index-a1b2.js', 'BUILT_JS'); write('public/assets/index-a1b2.js', 'BUILT_JS');
   write('dist/assets/index-c3d4.css', 'BUILT_CSS'); write('public/assets/index-c3d4.css', 'BUILT_CSS');
   write('public/assets/index-a1b2.js.map', 'PRIVATE_MAP');

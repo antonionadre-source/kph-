@@ -4,6 +4,8 @@ import { openHomeCalculator, type HomeService } from '../../src/home/calculator'
 import { homeLanguages, homeText, normalizeHomeLanguage } from './homeTranslations';
 import ApprovedHeader from './ApprovedHeader';
 import TransitSection from './TransitSection';
+import WhyKrakenSection from './WhyKrakenSection';
+import { whyTranslations } from './whyTranslations';
 import { initApprovedHome } from './app';
 import { initApartmentScene } from './scene';
 import { initTransit } from './van';
@@ -16,7 +18,7 @@ import './device-fixes.css';
 export default function ApprovedHome({ onNavigate }: { onNavigate: (page: string) => void }) {
   const { language } = useTranslation();
   const homeLanguage = normalizeHomeLanguage(language);
-  const t = (source: string, params?: Record<string, string | number>) => homeText(homeLanguage, source, params);
+  const t = (source: string, params?: Record<string, string | number>) => whyTranslations[homeLanguage]?.[source] ?? homeText(homeLanguage, source, params);
   const translationRef = useRef(t);
   translationRef.current = t;
   const localeRef = useRef('de-CH');
@@ -39,7 +41,7 @@ export default function ApprovedHome({ onNavigate }: { onNavigate: (page: string
     // App resolves its route before the illustration mounts. Honour inbound
     // links from Services after the parent's initial scroll restoration.
     const hash = window.location.hash.slice(1);
-    if (['umzug', 'ueber-uns', 'leistungen', 'kontakt'].includes(hash)) {
+    if (['umzug', 'ueber-uns', 'warum-kraken', 'leistungen', 'kontakt'].includes(hash)) {
       hashFrame = requestAnimationFrame(() => {
         hashFrame = requestAnimationFrame(() => document.getElementById(hash)?.scrollIntoView({ block: 'start' }));
       });
@@ -192,10 +194,7 @@ export default function ApprovedHome({ onNavigate }: { onNavigate: (page: string
 
     <TransitSection t={t} />
 
-    <section className="about-section section" id="ueber-uns" aria-labelledby="about-title"><div className="container">
-      <div className="about-heading"><div><p className="eyebrow">{t("Kraken PFM. Nah am Menschen.")}</p><h2 id="about-title">{t("Erfahrene Menschen.")}<br />{t("Persönlich für Sie da.")}</h2><p className="about-description">{t("Wir wissen, dass kleine Aufträge einen grossen Unterschied machen. Unser erfahrenes Team hilft Ihnen im Alltag – aufmerksam, unkompliziert und persönlich.")}</p><a className="button button-navy" href="/quote" data-calculator="">{t("Auftrag im Rechner planen")}</a></div><div className="about-side"><div className="region-orbit" aria-hidden="true"><span className="orbit-dot orbit-dot-one"></span><span className="orbit-dot orbit-dot-two"></span><span className="orbit-dot orbit-dot-three"></span><svg className="icon"><use href="#i-home"></use></svg></div><p>{t("Für Ihr Zuhause.")}<br />{t("In Ihrer Region.")}</p><div className="region-list"><span>{t("Zürich")}</span><span>{t("Schaffhausen")}</span><span>{t("Winterthur")}</span></div></div></div>
-      <ol className="process-steps"><li><span className="step-number">01</span><div><h3>{t("Sie erzählen uns, was ansteht.")}</h3><p>{t("Wählen Sie Ihren Service und beschreiben Sie Ihren Auftrag im Rechner.")}</p></div></li><li><span className="step-number">02</span><div><h3>{t("Wir planen mit Ihnen.")}</h3><p>{t("Nach Ihrer Berechnung stimmen wir die nächsten Schritte persönlich mit Ihnen ab.")}</p></div></li><li><span className="step-number">03</span><div><h3>{t("Sie haben wieder mehr Freiraum.")}</h3><p>{t("Unser Team übernimmt die vereinbarten Arbeiten bei Ihnen vor Ort.")}</p></div></li></ol>
-    </div></section>
+    <WhyKrakenSection t={t} />
 
     <section className="faq-section section container" aria-labelledby="faq-title"><div className="faq-intro"><p className="eyebrow">{t("Gut zu wissen")}</p><h2 id="faq-title">{t("Noch eine")}<br />{t("Frage?")}</h2><p>{t("Wir sind auch persönlich für Sie da.")}</p><a href="mailto:kai@krakenpfm.ch" className="text-link">kai@krakenpfm.ch</a></div><div className="faq-list">
       <details><summary>{t("Übernehmen Sie auch kleine Aufträge?")}<svg className="icon" aria-hidden="true"><use href="#i-plus"></use></svg></summary><p>{t("Ja. Wir konzentrieren uns auf Privathaushalte, Wohnungen mit 1–4 Zimmern und kleine Umzüge. Auch eine einzelne Fensterreinigung oder eine einmalige Grundreinigung können Sie anfragen.")}</p></details>

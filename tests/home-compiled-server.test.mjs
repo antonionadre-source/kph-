@@ -25,8 +25,10 @@ test('compiled server graph runs under plain Node without source .ts files and s
     writeFileSync(path.join(directory, 'package.json'), '{"type":"module"}');
     symlinkSync(path.join(root, 'node_modules'), path.join(directory, 'node_modules'), 'dir');
     mkdirSync(path.join(directory, 'dist'));
-    writeFileSync(path.join(directory, 'dist/index.html'), '<html><head><title>fixture</title></head><body><div id="root"></div>COMPILED_TEMPLATE</body></html>');
+    writeFileSync(path.join(directory, 'dist/index.html'), '<html><head><title>fixture</title></head><body><div id="root"><main id="home-loading"><div><h1>Home</h1>COMPILED_TEMPLATE</div></main></div><!-- kraken-root-end --></body></html>');
     for (const language of ['de', 'en', 'es', 'pt', 'it', 'fr']) {
+      writeFileSync(path.join(directory, 'dist/why-content-' + language + '.html'), '<section id="warum-kraken">WHY_' + language + '</section>');
+      writeFileSync(path.join(directory, 'dist/about-content-' + language + '.html'), '<link rel="stylesheet" href="/assets/about.css"><main><h1>ABOUT_' + language + '</h1><p>STORY_' + language + '</p></main>');
       writeFileSync(path.join(directory, 'dist/services-content-' + language + '.html'), '<link rel="stylesheet" href="/assets/services.css"><main><h1>SERVICES_' + language + '</h1><details><summary>Service</summary>BODY_' + language + '</details></main>');
     }
     const driver = `
@@ -40,7 +42,7 @@ test('compiled server graph runs under plain Node without source .ts files and s
       const get = pathname => new Promise((resolve, reject) => {
         const call = request({ hostname:'127.0.0.1', port:server.address().port, path:pathname, headers:{Host:'krakenpfm.ch'} }, response => {
           let body='';response.setEncoding('utf8');response.on('data', chunk => body+=chunk);
-          response.on('end', () => resolve({status:response.statusCode,body}));
+          response.on('end', () => resolve({status:response.statusCode,body,headers:response.headers}));
         });call.on('error',reject);call.end();
       });
       try {
@@ -58,6 +60,16 @@ test('compiled server graph runs under plain Node without source .ts files and s
           assert.ok(result.body.includes('BODY_' + language));
           assert.ok(result.body.indexOf('stylesheet') < result.body.indexOf('</head>'));
           assert.equal(result.body.indexOf('stylesheet', result.body.indexOf('<div id="root">')), -1);
+        }
+        for (const language of ['de','en','es','pt','it','fr']) {
+          const result=await get('/about?lang='+language);
+          assert.equal(result.status,200);assert.ok(result.body.includes('ABOUT_'+language));assert.ok(result.body.includes('STORY_'+language));assert.ok(!result.body.includes('COMPILED_TEMPLATE'));
+          assert.ok((await get('/?lang='+language)).body.includes('WHY_'+language));
+          assert.equal((result.body.match(/<h1\\b/g)||[]).length,1);
+          const redirect=await get('/ueber-kraken?lang='+language);
+          assert.equal(redirect.status,301);assert.equal(redirect.headers.location,'/about?lang='+language);
+          const trailing=await get('/about/?lang='+language);
+          assert.equal(trailing.status,301);assert.equal(trailing.headers.location,'/about?lang='+language);
         }
         console.log('COMPILED_SERVER_OK');
       } finally {await new Promise(resolve => server.close(resolve));}
