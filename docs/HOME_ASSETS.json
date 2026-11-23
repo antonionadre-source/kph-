@@ -210,8 +210,8 @@
     "files": [
       {
         "file": "components/KaiAssistant.tsx",
-        "bytes": 17389,
-        "sha256": "e9d5a80e903c27ef0741a71f1880c3e9f4387bbaad50d7a0ec5bcebcd99e17f6"
+        "bytes": 18274,
+        "sha256": "a9fb10753a758dd479f99b4065a992cc16e33f504ab39485ac538fc9f5ff3ef5"
       },
       {
         "file": "components/KaiAssistant.css",

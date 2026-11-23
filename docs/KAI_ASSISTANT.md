@@ -12,7 +12,8 @@ home y las demás páginas, incluida `/quote` (excepto la invitación de reseña
 petición de apertura. El borrador continúa al navegar entre páginas.
 
 El diálogo nativo gestiona la modalidad, el foco y Escape. Al abrir se enfoca el
-título; al cerrar o minimizar se devuelve el foco al botón de origen. El hilo y
+título; al cerrar o minimizar se devuelve el foco al botón de origen.
+Tab y Mayús+Tab enlazan el último y el primer control visible del panel. El hilo y
 el resumen tienen desplazamiento propio. `src/viewport.js` sigue el viewport
 visual para colocar el panel sobre el teclado móvil; las consultas de contenedor
 compactan las barras en paneles bajos. El error queda dentro del hilo desplazable

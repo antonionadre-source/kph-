@@ -117,6 +117,21 @@ export default function KaiAssistant({ currentPage, onNavigate }: { currentPage:
     const target = opener.current?.isConnected ? opener.current : launcher.current;
     requestAnimationFrame(() => target?.focus({ preventScroll: true }));
   }
+  function keepTabInPanel(event: React.KeyboardEvent<HTMLDialogElement>) {
+    if (event.key !== 'Tab') return;
+    const panel = event.currentTarget;
+    const controls = [...panel.querySelectorAll<HTMLElement>('a[href], button, input, select, textarea, summary, [tabindex]')]
+      .filter(element => element.tabIndex >= 0 && !element.matches(':disabled, [aria-disabled="true"]')
+        && element.getClientRects().length > 0 && getComputedStyle(element).visibility !== 'hidden');
+    const first = controls[0];
+    const last = controls.at(-1);
+    if (!first || !last) return;
+    if (event.shiftKey && (document.activeElement === first || document.activeElement === title.current)) {
+      event.preventDefault(); last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault(); first.focus();
+    }
+  }
   function selectService(service: KaiService) {
     setDraft(previous => ({ ...previous, service, services: previous.services.length > 1 && previous.services.includes(service) ? previous.services : [service] }));
   }
@@ -190,7 +205,7 @@ export default function KaiAssistant({ currentPage, onNavigate }: { currentPage:
       onClick={event => { opener.current = event.currentTarget; setOpen(true); }}>
       <img src="/home-approved/assets/kai.webp" alt="" width="48" height="48" /><span>{kt('open')}</span>
     </button>
-    <dialog ref={dialog} id="kai-assistant" className="kai-assistant" lang={locale} aria-labelledby="kai-assistant-title" onCancel={event => { event.preventDefault(); close(); }} onClose={() => setOpen(false)}>
+    <dialog ref={dialog} id="kai-assistant" className="kai-assistant" lang={locale} aria-labelledby="kai-assistant-title" onKeyDown={keepTabInPanel} onCancel={event => { event.preventDefault(); close(); }} onClose={() => setOpen(false)}>
       <header className="kai-assistant-header">
         <img src="/home-approved/assets/kai.webp" alt="" width="40" height="40" />
         <div><h2 id="kai-assistant-title" ref={title} tabIndex={-1}>{kt('title')}</h2><p>{kt(mode === 'ai' ? 'aiLabel' : 'guidedLabel')}</p></div>
