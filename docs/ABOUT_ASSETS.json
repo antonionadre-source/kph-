@@ -284,8 +284,8 @@
       },
       {
         "file": "components/about/about-interactions.ts",
-        "bytes": 17201,
-        "sha256": "99fa0df0382edd20a388fecd154bc52339b26148423b4d3a6d9e251539eed9c0"
+        "bytes": 17580,
+        "sha256": "de31eacf1f9137ad28e62059c66da151aa1b696539847c747cf9317ed947c97d"
       },
       {
         "file": "components/about/about.css",
@@ -304,8 +304,8 @@
       },
       {
         "file": "docs/ABOUT_INTEGRATION.md",
-        "bytes": 5263,
-        "sha256": "ec5cc4f94eeecd40ae00bdceefec23c79640a034c0bb6d39de2022e5c0610089"
+        "bytes": 5492,
+        "sha256": "5ebefb48bf62697049c65539054b1baa6f63ffa102e19901ff961052b953c6ed"
       },
       {
         "file": "docs/ABOUT_CONTENT_ES.md",

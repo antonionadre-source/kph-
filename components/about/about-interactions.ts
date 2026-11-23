@@ -116,11 +116,22 @@ export function initAboutInteractions(root: HTMLElement, t: AboutTranslator): ()
   const openHashTarget = () => revealFragment(window.location.hash, true);
   listen(window, 'hashchange', openHashTarget);
   listen(window, 'popstate', openHashTarget);
-  // Normal links keep browser history and also reopen an already-current fragment.
+  // Enhanced tabs change content in place; normal chapter links still navigate.
   listen(root, 'click', ((event: MouseEvent) => {
     if (!primaryClick(event) || !(event.target instanceof Element)) return;
     const link = event.target.closest<HTMLAnchorElement>('a[href^="#"]');
     if (!link || !root.contains(link)) return;
+    const group = groups.find(item => item.tabs.includes(link));
+    if (group) {
+      event.preventDefault();
+      group.activate(group.tabs.indexOf(link));
+      if (window.location.hash !== link.hash) {
+        const url = new URL(window.location.href);
+        url.hash = link.hash;
+        window.history.pushState(window.history.state, '', url);
+      }
+      return;
+    }
     revealFragment(link.hash, window.location.hash === link.hash);
   }) as EventListener);
   // A language effect restart must not reopen or scroll to an older fragment.

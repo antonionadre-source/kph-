@@ -12,7 +12,7 @@ Se reutilizan el header, selector de idiomas, footer, launcher y asistente Kai d
 
 ## Interacciones y accesibilidad
 
-La misma función `AboutContent` genera React y HTML inicial en seis idiomas. Los siete capítulos son legibles antes de JavaScript. Después del montaje se mejoran las dos barras de pestañas con roles, foco, flechas, Home/End y espacio. Los fragmentos revelan su capítulo, también al reabrir el fragmento actual. El visor conserva la imagen completa, título, leyenda, Escape, cierre desde el fondo y retorno del foco.
+La misma función `AboutContent` genera React y HTML inicial en seis idiomas. Los siete capítulos son legibles antes de JavaScript. Después del montaje se mejoran las dos barras de pestañas con roles, foco, flechas, Home/End y espacio. Las pestañas cambian el capítulo en el mismo lugar y actualizan su fragmento mediante History API, sin desplazamiento automático ni entradas duplicadas al repetir la pestaña. Los enlaces normales a capítulos, la entrada directa con fragmento y la navegación del historial siguen revelando su destino. El visor conserva la imagen completa, título, leyenda, Escape, cierre desde el fondo y retorno del foco.
 
 Las cinco selecciones de ayuda sincronizan imagen, texto y CTA. La decodificación controla carga, error y selecciones rápidas; una petición antigua no sustituye la actual y el desmontaje invalida trabajo pendiente. Las escenas se cargan de forma diferida y respetan el movimiento reducido. El launcher flotante existente se oculta mientras se usa el selector para no taparlo, y se restaura al salir. Las capas de logo conservan el viewBox 1672 × 941 y el recorte 0 280 1024 450, con las coordenadas proporcionadas para gorra, polo y caja.
 

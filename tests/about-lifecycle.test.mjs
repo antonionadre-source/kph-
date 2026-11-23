@@ -54,7 +54,9 @@ function fixture(context, hash = '#kai-character') {
   window.location = location;
   window.innerHeight = 800;
   window.matchMedia = () => ({ matches: true });
-  window.history = { state: { preserved: true }, replaceState(state, _title, value) { this.state = state; url = new URL(String(value)); } };
+  window.history = { state: { preserved: true }, pushes: 0,
+    replaceState(state, _title, value) { this.state = state; url = new URL(String(value)); },
+    pushState(state, _title, value) { this.pushes++; this.state = state; url = new URL(String(value)); } };
   const frames = new Map();
   let frameId = 0;
   globalThis.window = window;
@@ -116,6 +118,38 @@ test('language restart preserves keyboard-selected chapters and service over an 
   assert.equal([...window.listeners.values()].reduce((sum, listeners) => sum + listeners.size, 0), 0);
   assert.equal([...root.listeners.values()].reduce((sum, listeners) => sum + listeners.size, 0), 0);
   assert.ok([...story.panels, ...kai.panels].every(panel => !panel.hidden), 'cleanup restores readable unenhanced chapters');
+});
+
+test('clicking enhanced stages updates history and content without anchor scrolling', context => {
+  const { root, groups: [story], window, flushFrames } = fixture(context, '');
+  const dispose = initAboutInteractions(root, source => source);
+  flushFrames();
+  const select = (index, extra = {}) => {
+    let prevented = false;
+    root.fire('click', { target: story.tabs[index], button: 0,
+      preventDefault() { prevented = true; }, ...extra });
+    flushFrames();
+    return prevented;
+  };
+  assert.equal(select(1), true);
+  assert.equal(story.group.dataset.aboutSelected, 'story-uk');
+  assert.equal(window.location.hash, '#story-uk');
+  assert.equal(new URL(window.location.href).search, '?lang=de');
+  assert.deepEqual(window.history.state, { preserved: true });
+  assert.equal(window.history.pushes, 1);
+  assert.equal(select(1), true, 'same-tab clicks cannot trigger native scrolling');
+  assert.equal(window.history.pushes, 1, 'same-tab clicks do not add duplicate history');
+  assert.equal(select(2), true);
+  assert.equal(story.tabs[2].getAttribute('aria-selected'), 'true');
+  assert.ok(story.panels.every(panel => panel.scrolls === 0));
+  assert.equal(select(3, { ctrlKey: true }), false, 'modified links retain native behaviour');
+  assert.equal(story.group.dataset.aboutSelected, 'story-switzerland');
+  const ordinary = new ElementStub(); ordinary.hash = '#story-london';
+  root.fire('click', { target: ordinary, button: 0 });
+  window.location.hash = '#story-london';
+  window.fire('hashchange'); flushFrames();
+  assert.equal(story.panels[0].scrolls, 1, 'ordinary chapter anchors still scroll to their target');
+  dispose();
 });
 
 test('a default image failure cached before hydration shows the translated fallback', async context => {
