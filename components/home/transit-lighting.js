@@ -18,12 +18,12 @@ export function initTransitLighting(section) {
     beams.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`);
     icons.forEach((icon, index) => {
       const target = icon.getBoundingClientRect();
-      // The rightmost 724px cell is rendered as a width-sized square,
-      // vertically centred inside the existing rectangular atlas crop.
-      const lampX = index === 0 ? 49 : 223;
+      // The native 1254px photograph is a width-sized square centred in the art slot.
+      const lampX = index === 0 ? 52 : 375;
+      const lampY = index === 0 ? 670 : 660;
       const origin = {
-        x: image.left - box.left + image.width * lampX / 724,
-        y: image.top - box.top + (image.height - image.width) / 2 + image.width * 364 / 724,
+        x: image.left - box.left + image.width * lampX / 1254,
+        y: image.top - box.top + (image.height - image.width) / 2 + image.width * lampY / 1254,
       };
       const end = { x: target.left - box.left + target.width / 2, y: target.top - box.top + target.height / 2 };
       const dx = end.x - origin.x, dy = end.y - origin.y;

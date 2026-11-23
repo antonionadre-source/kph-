@@ -1,28 +1,30 @@
 
 /* Two deliberate views: the original Transit story and a load-space explorer. */
-/* Feather the bitmap backdrop on every side; no rectangular picture frame. */
+/* Native alpha keeps white paint and furniture colours intact on the navy section. */
 .kraken-home #umzug #vanOverview .moving-art,
 .kraken-home #umzug #cargoVisual .van-load-atlas {
-  border:0;
-  box-shadow:none;
-  background-color:transparent;
-  -webkit-mask-repeat:no-repeat;
-  mask-repeat:no-repeat;
-  -webkit-mask-size:100% 100%;
-  mask-size:100% 100%;
-  -webkit-mask-composite:source-in;
-  mask-composite:intersect;
+  border:0;box-shadow:none;background:transparent;
+  -webkit-mask-image:none;mask-image:none;background-blend-mode:normal;
 }
-.kraken-home #umzug #vanOverview .moving-art {
-  -webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 94%,transparent),linear-gradient(180deg,transparent,#000 6%,#000 94%,transparent);
-  mask-image:linear-gradient(90deg,transparent,#000 5%,#000 94%,transparent),linear-gradient(180deg,transparent,#000 6%,#000 94%,transparent);
+.kraken-home #umzug .transit-overview-image,
+.kraken-home #umzug .transit-art-branding {
+  position:absolute;left:0;top:50%;display:block;width:100%;height:auto;aspect-ratio:1;
+  transform:translateY(-50%);pointer-events:none;
 }
-.kraken-home #umzug #cargoVisual .van-load-atlas {
-  -webkit-mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent),linear-gradient(180deg,transparent,#000 5%,#000 94%,transparent);
-  mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent),linear-gradient(180deg,transparent,#000 5%,#000 94%,transparent);
+.kraken-home #umzug .transit-cargo-photo,
+.kraken-home #umzug .transit-cargo-branding {
+  position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;
 }
-.kraken-home #umzug #vanOverview .moving-art,
-.kraken-home #umzug #cargoVisual .van-load-atlas {background-color:#002b51;background-blend-mode:lighten}
+.kraken-home #umzug .transit-cargo-photo {opacity:0}
+.kraken-home #umzug .transit-cargo-branding [data-brand-stage] {display:none}
+.kraken-home #umzug [data-frame="0"] [data-cargo-photo="0"] {opacity:1}
+.kraken-home #umzug [data-frame="0"] [data-brand-stage="0"] {display:block}
+.kraken-home #umzug [data-frame="1"] [data-cargo-photo="1"] {opacity:1}
+.kraken-home #umzug [data-frame="1"] [data-brand-stage="1"] {display:block}
+.kraken-home #umzug [data-frame="2"] [data-cargo-photo="2"] {opacity:1}
+.kraken-home #umzug [data-frame="2"] [data-brand-stage="2"] {display:block}
+.kraken-home #umzug [data-frame="3"] [data-cargo-photo="3"] {opacity:1}
+.kraken-home #umzug [data-frame="3"] [data-brand-stage="3"] {display:block}
 .kraken-home #umzug .van-load-visual {border:0;box-shadow:none;background-color:transparent}
 .kraken-home #umzug .transit-headlamps {
   position:absolute;left:0;top:50%;display:block;width:100%;height:auto;aspect-ratio:1;
@@ -111,10 +113,7 @@
 .kraken-home #umzug .van-measures-toggle[aria-pressed="true"]{color:#b1f7d6;border-color:#b1f7d6}
 .kraken-home #umzug .van-visual-slot{min-width:0;align-self:center}
 .kraken-home #umzug .van-load-visual{position:relative;align-self:center;aspect-ratio:1;width:calc(100% + 22px);margin-left:-12px;isolation:isolate}
-.kraken-home #umzug .van-load-atlas{position:absolute;inset:0;background-image:url('/home-approved/assets/transit-loading-v4.webp');background-size:200% 200%;background-repeat:no-repeat;background-position:0 0;mask-image:radial-gradient(ellipse at 50% 52%,#000 51%,#000b 67%,transparent 76%);-webkit-mask-image:radial-gradient(ellipse at 50% 52%,#000 51%,#000b 67%,transparent 76%)}
-.kraken-home #umzug .van-load-atlas[data-frame="1"]{background-position:100% 0}
-.kraken-home #umzug .van-load-atlas[data-frame="2"]{background-position:0 100%}
-.kraken-home #umzug .van-load-atlas[data-frame="3"]{background-position:100% 100%}
+.kraken-home #umzug .van-load-atlas{position:absolute;inset:0}
 .kraken-home #umzug .van-load-incoming{opacity:0;transition:opacity .3s ease}
 .kraken-home #umzug .van-load-incoming.is-visible{opacity:1}
 .kraken-home #umzug .van-example-label{position:absolute;bottom:4%;left:50%;transform:translateX(-50%);width:max-content;max-width:95%;font-size:12px;line-height:1.6;color:#bed3e3;letter-spacing:.025em}

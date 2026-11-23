@@ -167,6 +167,10 @@ real al proveedor.
 
 ## Acabado de la Transit y faros
 
-Las dos ilustraciones conservan los atlas originales. El fondo navy de cada imagen se integra mediante mezcla `lighten` y máscaras suaves en los cuatro lados, sin marcos rectangulares. La vista exterior añade dos faros SVG alineados con la celda original de 724 × 724 px y cuatro haces que siguen la posición real de los iconos al cambiar el tamaño o el idioma.
+La sección utiliza cinco imágenes nuevas con transparencia real: una vista exterior y cuatro etapas de carga de 1254 × 1254 px cada una. Los originales se conservan en `public/home-approved/assets`; las nuevas imágenes versionadas están en `public/transit-quality`. La composición normal de alfa sustituye la mezcla `lighten` y las máscaras, conservando la pintura blanca, los neumáticos oscuros y los colores de los muebles sin marcos rectangulares.
+
+Las imágenes fueron generadas con la herramienta integrada `image_gen`, usando las escenas anteriores como referencia. Son representaciones ilustrativas de estilo fotográfico; no son fotografías documentales del vehículo ni una prueba de capacidad. Se conserva el logo Kraken original mediante capas SVG independientes en la carrocería y las cajas, sin texto generado. Los PNG maestros se convierten a WebP de calidad 95 sin redimensionar y conservando exactamente el alfa. Cada imagen se carga mediante `img` con `loading="lazy"`, `decoding="async"` y dimensiones explícitas.
+
+La vista exterior añade dos faros SVG alineados con la nueva fotografía de 1254 × 1254 px y cuatro haces que siguen la posición real de los iconos al cambiar el tamaño o el idioma. Las cuatro fotos interiores y sus logos respetan los mismos `data-frame` y las dos capas del fundido existente. La navegación, las medidas y el controlador de reproducción se conservan.
 
 El encendido y la iluminación de iconos usan animaciones CSS de seis segundos. El controlador existente deja el efecto apagado en la vista interior, fuera de pantalla y con la pestaña oculta. La pausa manual y el movimiento reducido conservan una iluminación tenue estática. No se añaden temporizadores de animación: el observador de tamaño y el RAF de posicionamiento se limpian al desmontar.

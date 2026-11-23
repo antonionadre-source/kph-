@@ -191,8 +191,8 @@
       },
       {
         "file": "components/home/transit-section.css",
-        "bytes": 18684,
-        "sha256": "584bfd708ca9dff32dd52a1e9a04b2aea6f5ed83cd64bb879d8e77005d67832e"
+        "bytes": 18318,
+        "sha256": "9286e6d7fa95cda1406549120b7c208455b53c952578ef7ab91603d4960787e5"
       }
     ],
     "updatedFor": "Shared approved header, standalone services and supplied Transit measurements, 2026-11-23",
@@ -216,8 +216,8 @@
     },
     {
       "file": "components/home/TransitSection.tsx",
-      "bytes": 11620,
-      "sha256": "509b1a817327c9a7f273aa2af2477407d7e6ed4d5ac9ee0d85e870b2b38c8f9a"
+      "bytes": 12109,
+      "sha256": "18e0897efe3de619cd482d1842bbcf3f48b89e6449338fe5abb5b262cf3a210f"
     }
   ],
   "globalAssistant": {
@@ -329,13 +329,13 @@
       },
       {
         "file": "components/home/TransitSection.tsx",
-        "bytes": 11620,
-        "sha256": "509b1a817327c9a7f273aa2af2477407d7e6ed4d5ac9ee0d85e870b2b38c8f9a"
+        "bytes": 12109,
+        "sha256": "18e0897efe3de619cd482d1842bbcf3f48b89e6449338fe5abb5b262cf3a210f"
       },
       {
         "file": "components/home/transit-section.css",
-        "bytes": 18684,
-        "sha256": "584bfd708ca9dff32dd52a1e9a04b2aea6f5ed83cd64bb879d8e77005d67832e"
+        "bytes": 18318,
+        "sha256": "9286e6d7fa95cda1406549120b7c208455b53c952578ef7ab91603d4960787e5"
       },
       {
         "file": "components/home/van.js",
@@ -409,8 +409,8 @@
       },
       {
         "file": "docs/SERVICES_INTEGRATION.md",
-        "bytes": 9383,
-        "sha256": "4f364b6bbf63f732e03911edea7059a146c03b283f5611cff3b5f1c4d92c5b87"
+        "bytes": 10434,
+        "sha256": "37e51a40f795548ff66ddb382164f1b1c05cf54a7c88720b5e99c8045ce1bc4f"
       }
     ]
   },
@@ -418,18 +418,18 @@
     "files": [
       {
         "file": "components/home/transit-lighting.js",
-        "bytes": 2935,
-        "sha256": "ba05747452efb461243bba8d8891b91dc7802da9c8d15958c1d1b5e8c7b9412d"
+        "bytes": 2928,
+        "sha256": "244e16748cd113407f943168ada7340a884c5396910804bf7fc3206aacc0c144"
       },
       {
         "file": "components/home/TransitSection.tsx",
-        "bytes": 11620,
-        "sha256": "509b1a817327c9a7f273aa2af2477407d7e6ed4d5ac9ee0d85e870b2b38c8f9a"
+        "bytes": 12109,
+        "sha256": "18e0897efe3de619cd482d1842bbcf3f48b89e6449338fe5abb5b262cf3a210f"
       },
       {
         "file": "components/home/transit-section.css",
-        "bytes": 18684,
-        "sha256": "584bfd708ca9dff32dd52a1e9a04b2aea6f5ed83cd64bb879d8e77005d67832e"
+        "bytes": 18318,
+        "sha256": "9286e6d7fa95cda1406549120b7c208455b53c952578ef7ab91603d4960787e5"
       },
       {
         "file": "components/home/van.js",
@@ -438,5 +438,74 @@
       }
     ],
     "originalAtlasImagesUnchanged": true
+  },
+  "transitQuality": {
+    "date": "2026-11-23",
+    "generation": "built-in image_gen, edits of original Transit scenes; generated illustrative assets",
+    "originalAtlasImagesUnchanged": true,
+    "nativePixelsPerStage": 1254,
+    "compositing": "Native alpha without lighten blend or gradient masks. Original Kraken logo composited as SVG.",
+    "conversion": {
+      "format": "WebP",
+      "quality": 95,
+      "method": 6,
+      "resized": false,
+      "alphaPreservedExactly": true
+    },
+    "images": [
+      {
+        "file": "public/transit-quality/transit-boxes-v1.webp",
+        "bytes": 246456,
+        "sha256": "e9e85bc1a0a9a78d7605f506504424c56fc4ff34438a85734ec163e55e96d4a7",
+        "width": 1254,
+        "height": 1254,
+        "alpha": true
+      },
+      {
+        "file": "public/transit-quality/transit-chairs-v1.webp",
+        "bytes": 247890,
+        "sha256": "99dc42fda764a2e241c28c11bb30bc7bb33ea4d9f10e85d726e579282c7d5adc",
+        "width": 1254,
+        "height": 1254,
+        "alpha": true
+      },
+      {
+        "file": "public/transit-quality/transit-empty-v1.webp",
+        "bytes": 240968,
+        "sha256": "5cd020fa682de53912574c0b44e0d752b1a4bd4e60b78b9c548ec617d414ef60",
+        "width": 1254,
+        "height": 1254,
+        "alpha": true
+      },
+      {
+        "file": "public/transit-quality/transit-furniture-v1.webp",
+        "bytes": 271318,
+        "sha256": "2b1ec4c6fa0aca1c5da3ffa73632cbd9d3b9125a5cabe3061520f73967e9cbf3",
+        "width": 1254,
+        "height": 1254,
+        "alpha": true
+      },
+      {
+        "file": "public/transit-quality/transit-overview-v1.webp",
+        "bytes": 269204,
+        "sha256": "93e7bc77f6235e6d69ce0415e338f8890c5fc75fd14df039b15ca03192d31d57",
+        "width": 1254,
+        "height": 1254,
+        "alpha": true
+      }
+    ],
+    "files": [
+      {
+        "file": "components/home/TransitOverviewBranding.tsx",
+        "bytes": 1185,
+        "sha256": "860ea4a5d0423c77f445bb48b8cbeaa603688b6867401380838ec568234baba2"
+      },
+      {
+        "file": "components/home/TransitLoadingVisual.tsx",
+        "bytes": 2326,
+        "sha256": "8eef3f84e48b9095fffe3c61ccfcf3397025123268bc028a279d2fca46591f86"
+      }
+    ],
+    "delivery": "Lazy/async image decoding with explicit dimensions; four native loading frames reuse the existing two-layer crossfade and automatic/manual controls."
   }
 }

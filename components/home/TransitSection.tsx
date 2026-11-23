@@ -1,5 +1,7 @@
 import React, { useEffect, useId, useRef } from 'react';
 import { initTransitLighting } from './transit-lighting';
+import TransitOverviewBranding from './TransitOverviewBranding';
+import TransitLoadingVisual from './TransitLoadingVisual';
 import './transit-section.css';
 
 /** The approved two-view Transit story; the owner’s four interior dimensions stay accessible HTML. */
@@ -20,11 +22,13 @@ export default function TransitSection({ t }: { t: (source: string, params?: Rec
       <div id="vanOverview" role="tabpanel" aria-labelledby="vanOverviewTab" tabIndex={0}>
       <div className="moving-inner container">
         <div className="moving-art atlas-panel panel-transit" role="img" aria-label={t("Illustration eines weissen Ford Transit mit Umzugskartons und Sofa")}>
-          <svg className="transit-headlamps" viewBox="0 0 724 724" aria-hidden="true" focusable="false">
+          <img className="transit-overview-image" src="/transit-quality/transit-overview-v1.webp" width="1254" height="1254" loading="lazy" decoding="async" alt="" aria-hidden="true" />
+          <TransitOverviewBranding />
+          <svg className="transit-headlamps" viewBox="0 0 1254 1254" aria-hidden="true" focusable="false">
             <defs><radialGradient id={lightId + '-lens'}><stop stopColor="#fffef0" /><stop offset=".45" stopColor="#fff6cd" stopOpacity=".95" /><stop offset="1" stopColor="#e7faff" stopOpacity="0" /></radialGradient></defs>
-            <g className="transit-lamp-bloom" fill={`url(#${lightId}-lens)`}><ellipse cx="223" cy="364" rx="50" ry="37" /><ellipse cx="49" cy="365" rx="23" ry="34" /></g>
-            <g className="transit-lamp-lenses" fill="#fff7d8"><path d="m197 356 52-12-10 31-35 6Z" /><path d="m43 349 15-9-5 34-14 11Z" /></g>
-            <g className="transit-lamp-centres" fill="#fffef3"><ellipse cx="221" cy="364" rx="9" ry="5" transform="rotate(-13 221 364)" /><ellipse cx="49" cy="364" rx="3" ry="8" transform="rotate(12 49 364)" /></g>
+            <g className="transit-lamp-bloom" fill={`url(#${lightId}-lens)`}><ellipse cx="375" cy="660" rx="86" ry="62" /><ellipse cx="52" cy="670" rx="38" ry="58" /></g>
+            <g className="transit-lamp-lenses" fill="#fff7d8"><path d="M310 650 453 612 430 687 332 695Z" /><path d="M44 650 67 628 59 683 38 703Z" /></g>
+            <g className="transit-lamp-centres" fill="#fffef3"><ellipse cx="391" cy="654" rx="15" ry="10" transform="rotate(-13 391 654)" /><ellipse cx="342" cy="670" rx="10" ry="7" transform="rotate(-13 342 670)" /><ellipse cx="52" cy="670" rx="5" ry="14" transform="rotate(12 52 670)" /></g>
           </svg>
         </div>
         <svg className="transit-headlight-beams" aria-hidden="true" focusable="false" preserveAspectRatio="none">
@@ -56,8 +60,8 @@ export default function TransitSection({ t }: { t: (source: string, params?: Rec
           </div>
           <div className="van-visual-slot">
           <div className="van-load-visual" id="cargoVisual" role="img" aria-label={t("Ansicht eines offenen Kraken Ford Transit mit leerem Laderaum.")}>
-            <div className="van-load-atlas" id="cargoFrame" data-frame="0" aria-hidden="true"></div>
-            <div className="van-load-atlas van-load-incoming" id="cargoIncoming" data-frame="0" aria-hidden="true"></div>
+            <div className="van-load-atlas" id="cargoFrame" data-frame="0" aria-hidden="true"><TransitLoadingVisual /></div>
+            <div className="van-load-atlas van-load-incoming" id="cargoIncoming" data-frame="0" aria-hidden="true"><TransitLoadingVisual /></div>
             <span className="van-example-label">{t("Beispiel für einen kleinen Umzug")}</span>
           </div>
           <section className="van-measure-panel" id="cargoMeasurements" aria-labelledby="cargoMeasurementsTitle" hidden={true}>
