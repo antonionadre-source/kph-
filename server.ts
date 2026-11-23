@@ -10,6 +10,7 @@ import { getMetadataForPath, isRouteValid, VALID_CITIES } from "./seoConfig.ts";
 import { MUNICIPALITIES } from "./src/data/locations.ts";
 import { createHomeWeatherHandler } from "./server/homeWeather.ts";
 import { normalizeSiteLanguage } from "./src/locale.ts";
+import { createKaiAssistantHandler } from "./server/kaiAssistant.ts";
 // No need to define currentDirname or use import.meta.url as they are unused and cause a parse-time SyntaxError in bundled CommonJS on startup.
 
 dotenv.config();
@@ -43,6 +44,7 @@ async function configureApplication() {
   });
 
   app.get("/api/weather/zurich", createHomeWeatherHandler());
+  app.post("/api/kai/assist", createKaiAssistantHandler());
 
   app.get("/api/download-zip", (req, res) => {
     const zipPath = path.join(process.cwd(), "public", "sitio-web-completo.zip");

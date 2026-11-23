@@ -1149,7 +1149,7 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <main className="bg-slate-55 min-h-screen pt-32 pb-20 font-sans text-slate-800 relative overflow-hidden bg-slate-50">
+    <main className="bg-slate-55 min-h-screen pt-24 sm:pt-28 pb-20 font-sans text-slate-800 relative overflow-x-clip bg-slate-50 [&_input]:text-base [&_textarea]:text-base [&_select]:text-base [&_label]:text-sm [&_button]:min-h-11">
       {/* Background Radial Ambiance */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_70%)]" />
@@ -1159,11 +1159,11 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Main Container */}
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
 
         {/* Console Header */}
-        <div className="mb-12 animate-fade-in">
-            <div className="bg-white backdrop-blur-3xl p-10 rounded-[3.5rem] border border-slate-200/80 shadow-[0_30px_60px_rgba(0,0,0,0.04)] flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8 relative overflow-hidden">
+        <div className="mb-6 sm:mb-8 animate-fade-in">
+            <div className="bg-white backdrop-blur-3xl p-4 sm:p-6 lg:p-8 rounded-3xl border border-slate-200/80 shadow-[0_30px_60px_rgba(0,0,0,0.04)] flex flex-col xl:flex-row justify-between items-stretch xl:items-center gap-6 relative overflow-hidden [&>div]:min-w-0">
                 <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
                 <div>
                     <div className="flex items-center gap-3 mb-4">
@@ -1172,27 +1172,27 @@ const Dashboard: React.FC = () => {
                           {isStaff ? `🛡️ ${dt.staffConsole}` : `🔒 ${dt.clientPortal}`}
                       </span>
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-black tracking-tighter uppercase mb-2 text-slate-900">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight break-words mb-2 text-slate-900">
                         {isStaff ? 'Worker' : dt.myFacilities.split(' ')[0]}{' '}
                         <span className="text-blue-600">{isStaff ? 'Dashboard' : (dt.myFacilities.split(' ').slice(1).join(' ') || 'Facilities')}</span>
                     </h1>
-                    <p className="text-slate-500 font-bold text-sm uppercase tracking-[0.2em]">
+                    <p className="text-slate-500 font-semibold text-sm leading-relaxed break-words">
                         {dt.welcomeBack} {user ? user.name : 'Authorized Partner'} 
                         {isStaff && <span className="text-emerald-700 text-xs font-black ml-3 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">{dt.activeOperator}</span>}
                     </p>
                 </div>
 
-                <div className="flex flex-wrap gap-4 md:gap-6 w-full xl:w-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full xl:max-w-2xl">
                     <motion.div 
                       key="active"
                       whileHover={{ y: -4, scale: 1.02 }}
-                      className="bg-white hover:bg-slate-50 shadow-[0_15px_35px_rgba(0,0,0,0.02)] transition-all duration-300 px-6 py-5 rounded-[2rem] border border-slate-200 flex items-center gap-4 flex-1 md:flex-initial min-w-[200px]"
+                      className="bg-white hover:bg-slate-50 shadow-[0_15px_35px_rgba(0,0,0,0.02)] transition-all duration-300 p-4 rounded-2xl border border-slate-200 flex items-center gap-3 min-w-0 [&>div]:min-w-0"
                     >
-                      <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl border border-blue-200">
+                      <div className="p-2 shrink-0 bg-blue-50 text-blue-600 rounded-xl border border-blue-200">
                           <Briefcase className="w-5 h-5" />
                       </div>
                       <div>
-                        <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-0.5 leading-none">
+                        <p className="text-sm font-bold text-blue-600 mb-0.5 leading-snug">
                             {isStaff ? dt.activeTasks : dt.activeServices}
                         </p>
                         <p className="text-2xl font-black text-slate-800 leading-tight mt-1">{activeJobs}</p>
@@ -1202,13 +1202,13 @@ const Dashboard: React.FC = () => {
                     <motion.div 
                       key="high"
                       whileHover={{ y: -4, scale: 1.02 }}
-                      className="bg-white hover:bg-slate-50 shadow-[0_15px_35px_rgba(0,0,0,0.02)] transition-all duration-300 px-6 py-5 rounded-[2rem] border border-slate-200 flex items-center gap-4 flex-1 md:flex-initial min-w-[200px]"
+                      className="bg-white hover:bg-slate-50 shadow-[0_15px_35px_rgba(0,0,0,0.02)] transition-all duration-300 p-4 rounded-2xl border border-slate-200 flex items-center gap-3 min-w-0 [&>div]:min-w-0"
                     >
-                      <div className="p-3 bg-rose-50 text-rose-600 rounded-2xl border border-rose-200">
+                      <div className="p-2 shrink-0 bg-rose-50 text-rose-600 rounded-xl border border-rose-200">
                           <AlertTriangle className="w-5 h-5 animate-pulse" />
                       </div>
                       <div>
-                        <p className="text-[10px] font-black text-rose-600 uppercase tracking-widest mb-0.5 leading-none">
+                        <p className="text-sm font-bold text-rose-600 mb-0.5 leading-snug">
                             {isStaff ? dt.highPriority : dt.milestones}
                         </p>
                         <p className="text-2xl font-black text-rose-600 leading-tight mt-1">{highPriorityCount}</p>
@@ -1218,16 +1218,16 @@ const Dashboard: React.FC = () => {
                     <motion.div 
                       key="rev"
                       whileHover={{ y: -4, scale: 1.02 }}
-                      className="bg-white hover:bg-slate-50 shadow-[0_15px_35px_rgba(0,0,0,0.02)] transition-all duration-300 px-6 py-5 rounded-[2rem] border border-slate-200 flex items-center gap-4 flex-1 md:flex-initial min-w-[220px]"
+                      className="bg-white hover:bg-slate-50 shadow-[0_15px_35px_rgba(0,0,0,0.02)] transition-all duration-300 p-4 rounded-2xl border border-slate-200 flex items-center gap-3 min-w-0 [&>div]:min-w-0"
                     >
-                      <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl border border-emerald-200">
+                      <div className="p-2 shrink-0 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-200">
                           <DollarSign className="w-5 h-5" />
                       </div>
                       <div>
-                        <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-0.5 leading-none">
+                        <p className="text-sm font-bold text-emerald-600 mb-0.5 leading-snug">
                             {isStaff ? dt.estRevenue : dt.estBudget}
                         </p>
-                        <p className="text-2xl font-black text-emerald-600 leading-tight mt-1 font-mono">CHF {totalRevenue.toLocaleString()}</p>
+                        <p className="text-xl sm:text-2xl font-black text-emerald-600 leading-tight mt-1 font-mono break-words">CHF {totalRevenue.toLocaleString()}</p>
                       </div>
                     </motion.div>
                 </div>
@@ -1235,7 +1235,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Section Navigation Tabs */}
-        <div className="flex items-center gap-3 mb-8 border-b border-slate-200 pb-4 overflow-x-auto">
+        <div className="flex items-center gap-3 mb-8 border-b border-slate-200 pb-4 overflow-x-auto [&_button]:shrink-0 [&_button]:whitespace-nowrap">
           <button
             onClick={() => setActiveTab('requests')}
             className={`px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all flex items-center gap-2 cursor-pointer ${
@@ -2183,15 +2183,15 @@ const Dashboard: React.FC = () => {
       </div>
         {/* ===== EMAIL CONFIRMATION CENTER ===== */}
         <div className="mt-6 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mx-4 mb-4">
-          <div className="bg-[#0f1b2d] px-6 py-4 flex items-center justify-between cursor-pointer select-none" onClick={() => setShowEmailHistory(v => !v)}>
+          <button type="button" aria-expanded={showEmailHistory} aria-controls="dashboard-email-history" className="bg-[#0f1b2d] w-full text-left px-4 sm:px-6 py-4 flex items-center justify-between gap-3 cursor-pointer select-none" onClick={() => setShowEmailHistory(v => !v)}>
             <div className="flex items-center gap-3">
               <Mail size={18} className="text-[#00d4ff]" />
               <h3 className="text-white font-black text-sm uppercase tracking-widest">{dt.emailCenterTitle}</h3>
               <span className="bg-[#00d4ff] text-[#0f1b2d] text-[10px] font-black px-2 py-0.5 rounded-full">{emailHistory.length}</span>
             </div>
             <ArrowLeft size={16} className={`text-slate-400 transition-transform duration-300 ${showEmailHistory ? 'rotate-90' : '-rotate-90'}`} />
-          </div>
-          <div className="grid grid-cols-5 divide-x divide-slate-100 border-b border-slate-100">
+          </button>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 divide-x divide-slate-100 border-b border-slate-100">
             {([
               { label: dt.total, value: emailStats.total, color: 'text-slate-700', bg: 'bg-white', icon: '📨' },
               { label: dt.delivered, value: emailStats.sent, color: 'text-green-600', bg: 'bg-green-50', icon: '✅' },
@@ -2202,12 +2202,12 @@ const Dashboard: React.FC = () => {
               <div key={i} className={`${stat.bg} px-3 py-3 text-center`}>
                 <div className="text-base">{stat.icon}</div>
                 <div className={`text-xl font-black ${stat.color}`}>{stat.value}</div>
-                <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">{stat.label}</div>
+                <div className="text-sm font-bold leading-snug text-slate-500 break-words">{stat.label}</div>
               </div>
             ))}
           </div>
           {showEmailHistory && (
-            <div className="p-5">
+            <div id="dashboard-email-history" className="p-4 sm:p-5">
               <div className="flex flex-wrap gap-2 mb-4">
                 {(['all','sent','pending','error'] as const).map(f => (
                   <button key={f} onClick={() => setEmailHistoryFilter(f)} className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all ${emailHistoryFilter === f ? 'bg-[#0f1b2d] text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>

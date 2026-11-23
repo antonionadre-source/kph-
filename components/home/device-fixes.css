@@ -1,0 +1,109 @@
+/* Keep the approved normal-size header, but let larger text create more space. */
+.kraken-home .site-header {
+  --home-header-height: 84px;
+  height: auto;
+  min-height: var(--home-header-height);
+}
+.kraken-home .site-header .header-inner {
+  height: auto;
+  min-height: calc(var(--home-header-height) - 1px);
+  padding-block: 4px;
+}
+.kraken-home .site-header .brand-descriptor {
+  max-width: 190px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.kraken-home .site-header .desktop-nav {
+  min-width: 0;
+  flex-wrap: wrap;
+  row-gap: 0;
+}
+.kraken-home .site-header .desktop-nav a {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.kraken-home .site-header .header-actions { flex: none; }
+
+/* A native select must not impose its widest option on both grid columns. */
+.kraken-home .scene-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.kraken-home .scene-control,
+.kraken-home .scene-dialog-heading > div { min-width: 0; }
+.kraken-home .scene-control label,
+.kraken-home .scene-dialog h2 { overflow-wrap: anywhere; }
+.kraken-home .scene-control select,
+.kraken-home .scene-control input {
+  min-width: 0;
+  max-width: 100%;
+  min-height: 48px;
+  font-size: 16px;
+}
+.kraken-home .scene-dialog-actions { flex-wrap: wrap; }
+.kraken-home .scene-dialog-actions > button {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Let translated or enlarged card copy determine height instead of clipping. */
+.kraken-home .service-card { display: flex; flex-direction: column; }
+.kraken-home .card-content { position: relative; inset: auto; flex: 1 1 auto; }
+.kraken-home .card-content .button,
+.kraken-home .card-service-links a {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Preserve the two views and four cargo stages, allowing their labels to wrap. */
+.kraken-home .van-navigation { flex-wrap: wrap; }
+.kraken-home .van-navigation-label,
+.kraken-home .van-tabs { min-width: 0; max-width: 100%; }
+.kraken-home .van-tabs button,
+.kraken-home .van-load-steps button > span,
+.kraken-home #cargoPlayLabel,
+.kraken-home .van-measures-toggle,
+.kraken-home .van-fit-card .button {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.kraken-home .van-view-actions > .van-play { max-width: 100%; }
+.kraken-home .footer-grid > * { min-width: 0; }
+.kraken-home .footer-contact-link,
+.kraken-home .footer-contact address,
+.kraken-home .footer-services a,
+.kraken-home .footer-bottom p { overflow-wrap: anywhere; }
+.kraken-home .home-language-options button { min-width: 0; }
+.kraken-home .home-language-options button > span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 980px) {
+  .kraken-home .site-header { --home-header-height: 76px; }
+}
+@media (max-width: 760px) {
+  .kraken-home .site-header { --home-header-height: 108px; }
+}
+@media (max-width: 540px) {
+  .kraken-home .scene-controls { grid-template-columns: minmax(0, 1fr); }
+  .kraken-home .scene-dialog-actions { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .kraken-home .scene-dialog-actions > button { width: 100%; }
+}
+/* On a short, wide phone, keep the original logo and descriptor in one row. */
+@media (orientation: landscape) and (max-height: 500px) and (min-width: 541px) and (max-width: 760px) {
+  .kraken-home .site-header { --home-header-height: 72px; }
+  .kraken-home .site-header .brand-lockup {
+    width: auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+  .kraken-home .site-header .brand-logo { width: 108px; height: 48px; margin-left: 0; }
+  .kraken-home .site-header .brand-logo img { width: 108px; height: 108px; top: -30px; }
+  .kraken-home .site-header .brand-descriptor { width: auto; max-width: 175px; text-align: left; }
+}

@@ -400,7 +400,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   ];
 
   return (
-    <footer id="contact" className="bg-[#002D5B] text-white py-8 md:py-10 relative overflow-hidden border-t border-white/5">
+    <footer id="contact" className="bg-[#002D5B] text-white py-8 md:py-10 relative overflow-hidden border-t border-white/5 [&_input]:text-base [&_input]:min-h-11 [&_textarea]:text-base [&_select]:text-base [&_label]:text-sm [&_button]:min-h-11">
       {/* Background Accents */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 right-0 w-80 h-80 bg-blue-600/10 rounded-full blur-[100px] -mr-40 -mt-40" />
@@ -432,10 +432,10 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               </h3>
             </div>
 
-            <div className="flex items-center gap-2 text-xs font-bold shrink-0">
+            <div className="flex min-w-0 flex-wrap items-center gap-2 text-sm font-bold">
               <a 
                 href="tel:+41774505705" 
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition-all cursor-pointer text-xs"
+                className="inline-flex min-h-11 items-center gap-1 px-3 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition-all cursor-pointer text-xs"
               >
                 <PhoneIcon className="w-3.5 h-3.5" />
                 <span>+41 77 450 57 05</span>
@@ -444,7 +444,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 href="https://wa.me/41774505705?text=Hallo%2C%20ich%20interessiere%20mich%20f%C3%BCr%20eine%20Offerte" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#25D366]/10 border border-[#25D366]/20 text-[#25D366] hover:bg-[#25D366]/20 transition-all cursor-pointer text-xs"
+                className="inline-flex min-h-11 items-center gap-1 px-3 py-2 rounded-full bg-[#25D366]/10 border border-[#25D366]/20 text-[#25D366] hover:bg-[#25D366]/20 transition-all cursor-pointer text-xs"
               >
                 <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366]" />
                 <span>WhatsApp</span>
@@ -806,7 +806,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   aria-label={label}
                   whileHover={{ scale: 1.1, y: -2 }}
                   whileTap={{ scale: 0.9 }}
-                  className={`w-9 h-9 bg-white/5 ${label === 'WhatsApp' ? 'hover:bg-[#25D366]' : 'hover:bg-blue-600'} rounded-xl flex items-center justify-center transition-all border border-white/10 group shadow-lg`}
+                  className={`w-11 h-11 bg-white/5 ${label === 'WhatsApp' ? 'hover:bg-[#25D366]' : 'hover:bg-blue-600'} rounded-xl flex items-center justify-center transition-all border border-white/10 group shadow-lg`}
                 >
                   <Icon className={`w-4 h-4 ${label === 'WhatsApp' ? 'group-hover:scale-110' : ''}`} />
                 </motion.a>
@@ -815,7 +815,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           </motion.div>
 
           {/* Links Grid */}
-          <div className="lg:col-span-6 grid grid-cols-3 gap-4">
+          <div className="lg:col-span-6 grid grid-cols-1 sm:grid-cols-3 gap-6 [&>div]:min-w-0 [&_a]:min-h-11 [&_a]:py-2 [&_a]:text-sm [&_a]:break-words [&_h3]:text-sm [&_h3]:tracking-normal">
             <motion.div
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -880,7 +880,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 type="email" 
                 placeholder={t('footer.placeholder')} 
                 required
-                className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-4 pr-10 text-xs font-medium outline-none focus:border-blue-400 transition-all focus:bg-white/10 text-white"
+                className="w-full bg-white/5 border border-white/10 rounded-xl min-h-[60px] py-3 pl-4 pr-16 text-base font-medium outline-none focus:border-blue-400 transition-all focus:bg-white/10 text-white"
                 value={newsletterEmail}
                 onChange={(e) => setNewsletterEmail(e.target.value)}
               />
@@ -889,7 +889,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 disabled={status === 'loading'}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="absolute right-2 top-2 bottom-2 aspect-square bg-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-500 transition-colors shadow-md active:scale-90 disabled:opacity-50"
+                className="absolute right-2 top-2 h-11 w-11 bg-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-500 transition-colors shadow-md active:scale-90 disabled:opacity-50"
               >
                 {status === 'loading' ? (
                   <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

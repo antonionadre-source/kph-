@@ -1,385 +1,205 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '../i18n';
 import { companyLogoUrl, companyLogoWhiteUrl } from '../assets';
 import { useAuth } from './Auth';
-import { LeafIcon } from './icons';
 
 interface HeaderProps {
   onNavigate: (page: string) => void;
   currentPage: 'home' | 'clients' | 'login' | 'register' | 'dashboard' | 'about' | 'consultation' | 'gdpr' | 'services-page' | 'sustainability-page' | 'hse' | 'careers' | 'blog';
 }
 
-const useCountUp = (end: number, duration: number = 2000) => {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    let startTime: number | null = null;
-    let animationFrame: number;
-
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = timestamp - startTime;
-      const percentage = Math.min(progress / duration, 1);
-      const ease = 1 - Math.pow(1 - percentage, 4); // EaseOutQuart
-
-      setCount(end * ease);
-
-      if (progress < duration) {
-        animationFrame = requestAnimationFrame(animate);
-      } else {
-        setCount(end);
-      }
-    };
-
-    animationFrame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrame);
-  }, [end, duration]);
-
-  return count;
-};
-
 const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [headerTheme, setHeaderTheme] = useState<'light' | 'dark'>('dark');
   const [isLangDropdownOpen, setLangDropdownOpen] = useState(false);
-  const [justSelected, setJustSelected] = useState(false);
+  const [isServicesOpen, setServicesOpen] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const desktopLangDropdownRef = useRef<HTMLDivElement>(null);
   const mobileLangDropdownRef = useRef<HTMLDivElement>(null);
+  const servicesRef = useRef<HTMLDivElement>(null);
+  const servicesButtonRef = useRef<HTMLButtonElement>(null);
+  const languageButtonRef = useRef<HTMLButtonElement | null>(null);
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
+  const mobileToggleRef = useRef<HTMLButtonElement>(null);
   const { t, setLanguage, language } = useTranslation();
   const { user, logout } = useAuth();
-  
-  // Animation value
-  const co2Value = useCountUp(0.61);
+  const locale = language.split('-')[0];
+  const ui = ({
+    de: { open: 'Menü öffnen', close: 'Menü schliessen', language: 'Sprache wählen', navigation: 'Hauptnavigation' },
+    en: { open: 'Open menu', close: 'Close menu', language: 'Choose language', navigation: 'Main navigation' },
+    fr: { open: 'Ouvrir le menu', close: 'Fermer le menu', language: 'Choisir la langue', navigation: 'Navigation principale' },
+    it: { open: 'Apri menu', close: 'Chiudi menu', language: 'Scegli la lingua', navigation: 'Navigazione principale' },
+    es: { open: 'Abrir menú', close: 'Cerrar menú', language: 'Elegir idioma', navigation: 'Navegación principal' },
+    pt: { open: 'Abrir menu', close: 'Fechar menu', language: 'Escolher idioma', navigation: 'Navegação principal' },
+  } as Record<string, { open: string; close: string; language: string; navigation: string }>)[locale];
 
   useEffect(() => {
-    const handleScroll = () => {
-      // On home page, stay transparent until we scroll past most of the hero section
-      const threshold = currentPage === 'home' ? window.innerHeight * 0.7 : 20;
-      setIsScrolled(window.scrollY > threshold);
-    };
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial check
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > (currentPage === 'home' ? window.innerHeight * 0.7 : 20));
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [currentPage]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const theme = entry.target.getAttribute('data-header-theme') as 'light' | 'dark';
-            if (theme) setHeaderTheme(theme);
-          }
-        });
-      },
-      {
-        threshold: [0, 0.1],
-        rootMargin: '-10px 0px -95% 0px' // Focus on the very top of the viewport
-      }
-    );
-
-    const sections = document.querySelectorAll('[data-header-theme]');
-    sections.forEach((section) => observer.observe(section));
-
-    return () => observer.disconnect();
-  }, [currentPage]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const insideDesktop = desktopLangDropdownRef.current && desktopLangDropdownRef.current.contains(event.target as Node);
-      const insideMobile = mobileLangDropdownRef.current && mobileLangDropdownRef.current.contains(event.target as Node);
-      if (!insideDesktop && !insideMobile) {
-        setLangDropdownOpen(false);
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node;
+      if (!desktopLangDropdownRef.current?.contains(target) && !mobileLangDropdownRef.current?.contains(target)) setLangDropdownOpen(false);
+      if (!servicesRef.current?.contains(target)) setServicesOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      if (isLangDropdownOpen) {
+        event.preventDefault(); setLangDropdownOpen(false); languageButtonRef.current?.focus();
+      } else if (isServicesOpen) {
+        event.preventDefault(); setServicesOpen(false); servicesButtonRef.current?.focus();
+      } else if (isMobileMenuOpen) {
+        event.preventDefault(); setMobileMenuOpen(false);
       }
     };
-
-    if (isLangDropdownOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKeyDown);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKeyDown);
     };
-  }, [isLangDropdownOpen]);
+  }, [isLangDropdownOpen, isServicesOpen, isMobileMenuOpen]);
 
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
+    const media = window.matchMedia('(min-width: 1280px)');
+    const closeMenus = () => { setMobileMenuOpen(false); setLangDropdownOpen(false); setServicesOpen(false); };
+    media.addEventListener('change', closeMenus);
+    return () => media.removeEventListener('change', closeMenus);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const panel = mobilePanelRef.current;
+    panel?.querySelector<HTMLElement>('button, a[href]')?.focus();
+    const trapFocus = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab' || !panel) return;
+      const controls = (Array.from(panel.querySelectorAll('a[href], button:not(:disabled), [tabindex="0"]')) as HTMLElement[]).filter(element => element.getClientRects().length > 0);
+      const first = controls[0]; const last = controls[controls.length - 1];
+      if (!first || !last) return;
+      if (event.shiftKey && (document.activeElement === first || !panel.contains(document.activeElement))) {
+        event.preventDefault(); last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || !panel.contains(document.activeElement))) {
+        event.preventDefault(); first.focus();
+      }
+    };
+    document.addEventListener('keydown', trapFocus);
     return () => {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', trapFocus);
+      if (mobileToggleRef.current?.getClientRects().length) mobileToggleRef.current.focus();
     };
   }, [isMobileMenuOpen]);
-  
-  const useDarkStyle = isScrolled || isMobileMenuOpen || (isScrolled && headerTheme === 'light');
 
+  // Inner pages have light backgrounds, including before the first scroll event.
+  const useDarkStyle = currentPage !== 'home' || isScrolled || isMobileMenuOpen;
   const supportedLanguages = [
-    { code: 'de-CH', name: 'Swiss German', flag: '🇨🇭' },
-    { code: 'de', name: 'German', flag: '🇩🇪' },
+    { code: 'de-CH', name: 'Deutsch (Schweiz)', flag: '🇨🇭' },
+    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
     { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'fr', name: 'French', flag: '🇫🇷' },
-    { code: 'it', name: 'Italian', flag: '🇮🇹' },
-    { code: 'es', name: 'Spanish', flag: '🇪🇸' },
-    { code: 'pt', name: 'Portuguese', flag: '🇵🇹' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' },
+    { code: 'pt', name: 'Português', flag: '🇵🇹' },
   ];
-
   const handleLanguageChange = (langCode: string) => {
-    setLanguage(langCode as any);
-    setLangDropdownOpen(false);
-    setJustSelected(true);
-    setTimeout(() => setJustSelected(false), 400);
+    setLanguage(langCode as any); setLangDropdownOpen(false); languageButtonRef.current?.focus();
   };
-
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, page: string) => {
-    e.preventDefault();
-    onNavigate(page);
-    setMobileMenuOpen(false);
+  const handleNavClick = (event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, page: string) => {
+    event.preventDefault(); onNavigate(page); setMobileMenuOpen(false); setServicesOpen(false); setLangDropdownOpen(false);
   };
+  const handleLogout = () => { logout(); onNavigate('home'); setMobileMenuOpen(false); };
+  const navClass = `inline-flex min-h-11 items-center py-2 text-sm font-bold transition-colors hover:text-blue-600 ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'}`;
+  const links = (mobile = false) => <>
+    <a href="/about" onClick={event => handleNavClick(event, 'about')} className={mobile ? 'min-h-11 flex items-center text-lg font-bold text-[#002d5b]' : navClass}>{t('nav.about')}</a>
+    <a href="/sustainability" onClick={event => handleNavClick(event, 'sustainability-page')} className={mobile ? 'min-h-11 flex items-center text-lg font-bold text-[#002d5b]' : navClass}>{t('nav.sustainability')}</a>
+    <a href="/einsatzgebiete" onClick={event => handleNavClick(event, '/einsatzgebiete')} className={mobile ? 'min-h-11 flex items-center text-lg font-bold text-[#002d5b]' : navClass}>{t('nav.coverage')}</a>
+    <a href="/blog" onClick={event => handleNavClick(event, 'blog')} className={mobile ? 'min-h-11 flex items-center text-lg font-bold text-[#002d5b]' : navClass}>{t('nav.blog')}</a>
+    {user && <a href="/dashboard" onClick={event => handleNavClick(event, 'dashboard')} className={mobile ? 'min-h-11 flex items-center text-lg font-bold text-[#002d5b]' : navClass}>{t('nav.dashboard')}</a>}
+  </>;
+  const languageSelector = (mobile: boolean) => <div className="relative" ref={mobile ? mobileLangDropdownRef : desktopLangDropdownRef}
+    onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setLangDropdownOpen(false); }}>
+    <button type="button" id={`${mobile ? 'mobile' : 'desktop'}-language-selector-btn`}
+      onClick={event => { languageButtonRef.current = event.currentTarget; setLangDropdownOpen(!isLangDropdownOpen); }}
+      aria-label={ui.language} aria-expanded={isLangDropdownOpen} aria-controls={`${mobile ? 'mobile' : 'desktop'}-language-options`}
+      className={`flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-full border px-3 text-sm font-bold ${useDarkStyle ? 'border-slate-200 bg-slate-50 text-[#002d5b]' : 'border-white/30 bg-white/10 text-white'}`}>
+      <span aria-hidden="true">🌎</span><span>{language === 'de-CH' ? 'CH' : language.toUpperCase()}</span>
+    </button>
+    {isLangDropdownOpen && <ul id={`${mobile ? 'mobile' : 'desktop'}-language-options`} aria-label={ui.language}
+      className={`absolute ${mobile && isMobileMenuOpen ? 'left-0' : 'right-0'} z-[110] mt-2 grid max-h-[min(60dvh,24rem)] w-56 max-w-[calc(100vw-2rem)] grid-cols-2 gap-1 overflow-y-auto overscroll-contain rounded-2xl border border-slate-200 bg-white p-2 text-[#002d5b] shadow-2xl`}>
+      {supportedLanguages.map(lang => <li key={lang.code}>
+        <button type="button" id={`${mobile ? 'mobile' : 'desktop'}-lang-opt-${lang.code}`} onClick={() => handleLanguageChange(lang.code)} aria-current={language === lang.code ? 'true' : undefined}
+          className={`flex min-h-11 w-full items-center gap-2 rounded-xl px-2 py-2 text-left text-sm hover:bg-slate-100 ${language === lang.code ? 'bg-blue-50 ring-1 ring-blue-200' : ''}`}>
+          <span aria-hidden="true" className="text-xl">{lang.flag}</span><span className="min-w-0 break-words">{lang.name}</span>
+        </button>
+      </li>)}
+    </ul>}
+  </div>;
 
-  const handleLogout = () => {
-    logout();
-    onNavigate('home');
-    setMobileMenuOpen(false);
-  };
-
-  const renderNavLinks = (isMobile: boolean = false) => {
-    const navLinkClass = isMobile 
-      ? "text-3xl font-black uppercase tracking-tighter py-4 text-[#002d5b]" 
-      : `text-[11px] font-bold uppercase tracking-[0.15em] transition-all ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'} hover:text-blue-600`;
-
-    return (
-      <>
-        {/* Services Dropdown */}
-        <div className="relative group">
-          <button 
-            className={`${navLinkClass} flex items-center gap-1 cursor-default`}
-            onClick={(e) => {
-              if (isMobile) {
-                // In mobile, we could toggle a sub-menu or just show the options
-                // For now, let's keep it simple as the user requested
-              }
-            }}
-          >
-            {t('nav.services')}
-            {!isMobile && (
-              <svg className="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
-              </svg>
-            )}
-          </button>
-          
-          {!isMobile && (
-            <div className="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-[100]">
-              <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-2 min-w-[200px] overflow-hidden">
-                <button 
-                  onClick={(e) => handleNavClick(e as any, 'services-page')}
-                  className="w-full text-left px-5 py-3 text-[10px] font-black uppercase tracking-widest text-[#002d5b] hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors flex items-center justify-between group/item"
-                >
-                  <span>{t('nav.private')}</span>
-                  <span className="opacity-0 group-hover/item:opacity-100 transition-opacity">→</span>
-                </button>
-                <button 
-                  onClick={(e) => handleNavClick(e as any, 'commercial-services')}
-                  className="w-full text-left px-5 py-3 text-[10px] font-black uppercase tracking-widest text-[#002d5b] hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors flex items-center justify-between group/item"
-                >
-                  <span>{t('nav.commercial')}</span>
-                  <span className="opacity-0 group-hover/item:opacity-100 transition-opacity">→</span>
-                </button>
-              </div>
-            </div>
-          )}
-          
-          {isMobile && (
-            <div className="flex flex-col items-center space-y-4 mt-4 mb-2">
-               <button 
-                onClick={(e) => handleNavClick(e as any, 'services-page')} 
-                className="text-2xl font-black uppercase tracking-tighter text-blue-600 hover:scale-105 transition-transform"
-               >
-                {t('nav.private')}
-               </button>
-               <button 
-                onClick={(e) => handleNavClick(e as any, 'commercial-services')} 
-                className="text-2xl font-black uppercase tracking-tighter text-blue-600 hover:scale-105 transition-transform"
-               >
-                {t('nav.commercial')}
-               </button>
-            </div>
-          )}
-        </div>
-
-        <a href="/about" onClick={(e) => handleNavClick(e, 'about')} className={navLinkClass}>{t('nav.about')}</a>
-        <a href="/sustainability" onClick={(e) => handleNavClick(e, 'sustainability-page')} className={navLinkClass}>{t('nav.sustainability')}</a>
-        <a href="/einsatzgebiete" onClick={(e) => handleNavClick(e, '/einsatzgebiete')} className={navLinkClass}>{t('nav.coverage')}</a>
-        <a href="/blog" onClick={(e) => handleNavClick(e, 'blog')} className={navLinkClass}>{t('nav.blog')}</a>
-        {user && (
-          <a href="/dashboard" onClick={(e) => handleNavClick(e, 'dashboard')} className={navLinkClass}>{t('nav.dashboard')}</a>
-        )}
-      </>
-    );
-  };
-
-  return (
-    <>
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm py-2' : 'bg-transparent py-4'} ${isMobileMenuOpen ? 'bg-white' : ''}`}>
-        <div className="container mx-auto px-4 md:px-6 flex justify-between items-center">
-          <a href="/" onClick={(e) => handleNavClick(e, 'home')} aria-label="Kraken Properties Homepage" className="relative z-50 flex items-center group">
-            <div className="relative flex items-center justify-center">
-              <img 
-                id="header-logo-dark"
-                src={companyLogoUrl} 
-                alt="Kraken Properties Logo" 
-                className={`w-auto transition-all duration-500 ${isScrolled || isMobileMenuOpen ? 'h-10 md:h-12' : 'h-14 md:h-18'} ${useDarkStyle ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none absolute'}`} 
-              />
-              <img 
-                id="header-logo-white"
-                src={companyLogoWhiteUrl} 
-                alt="Kraken Properties Logo" 
-                className={`w-auto transition-all duration-500 ${isScrolled || isMobileMenuOpen ? 'h-10 md:h-12' : 'h-14 md:h-18'} ${!useDarkStyle ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none absolute'}`} 
-              />
-            </div>
-            <div className="h-10 w-px bg-slate-200 mx-4 hidden sm:block"></div>
-            <div className="flex flex-col leading-tight">
-              <span className={`text-[8px] md:text-[10px] font-bold uppercase tracking-[0.15em] opacity-80 transition-colors duration-500 ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'}`}>Properties and</span>
-              <span className={`text-[8px] md:text-[10px] font-bold uppercase tracking-[0.15em] opacity-80 transition-colors duration-500 ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'}`}>Facilities Management</span>
-            </div>
-          </a>
-          
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center space-x-8 lg:space-x-10">
-            {(() => {
-              const navLinkClass = `text-[11px] font-bold uppercase tracking-[0.15em] transition-all ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'} hover:text-blue-600`;
-              return (
-                <>
-                  {/* Services Dropdown */}
-                  <div className="relative group">
-                    <button className={`${navLinkClass} flex items-center gap-1 cursor-default`}>
-                      {t('nav.services')}
-                      <svg className="w-3 h-3 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-                    <div className="absolute top-full left-0 pt-4 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-[100]">
-                      <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-2 min-w-[200px] overflow-hidden">
-                        <button onClick={(e) => handleNavClick(e as any, 'services-page')} className="w-full text-left px-5 py-3 text-[10px] font-black uppercase tracking-widest text-[#002d5b] hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors flex items-center justify-between group/item">
-                          <span>{t('nav.private')}</span>
-                          <span className="opacity-0 group-hover/item:opacity-100 transition-opacity">→</span>
-                        </button>
-                        <button onClick={(e) => handleNavClick(e as any, 'commercial-services')} className="w-full text-left px-5 py-3 text-[10px] font-black uppercase tracking-widest text-[#002d5b] hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-colors flex items-center justify-between group/item">
-                          <span>{t('nav.commercial')}</span>
-                          <span className="opacity-0 group-hover/item:opacity-100 transition-opacity">→</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <a href="/about" onClick={(e) => handleNavClick(e, 'about')} className={navLinkClass}>{t('nav.about')}</a>
-                  <a href="/sustainability" onClick={(e) => handleNavClick(e, 'sustainability-page')} className={navLinkClass}>{t('nav.sustainability')}</a>
-                  <a href="/einsatzgebiete" onClick={(e) => handleNavClick(e, '/einsatzgebiete')} className={navLinkClass}>{t('nav.coverage')}</a>
-                  <a href="/blog" onClick={(e) => handleNavClick(e, 'blog')} className={navLinkClass}>{t('nav.blog')}</a>
-                  {user && <a href="/dashboard" onClick={(e) => handleNavClick(e, 'dashboard')} className={navLinkClass}>{t('nav.dashboard')}</a>}
-                </>
-              );
-            })()}
-
-            <div className="relative" ref={desktopLangDropdownRef}>
-              <button
-                id="desktop-language-selector-btn"
-                onClick={() => setLangDropdownOpen(!isLangDropdownOpen)}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border transition-all duration-300 hover:scale-105 ${justSelected ? 'animate-pop' : ''} ${
-                  useDarkStyle 
-                    ? 'border-slate-200 hover:border-blue-400 bg-slate-50/80 text-[#002d5b] hover:bg-slate-100' 
-                    : 'border-white/20 hover:border-white/50 bg-white/10 text-white hover:bg-white/20'
-                } backdrop-blur-sm`}
-                aria-label="Select language"
-              >
-                <span className="text-lg">🌎</span>
-                <span className="text-[10px] font-black uppercase tracking-widest leading-none">
-                  {language === 'de-CH' ? 'CH' : language.toUpperCase()}
-                </span>
-                <svg className={`w-2.5 h-2.5 transition-transform duration-300 ${isLangDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <ul className={`absolute right-0 mt-4 p-4 w-64 bg-white rounded-3xl shadow-2xl z-[110] grid grid-cols-3 gap-3 origin-top-right transform transition-all duration-300 ease-out border border-gray-100 ${isLangDropdownOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
-                  {supportedLanguages.map((lang) => (
-                    <li key={lang.code} className="flex justify-center">
-                      <button
-                        id={`desktop-lang-opt-${lang.code}`}
-                        onClick={() => handleLanguageChange(lang.code)}
-                        className={`w-full text-center p-2 text-3xl hover:bg-slate-50 rounded-2xl transition-all ${language === lang.code ? 'bg-blue-50 ring-2 ring-blue-100' : ''}`}
-                        title={lang.name}
-                      >
-                        {lang.flag}
-                      </button>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-             {user ? (
-              <a href="/" id="desktop-logout-btn" onClick={handleLogout} className="font-bold text-[10px] uppercase tracking-widest transition-all px-6 py-2.5 rounded-xl bg-rose-500 text-white hover:bg-rose-600 shadow-lg shadow-rose-200/50">{t('nav.logout')}</a>
-            ) : (
-              <a href="/login" id="desktop-login-btn" onClick={(e) => handleNavClick(e, 'login')} className="font-bold text-[10px] uppercase tracking-widest transition-all px-6 py-2.5 rounded-xl bg-[#002D5B] text-white hover:bg-[#003d7a] shadow-lg shadow-blue-900/10">{t('nav.login')}</a>
-            )}
-          </nav>
-
-          {/* Mobile Nav Toggle & Quick Actions */}
-          <div className="md:hidden flex items-center gap-2">
-
-
-             <div className="relative" ref={mobileLangDropdownRef}>
-                <button
-                    id="mobile-language-selector-btn"
-                    onClick={() => setLangDropdownOpen(!isLangDropdownOpen)}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-white/50 backdrop-blur-sm"
-                >
-                    <span className="text-lg">🌎</span>
-                    <span className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-500 ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'}`}>
-                      {language === 'de-CH' ? 'CH' : language.toUpperCase()}
-                    </span>
-                </button>
-                <ul className={`absolute right-0 mt-4 p-3 w-48 bg-white rounded-2xl shadow-xl z-50 grid grid-cols-3 gap-2 origin-top-right transition-all duration-300 ${isLangDropdownOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}>
-                    {supportedLanguages.map((lang) => (
-                        <button key={lang.code} id={`mobile-lang-opt-${lang.code}`} onClick={() => handleLanguageChange(lang.code)} className="p-2 text-2xl hover:bg-gray-100 rounded-xl">{lang.flag}</button>
-                    ))}
-                </ul>
-            </div>
-            <button
-              id="mobile-menu-toggle-btn"
-              onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
-              className={`z-50 relative w-10 h-10 flex flex-col items-center justify-center transition-all ${useDarkStyle ? 'text-[#002d5b]' : 'text-white'}`}
-              aria-label="Open menu"
-            >
-              <span className={`block w-8 h-0.5 bg-current rounded-full transform transition duration-500 ease-in-out ${isMobileMenuOpen ? 'rotate-45 translate-y-0.5' : '-translate-y-1'}`}></span>
-              <span className={`block w-8 h-0.5 bg-current rounded-full mt-1.5 transition duration-500 ease-in-out ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
-              <span className={`block w-8 h-0.5 bg-current rounded-full transform transition duration-500 ease-in-out ${isMobileMenuOpen ? '-rotate-45 -translate-y-0.5' : 'translate-y-1'}`}></span>
-            </button>
+  return <>
+    <header className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 motion-reduce:transition-none ${useDarkStyle ? 'bg-white/95 py-2 shadow-sm backdrop-blur-md' : 'bg-transparent py-4'}`}>
+      <div className="container mx-auto flex min-w-0 items-center justify-between gap-3 px-4 md:px-6">
+        <a href="/" onClick={event => handleNavClick(event, 'home')} aria-label="Kraken Properties Homepage" className="relative z-50 flex min-w-0 items-center gap-2 sm:gap-3">
+          <img id={useDarkStyle ? 'header-logo-dark' : 'header-logo-white'} src={useDarkStyle ? companyLogoUrl : companyLogoWhiteUrl} alt="Kraken Properties Logo" className="h-11 w-auto max-w-[100px] shrink-0 object-contain sm:h-12 sm:max-w-[120px]" />
+          <div className={`hidden min-w-0 max-w-[10rem] flex-col border-l pl-3 text-[11px] font-bold leading-snug sm:flex ${useDarkStyle ? 'border-slate-200 text-[#002d5b]' : 'border-white/30 text-white'}`}>
+            <span>Properties and</span><span>Facilities Management</span>
           </div>
-        </div>
-      </header>
-      
-      {/* Mobile Menu */}
-      <div className={`fixed inset-0 bg-white z-40 transform transition-transform duration-700 ease-in-out ${isMobileMenuOpen ? 'translate-y-0' : '-translate-y-full'} md:hidden`}>
-        <div className="flex flex-col items-center justify-center h-full px-6 text-center">
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#002D5B_1px,transparent_1px)] [background-size:20px_20px]"></div>
-            
-            <nav className="flex flex-col items-center space-y-4 w-full relative z-10">
-                {renderNavLinks(true)}
-            </nav>
-
-
-            
-            <div className="absolute bottom-10 left-0 right-0 text-center">
-                 <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">Kraken Properties and Facilities Management Gomes Mendes</p>
-            </div>
+        </a>
+        <nav aria-label={ui.navigation} className="hidden min-w-0 items-center gap-4 xl:flex 2xl:gap-6">
+          <div className="relative" ref={servicesRef} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setServicesOpen(false); }}>
+            <button type="button" ref={servicesButtonRef} className={`${navClass} gap-1`} aria-expanded={isServicesOpen} aria-controls="desktop-services-menu"
+              onClick={() => setServicesOpen(!isServicesOpen)} onKeyDown={event => {
+                if (event.key === 'ArrowDown') {
+                  event.preventDefault(); setServicesOpen(true);
+                  requestAnimationFrame(() => servicesRef.current?.querySelector<HTMLButtonElement>('#desktop-services-menu button')?.focus());
+                }
+              }}>
+              {t('nav.services')}<span aria-hidden="true">⌄</span>
+            </button>
+            {isServicesOpen && <div id="desktop-services-menu" className="absolute left-0 top-full z-[100] mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-2 text-[#002d5b] shadow-2xl">
+              <button type="button" onClick={event => handleNavClick(event, 'services-page')} className="min-h-11 w-full rounded-xl px-4 py-3 text-left text-sm font-bold hover:bg-blue-50">{t('nav.private')}</button>
+              <button type="button" onClick={event => handleNavClick(event, 'commercial-services')} className="min-h-11 w-full rounded-xl px-4 py-3 text-left text-sm font-bold hover:bg-blue-50">{t('nav.commercial')}</button>
+            </div>}
+          </div>
+          {links()}{languageSelector(false)}
+          {user ? <a href="/" id="desktop-logout-btn" onClick={handleLogout} className="inline-flex min-h-11 shrink-0 items-center rounded-xl bg-rose-600 px-4 py-2 text-sm font-bold text-white">{t('nav.logout')}</a>
+            : <a href="/login" id="desktop-login-btn" onClick={event => handleNavClick(event, 'login')} className="inline-flex min-h-11 shrink-0 items-center rounded-xl bg-[#002d5b] px-4 py-2 text-sm font-bold text-white">{t('nav.login')}</a>}
+        </nav>
+        <div className="flex shrink-0 items-center gap-2 xl:hidden">
+          {!isMobileMenuOpen && languageSelector(true)}
+          <button type="button" ref={mobileToggleRef} id="mobile-menu-toggle-btn" onClick={() => { setLangDropdownOpen(false); setMobileMenuOpen(!isMobileMenuOpen); }}
+            aria-label={isMobileMenuOpen ? ui.close : ui.open} aria-expanded={isMobileMenuOpen} aria-controls="mobile-navigation"
+            className={`relative z-50 flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-xl ${useDarkStyle ? 'text-[#002d5b] hover:bg-slate-100' : 'text-white hover:bg-white/10'}`}>
+            <span aria-hidden="true" className={`h-0.5 w-6 bg-current ${isMobileMenuOpen ? 'translate-y-2 rotate-45' : ''}`} />
+            <span aria-hidden="true" className={`h-0.5 w-6 bg-current ${isMobileMenuOpen ? 'opacity-0' : ''}`} />
+            <span aria-hidden="true" className={`h-0.5 w-6 bg-current ${isMobileMenuOpen ? '-translate-y-2 -rotate-45' : ''}`} />
+          </button>
         </div>
       </div>
-    </>
-  );
+    </header>
+    {isMobileMenuOpen && <div id="mobile-navigation" ref={mobilePanelRef} role="dialog" aria-modal="true" aria-label={ui.navigation}
+      className="fixed inset-x-0 bottom-0 top-[4.5rem] z-[60] overflow-y-auto overscroll-contain bg-white px-4 pb-[max(2rem,env(safe-area-inset-bottom))] pt-4 text-[#002d5b] shadow-xl xl:hidden">
+      <div className="mx-auto flex w-full max-w-xl flex-col gap-3">
+        <div className="flex items-center justify-between gap-3">
+          {languageSelector(true)}
+          <button type="button" onClick={() => setMobileMenuOpen(false)} className="min-h-11 rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold">{ui.close}</button>
+        </div>
+        <nav aria-label={ui.navigation} className="flex w-full flex-col items-start gap-1 break-words">
+          <p className="mt-2 text-sm font-bold text-slate-500">{t('nav.services')}</p>
+          <button type="button" onClick={event => handleNavClick(event, 'services-page')} className="min-h-11 py-2 text-left text-lg font-bold text-blue-700">{t('nav.private')}</button>
+          <button type="button" onClick={event => handleNavClick(event, 'commercial-services')} className="min-h-11 py-2 text-left text-lg font-bold text-blue-700">{t('nav.commercial')}</button>
+          {links(true)}
+          {user ? <a href="/" onClick={handleLogout} className="mt-2 inline-flex min-h-11 items-center rounded-xl bg-rose-600 px-5 py-2 text-base font-bold text-white">{t('nav.logout')}</a>
+            : <a href="/login" onClick={event => handleNavClick(event, 'login')} className="mt-2 inline-flex min-h-11 items-center rounded-xl bg-[#002d5b] px-5 py-2 text-base font-bold text-white">{t('nav.login')}</a>}
+        </nav>
+        <p className="mt-4 break-words text-sm leading-relaxed text-slate-500">Kraken Properties and Facilities Management Gomes Mendes</p>
+      </div>
+    </div>}
+  </>;
 };
 
 export default Header;

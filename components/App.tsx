@@ -573,11 +573,13 @@ const App: React.FC = () => {
 
   return (
     <div className="bg-slate-50 text-gray-800 relative">
-      {mounted && !isReviewPage && !isApprovedHome && (
+      {mounted && !isReviewPage && (
         <Suspense fallback={null}>
           <FloatingMascot currentPage={page} cart={cart} onNavigate={handleNavigate} seoCityId={seoCityId} />
-          <FloatingCTA onNavigate={handleNavigate} currentPage={page} />
         </Suspense>
+      )}
+      {mounted && !isReviewPage && !isApprovedHome && (
+        <Suspense fallback={null}><FloatingCTA onNavigate={handleNavigate} currentPage={page} /></Suspense>
       )}
       
       {!isReviewPage && !isApprovedHome && <Header onNavigate={handleNavigate} currentPage={page as any} />}

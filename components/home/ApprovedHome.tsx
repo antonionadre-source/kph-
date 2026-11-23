@@ -9,6 +9,7 @@ import { initTransit } from './van';
 import './approved-home.css';
 import './responsive-fixes.css';
 import './home-language.css';
+import './device-fixes.css';
 
 // The approved illustration layers and accessible controls remain one React route.
 export default function ApprovedHome({ onNavigate }: { onNavigate: (page: string) => void }) {
@@ -267,13 +268,6 @@ export default function ApprovedHome({ onNavigate }: { onNavigate: (page: string
       <p className="footer-credit">{t("Website made by")}{' '}<a href="https://seociety.ch" target="_blank" rel="noopener noreferrer">seociety.ch</a></p>
     </div>
   </footer>
-
-  <button className="kai-launcher" id="kaiLauncher" type="button" data-open-kai="" aria-label={t("Mit Kai planen – Auswahlhilfe öffnen")} aria-haspopup="dialog"><span className="kai-avatar"><img src="/home-approved/assets/kai.webp" alt="" width="1254" height="1254" /></span><span className="kai-launcher-label">{t("Mit Kai planen")}</span><span className="kai-status-dot" aria-hidden="true"></span></button>
-
-  <dialog className="kai-dialog" id="kaiDialog" aria-labelledby="kaiTitle" aria-describedby="kaiIntro">
-    <div className="kai-panel-header"><span className="kai-panel-avatar"><img src="/home-approved/assets/kai.webp" alt={t("Kai, das Kraken-Maskottchen")} width="1254" height="1254" /></span><div><h2 id="kaiTitle">{t("Planen wir gemeinsam.")}</h2><p>{t("Kai · Ihre Auswahlhilfe")}</p></div><button className="icon-button" type="button" id="closeKai" aria-label={t("Kai schliessen")}><svg className="icon"><use href="#i-close"></use></svg></button></div>
-    <div className="kai-panel-body"><p id="kaiIntro">{t("Was steht bei Ihnen an? Wählen Sie eine Leistung. Danach geht es zum Kraken-Rechner.")}</p><div className="kai-service-options" role="group" aria-label={t("Service mit Kai auswählen")}><button type="button" data-service="windows" aria-pressed="false"><svg className="icon brand-service-icon" aria-hidden="true" viewBox="0 0 32 32"><use href="/home-approved/assets/kraken-icons.svg#window"></use></svg>{t("Fensterreinigung")}</button><button type="button" data-service="end" aria-pressed="false"><svg className="icon brand-service-icon" aria-hidden="true" viewBox="0 0 32 32"><use href="/home-approved/assets/kraken-icons.svg#end"></use></svg>{t("Umzugsreinigung")}</button><button type="button" data-service="regular" aria-pressed="false"><svg className="icon brand-service-icon" aria-hidden="true" viewBox="0 0 32 32"><use href="/home-approved/assets/kraken-icons.svg#regular"></use></svg>{t("Regelmässige Reinigung")}</button><button type="button" data-service="deep" aria-pressed="false"><svg className="icon brand-service-icon" aria-hidden="true" viewBox="0 0 32 32"><use href="/home-approved/assets/kraken-icons.svg#deep"></use></svg>{t("Grundreinigung")}</button><button type="button" data-service="moving" aria-pressed="false"><svg className="icon brand-service-icon" aria-hidden="true" viewBox="0 0 32 32"><use href="/home-approved/assets/kraken-icons.svg#moving"></use></svg>{t("Kleiner Umzug")}</button></div><p className="kai-context" id="kaiContext" aria-live="polite">{t("Welche Aufgabe dürfen wir Ihnen abnehmen?")}</p><a className="button button-navy" id="kaiContinue" href="/quote" data-calculator="">{t("Weiter zum Rechner")}</a><p className="kai-privacy">{t("Kai hilft bei der Auswahl. Die Angaben zu Ihrem Auftrag machen Sie im Rechner.")}</p></div>
-  </dialog>
 
   <div className="sr-only" id="globalStatus" aria-live="polite"></div>
 

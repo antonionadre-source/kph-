@@ -7,13 +7,19 @@ copiar la identidad de alojamiento ni las páginas privadas de entrega del paque
 ## Implementación
 
 - `components/home/ApprovedHome.tsx`: estructura aprobada en seis idiomas,
-  cinco servicios particulares, navegación, footer y selección con Kai.
+  cinco servicios particulares, navegación, footer y botones que abren Kai.
+- `components/KaiAssistant.tsx` y `src/kai/*`: asistente global compartido con
+  las otras páginas, conversación guiada o IA de servidor y resumen editable
+  con traspaso explícito al calculador. Guía en `KAI_ASSISTANT.md`.
 - `components/home/{app,scene,van,lifecycle}.js`: controles y escenas con recursos
   propios de cada montaje. Se cancelan listeners, observadores, peticiones y
   temporizadores al salir, también con React StrictMode.
 - `approved-home.css`: estilos aislados bajo `.kraken-home`, animaciones con
   prefijo. `responsive-fixes.css` mantiene toda la casa dentro del encuadre y
   reserva ambas vistas de la Transit frente al reset `hidden` de Tailwind.
+  `device-fixes.css`, cargado al final, permite crecer al header y las tarjetas
+  con textos largos, adapta la Transit y pone los controles de escena en una
+  columna hasta 540 px, con campos de 16 px y alturas táctiles de 48 px.
 - `public/home-approved/assets`: los 14 recursos originales del paquete,
   idénticos en bytes. Inventario y SHA-256 en `HOME_ASSETS.json`.
 - `src/home/calculator.ts` y `components/ConsultationPage.tsx`: puente a `/quote`,
@@ -30,9 +36,10 @@ compensando el margen transparente del recurso original, sin cortar sus paredes
 ni desalinear las capas o los controles. En escritorio se amplía un 10% y se
 reserva espacio vertical para el suelo.
 
-`homeTranslations.ts` contiene el texto completo de la portada, Kai, la escena,
-la Transit y los metadatos en alemán, inglés, español, portugués, italiano y
-francés. `HomeLanguageSelector.tsx` recupera el globo y las banderas; incluye
+`homeTranslations.ts` contiene el texto de la portada, la escena, la Transit y
+los metadatos en alemán, inglés, español, portugués, italiano y francés.
+El asistente global usa `src/kai/copy.ts` y comparte el idioma del sitio.
+`HomeLanguageSelector.tsx` recupera el globo y las banderas; incluye
 foco visible, cierre con Escape y panel desplazable para pantallas bajas.
 Los estados dinámicos se actualizan sin reiniciar las escenas ni perder el
 servicio elegido, la pausa o las preferencias de la ilustración.
@@ -61,6 +68,16 @@ Se conserva el contrato `kraken_preselected_service`. No se añaden parámetros
 carritos ni solicitudes. La calculadora hidrata los datos antes de guardar y
 conserva campos anteriores desconocidos cuando el usuario edita sus datos;
 un JSON dañado no se sobrescribe automáticamente.
+
+Kai ya no depende del panel ni del formulario del paquete estático. Su diálogo
+global conserva el borrador durante la navegación y lo guarda en
+`sessionStorage.kraken_kai_request_v1`. El usuario revisa un resumen editable
+antes de continuar. El traspaso temporal `kraken_kai_calculator_transfer_v1`
+se consume una vez; se restauran primero los datos existentes y se respeta la
+elección explícita de conservarlos o sustituir campos en conflicto. El chat no
+envía solicitudes comerciales, correos, reservas ni pagos. La configuración de
+Gemini y las limitaciones del modo guiado se detallan en `KAI_ASSISTANT.md`;
+una respuesta real del proveedor todavía no está verificada.
 
 El motor sólo tenía ventanas como complemento de otras limpiezas. No existe una
 tarifa independiente aprobada. Por indicación de Antonio, el acceso de ventanas
@@ -96,7 +113,8 @@ hasta disponer de la URL oficial. Se incluye el enlace `Website made by seociety
 
 ## Validación
 
-`npm run build` y `npm run test:home` pasan: pruebas de puente/borradores, hosting,
+La validación anterior del 23 de noviembre comprobó `npm run build` y
+`npm run test:home`: pruebas de puente/borradores, hosting,
 clima, estado de Kai, limpieza del montaje, selección de idioma y metadatos. `npm run lint` reproduce
 únicamente los tres errores que ya tenía la versión recibida: `webhookPromise`
 en `CareersPage.tsx` y `setConfetti`/`confetti` en `PaymentCelebrationPage.tsx`.
@@ -112,6 +130,12 @@ La revisión del 23 de noviembre valida los seis idiomas desde el selector, la
 conservación del servicio y de los ajustes de escena, recarga y navegación a la
 calculadora. La compilación de producción se comprueba con el acceso a ventanas
 en francés, sin importe ni pago. No se envían formularios, cuentas ni pagos.
+
+La ampliación posterior del asistente global incluye pruebas de servidor con
+proveedores simulados (`kai-assistant.test.ts`) y del traspaso
+(`kai-draft.test.ts`). No son llamadas reales a Gemini. La revisión final de
+esta ampliación y de los cambios responsive se registra en la entrega, sin
+atribuirles automáticamente los resultados anteriores.
 
 ## Alojamiento en krakenpfm.ch
 

@@ -11,7 +11,9 @@
     "lint": "tsc --noEmit",
     "preview": "vite preview",
     "audit:images": "tsx scripts/audit-images.ts",
-    "test:home": "node --import tsx --test tests/home-*.test.*"
+    "test:home": "node --import tsx --test tests/home-*.test.*",
+    "test:kai": "node --import tsx --test tests/kai-*.test.*",
+    "test": "node --import tsx --test tests/*.test.*"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

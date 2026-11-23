@@ -176,13 +176,73 @@
     "additionalStyles": [
       {
         "file": "components/home/responsive-fixes.css",
+        "bytes": 754,
         "sha256": "982e1361046deea44a09105b50a74a67e0ea169bf632ade58a2de00d05cefb2a"
       },
       {
         "file": "components/home/home-language.css",
+        "bytes": 2953,
         "sha256": "4b2015b19273e393c0ed3c8ba56d9f343118032eb984cea3544bd413770f6cc4"
+      },
+      {
+        "file": "components/home/device-fixes.css",
+        "bytes": 3790,
+        "sha256": "b56f065a57c0c63f19d042bc43215030d51945dc26456f917179c6c1654d96b7"
       }
     ],
-    "updatedFor": "Responsive house sizing and six-language selector, 2026-11-23"
+    "updatedFor": "Responsive devices and global Kai integration, 2026-11-23",
+    "bytes": 109495
+  },
+  "components": [
+    {
+      "file": "components/home/ApprovedHome.tsx",
+      "bytes": 38463,
+      "sha256": "7acb8f971f67999d1c9ab5349577acb5facb5962f3fafececa06dc2e411053f1"
+    },
+    {
+      "file": "components/home/HomeLanguageSelector.tsx",
+      "bytes": 3284,
+      "sha256": "2d95f7ca4356bb3a941c599da67b9d9633442adff2c2f331bcb654a66812ec2e"
+    }
+  ],
+  "globalAssistant": {
+    "implementation": "One native dialog shared across home and calculator; independent of .kraken-home CSS scope",
+    "files": [
+      {
+        "file": "components/KaiAssistant.tsx",
+        "bytes": 17389,
+        "sha256": "e9d5a80e903c27ef0741a71f1880c3e9f4387bbaad50d7a0ec5bcebcd99e17f6"
+      },
+      {
+        "file": "components/KaiAssistant.css",
+        "bytes": 9082,
+        "sha256": "647a40364378727305ac5c39f5459614b6418a6acb589d72ffbf3e990d8e108c"
+      },
+      {
+        "file": "components/FloatingMascot.tsx",
+        "bytes": 469,
+        "sha256": "5aab29b381d9a9db0a50e50cb4db4bd06ca133844b9a741c67b8b831df4acf10"
+      },
+      {
+        "file": "src/kai/open.ts",
+        "bytes": 762,
+        "sha256": "bb9140577b498d9a7509cae328a4c7bef208c129f185febbcb9844146097a8a9"
+      },
+      {
+        "file": "src/kai/types.ts",
+        "bytes": 1999,
+        "sha256": "47699d864d2f44cf70dd9863eea9eee4d8b519905f473bbe50761c5eef5fe10f"
+      },
+      {
+        "file": "src/kai/copy.ts",
+        "bytes": 21317,
+        "sha256": "e4495a11bce8ff7f4beb3db619487870abbb7e3fe429b4947cbf73a95034676a"
+      },
+      {
+        "file": "src/kai/draft.ts",
+        "bytes": 15687,
+        "sha256": "7f64e96a9e5da756d327e748b4726e3b963d5131e08832987460d49b65686531"
+      }
+    ]
   }
 }
