@@ -191,8 +191,8 @@
       },
       {
         "file": "components/home/transit-section.css",
-        "bytes": 14485,
-        "sha256": "a14d1e96ccd21a8b2619f68f1c769624b256b932e9b9ea52e0af3c8b4b04ed46"
+        "bytes": 18684,
+        "sha256": "584bfd708ca9dff32dd52a1e9a04b2aea6f5ed83cd64bb879d8e77005d67832e"
       }
     ],
     "updatedFor": "Shared approved header, standalone services and supplied Transit measurements, 2026-11-23",
@@ -216,8 +216,8 @@
     },
     {
       "file": "components/home/TransitSection.tsx",
-      "bytes": 9782,
-      "sha256": "ecc4e9b6947a4dc4db921813ef0beffcd29664713806ac2ae6c0e81938456bcc"
+      "bytes": 11620,
+      "sha256": "509b1a817327c9a7f273aa2af2477407d7e6ed4d5ac9ee0d85e870b2b38c8f9a"
     }
   ],
   "globalAssistant": {
@@ -329,18 +329,18 @@
       },
       {
         "file": "components/home/TransitSection.tsx",
-        "bytes": 9782,
-        "sha256": "ecc4e9b6947a4dc4db921813ef0beffcd29664713806ac2ae6c0e81938456bcc"
+        "bytes": 11620,
+        "sha256": "509b1a817327c9a7f273aa2af2477407d7e6ed4d5ac9ee0d85e870b2b38c8f9a"
       },
       {
         "file": "components/home/transit-section.css",
-        "bytes": 14485,
-        "sha256": "a14d1e96ccd21a8b2619f68f1c769624b256b932e9b9ea52e0af3c8b4b04ed46"
+        "bytes": 18684,
+        "sha256": "584bfd708ca9dff32dd52a1e9a04b2aea6f5ed83cd64bb879d8e77005d67832e"
       },
       {
         "file": "components/home/van.js",
-        "bytes": 10439,
-        "sha256": "10c0bd6bd375a210b31d6d18bd04ff44653cef68efb44102b6f0a951f557ed9e"
+        "bytes": 10806,
+        "sha256": "d68bbdd60e12762fdff7dbcc3dc4a19a17b20186da62f03b00591229f00e67eb"
       },
       {
         "file": "components/home/app.js",
@@ -409,9 +409,34 @@
       },
       {
         "file": "docs/SERVICES_INTEGRATION.md",
-        "bytes": 8578,
-        "sha256": "f4a73803900329d95dd7137bab45725ad241f814d25a74239707d76dbc0f1d53"
+        "bytes": 9383,
+        "sha256": "4f364b6bbf63f732e03911edea7059a146c03b283f5611cff3b5f1c4d92c5b87"
       }
     ]
+  },
+  "transitLighting": {
+    "files": [
+      {
+        "file": "components/home/transit-lighting.js",
+        "bytes": 2732,
+        "sha256": "bf714a04173bef434f8661041238383e5e611fe7b439d6fd10da609898251227"
+      },
+      {
+        "file": "components/home/TransitSection.tsx",
+        "bytes": 11620,
+        "sha256": "509b1a817327c9a7f273aa2af2477407d7e6ed4d5ac9ee0d85e870b2b38c8f9a"
+      },
+      {
+        "file": "components/home/transit-section.css",
+        "bytes": 18684,
+        "sha256": "584bfd708ca9dff32dd52a1e9a04b2aea6f5ed83cd64bb879d8e77005d67832e"
+      },
+      {
+        "file": "components/home/van.js",
+        "bytes": 10806,
+        "sha256": "d68bbdd60e12762fdff7dbcc3dc4a19a17b20186da62f03b00591229f00e67eb"
+      }
+    ],
+    "originalAtlasImagesUnchanged": true
   }
 }

@@ -1,5 +1,70 @@
 
 /* Two deliberate views: the original Transit story and a load-space explorer. */
+/* Feather the bitmap backdrop on every side; no rectangular picture frame. */
+.kraken-home #umzug #vanOverview .moving-art,
+.kraken-home #umzug #cargoVisual .van-load-atlas {
+  border:0;
+  box-shadow:none;
+  background-color:transparent;
+  -webkit-mask-repeat:no-repeat;
+  mask-repeat:no-repeat;
+  -webkit-mask-size:100% 100%;
+  mask-size:100% 100%;
+  -webkit-mask-composite:source-in;
+  mask-composite:intersect;
+}
+.kraken-home #umzug #vanOverview .moving-art {
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 94%,transparent),linear-gradient(180deg,transparent,#000 6%,#000 94%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 5%,#000 94%,transparent),linear-gradient(180deg,transparent,#000 6%,#000 94%,transparent);
+}
+.kraken-home #umzug #cargoVisual .van-load-atlas {
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent),linear-gradient(180deg,transparent,#000 5%,#000 94%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent),linear-gradient(180deg,transparent,#000 5%,#000 94%,transparent);
+}
+.kraken-home #umzug #vanOverview .moving-art,
+.kraken-home #umzug #cargoVisual .van-load-atlas {background-color:#002b51;background-blend-mode:lighten}
+.kraken-home #umzug .van-load-visual {border:0;box-shadow:none;background-color:transparent}
+.kraken-home #umzug .transit-headlamps {
+  position:absolute;left:0;top:50%;display:block;width:100%;height:auto;aspect-ratio:1;
+  transform:translateY(-50%);pointer-events:none;opacity:0;
+}
+.kraken-home #umzug .transit-lamp-bloom {opacity:.85}
+.kraken-home #umzug .transit-lamp-lenses {opacity:.76}
+.kraken-home #umzug .transit-lamp-centres {opacity:.95}
+.kraken-home #umzug .transit-headlight-beams {
+  position:absolute;inset:0;display:block;width:100%;height:100%;overflow:visible;
+  pointer-events:none;z-index:1;filter:blur(3px);
+}
+.kraken-home #umzug .transit-light-cone {opacity:0}
+.kraken-home #umzug .move-features>div {position:relative;isolation:isolate}
+.kraken-home #umzug .move-features>div:before {
+  content:'';position:absolute;z-index:-1;top:-19px;left:15px;transform:translateX(-50%);
+  width:82px;height:76px;pointer-events:none;opacity:0;
+  background:radial-gradient(ellipse,#f0ffed52 0%,#c9f8ec26 30%,transparent 69%);
+}
+.kraken-home #umzug[data-headlights="running"] .transit-headlamps {animation:transit-headlamps-on 6s ease-in-out infinite}
+.kraken-home #umzug[data-headlights="running"] .transit-light-cone {animation:transit-light-arrives 6s ease-in-out infinite;animation-delay:var(--transit-light-delay,0s)}
+.kraken-home #umzug[data-headlights="running"] .move-features>div:before {animation:transit-icon-light 6s ease-in-out infinite;animation-delay:var(--transit-light-delay,0s)}
+.kraken-home #umzug[data-headlights="running"] .move-features .icon {animation:transit-icon-lens 6s ease-in-out infinite;animation-delay:var(--transit-light-delay,0s)}
+.kraken-home #umzug .transit-light-cone-1,
+.kraken-home #umzug .move-features>div:nth-child(2) {--transit-light-delay:.16s}
+.kraken-home #umzug .transit-light-cone-2,
+.kraken-home #umzug .move-features>div:nth-child(3) {--transit-light-delay:.32s}
+.kraken-home #umzug .transit-light-cone-3,
+.kraken-home #umzug .move-features>div:nth-child(4) {--transit-light-delay:.48s}
+.kraken-home #umzug[data-headlights="paused"] .transit-headlamps {opacity:.6}
+.kraken-home #umzug[data-headlights="paused"] .transit-light-cone {opacity:.1}
+.kraken-home #umzug[data-headlights="paused"] .move-features>div:before {opacity:.35}
+@keyframes transit-headlamps-on {0%,7%,100%{opacity:0}22%,82%{opacity:1}92%{opacity:.55}}
+@keyframes transit-light-arrives {0%,16%,100%{opacity:0}32%,77%{opacity:.35}90%{opacity:.15}}
+@keyframes transit-icon-light {0%,23%,100%{opacity:0}39%,76%{opacity:1}91%{opacity:.25}}
+@keyframes transit-icon-lens {0%,23%,100%{filter:none}39%,76%{filter:drop-shadow(0 0 6px #ddffe7a6);color:#fffde3}91%{filter:none}}
+@media(prefers-reduced-motion:reduce) {
+  .kraken-home #umzug .transit-headlamps,
+  .kraken-home #umzug .transit-light-cone,
+  .kraken-home #umzug .move-features>div:before,
+  .kraken-home #umzug .move-features .icon {animation:none!important}
+}
 .kraken-home #umzug .van-navigation{display:flex;justify-content:space-between;align-items:center;gap:24px;padding-top:34px;position:relative;z-index:4}
 .kraken-home #umzug .van-navigation-label{font-size:14px;font-weight:750;color:#c9ddeb;letter-spacing:-.01em}
 .kraken-home #umzug .van-navigation .van-tabs{margin-left:auto}

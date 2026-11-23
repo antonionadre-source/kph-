@@ -47,6 +47,12 @@ export function initTransit(homeRoot, t = source => source) {
     function canAutoplay() {
         return autoEnabled() && inView && !document.hidden;
     }
+    function updateHeadlights() {
+        section.dataset.headlights = activeTab !== 0 || !inView || document.hidden
+            ? 'off'
+            : reducedMotion.matches || userPaused ? 'paused' : 'running';
+    }
+    scope.cleanup(() => { section.dataset.headlights = 'off'; });
     function updateAutoplay() {
         const enabled = autoEnabled();
         autoplay.classList.toggle('is-playing', enabled);
@@ -59,6 +65,7 @@ export function initTransit(homeRoot, t = source => source) {
         autoplay.title = t(reducedMotion.matches ? 'Bewegung reduziert' : enabled ? 'Pause' : 'Play');
         status.setAttribute('aria-live', enabled ? 'off' : 'polite');
         section.dataset.autoplay = enabled ? 'running' : 'paused';
+        updateHeadlights();
     }
     function updatePlay() {
         play.classList.toggle('is-playing', playing);
@@ -114,6 +121,7 @@ export function initTransit(homeRoot, t = source => source) {
     function syncVisibility() {
         stop();
         queueAutoplay();
+        updateHeadlights();
     }
     function renderStage(next, animate = true) {
         scope.clearTimeout(transitionTimer);
@@ -187,6 +195,7 @@ export function initTransit(homeRoot, t = source => source) {
         });
         if (focus)
             tabs[index].focus();
+        updateHeadlights();
     }
     tabs.forEach((tab, index) => {
         scope.on(tab, 'click', () => { pauseAutoplay(); activateTab(index); });

@@ -163,3 +163,10 @@ despliegue se registran en la evidencia de entrega final. La configuración real
 del proveedor de IA conserva las limitaciones documentadas en
 [KAI_ASSISTANT.md](KAI_ASSISTANT.md); esta integración no acredita una llamada
 real al proveedor.
+
+
+## Acabado de la Transit y faros
+
+Las dos ilustraciones conservan los atlas originales. El fondo navy de cada imagen se integra mediante mezcla `lighten` y máscaras suaves en los cuatro lados, sin marcos rectangulares. La vista exterior añade dos faros SVG alineados con la celda original de 724 × 724 px y cuatro haces que siguen la posición real de los iconos al cambiar el tamaño o el idioma.
+
+El encendido y la iluminación de iconos usan animaciones CSS de seis segundos. El controlador existente deja el efecto apagado en la vista interior, fuera de pantalla y con la pestaña oculta. La pausa manual y el movimiento reducido conservan una iluminación tenue estática. No se añaden temporizadores de animación: el observador de tamaño y el RAF de posicionamiento se limpian al desmontar.

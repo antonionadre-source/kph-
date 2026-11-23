@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect, useId, useRef } from 'react';
+import { initTransitLighting } from './transit-lighting';
 import './transit-section.css';
 
 /** The approved two-view Transit story; the owner’s four interior dimensions stay accessible HTML. */
 export default function TransitSection({ t }: { t: (source: string, params?: Record<string, string | number>) => string }) {
-  return <section className="moving-section" id="umzug" aria-labelledby="moving-title">
+  const root = useRef<HTMLElement>(null);
+  const lightId = 'transit-light-' + useId().replace(/:/g, '');
+  useEffect(() => root.current ? initTransitLighting(root.current) : undefined, []);
+  return <section className="moving-section" id="umzug" aria-labelledby="moving-title" ref={root}>
       <div className="van-navigation container">
         <p className="van-navigation-label">{t("Ihr Umzug. Gut vorbereitet.")}</p>
         <div className="van-tabs" role="tablist" aria-label={t("Ford Transit entdecken")}>
@@ -15,7 +19,18 @@ export default function TransitSection({ t }: { t: (source: string, params?: Rec
       <div className="van-panels">
       <div id="vanOverview" role="tabpanel" aria-labelledby="vanOverviewTab" tabIndex={0}>
       <div className="moving-inner container">
-        <div className="moving-art atlas-panel panel-transit" role="img" aria-label={t("Illustration eines weissen Ford Transit mit Umzugskartons und Sofa")}></div>
+        <div className="moving-art atlas-panel panel-transit" role="img" aria-label={t("Illustration eines weissen Ford Transit mit Umzugskartons und Sofa")}>
+          <svg className="transit-headlamps" viewBox="0 0 724 724" aria-hidden="true" focusable="false">
+            <defs><radialGradient id={lightId + '-lens'}><stop stopColor="#fffef0" /><stop offset=".45" stopColor="#fff6cd" stopOpacity=".95" /><stop offset="1" stopColor="#e7faff" stopOpacity="0" /></radialGradient></defs>
+            <g className="transit-lamp-bloom" fill={`url(#${lightId}-lens)`}><ellipse cx="223" cy="364" rx="50" ry="37" /><ellipse cx="49" cy="365" rx="23" ry="34" /></g>
+            <g className="transit-lamp-lenses" fill="#fff7d8"><path d="m197 356 52-12-10 31-35 6Z" /><path d="m43 349 15-9-5 34-14 11Z" /></g>
+            <g className="transit-lamp-centres" fill="#fffef3"><ellipse cx="221" cy="364" rx="9" ry="5" transform="rotate(-13 221 364)" /><ellipse cx="49" cy="364" rx="3" ry="8" transform="rotate(12 49 364)" /></g>
+          </svg>
+        </div>
+        <svg className="transit-headlight-beams" aria-hidden="true" focusable="false" preserveAspectRatio="none">
+          <defs>{[0, 1, 2, 3].map(index => <linearGradient key={index} id={lightId + '-beam-' + index} data-light-gradient={index} gradientUnits="userSpaceOnUse"><stop stopColor="#fff5d5" stopOpacity=".75" /><stop offset=".55" stopColor="#d9f5ff" stopOpacity=".16" /><stop offset="1" stopColor="#bbf4e1" stopOpacity=".5" /></linearGradient>)}</defs>
+          {[0, 1, 2, 3].map(index => <path key={index} className={'transit-light-cone transit-light-cone-' + index} data-light-cone={index} fill={`url(#${lightId}-beam-${index})`} />)}
+        </svg>
         <div className="moving-copy"><p className="eyebrow">{t("Für Ihren nächsten Anfang")}</p><h2 id="moving-title">{t("Kleiner Umzug.")}<br />{t("Klar geplant.")}</h2><p className="moving-description">{t("Ein paar Möbel oder eine kleine Wohnung? Mit unserem Ford Transit und einem erfahrenen Team bringen wir Bewegung in Ihre Pläne.")}</p>
           <div className="move-features" aria-label={t("Ihr Umzug mit Kraken")}><div><svg className="icon brand-service-icon" aria-hidden="true" viewBox="0 0 32 32"><use href="/home-approved/assets/kraken-icons.svg#moving" /></svg><span>{t("Unser Transit")}</span></div><div><svg className="icon brand-service-icon" aria-hidden="true" viewBox="0 0 32 32"><use href="/home-approved/assets/kraken-icons.svg#team" /></svg><span>{t("Unser Team")}</span></div><div><svg className="icon brand-service-icon" aria-hidden="true" viewBox="0 0 32 32"><use href="/home-approved/assets/kraken-icons.svg#time" /></svg><span>{t("Ihr Termin")}</span></div><div><svg className="icon brand-service-icon" aria-hidden="true" viewBox="0 0 32 32"><use href="/home-approved/assets/kraken-icons.svg#distance" /></svg><span>{t("Ihre Strecke")}</span></div></div>
           <p className="moving-detail">{t("Vom Abholort bis zum Ziel: Beschreiben Sie Ihren Umzug Schritt für Schritt im Rechner.")}</p>

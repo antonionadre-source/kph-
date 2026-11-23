@@ -47,34 +47,44 @@ function transitHarness(context, reduce = false) {
 
 test('Transit completes the approved visible cycle and cancels work when hidden or unmounted', context => {
   const h = transitHarness(context); const n = h.nodes;
-  h.visible(true); h.tick(5999); assert.equal(n.vanInside.hidden, true);
+  assert.equal(n.umzug.dataset.headlights, 'off');
+  h.visible(true); assert.equal(n.umzug.dataset.headlights, 'running');
+  h.tick(5999); assert.equal(n.vanInside.hidden, true);
   h.tick(1); assert.equal(n.vanInside.hidden, false); assert.equal(n.cargoFrame.dataset.frame, '0');
+  assert.equal(n.umzug.dataset.headlights, 'off');
   for (let stage = 1; stage <= 3; stage++) { h.tick(1850); h.tick(320); assert.equal(n.cargoFrame.dataset.frame, String(stage)); }
-  h.tick(3600); assert.equal(n.vanOverview.hidden, false);
-  h.visible(false); h.tick(20000); assert.equal(n.vanOverview.hidden, false);
+  h.tick(3600); assert.equal(n.vanOverview.hidden, false); assert.equal(n.umzug.dataset.headlights, 'running');
+  h.visible(false); h.tick(20000); assert.equal(n.vanOverview.hidden, false); assert.equal(n.umzug.dataset.headlights, 'off');
   h.visible(true); h.doc.hidden = true; h.doc.dispatchEvent(new Event('visibilitychange'));
-  h.tick(20000); assert.equal(n.vanOverview.hidden, false);
+  h.tick(20000); assert.equal(n.vanOverview.hidden, false); assert.equal(n.umzug.dataset.headlights, 'off');
   h.doc.hidden = false; h.doc.dispatchEvent(new Event('visibilitychange')); h.dispose();
   h.tick(20000); h.visible(true); assert.equal(n.vanOverview.hidden, false); assert.ok(h.disconnected());
+  assert.equal(n.umzug.dataset.headlights, 'off');
 });
 
 test('measurements replace the image, pause the cycle and close on stage or exterior selection', context => {
   const h = transitHarness(context); const n = h.nodes; h.visible(true);
   h.click(h.tabs[1]); h.click(n.cargoMeasures);
+  assert.equal(n.umzug.dataset.headlights, 'off');
   assert.equal(n.cargoVisual.hidden, true); assert.equal(n.cargoMeasurements.hidden, false);
   assert.equal(n.cargoMeasures.getAttribute('aria-expanded'), 'true');
   assert.equal(n.cargoMeasures.textContent, 'Zur Ladeansicht');
   h.tick(20000); assert.equal(n.cargoMeasurements.hidden, false);
   h.click(h.steps[2]); assert.equal(n.cargoMeasurements.hidden, true); assert.equal(n.cargoVisual.hidden, false);
   h.click(n.cargoMeasures); h.click(h.tabs[0]); assert.equal(n.cargoMeasurements.hidden, true);
-  h.click(n.vanAutoplay); h.focus(h.tabs[1]); h.tick(20000); assert.equal(n.vanOverview.hidden, false);
+  assert.equal(n.umzug.dataset.headlights, 'paused');
+  h.click(n.vanAutoplay); assert.equal(n.umzug.dataset.headlights, 'running');
+  h.focus(h.tabs[1]); h.tick(20000); assert.equal(n.vanOverview.hidden, false);
+  assert.equal(n.umzug.dataset.headlights, 'paused');
   h.dispose();
 });
 
 test('reduced motion keeps both views and measurement controls manual', context => {
   const h = transitHarness(context, true); const n = h.nodes; h.visible(true); h.tick(20000);
   assert.equal(n.vanAutoplay.disabled, true); assert.equal(n.umzug.dataset.autoplay, 'paused');
+  assert.equal(n.umzug.dataset.headlights, 'paused');
   h.click(h.tabs[1]); h.click(n.cargoPlay); assert.equal(n.cargoFrame.dataset.frame, '3');
+  assert.equal(n.umzug.dataset.headlights, 'off');
   h.click(n.cargoMeasures); assert.equal(n.cargoMeasurements.hidden, false);
   h.click(n.cargoMeasures); assert.equal(n.cargoVisual.hidden, false); h.dispose();
 });
