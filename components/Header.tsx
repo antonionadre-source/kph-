@@ -150,15 +150,17 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
           </div>
         </a>
         <nav aria-label={ui.navigation} className="hidden min-w-0 items-center gap-4 xl:flex 2xl:gap-6">
-          <div className="relative" ref={servicesRef} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setServicesOpen(false); }}>
-            <button type="button" ref={servicesButtonRef} className={`${navClass} gap-1`} aria-expanded={isServicesOpen} aria-controls="desktop-services-menu"
+          <div className="relative flex items-center" ref={servicesRef} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setServicesOpen(false); }}>
+            <a id="desktop-services-link" href={`/leistungen?lang=${encodeURIComponent(language)}`} className={navClass}
+              onClick={event => { if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) handleNavClick(event, '/leistungen'); }}>{t('nav.services')}</a>
+            <button type="button" ref={servicesButtonRef} className={`${navClass} min-w-11 justify-center`} aria-label={`${ui.open}: ${t('nav.services')}`} aria-expanded={isServicesOpen} aria-controls="desktop-services-menu"
               onClick={() => setServicesOpen(!isServicesOpen)} onKeyDown={event => {
                 if (event.key === 'ArrowDown') {
                   event.preventDefault(); setServicesOpen(true);
                   requestAnimationFrame(() => servicesRef.current?.querySelector<HTMLButtonElement>('#desktop-services-menu button')?.focus());
                 }
               }}>
-              {t('nav.services')}<span aria-hidden="true">⌄</span>
+              <span aria-hidden="true">⌄</span>
             </button>
             {isServicesOpen && <div id="desktop-services-menu" className="absolute left-0 top-full z-[100] mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-2 text-[#002d5b] shadow-2xl">
               <button type="button" onClick={event => handleNavClick(event, '/leistungen')} className="min-h-11 w-full rounded-xl px-4 py-3 text-left text-sm font-bold hover:bg-blue-50">{t('nav.private')}</button>
@@ -189,7 +191,8 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
           <button type="button" onClick={() => setMobileMenuOpen(false)} className="min-h-11 rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold">{ui.close}</button>
         </div>
         <nav aria-label={ui.navigation} className="flex w-full flex-col items-start gap-1 break-words">
-          <p className="mt-2 text-sm font-bold text-slate-500">{t('nav.services')}</p>
+          <a id="mobile-services-link" href={`/leistungen?lang=${encodeURIComponent(language)}`} className="mt-2 inline-flex min-h-11 items-center py-2 text-lg font-bold text-blue-700"
+            onClick={event => { if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) handleNavClick(event, '/leistungen'); }}>{t('nav.services')}</a>
           <button type="button" onClick={event => handleNavClick(event, '/leistungen')} className="min-h-11 py-2 text-left text-lg font-bold text-blue-700">{t('nav.private')}</button>
           <button type="button" onClick={event => handleNavClick(event, 'commercial-services')} className="min-h-11 py-2 text-left text-lg font-bold text-blue-700">{t('nav.commercial')}</button>
           {links(true)}
