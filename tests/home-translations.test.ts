@@ -67,7 +67,7 @@ test('the integrated page, selector and runtime branches only request covered tr
   ]);
   const runtimeMaps = new Set(['seasonNames', 'weatherNames', 'phaseNames', 'holidayNames', 'descriptions', 'imageDescriptions']);
   const files = [
-    'ApprovedHome.tsx', 'HomeLanguageSelector.tsx', '../Footer.tsx', 'app.js', 'scene.js', 'van.js',
+    'ApprovedHome.tsx', 'ApprovedHeader.tsx', 'TransitSection.tsx', 'HomeLanguageSelector.tsx', '../Footer.tsx', 'app.js', 'scene.js', 'van.js',
   ];
   for (const file of files) {
     const parsed = ts.createSourceFile(file, readFileSync(new URL('../components/home/' + file, import.meta.url), 'utf8'),

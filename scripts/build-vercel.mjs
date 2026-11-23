@@ -2,6 +2,7 @@ import { cpSync, existsSync, rmSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { renderServicesHtml } from './render-services.mjs';
 
 // Vercel's native Express integration serves public/ from its CDN, while the
 // function reads dist/*.html for the existing route-specific SEO response.
@@ -33,6 +34,7 @@ if (isMain) {
   });
   if (result.error) throw result.error;
   if (result.status !== 0) process.exit(result.status || 1);
+  await renderServicesHtml(root);
   publishVercelAssets(root);
   console.log('Vercel ready: frontend public/assets on CDN; dist/*.html for Express. No Node bundle, stats or source maps published.');
 }

@@ -17,6 +17,7 @@ export const PATH_TO_PAGE_MAP: Record<string, string> = {
   "/quote": "consultation",
   "/about": "about",
   "/services": "services-page",
+  "/leistungen": "approved-services",
   "/commercial": "commercial-services",
   "/careers": "careers",
   "/sustainability": "sustainability-page",
@@ -48,6 +49,7 @@ export const PAGE_TO_PATH_MAP: Record<string, string> = {
   "consultation": "/quote",
   "about": "/about",
   "services-page": "/services",
+  "approved-services": "/leistungen",
   "commercial-services": "/commercial",
   "careers": "/careers",
   "sustainability-page": "/sustainability",
@@ -787,6 +789,18 @@ export function getMetadataForPath(
   ogImageType: string;
 } {
   const cleanPath = pathname.split("?")[0];
+  if (cleanPath === "/leistungen") {
+    const locale = normalizeHomeLanguage(langParam || languageFromSearch(pathname.includes('?') ? pathname.slice(pathname.indexOf('?')) : '') || 'de');
+    const copy = {
+      de: ['Reinigung & kleine Umzüge in Zürich, Schaffhausen & Winterthur | Kraken', 'Fensterreinigung, Umzugsreinigung, regelmässige Reinigung, Grundreinigung und kleine Umzüge für Privathaushalte in Zürich, Schaffhausen und Winterthur.', 'Reinigung und kleine Umzüge. Passend zu Ihnen.'],
+      en: ['Cleaning & small moves in Zurich, Schaffhausen & Winterthur | Kraken', 'Window cleaning, end-of-tenancy cleaning, regular cleaning, deep cleaning and small moves for private households in Zurich, Schaffhausen and Winterthur.', 'Cleaning and small moves. Suited to you.'],
+      es: ['Limpieza y pequeñas mudanzas en Zúrich, Schaffhausen y Winterthur | Kraken', 'Limpieza de ventanas, de fin de alquiler, periódica, a fondo y pequeñas mudanzas para hogares particulares en Zúrich, Schaffhausen y Winterthur.', 'Limpieza y pequeñas mudanzas. A su medida.'],
+      pt: ['Limpeza e pequenas mudanças em Zurique, Schaffhausen e Winterthur | Kraken', 'Limpeza de janelas, de fim de arrendamento, regular, profunda e pequenas mudanças para casas particulares em Zurique, Schaffhausen e Winterthur.', 'Limpeza e pequenas mudanças. À sua medida.'],
+      it: ['Pulizie e piccoli traslochi a Zurigo, Sciaffusa e Winterthur | Kraken', 'Pulizia di finestre, di fine locazione, regolare, a fondo e piccoli traslochi per abitazioni private a Zurigo, Sciaffusa e Winterthur.', 'Pulizie e piccoli traslochi. Su misura per lei.'],
+      fr: ['Nettoyage et petits déménagements à Zurich, Schaffhouse et Winterthour | Kraken', 'Nettoyage de vitres, de fin de bail, régulier, en profondeur et petits déménagements pour les particuliers à Zurich, Schaffhouse et Winterthour.', 'Nettoyage et petits déménagements. Selon vos besoins.'],
+    }[locale];
+    return { title: copy[0], description: copy[1], canonical: `${BASE_URL}/leistungen`, hreflangs: [], pageType: 'approved-services', h1: copy[2], h2: BRAND, bodyText: copy[1], ogImage: DEFAULT_OG_IMAGE, ogImageWidth: OG_IMAGE_WIDTH, ogImageHeight: OG_IMAGE_HEIGHT, ogImageType: OG_IMAGE_TYPE };
+  }
   // Home copy shares the same six-language source dictionary as its UI.
   if (cleanPath === "/") {
     const homeLanguage = normalizeHomeLanguage(langParam || languageFromSearch(pathname.includes('?') ? pathname.slice(pathname.indexOf('?')) : '') || 'de');

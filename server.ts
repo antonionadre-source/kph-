@@ -550,6 +550,17 @@ async function configureApplication() {
           res.status(404);
         }
 
+        if (isProd && req.path === '/leistungen') {
+          html = html.replace(/<link rel="preload" as="image" href="\/home-approved\/assets\/hero-room-day-v4\.webp"[^>]*>/, '');
+          const servicesLocale = (normalizeSiteLanguage(detectedLang) || 'de').slice(0, 2);
+          const contentPath = path.join(distPath, `services-content-${servicesLocale}.html`);
+          const content = fs.readFileSync(contentPath, 'utf8');
+          // Keep the stylesheet outside React's mount, which replaces this body.
+          const styles = content.match(/<link rel="stylesheet" href="[^"]+">/g) || [];
+          html = html.replace('</head>', () => styles.join('') + '</head>');
+          const body = content.replace(/<link rel="stylesheet" href="[^"]+">/g, '');
+          html = html.replace(/<div id="root">[\s\S]*?<\/div>/, () => `<div id="root">${body}</div>`);
+        }
         html = injectSeoMeta(html, req.path, detectedLang);
         res.setHeader("Content-Type", "text/html; charset=utf-8");
         return res.send(html);

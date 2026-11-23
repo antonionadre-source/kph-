@@ -188,21 +188,36 @@
         "file": "components/home/device-fixes.css",
         "bytes": 3790,
         "sha256": "b56f065a57c0c63f19d042bc43215030d51945dc26456f917179c6c1654d96b7"
+      },
+      {
+        "file": "components/home/transit-section.css",
+        "bytes": 14485,
+        "sha256": "a14d1e96ccd21a8b2619f68f1c769624b256b932e9b9ea52e0af3c8b4b04ed46"
       }
     ],
-    "updatedFor": "Responsive devices and global Kai integration, 2026-11-23",
+    "updatedFor": "Shared approved header, standalone services and supplied Transit measurements, 2026-11-23",
     "bytes": 110341
   },
   "components": [
     {
       "file": "components/home/ApprovedHome.tsx",
-      "bytes": 35245,
-      "sha256": "f551b55517f279efb7834b7a7491a036fa33011a49e88f737273bd032c4df99c"
+      "bytes": 27401,
+      "sha256": "0d59c9c0f8d8d80e22e02123b1bbcd9707c4ab6edffadae47acb2441cbfcc6e1"
     },
     {
       "file": "components/home/HomeLanguageSelector.tsx",
       "bytes": 3284,
       "sha256": "2d95f7ca4356bb3a941c599da67b9d9633442adff2c2f331bcb654a66812ec2e"
+    },
+    {
+      "file": "components/home/ApprovedHeader.tsx",
+      "bytes": 3010,
+      "sha256": "6e98497fb1181e8ada49cf789919757344d33f98e2eee8f5cf2efb16472de010"
+    },
+    {
+      "file": "components/home/TransitSection.tsx",
+      "bytes": 9782,
+      "sha256": "ecc4e9b6947a4dc4db921813ef0beffcd29664713806ac2ae6c0e81938456bcc"
     }
   ],
   "globalAssistant": {
@@ -263,6 +278,139 @@
         "file": "components/Footer.tsx",
         "bytes": 7099,
         "sha256": "888320482f2c9928195b00e2e7a5279b3094484812afb040c162510f739ca300"
+      }
+    ]
+  },
+  "servicesAndTransitIntegration": {
+    "updated": "2026-11-23",
+    "sourceFormat": "kraken-codex-bundle-v1",
+    "sourceProject": "kraken-services-transit",
+    "validatedImportFiles": 58,
+    "validatedImportBytes": 5174608,
+    "route": "/leistungen",
+    "servicesAssetsManifest": "docs/SERVICES_ASSETS.json",
+    "additionalServiceImageAssets": 6,
+    "originalHomeAssetCount": 14,
+    "originalHomeAssetsUnchanged": true,
+    "onlyInteriorMeasurementsCm": {
+      "floorLengthToBulkhead": 255.5,
+      "maximumWidth": 177.5,
+      "betweenWheelArches": 139,
+      "floorToRoofHeight": 140.6
+    },
+    "sourceHashes": {
+      "web/leistungen.html": "c52c2f0945f87e0b67f97b201efad615a7428c8609fbe7735a52eec130c131bc",
+      "web/services.css": "26ace007493fce002266d948577b4c091033c7ac1ab1998092f4772d4123b50a",
+      "web/services.js": "9062a2f29cead2410df066a9af6099283977f003b70840e68f725a1a68321cc8",
+      "web/index.html": "7d3d8aaf11b959097ed96fd6d9fa51c37ca3f143ba96213e850785fdae6c6c3b",
+      "web/van.css": "eb702c452783c20a12c293b4a3dbd3de10828f362e167f63c889ab1e2df7dc67",
+      "web/van.js": "d0b3de6c4171627ca921e3c147afb672a65f46fc6b73aee223295ae1e291a891"
+    },
+    "files": [
+      {
+        "file": "components/services/ApprovedServices.tsx",
+        "bytes": 32498,
+        "sha256": "114b56d18838ca47c14e2a0a919d7e718a170cf8a22f6f19faec8fa5ef97bf8a"
+      },
+      {
+        "file": "components/services/services.css",
+        "bytes": 20328,
+        "sha256": "260272f677b911430e0291f902d84c4e57905f4f96983d5ad13f1f9452c9eba4"
+      },
+      {
+        "file": "components/services/servicesTranslations.ts",
+        "bytes": 45958,
+        "sha256": "89758d940087490d4ba1e93131b6e42cf4c61df1aa01647149272e7ae92c0017"
+      },
+      {
+        "file": "components/home/ApprovedHeader.tsx",
+        "bytes": 3010,
+        "sha256": "6e98497fb1181e8ada49cf789919757344d33f98e2eee8f5cf2efb16472de010"
+      },
+      {
+        "file": "components/home/TransitSection.tsx",
+        "bytes": 9782,
+        "sha256": "ecc4e9b6947a4dc4db921813ef0beffcd29664713806ac2ae6c0e81938456bcc"
+      },
+      {
+        "file": "components/home/transit-section.css",
+        "bytes": 14485,
+        "sha256": "a14d1e96ccd21a8b2619f68f1c769624b256b932e9b9ea52e0af3c8b4b04ed46"
+      },
+      {
+        "file": "components/home/van.js",
+        "bytes": 10439,
+        "sha256": "10c0bd6bd375a210b31d6d18bd04ff44653cef68efb44102b6f0a951f557ed9e"
+      },
+      {
+        "file": "components/home/app.js",
+        "bytes": 3036,
+        "sha256": "27ec6672eff1b282ab91ce52b1f2af25d828733726e8ec857e8891e458be4df4"
+      },
+      {
+        "file": "components/home/homeTranslations.ts",
+        "bytes": 75733,
+        "sha256": "c1dc0c0e3236d82bb6b414a2f195bcab2eb2050c39e72bf4d702d173c3cfbdc8"
+      },
+      {
+        "file": "components/App.tsx",
+        "bytes": 26678,
+        "sha256": "b7921e7e5e7970b19893aafe0d250c412284502a86ec9d0d2e3bda36f214b393"
+      },
+      {
+        "file": "components/Header.tsx",
+        "bytes": 15637,
+        "sha256": "128a21463edf192b9dc8d1c89b5fc6736a3d0f72fbb39e1e1efe8b8b1394f7d5"
+      },
+      {
+        "file": "seoConfig.ts",
+        "bytes": 48794,
+        "sha256": "a52021e86d77fab6c8370dafd4a2c910716876ade76368c28b6d1af3c1a1a266"
+      },
+      {
+        "file": "server.ts",
+        "bytes": 42744,
+        "sha256": "a9d2b87c09b8f12cd290a5d969199982d6b9751a2e78b939c691fe2241a1fb0e"
+      },
+      {
+        "file": "scripts/render-services.mjs",
+        "bytes": 2244,
+        "sha256": "ce5ba950c4ec1bb9e06ed136a710eb88827061c22016b234a1b2f2aa2df6a679"
+      },
+      {
+        "file": "scripts/build-vercel.mjs",
+        "bytes": 1943,
+        "sha256": "8652ef5e63e22d1d8090307584d467b0fe7e59dfa18b184dca731521855cce7d"
+      },
+      {
+        "file": "scripts/prepare-vercel-output.mjs",
+        "bytes": 8109,
+        "sha256": "caf03fd6511ef7428cb639d1bcecb1217405f341a418e57ea87e1851bcfdb2d4"
+      },
+      {
+        "file": "vite.config.ts",
+        "bytes": 2882,
+        "sha256": "29c3345d0afc43cfbc3fdb224820d7615ff1c4aa91a2cd76f5cb977133c04a6a"
+      },
+      {
+        "file": "package.json",
+        "bytes": 1576,
+        "sha256": "dfd89c7064bdbe1af92dc7deb4118440eb82a4098869a459398ea58c90845b79"
+      },
+      {
+        "file": "public/sitemap.xml",
+        "bytes": 46746,
+        "sha256": "f49346b68d6c5a06e723ba43f588e139330d943be4c1d5855c75b0dd52245a91"
+      },
+      {
+        "file": "docs/SERVICES_ASSETS.json",
+        "bytes": 2297,
+        "sha256": "48b075ef29f5d0b4179e063465f63773f2e724d9e8d7b95c85fb277f4d89adf8"
+      },
+      {
+        "file": "docs/SERVICES_INTEGRATION.md",
+        "bytes": 8578,
+        "sha256": "f4a73803900329d95dd7137bab45725ad241f814d25a74239707d76dbc0f1d53"
       }
     ]
   }

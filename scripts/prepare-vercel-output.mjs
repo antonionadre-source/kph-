@@ -69,8 +69,9 @@ export function prepareVercelOutput(root, { trackedPublicFiles, verifyOnly = fal
     files.set('assets/' + relative, source);
   }
   const homeFiles = [...files.keys()].filter(name => name.startsWith('home-approved/assets/'));
-  if (homeFiles.length !== 14 || !homeFiles.includes('home-approved/assets/hero-room-day-v4.webp')) {
-    throw new Error('Expected all 14 approved home assets, including the day scene.');
+  if (homeFiles.length !== 20 || !homeFiles.includes('home-approved/assets/hero-room-day-v4.webp')
+    || !homeFiles.includes('home-approved/assets/service-moving-v6.webp')) {
+    throw new Error('Expected all 14 approved home assets and six supplied service images.');
   }
   const references = [...new Set([...readFileSync(html, 'utf8').matchAll(/(?:src|href)=["'](\/assets\/[^"']+)["']/g)].map(match => decodeURIComponent(match[1].split(/[?#]/)[0]).slice(1)))];
   if (!references.length) throw new Error('The built HTML has no frontend bundle references.');
@@ -102,6 +103,12 @@ export function prepareVercelOutput(root, { trackedPublicFiles, verifyOnly = fal
   for (const relative of filesWithin(staticDirectory)) if (!files.has(relative)) throw new Error(`Unexpected static output: ${relative}`);
   const runtimeHtml = path.join(directory, 'dist/index.html');
   if (!existsSync(runtimeHtml) || digest(runtimeHtml) !== digest(html)) throw new Error('Missing or changed function dist/index.html.');
+  for (const language of ['de', 'en', 'es', 'pt', 'it', 'fr']) {
+    const name = `services-content-${language}.html`;
+    const original = path.join(root, 'dist', name);
+    const bundled = path.join(directory, 'dist', name);
+    if (!existsSync(original) || !existsSync(bundled) || digest(original) !== digest(bundled)) throw new Error(`Missing or changed services HTML: ${name}`);
+  }
   return {
     version: 3,
     function: 'index.func',

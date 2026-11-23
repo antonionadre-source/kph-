@@ -12,6 +12,7 @@ export function initTransit(homeRoot, t = source => source) {
     const frame = byId('cargoFrame');
     const incoming = byId('cargoIncoming');
     const visual = byId('cargoVisual');
+    const measurementPanel = byId('cargoMeasurements');
     const status = byId('cargoStatus');
     const progress = byId('cargoProgress');
     const play = byId('cargoPlay');
@@ -137,11 +138,13 @@ export function initTransit(homeRoot, t = source => source) {
         updatePlay();
     }
     function setMeasures(show) {
-        visual.classList.toggle('show-measures', show);
+        visual.hidden = show;
+        measurementPanel.hidden = !show;
         measures.setAttribute('aria-pressed', String(show));
-        measures.textContent = t(show ? 'Messpunkte ausblenden' : 'Messpunkte anzeigen');
+        measures.setAttribute('aria-expanded', String(show));
+        measures.textContent = t(show ? 'Zur Ladeansicht' : 'Innenmasse ansehen');
         status.textContent = show
-            ? t('Innenlänge, Innenbreite und Innenhöhe: Die Fahrzeugmasse bestätigen wir persönlich.')
+            ? t('Laderaum: 255,5 cm lang, maximal 177,5 cm breit und 140,6 cm hoch. Zwischen den Radkästen bleiben 139 cm.')
             : t(descriptions[stage]);
     }
     function nextStage() {
@@ -174,6 +177,7 @@ export function initTransit(homeRoot, t = source => source) {
     }
     function activateTab(index, focus = false) {
         stop();
+        if (index === 0) setMeasures(false);
         activeTab = index;
         tabs.forEach((tab, current) => {
             tab.setAttribute('aria-selected', String(current === index));
@@ -239,12 +243,12 @@ export function initTransit(homeRoot, t = source => source) {
     });
     // Keep a panel in place while a visitor uses its controls or keyboard focus.
     scope.on(section, 'focusin', event => {
-        if (event.target !== autoplay && autoEnabled())
+        if (event.target !== autoplay)
             pauseAutoplay();
     });
     scope.on(section, 'pointerdown', event => {
         const control = event.target.closest('button, a, input, select, textarea');
-        if (control && control !== autoplay && autoEnabled())
+        if (control && control !== autoplay)
             pauseAutoplay();
     });
     scope.on(document, 'visibilitychange', syncVisibility);
@@ -256,7 +260,7 @@ export function initTransit(homeRoot, t = source => source) {
     });
     scope.on(homeRoot, 'kraken:languagechange', () => {
         renderStage(stage, false);
-        setMeasures(visual.classList.contains('show-measures'));
+        setMeasures(!measurementPanel.hidden);
         updateAutoplay();
     });
     const observer = scope.observer(entries => {

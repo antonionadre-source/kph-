@@ -40,6 +40,7 @@ const SeoServiceCityPage = lazyWithRetry(() => import('./SeoServiceCityPage'));
 const AboutPage = lazyWithRetry(() => import('./AboutPage'));
 const ComicPage = lazyWithRetry(() => import('./ComicPage'));
 const ServicesPage = lazyWithRetry(() => import('./ServicesPage'));
+const ApprovedServices = lazyWithRetry(() => import('./services/ApprovedServices'));
 const CommercialServicesPage = lazyWithRetry(() => import('./CommercialServicesPage'));
 const LoginPage = lazyWithRetry(() => import('./LoginPage'));
 const RegisterPage = lazyWithRetry(() => import('./RegisterPage'));
@@ -143,6 +144,7 @@ const PATH_TO_PAGE_MAP: Record<string, string> = {
   '/quote': 'consultation',
   '/about': 'about',
   '/services': 'services-page',
+  '/leistungen': 'approved-services',
   '/commercial': 'commercial-services',
   '/careers': 'careers',
   '/sustainability': 'sustainability-page',
@@ -173,6 +175,7 @@ const PAGE_TO_PATH_MAP: Record<string, string> = {
   'consultation': '/quote',
   'about': '/about',
   'services-page': '/services',
+  'approved-services': '/leistungen',
   'commercial-services': '/commercial',
   'careers': '/careers',
   'sustainability-page': '/sustainability',
@@ -222,7 +225,7 @@ const App: React.FC = () => {
       if ('scrollRestoration' in window.history) {
         window.history.scrollRestoration = 'manual';
       }
-      window.scrollTo(0, 0);
+      if (!window.location.hash) window.scrollTo(0, 0);
     }
     try {
       const saved = localStorage.getItem(CART_STORAGE_KEY);
@@ -279,7 +282,7 @@ const App: React.FC = () => {
       } else {
         setPage(targetPage);
       }
-      window.scrollTo(0, 0);
+      if (!window.location.hash) window.scrollTo(0, 0);
     };
 
     window.addEventListener('popstate', handleLocationChange);
@@ -318,7 +321,7 @@ const App: React.FC = () => {
       setSeoCityId(parsed.cityId);
       setSeoServiceId(parsed.serviceId);
       setPage(parsed.page);
-      window.scrollTo(0, 0);
+      if (!window.location.hash) window.scrollTo(0, 0);
       return;
     }
 
@@ -327,7 +330,7 @@ const App: React.FC = () => {
         const loginPath = PAGE_TO_PATH_MAP['login'] || '/login';
         changeLocation(loginPath, language);
         setPage('login');
-        window.scrollTo(0, 0);
+        if (!window.location.hash) window.scrollTo(0, 0);
         return;
       }
       if (isReviewUser && !isStaff) {
@@ -335,7 +338,7 @@ const App: React.FC = () => {
         const homePath = '/';
         changeLocation(homePath, language);
         setPage('home');
-        window.scrollTo(0, 0);
+        if (!window.location.hash) window.scrollTo(0, 0);
         return;
       }
     }
@@ -343,7 +346,7 @@ const App: React.FC = () => {
     const targetPath = PAGE_TO_PATH_MAP[targetPage] || '/';
     changeLocation(targetPath, language);
     setPage(targetPage);
-    window.scrollTo(0, 0);
+    if (!window.location.hash) window.scrollTo(0, 0);
   };
 
   // --- Dynamic SEO: per-page <title> and meta description (DE primary, fully localized) ---
@@ -405,6 +408,8 @@ const App: React.FC = () => {
               return <AboutPage onNavigate={handleNavigate} />;
             case 'comic-page':
               return <ComicPage onNavigate={handleNavigate} />;
+            case 'approved-services':
+              return <ApprovedServices onNavigate={handleNavigate} />;
             case 'services-page':
               return <ServicesPage onNavigate={handleNavigate} />;
             case 'commercial-services':
@@ -569,7 +574,7 @@ const App: React.FC = () => {
 };
 
   const isReviewPage = page === 'review-invite';
-  const isApprovedHome = page === 'home';
+  const isApprovedHome = page === 'home' || page === 'approved-services';
 
   return (
     <div className="bg-slate-50 text-gray-800 relative">

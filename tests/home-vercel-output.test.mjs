@@ -12,6 +12,7 @@ function fixture() {
   write('.vercel/output/functions/index.func/.vc-config.json', JSON.stringify({ runtime: 'nodejs24.x', handler: 'server.js', framework: { slug: 'express' }, filePathMap: { 'dist/index.html': 'dist/index.html' } }));
   write('.vercel/output/functions/index.func/server.js', 'EXISTING_FUNCTION');
   write('dist/index.html', '<html><script src="/assets/index-a1b2.js"></script><link href="/assets/index-c3d4.css" rel="stylesheet"></html>');
+  for (const language of ['de', 'en', 'es', 'pt', 'it', 'fr']) write(`dist/services-content-${language}.html`, 'SERVICES_' + language);
   write('dist/assets/index-a1b2.js', 'BUILT_JS'); write('public/assets/index-a1b2.js', 'BUILT_JS');
   write('dist/assets/index-c3d4.css', 'BUILT_CSS'); write('public/assets/index-c3d4.css', 'BUILT_CSS');
   write('public/assets/index-a1b2.js.map', 'PRIVATE_MAP');
@@ -21,7 +22,7 @@ function fixture() {
   write('public/error.log', 'PRIVATE_LOG');
   write('public/stats.html', 'PRIVATE_STATS');
   write('public/server.cjs', 'PRIVATE_NODE_BUNDLE');
-  const home = ['hero-room-day-v4.webp', ...Array.from({ length: 13 }, (_, i) => `approved-${i}.webp`)];
+  const home = ['hero-room-day-v4.webp', ...Array.from({ length: 13 }, (_, i) => `approved-${i}.webp`), 'services-hero-v5.webp', 'service-windows-v5.webp', 'service-end-v5.webp', 'service-regular-v5.webp', 'service-deep-v5.webp', 'service-moving-v6.webp'];
   const trackedPublicFiles = home.map(name => 'public/home-approved/assets/' + name);
   for (const name of trackedPublicFiles) write(name, name);
   trackedPublicFiles.push('public/.env.production', 'public/archive.zip', 'public/error.log', 'public/stats.html', 'public/server.cjs');
@@ -35,10 +36,10 @@ test('prebuilt preparation repairs absent generated bundles, validates hashes an
     const config = readFileSync(path.join(root, '.vercel/output/config.json'), 'utf8');
     const template = readFileSync(path.join(root, 'dist/index.html'), 'utf8');
     const result = prepareVercelOutput(root, { trackedPublicFiles });
-    assert.equal(result.homeAssets, 14);
+    assert.equal(result.homeAssets, 20);
     assert.equal(result.htmlBundleReferences, 2);
     assert.equal(result.generatedBundles, 2);
-    assert.equal(result.sha256Verified, 16);
+    assert.equal(result.sha256Verified, 22);
     assert.equal(result.missing, 0);
     assert.equal(readFileSync(path.join(root, '.vercel/output/static/assets/index-a1b2.js'), 'utf8'), 'BUILT_JS');
     for (const filename of ['untracked-private.json', '.env.production', 'archive.zip', 'error.log', 'stats.html', 'server.cjs', 'assets/index-a1b2.js.map']) {

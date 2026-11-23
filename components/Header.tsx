@@ -161,7 +161,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
               {t('nav.services')}<span aria-hidden="true">⌄</span>
             </button>
             {isServicesOpen && <div id="desktop-services-menu" className="absolute left-0 top-full z-[100] mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-2 text-[#002d5b] shadow-2xl">
-              <button type="button" onClick={event => handleNavClick(event, 'services-page')} className="min-h-11 w-full rounded-xl px-4 py-3 text-left text-sm font-bold hover:bg-blue-50">{t('nav.private')}</button>
+              <button type="button" onClick={event => handleNavClick(event, '/leistungen')} className="min-h-11 w-full rounded-xl px-4 py-3 text-left text-sm font-bold hover:bg-blue-50">{t('nav.private')}</button>
               <button type="button" onClick={event => handleNavClick(event, 'commercial-services')} className="min-h-11 w-full rounded-xl px-4 py-3 text-left text-sm font-bold hover:bg-blue-50">{t('nav.commercial')}</button>
             </div>}
           </div>
@@ -190,7 +190,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage }) => {
         </div>
         <nav aria-label={ui.navigation} className="flex w-full flex-col items-start gap-1 break-words">
           <p className="mt-2 text-sm font-bold text-slate-500">{t('nav.services')}</p>
-          <button type="button" onClick={event => handleNavClick(event, 'services-page')} className="min-h-11 py-2 text-left text-lg font-bold text-blue-700">{t('nav.private')}</button>
+          <button type="button" onClick={event => handleNavClick(event, '/leistungen')} className="min-h-11 py-2 text-left text-lg font-bold text-blue-700">{t('nav.private')}</button>
           <button type="button" onClick={event => handleNavClick(event, 'commercial-services')} className="min-h-11 py-2 text-left text-lg font-bold text-blue-700">{t('nav.commercial')}</button>
           {links(true)}
           {user ? <a href="/" onClick={handleLogout} className="mt-2 inline-flex min-h-11 items-center rounded-xl bg-rose-600 px-5 py-2 text-base font-bold text-white">{t('nav.logout')}</a>

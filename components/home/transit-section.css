@@ -1,0 +1,136 @@
+
+/* Two deliberate views: the original Transit story and a load-space explorer. */
+.kraken-home #umzug .van-navigation{display:flex;justify-content:space-between;align-items:center;gap:24px;padding-top:34px;position:relative;z-index:4}
+.kraken-home #umzug .van-navigation-label{font-size:14px;font-weight:750;color:#c9ddeb;letter-spacing:-.01em}
+.kraken-home #umzug .van-navigation .van-tabs{margin-left:auto}
+.kraken-home #umzug .van-navigation .van-autoplay{width:44px;height:44px;min-width:44px;min-height:44px;flex:0 0 44px;padding:0;gap:0;border-radius:50%;background:#ffffff12;color:#e5f3fc;border:1px solid #a5d2e542;box-shadow:inset 0 1px 0 #ffffff20;white-space:nowrap}
+.kraken-home #umzug .van-navigation .van-autoplay:hover{background:#ffffff20}
+.kraken-home #umzug .van-navigation .van-autoplay .van-play-symbol{width:16px;height:16px;border:0;border-radius:0}
+.kraken-home #umzug .van-navigation .van-autoplay .van-play-symbol:before{inset:1px 1px 1px 3px;border-radius:0;clip-path:polygon(0 0,100% 50%,0 100%);background:currentColor}
+.kraken-home #umzug .van-navigation .van-autoplay.is-playing .van-play-symbol:before{inset:1px 2px;clip-path:none;background:linear-gradient(90deg,currentColor 0 32%,transparent 32% 68%,currentColor 68%)}
+.kraken-home #umzug .van-autoplay:disabled{opacity:.65;cursor:default}
+.kraken-home #umzug .van-panels{display:grid;isolation:isolate}
+.kraken-home #umzug .van-panels>[role="tabpanel"]{grid-area:1/1;min-width:0;align-self:start}
+.kraken-home #umzug .van-panels>[role="tabpanel"][hidden]{display:block!important;visibility:hidden;pointer-events:none}
+.kraken-home #umzug .van-panels>[role="tabpanel"]:not([hidden]){animation:transit-panel-enter .45s ease both}
+@keyframes transit-panel-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.kraken-home #umzug .van-tabs{display:inline-flex;gap:5px;padding:5px;border:1px solid #7094b36b;border-radius:40px;background:#123d60}
+.kraken-home #umzug .van-tabs button{min-height:44px;padding:10px 22px;border-radius:30px;background:transparent;color:#d9e9f4;font-size:14px;line-height:1.4;font-weight:800;white-space:nowrap;transition:background .2s,color .2s}
+.kraken-home #umzug .van-tabs button[aria-selected="true"]{background:#c8f6e1;color:#063655;box-shadow:0 2px 10px #001b3826}
+.kraken-home #umzug .van-tabs button:hover:not([aria-selected="true"]){background:#ffffff12}
+.kraken-home #umzug .van-tabs button:focus-visible,.kraken-home #umzug .van-load-steps button:focus-visible,.kraken-home #umzug .van-play:focus-visible,.kraken-home #umzug .van-measures-toggle:focus-visible{outline-color:#a5f5cf}
+.kraken-home #umzug #vanOverview>.moving-inner{padding-top:38px}
+.kraken-home #umzug #vanOverview .moving-art{top:0}
+.kraken-home #umzug .van-inside-inner{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:10px 32px;padding-top:40px;padding-bottom:30px;position:relative;min-height:648px}
+.kraken-home #umzug .van-inside-copy{position:relative;z-index:2;align-self:center;padding-bottom:24px}
+.kraken-home #umzug .van-inside-copy .eyebrow{color:#a9cfdf;margin-bottom:15px;font-size:12px}
+.kraken-home #umzug .van-inside-copy h2{font-size:clamp(38px,4.2vw,60px);line-height:1.08;margin-bottom:21px;max-width:540px}
+.kraken-home #umzug .van-intro{font-size:16px;line-height:1.8;color:#d5e6f0;max-width:440px}
+.kraken-home #umzug .van-load-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:440px;margin-top:24px}
+.kraken-home #umzug .van-load-steps button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;min-width:0;min-height:78px;padding:11px 6px;border:1px solid #739ab76b;border-radius:16px;background:#0c395c;color:#d4e8f4;font-size:14px;font-weight:750;line-height:1.4;transition:background .2s,border-color .2s,color .2s}
+.kraken-home #umzug .van-load-steps button:hover{border-color:#92ddc3;background:#164a6d}
+.kraken-home #umzug .van-load-steps button[aria-pressed="true"]{background:#c7f5df;border-color:#c7f5df;color:#103e58}
+.kraken-home #umzug .van-load-steps .icon{width:27px;height:27px;stroke-width:1.5}
+.kraken-home #umzug .van-load-status{max-width:440px;min-height:78px;margin-top:21px}
+.kraken-home #umzug .van-load-status p{font-size:14px;color:#c6ddea;line-height:1.6;margin-top:10px}
+.kraken-home #umzug .van-load-progress{display:block;width:100%;height:3px;border-radius:4px;overflow:hidden;background:#7398b340}
+.kraken-home #umzug .van-load-progress>span{display:block;width:25%;height:100%;border-radius:4px;background:#9ce9c5;transition:width .4s ease}
+.kraken-home #umzug .van-view-actions{display:flex;gap:12px 18px;align-items:center;flex-wrap:wrap}
+.kraken-home #umzug .van-play{display:flex;align-items:center;justify-content:center;gap:10px;min-height:46px;padding:10px 17px;border-radius:12px;background:#ebf8ff;color:#133f5c;font-size:14px;font-weight:800}
+.kraken-home #umzug .van-play:hover{background:#fff}
+.kraken-home #umzug .van-play-symbol{position:relative;width:16px;height:16px;border:1.6px solid currentColor;border-radius:50%;display:inline-block;flex:none}
+.kraken-home #umzug .van-play-symbol:before{content:'';position:absolute;inset:4px;border-radius:50%;background:currentColor}
+.kraken-home #umzug .van-play.is-playing .van-play-symbol{border:0;border-radius:0}
+.kraken-home #umzug .van-play.is-playing .van-play-symbol:before{inset:2px 3px;border-radius:0;background:linear-gradient(90deg,currentColor 0 30%,transparent 30% 70%,currentColor 70%)}
+.kraken-home #umzug .van-measures-toggle{background:transparent;border-bottom:1px solid #9cc5d9;color:#c1dedf;min-height:44px;padding:8px 0;font-size:14px;font-weight:750}
+.kraken-home #umzug .van-measures-toggle[aria-pressed="true"]{color:#b1f7d6;border-color:#b1f7d6}
+.kraken-home #umzug .van-visual-slot{min-width:0;align-self:center}
+.kraken-home #umzug .van-load-visual{position:relative;align-self:center;aspect-ratio:1;width:calc(100% + 22px);margin-left:-12px;isolation:isolate}
+.kraken-home #umzug .van-load-atlas{position:absolute;inset:0;background-image:url('/home-approved/assets/transit-loading-v4.webp');background-size:200% 200%;background-repeat:no-repeat;background-position:0 0;mask-image:radial-gradient(ellipse at 50% 52%,#000 51%,#000b 67%,transparent 76%);-webkit-mask-image:radial-gradient(ellipse at 50% 52%,#000 51%,#000b 67%,transparent 76%)}
+.kraken-home #umzug .van-load-atlas[data-frame="1"]{background-position:100% 0}
+.kraken-home #umzug .van-load-atlas[data-frame="2"]{background-position:0 100%}
+.kraken-home #umzug .van-load-atlas[data-frame="3"]{background-position:100% 100%}
+.kraken-home #umzug .van-load-incoming{opacity:0;transition:opacity .3s ease}
+.kraken-home #umzug .van-load-incoming.is-visible{opacity:1}
+.kraken-home #umzug .van-example-label{position:absolute;bottom:4%;left:50%;transform:translateX(-50%);width:max-content;max-width:95%;font-size:12px;line-height:1.6;color:#bed3e3;letter-spacing:.025em}
+.kraken-home #umzug .van-fit-card{grid-column:1/-1;position:relative;z-index:3;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:20px;align-items:center;padding:22px 24px;background:#164a6c;border:1px solid #739ab78c;border-radius:21px;margin-top:0}
+.kraken-home #umzug .van-fit-icon{display:grid;place-items:center;width:49px;height:49px;border-radius:15px;background:#c5f1df;color:#0d4b61}
+.kraken-home #umzug .van-fit-icon .icon{width:29px;height:29px;stroke-width:1.5}
+.kraken-home #umzug .van-fit-card h3{font-size:19px;margin:0 0 6px;letter-spacing:-.035em}
+.kraken-home #umzug .van-fit-card p{font-size:14px;line-height:1.7;color:#d1e6f2;max-width:650px}
+.kraken-home #umzug .van-fit-card .button{font-size:14px;min-height:48px;padding-inline:19px}
+.kraken-home #umzug .van-capacity-note{grid-column:1/-1;margin:3px 0 0;font-size:12px;line-height:1.8;color:#b4ccdc;max-width:880px}
+@media(max-width:1100px){
+.kraken-home #umzug .van-inside-inner{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px 20px}
+.kraken-home #umzug .van-inside-copy h2{font-size:46px}
+.kraken-home #umzug .van-fit-card{grid-template-columns:auto minmax(0,1fr)}
+.kraken-home #umzug .van-fit-card .button{grid-column:2;justify-self:start}
+.kraken-home #umzug #vanOverview .moving-art{top:100px}
+}
+@media(max-width:760px){
+.kraken-home #umzug .van-navigation{padding-top:27px;display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:13px 10px;align-items:center}
+.kraken-home #umzug .van-navigation-label{font-size:14px;grid-column:1/-1}
+.kraken-home #umzug .van-navigation .van-tabs{margin-left:0}
+.kraken-home #umzug .van-navigation .van-autoplay{align-self:center;padding:0}
+.kraken-home #umzug .van-tabs{width:100%}
+.kraken-home #umzug .van-tabs button{flex:1;padding:10px 12px;white-space:normal}
+.kraken-home #umzug #vanOverview>.moving-inner{padding-top:30px}
+.kraken-home #umzug #vanOverview .moving-art{top:auto}
+.kraken-home #umzug .van-inside-inner{grid-template-columns:1fr;padding-top:30px;gap:0;min-height:0}
+.kraken-home #umzug .van-inside-copy{padding-bottom:0}
+.kraken-home #umzug .van-inside-copy h2{font-size:43px;max-width:500px}
+.kraken-home #umzug .van-intro,.kraken-home #umzug .van-load-steps,.kraken-home #umzug .van-load-status{max-width:none}
+.kraken-home #umzug .van-load-visual{width:calc(100% + 24px);margin:0 -12px -8px;max-width:none;min-height:0}
+.kraken-home #umzug .van-fit-card{grid-template-columns:40px minmax(0,1fr);gap:14px;padding:19px;margin-top:0;border-radius:18px}
+.kraken-home #umzug .van-fit-icon{width:40px;height:40px;border-radius:13px;align-self:start;margin-top:1px}
+.kraken-home #umzug .van-fit-icon .icon{width:25px;height:25px}
+.kraken-home #umzug .van-fit-card h3{font-size:18px;line-height:1.4}
+.kraken-home #umzug .van-fit-card p{font-size:14px}
+.kraken-home #umzug .van-fit-card .button{grid-column:1/-1;width:100%;margin-top:3px}
+.kraken-home #umzug .van-capacity-note{margin-top:16px}
+.kraken-home #umzug .van-load-status{min-height:82px}
+.kraken-home #umzug .van-view-actions{justify-content:space-between;gap:10px}
+.kraken-home #umzug .van-play{padding-inline:13px}
+}
+@media(max-width:380px){
+.kraken-home #umzug .van-inside-copy h2{font-size:39px}
+.kraken-home #umzug .van-load-steps{gap:6px}
+.kraken-home #umzug .van-load-steps button{font-size:14px;border-radius:13px}
+.kraken-home #umzug .van-view-actions{align-items:stretch;flex-direction:column;gap:5px}
+.kraken-home #umzug .van-measures-toggle{align-self:center}
+}
+@media(prefers-reduced-motion:reduce){
+.kraken-home #umzug .van-panels>[role="tabpanel"]:not([hidden]){animation:none}
+.kraken-home #umzug .van-load-incoming,.kraken-home #umzug .van-load-progress>span,.kraken-home #umzug .van-tabs button,.kraken-home #umzug .van-load-steps button{transition:none}
+}
+/* Owner-provided cargo measurements are readable HTML beside code-native diagrams. */
+.kraken-home #umzug .van-measure-panel{width:100%;padding:24px;border:1px solid #91bacb66;border-radius:24px;background:linear-gradient(145deg,#194a6b,#0c3556);box-shadow:inset 0 1px 0 #ffffff17,0 18px 42px #001a3026;color:#f2fbff}
+.kraken-home #umzug .van-measure-heading .eyebrow{font-size:14px;letter-spacing:.08em;color:#afe8d0;margin-bottom:8px}
+.kraken-home #umzug .van-measure-heading h3{font-size:28px;line-height:1.2;letter-spacing:-.035em;margin:0 0 22px}
+.kraken-home #umzug .van-measure-diagrams{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px}
+.kraken-home #umzug .van-measure-view{min-width:0;padding:12px 10px 6px;border:1px solid #94bacd35;border-radius:16px;background:#ffffff06}
+.kraken-home #umzug .van-measure-view>p{font-size:14px;font-weight:750;line-height:1.5;margin:0 0 3px;padding-inline:5px;color:#d1e7f2}
+.kraken-home #umzug .van-measure-view svg{display:block;width:100%;height:auto;overflow:visible}
+.kraken-home #umzug .van-measure-space{fill:#ffffff08;stroke:#8fb6c9;stroke-width:1.8}
+.kraken-home #umzug .van-measure-bulkhead{fill:none;stroke:#bcf4d8;stroke-width:5;stroke-linecap:round}
+.kraken-home #umzug .van-measure-guide{fill:none;stroke:#8fb6c980;stroke-width:1;stroke-dasharray:4 4}
+.kraken-home #umzug .van-measure-line{fill:none;stroke:#aff1d0;stroke-width:2;stroke-linecap:round}
+.kraken-home #umzug .van-measure-number{fill:#edfff5;font-family:var(--font);font-size:24px;font-weight:750;letter-spacing:-.03em}
+.kraken-home #umzug .van-measure-detail{fill:#c2dbe8;font-family:var(--font);font-size:22px;font-weight:500;letter-spacing:-.025em}
+.kraken-home #umzug .van-measure-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px;margin:22px 0 0}
+.kraken-home #umzug .van-measure-values>div{min-width:0;border-top:1px solid #9dc2d239;padding:15px 0 14px}
+.kraken-home #umzug .van-measure-values dt{font-size:14px;line-height:1.5;color:#c4deea;max-width:240px;margin-bottom:8px;overflow-wrap:break-word}
+.kraken-home #umzug .van-measure-values dd{font-size:28px;font-weight:800;line-height:1.15;letter-spacing:-.03em;color:#fff;margin:0;white-space:nowrap}
+.kraken-home #umzug .van-measure-values dd>span{font-size:14px;font-weight:650;letter-spacing:0;color:#afe8d0}
+.kraken-home #umzug .van-measure-note{font-size:14px;line-height:1.65;color:#c1d9e6;margin:5px 0 0}
+@media(max-width:760px){.kraken-home #umzug .van-visual-slot{margin-top:25px}.kraken-home #umzug .van-measure-panel{padding:20px;border-radius:20px}.kraken-home #umzug .van-measure-values{gap:0 18px}.kraken-home #umzug .van-measure-heading h3{font-size:26px}}
+@media(max-width:380px){.kraken-home #umzug .van-measure-panel{padding:16px}.kraken-home #umzug .van-measure-values{gap:0 12px}.kraken-home #umzug .van-measure-values dd{font-size:25px}.kraken-home #umzug .van-measure-heading h3{font-size:24px}.kraken-home #umzug .van-measure-view{padding-inline:8px}}
+
+/* Keep native hidden states effective against shared framework resets. The two
+   tab panels reserve the same grid track so automatic switches never move the page. */
+.kraken-home #umzug .van-panels > [role="tabpanel"][hidden] { display:block !important; visibility:hidden; pointer-events:none; }
+.kraken-home #umzug .van-load-visual[hidden], .kraken-home #umzug .van-measure-panel[hidden] { display:none !important; }
+.kraken-home #umzug .van-measure-values { padding:0; }
+.kraken-home #umzug .van-measure-values dt { overflow-wrap:anywhere; }
+.kraken-home #umzug .van-measure-detail { font-size:18px; }
+.kraken-home #umzug .van-example-label { text-align:center; white-space:normal; }

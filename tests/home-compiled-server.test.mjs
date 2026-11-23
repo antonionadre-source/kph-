@@ -25,7 +25,10 @@ test('compiled server graph runs under plain Node without source .ts files and s
     writeFileSync(path.join(directory, 'package.json'), '{"type":"module"}');
     symlinkSync(path.join(root, 'node_modules'), path.join(directory, 'node_modules'), 'dir');
     mkdirSync(path.join(directory, 'dist'));
-    writeFileSync(path.join(directory, 'dist/index.html'), '<html><head><title>fixture</title></head><body>COMPILED_TEMPLATE</body></html>');
+    writeFileSync(path.join(directory, 'dist/index.html'), '<html><head><title>fixture</title></head><body><div id="root"></div>COMPILED_TEMPLATE</body></html>');
+    for (const language of ['de', 'en', 'es', 'pt', 'it', 'fr']) {
+      writeFileSync(path.join(directory, 'dist/services-content-' + language + '.html'), '<link rel="stylesheet" href="/assets/services.css"><main><h1>SERVICES_' + language + '</h1><details><summary>Service</summary>BODY_' + language + '</details></main>');
+    }
     const driver = `
       import assert from 'node:assert/strict';
       import { createServer, request } from 'node:http';
@@ -47,6 +50,14 @@ test('compiled server graph runs under plain Node without source .ts files and s
           assert.equal(result.status,200,route);
           assert.ok(result.body.includes('COMPILED_TEMPLATE'));
           assert.ok(!result.body.includes('<title>fixture</title>'));
+        }
+        for (const language of ['de', 'en', 'es', 'pt', 'it', 'fr']) {
+          const result = await get('/leistungen?lang=' + language);
+          assert.equal(result.status, 200);
+          assert.ok(result.body.includes('SERVICES_' + language));
+          assert.ok(result.body.includes('BODY_' + language));
+          assert.ok(result.body.indexOf('stylesheet') < result.body.indexOf('</head>'));
+          assert.equal(result.body.indexOf('stylesheet', result.body.indexOf('<div id="root">')), -1);
         }
         console.log('COMPILED_SERVER_OK');
       } finally {await new Promise(resolve => server.close(resolve));}

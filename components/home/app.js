@@ -37,33 +37,12 @@ export function initApprovedHome(homeRoot, openCalculator, t = source => source)
   $$('[data-open-kai]').forEach(button => scope.on(button, 'click', () => {
     requestKaiOpen(service, button);
   }));
-  const menuToggle = $('#menuToggle');
-  const mobileNav = $('#mobileNav');
-  function closeMenu() {
-    mobileNav.hidden = true;
-    menuToggle.setAttribute('aria-expanded', 'false');
-    menuToggle.setAttribute('aria-label', t('Menü öffnen'));
-    $('use', menuToggle).setAttribute('href', '#i-menu');
-  }
-  scope.on(menuToggle, 'click', () => {
-    const open = menuToggle.getAttribute('aria-expanded') !== 'true';
-    mobileNav.hidden = !open;
-    menuToggle.setAttribute('aria-expanded', String(open));
-    menuToggle.setAttribute('aria-label', t(open ? 'Menü schliessen' : 'Menü öffnen'));
-    $('use', menuToggle).setAttribute('href', open ? '#i-close' : '#i-menu');
-  });
-  $$('a', mobileNav).forEach(link => scope.on(link, 'click', closeMenu));
-  scope.on(document, 'keydown', event => {
-    if (event.key === 'Escape' && !mobileNav.hidden) { closeMenu(); menuToggle.focus(); }
-  });
-  scope.on(matchMedia('(min-width: 1081px)'), 'change', event => { if (event.matches) closeMenu(); });
   function refreshLanguage() {
     $$('a[href^="/"]').forEach(link => {
       const url = new URL(link.getAttribute('href'), window.location.origin);
       url.searchParams.set('lang', homeRoot.lang || 'de-CH');
       link.setAttribute('href', url.pathname + url.search + url.hash);
     });
-    menuToggle.setAttribute('aria-label', t(mobileNav.hidden ? 'Menü öffnen' : 'Menü schliessen'));
     if (service) chooseService(service, false);
     else $('#serviceHint').textContent = t('Was dürfen wir Ihnen abnehmen? Wählen Sie Ihren Service.');
   }

@@ -27,6 +27,7 @@ export default defineConfig(({ mode }) => {
       ],
       build: {
         outDir: 'dist',
+        manifest: true,
         emptyOutDir: true,
         target: 'esnext',
         cssCodeSplit: true,
