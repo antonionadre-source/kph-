@@ -152,7 +152,7 @@
   ],
   "css": {
     "file": "components/home/approved-home.css",
-    "sha256": "69a2d9a2b313d8c01994d20c9dd7e1a3aab281f0dd0cee7b15d3035f4db4be14",
+    "sha256": "aa676ed218801edefad5b526e9b332003c586d1d0a964d8980ea42de2a40e605",
     "sourceOrder": [
       "styles.css",
       "scene.css",
@@ -172,6 +172,17 @@
       "brand.css": "02d94799c7c0b5733d87d4e27c4e3fc9c2e89f3f41ce0801e7edfb4d53d05dd2",
       "van.css": "5323709c1896c5794a804061f788d67a0257128017e5b71a149b76f7a7474f75",
       "glass.css": "b9bae34d30c4b93fa7fcd4d404f4408724a11cff85230b336ab196f35ed6bf75"
-    }
+    },
+    "additionalStyles": [
+      {
+        "file": "components/home/responsive-fixes.css",
+        "sha256": "982e1361046deea44a09105b50a74a67e0ea169bf632ade58a2de00d05cefb2a"
+      },
+      {
+        "file": "components/home/home-language.css",
+        "sha256": "4b2015b19273e393c0ed3c8ba56d9f343118032eb984cea3544bd413770f6cc4"
+      }
+    ],
+    "updatedFor": "Responsive house sizing and six-language selector, 2026-11-23"
   }
 }

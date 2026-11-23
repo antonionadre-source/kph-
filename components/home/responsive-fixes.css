@@ -1,11 +1,12 @@
-/* Keep the entire approved apartment, including its leftmost wall, in frame.
-   The portable proposal used oversized, negatively offset mobile artwork. */
+/* The artwork's first 24.6% is transparent: size the visible apartment, rather
+   than that empty canvas, to the viewport. Its walls stay about 12px inside
+   either edge, while every illustration layer and hotspot scales together. */
 @media (max-width: 1100px) {
   .kraken-home .hero-visual {
-    width: calc(100% - 32px);
-    max-width: 100%;
-    margin: 6px 16px 0;
-    align-self: center;
+    width: calc(132.65% - 32px);
+    max-width: none;
+    margin: calc(16px - 9%) 0 0 calc(20px - 32.65%);
+    align-self: flex-start;
   }
 }
 

@@ -371,8 +371,8 @@ body.kraken-home-scene-dialog-open{overflow:hidden}
 /* Approved homepage: glass.css; scoped to .kraken-home. */
 /* A contained apartment composition and one restrained glass control family. */
 .kraken-home .hero{background:radial-gradient(ellipse at 80% 25%,#f1f9ff 0,#e4f3ff 40%,#dceefd 100%)}
-.kraken-home .hero-stage{min-height:clamp(700px,54vw,778px)}
-.kraken-home .hero-visual{position:absolute;z-index:1;aspect-ratio:3/2;width:80%;max-width:1160px;right:1.5%;top:-16px;pointer-events:none;isolation:isolate}
+.kraken-home .hero-stage{min-height:clamp(760px,59vw,860px)}
+.kraken-home .hero-visual{position:absolute;z-index:1;aspect-ratio:3/2;width:88%;max-width:1280px;right:1.5%;top:-16px;pointer-events:none;isolation:isolate}
 .kraken-home .hero-visual .hero-art.scene-canvas{position:absolute;inset:0;width:100%;max-width:none;height:100%;margin:0}
 .kraken-home .hero-copy{width:41%;max-width:540px;padding-top:72px}
 .kraken-home .hero h1{font-size:clamp(60px,5.9vw,85px)}

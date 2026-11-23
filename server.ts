@@ -9,6 +9,7 @@ import fs from "fs";
 import { getMetadataForPath, isRouteValid, VALID_CITIES } from "./seoConfig.ts";
 import { MUNICIPALITIES } from "./src/data/locations.ts";
 import { createHomeWeatherHandler } from "./server/homeWeather.ts";
+import { normalizeSiteLanguage } from "./src/locale.ts";
 // No need to define currentDirname or use import.meta.url as they are unused and cause a parse-time SyntaxError in bundled CommonJS on startup.
 
 dotenv.config();
@@ -447,6 +448,8 @@ async function configureApplication() {
         /<title>[\s\S]*?<\/title>/i,
         `<title>${meta.title}</title>`
       );
+      const htmlLanguage = normalizeSiteLanguage(langQuery) || 'de-CH';
+      renderedHtml = renderedHtml.replace(/<html\b([^>]*?)\blang="[^"]*"/i, `<html$1lang="${htmlLanguage}"`);
 
       // Replace other title metas
       renderedHtml = renderedHtml.replace(

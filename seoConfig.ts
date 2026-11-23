@@ -1,5 +1,7 @@
 import { translations } from "./i18n.ts";
 import { MUNICIPALITIES } from "./src/data/locations.ts";
+import { homeText, normalizeHomeLanguage } from "./components/home/homeTranslations.ts";
+import { languageFromSearch } from "./src/locale.ts";
 
 export type Language = "de" | "en" | "fr" | "it" | "es" | "pt";
 
@@ -785,17 +787,20 @@ export function getMetadataForPath(
   ogImageType: string;
 } {
   const cleanPath = pathname.split("?")[0];
-  // The approved public homepage is intentionally Swiss German in every session.
-  // Other routes retain the existing localized metadata and calculator contract.
+  // Home copy shares the same six-language source dictionary as its UI.
   if (cleanPath === "/") {
+    const homeLanguage = normalizeHomeLanguage(langParam || languageFromSearch(pathname.includes('?') ? pathname.slice(pathname.indexOf('?')) : '') || 'de');
+    const description = homeText(homeLanguage, HOME_METADATA.description);
     return {
       ...HOME_METADATA,
+      title: homeText(homeLanguage, HOME_METADATA.title),
+      description,
       canonical: `${BASE_URL}/`,
       hreflangs: [],
       pageType: "home",
-      h1: "Ihr Zuhause in guten Armen.",
-      h2: "Reinigung und kleine Umzüge in Zürich, Schaffhausen und Winterthur.",
-      bodyText: HOME_METADATA.description,
+      h1: homeText(homeLanguage, "Ihr Zuhause in guten Armen."),
+      h2: homeText(homeLanguage, "Reinigung und kleine Umzüge in Zürich, Schaffhausen und Winterthur."),
+      bodyText: description,
       ogImage: DEFAULT_OG_IMAGE,
       ogImageWidth: OG_IMAGE_WIDTH,
       ogImageHeight: OG_IMAGE_HEIGHT,

@@ -3,6 +3,7 @@ import { useTranslation } from '../i18n';
 import { getMetadataForPath, parsePath } from '../seoConfig';
 import Header from './Header';
 import ApprovedHome from './home/ApprovedHome';
+import { LOCALE_LOCATION_EVENT, languageFromSearch, localizedNavigationUrl, type SiteLanguage } from '../src/locale';
 import Footer from './Footer';
 import { useAuth } from './Auth';
 
@@ -125,6 +126,17 @@ export const auth = firebaseAuth;
 // ------------------------------
 
 const CART_STORAGE_KEY = 'kraken_cart_persistent';
+
+function changeLocation(target: string, language: SiteLanguage, replace = false) {
+  const destination = localizedNavigationUrl(target, window.location.href, language);
+  const current = window.location.pathname + window.location.search + window.location.hash;
+  if (destination !== current) {
+    if (replace) window.history.replaceState(window.history.state, '', destination);
+    else window.history.pushState(null, '', destination);
+  }
+  window.dispatchEvent(new Event(LOCALE_LOCATION_EVENT));
+  return new URL(destination, window.location.origin);
+}
 
 const PATH_TO_PAGE_MAP: Record<string, string> = {
   '/': 'home',
@@ -253,13 +265,13 @@ const App: React.FC = () => {
         } else if (!user) {
           setPage('login');
           if (window.location.pathname !== '/login') {
-            window.history.replaceState(null, '', '/login' + window.location.search);
+            changeLocation('/login', languageFromSearch(window.location.search) || language, true);
           }
         } else if (isReviewUser && !isStaff) {
           // Strictly block dashboard access for reviewers and redirect to home
           setPage('home');
           if (window.location.pathname !== '/') {
-            window.history.replaceState(null, '', '/' + window.location.search);
+            changeLocation('/', languageFromSearch(window.location.search) || language, true);
           }
         } else {
           setPage('dashboard');
@@ -301,10 +313,8 @@ const App: React.FC = () => {
                     user?.email?.toLowerCase().trim() === 'antonio.nadre@anotherstar.com';
 
     if (targetPage.startsWith('/')) {
-      if (window.location.pathname !== targetPage) {
-        window.history.pushState(null, '', targetPage + window.location.search);
-      }
-      const parsed = parsePath(targetPage);
+      const destination = changeLocation(targetPage, language);
+      const parsed = parsePath(destination.pathname);
       setSeoCityId(parsed.cityId);
       setSeoServiceId(parsed.serviceId);
       setPage(parsed.page);
@@ -315,9 +325,7 @@ const App: React.FC = () => {
     if (targetPage === 'dashboard') {
       if (!user) {
         const loginPath = PAGE_TO_PATH_MAP['login'] || '/login';
-        if (window.location.pathname !== loginPath) {
-          window.history.pushState(null, '', loginPath + window.location.search);
-        }
+        changeLocation(loginPath, language);
         setPage('login');
         window.scrollTo(0, 0);
         return;
@@ -325,9 +333,7 @@ const App: React.FC = () => {
       if (isReviewUser && !isStaff) {
         // Prevent review-logged users from opening dashboard
         const homePath = '/';
-        if (window.location.pathname !== homePath) {
-          window.history.pushState(null, '', homePath + window.location.search);
-        }
+        changeLocation(homePath, language);
         setPage('home');
         window.scrollTo(0, 0);
         return;
@@ -335,9 +341,7 @@ const App: React.FC = () => {
     }
     
     const targetPath = PAGE_TO_PATH_MAP[targetPage] || '/';
-    if (window.location.pathname !== targetPath) {
-      window.history.pushState(null, '', targetPath + window.location.search);
-    }
+    changeLocation(targetPath, language);
     setPage(targetPage);
     window.scrollTo(0, 0);
   };
@@ -347,7 +351,7 @@ const App: React.FC = () => {
     const currentPath = window.location.pathname;
     const meta = getMetadataForPath(currentPath, language);
 
-    document.documentElement.lang = page === 'home' ? 'de-CH' : language;
+    document.documentElement.lang = language;
     const robots = document.querySelector('meta[name="robots"]');
     if (robots) {
       const publicHost = ['krakenpfm.ch', 'www.krakenpfm.ch'].includes(window.location.hostname);

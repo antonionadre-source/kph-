@@ -2853,32 +2853,32 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
       return calculateEOTDuration_v2(opts);
   };
 
-  const getFrequencyTranslations = (freq: string, lang: string) => {
+  const getFrequencyTranslations = (freq: string) => {
       switch (freq) {
           case 'One-Time':
               return {
-                  title: lang === 'es' ? 'Una sola vez' : lang === 'de' || lang === 'de-CH' ? 'Einmalig' : 'One-Time',
-                  desc: lang === 'es' ? 'Limpieza profunda puntual' : lang === 'de' || lang === 'de-CH' ? 'Einmalige Tiefenreinigung' : 'One-time custom deep cleaning'
+                  title: mt('One-Time', 'Una sola vez', 'Einmalig', 'Ponctuel', 'Una sola volta', 'Uma só vez'),
+                  desc: mt('One-time custom deep cleaning', 'Limpieza profunda puntual', 'Einmalige Tiefenreinigung', 'Nettoyage approfondi ponctuel sur mesure', 'Pulizia approfondita su misura, una tantum', 'Limpeza profunda pontual à medida')
               };
           case 'Every 3 Months':
               return {
-                  title: lang === 'es' ? 'Cada 3 meses' : lang === 'de' || lang === 'de-CH' ? 'Alle 3 Monate' : 'Every 3 Months',
-                  desc: lang === 'es' ? 'Plan óptimo por cambio de estación' : lang === 'de' || lang === 'de-CH' ? 'Saisonale Auffrischung' : 'Seasonal refreshment recommendation'
+                  title: mt('Every 3 Months', 'Cada 3 meses', 'Alle 3 Monate', 'Tous les 3 mois', 'Ogni 3 mesi', 'A cada 3 meses'),
+                  desc: mt('Seasonal refreshment recommendation', 'Plan óptimo por cambio de estación', 'Saisonale Auffrischung', 'Rafraîchissement saisonnier recommandé', 'Pulizia di rinnovo stagionale consigliata', 'Limpeza de renovação sazonal recomendada')
               };
           case 'Every 4 Months':
               return {
-                  title: lang === 'es' ? 'Cada 4 meses' : lang === 'de' || lang === 'de-CH' ? 'Alle 4 Monate' : 'Every 4 Months',
-                  desc: lang === 'es' ? 'Tres visitas recomendadas al año' : lang === 'de' || lang === 'de-CH' ? 'Dreimal jährlich' : 'Three comprehensive visits per year'
+                  title: mt('Every 4 Months', 'Cada 4 meses', 'Alle 4 Monate', 'Tous les 4 mois', 'Ogni 4 mesi', 'A cada 4 meses'),
+                  desc: mt('Three comprehensive visits per year', 'Tres visitas recomendadas al año', 'Dreimal jährlich', 'Trois nettoyages complets par an', 'Tre interventi completi all’anno', 'Três limpezas completas por ano')
               };
           case 'Every 6 Months':
               return {
-                  title: lang === 'es' ? 'Cada 6 meses' : lang === 'de' || lang === 'de-CH' ? 'Alle 6 Monate' : 'Every 6 Months',
-                  desc: lang === 'es' ? 'Excelente mantenimiento semestral' : lang === 'de' || lang === 'de-CH' ? 'Halbjährliche Pflege' : 'Semiannual restoration visits'
+                  title: mt('Every 6 Months', 'Cada 6 meses', 'Alle 6 Monate', 'Tous les 6 mois', 'Ogni 6 mesi', 'A cada 6 meses'),
+                  desc: mt('Semiannual restoration visits', 'Excelente mantenimiento semestral', 'Halbjährliche Pflege', 'Entretien approfondi semestriel', 'Pulizia di rinnovo semestrale', 'Limpeza de renovação semestral')
               };
           case 'Every Year':
               return {
-                  title: lang === 'es' ? 'Cada año' : lang === 'de' || lang === 'de-CH' ? 'Jährlich' : 'Every Year',
-                  desc: lang === 'es' ? 'Limpieza general anual profunda' : lang === 'de' || lang === 'de-CH' ? 'Jährlicher Frühjahrsputz' : 'Annual spring-cleaning overhaul'
+                  title: mt('Every Year', 'Cada año', 'Jährlich', 'Chaque année', 'Ogni anno', 'Todos os anos'),
+                  desc: mt('Annual spring-cleaning overhaul', 'Limpieza general anual profunda', 'Jährlicher Frühjahrsputz', 'Grand nettoyage annuel de printemps', 'Pulizia approfondita annuale di primavera', 'Limpeza profunda anual de primavera')
               };
           default:
               return {
@@ -5017,10 +5017,10 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                         <div className="space-y-3">
                                             <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest pl-1">{t('consultation.label.frequency')}</label>
-                                            <p className="text-[11px] text-gray-400 pl-1 font-bold mb-1">{language === 'es' ? 'Selecciona la frecuencia y el alcance del servicio.' : 'Select the frequency and scope of the service.'}</p>
+                                            <p className="text-[11px] text-gray-400 pl-1 font-bold mb-1">{mt('Select the frequency and scope of the service.', 'Selecciona la frecuencia y el alcance del servicio.', 'Wählen Sie die Häufigkeit und den Leistungsumfang.', 'Choisissez la fréquence et l’étendue du service.', 'Seleziona la frequenza e l’ambito del servizio.', 'Selecione a frequência e o âmbito do serviço.')}</p>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                 {['One-Time', 'Every 3 Months', 'Every 4 Months', 'Every 6 Months', 'Every Year'].map(f => {
-                                                    const textHelper = getFrequencyTranslations(f, language);
+                                                    const textHelper = getFrequencyTranslations(f);
                                                     
                                                     // Renders mini calendar icon for monthly frequencies
                                                     const renderCustomIcon = () => {
@@ -5705,7 +5705,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                 <h3 className="text-xl font-black text-[#002D5B] uppercase tracking-tight">{t('consultation.services.additional')}</h3>
                             </div>
                             <p className="text-xs font-bold text-gray-400 mt-1 pl-13">
-                                {language === 'es' ? 'Añade extras opcionales para complementar tu presupuesto.' : language === 'de' || language === 'de-CH' ? 'Fügen Sie optionale Extras hinzu, um Ihr Angebot zu ergänzen.' : 'Add optional extras to complement your quotation.'}
+                                {mt('Add optional extras to complement your quotation.', 'Añade extras opcionales para complementar tu presupuesto.', 'Fügen Sie optionale Extras hinzu, um Ihr Angebot zu ergänzen.', 'Ajoutez des options pour compléter votre devis.', 'Aggiungi servizi opzionali per completare il preventivo.', 'Adicione extras opcionais para complementar o seu orçamento.')}
                             </p>
                         </div>
 
@@ -5755,7 +5755,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                 <h3 className="text-xl font-black text-[#002D5B] uppercase tracking-tight">{t('consultation.visualDocumentation')}</h3>
                             </div>
                             <p className="text-xs font-bold text-gray-400 mt-1 pl-13">
-                                {language === 'es' ? 'Sube fotos de tu propiedad para darnos más detalles de las tareas.' : language === 'de' || language === 'de-CH' ? 'Laden Sie Fotos Ihrer Immobilie hoch, um uns mehr Details zu geben.' : 'Upload photos of your property to provide us with extra visual detail.'}
+                                {mt('Upload photos of your property to provide us with extra visual detail.', 'Sube fotos de tu propiedad para darnos más detalles de las tareas.', 'Laden Sie Fotos Ihrer Immobilie hoch, um uns mehr Details zu geben.', 'Ajoutez des photos de votre bien pour nous donner plus de détails sur les tâches.', 'Carica foto dell’immobile per fornirci maggiori dettagli sulle attività.', 'Carregue fotografias do imóvel para nos dar mais detalhes sobre as tarefas.')}
                             </p>
                         </div>
 
@@ -5915,7 +5915,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             }}
                             className="px-7 py-3 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-350 rounded-2xl text-[#002D5B] font-bold text-xs uppercase tracking-wider transition-all shadow-sm active:scale-95 cursor-pointer"
                         >
-                            {language === 'es' ? '← Atrás' : language === 'de' || language === 'de-CH' ? '← Zurück' : '← Back'}
+                            {mt('← Back', '← Atrás', '← Zurück', '← Retour', '← Indietro', '← Voltar')}
                         </button>
                     ) : (
                         <div />
@@ -5941,7 +5941,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     : 'bg-[#002D5B] hover:bg-[#001f3f] text-white hover:shadow-lg hover:shadow-blue-900/10'
                             }`}
                         >
-                            <span>{language === 'es' ? 'Continuar →' : language === 'de' || language === 'de-CH' ? 'Weiter →' : 'Continue →'}</span>
+                            <span>{mt('Continue →', 'Continuar →', 'Weiter →', 'Continuer →', 'Continua →', 'Continuar →')}</span>
                         </button>
                     ) : (
                         <button
@@ -5954,7 +5954,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     : 'bg-emerald-500 hover:bg-emerald-600 text-white hover:shadow-lg hover:shadow-emerald-500/10'
                             }`}
                         >
-                            <span>{language === 'es' ? 'Obtener presupuesto final' : language === 'de' || language === 'de-CH' ? 'Offerte anfordern' : 'Get quotation'}</span>
+                            <span>{mt('Get quotation', 'Obtener presupuesto final', 'Offerte anfordern', 'Demander un devis', 'Richiedi un preventivo', 'Pedir orçamento')}</span>
                         </button>
                     )}
                 </div>

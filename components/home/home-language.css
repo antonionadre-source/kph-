@@ -1,0 +1,41 @@
+.kraken-home .home-language { position: relative; }
+.kraken-home .home-language-trigger {
+  min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
+  gap: 7px; padding: 7px 10px; border: 1px solid #d6e0e6; border-radius: 999px;
+  background: #fff; color: var(--navy, #142f50); cursor: pointer;
+  transition: background .18s ease, border-color .18s ease;
+}
+.kraken-home .home-language-trigger:hover,
+.kraken-home .home-language-trigger[aria-expanded="true"] { background: #edf6f7; border-color: #96b8c3; }
+.kraken-home .home-language-trigger svg { fill: none; stroke: currentColor; stroke-width: 1.8; }
+.kraken-home .home-language-globe { font-size: 23px; line-height: 1; }
+.kraken-home .home-language-code { font-size: 12px; font-weight: 750; letter-spacing: .04em; }
+.kraken-home .home-language-panel {
+  position: absolute; z-index: 150; right: 0; top: calc(100% + 12px);
+  width: min(310px, calc(100vw - 28px)); max-height: calc(100dvh - 140px); overflow-y: auto;
+  padding: 18px; border: 1px solid #dbe6eb;
+  border-radius: 20px; background: #fff; box-shadow: 0 14px 44px #102d4b26;
+}
+.kraken-home .home-language-panel[hidden] { display: none !important; }
+.kraken-home .home-language-panel > p { margin: 0 0 12px; font-size: 14px; font-weight: 700; color: #496174; }
+.kraken-home .home-language-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.kraken-home .home-language-options button {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 84px; gap: 6px; padding: 10px 6px; border: 1px solid transparent; border-radius: 13px;
+  background: #f6f9fb; color: #173452; font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.kraken-home .home-language-options button:hover { background: #eaf4f6; }
+.kraken-home .home-language-options button[aria-pressed="true"] { border-color: #91b9c3; background: #e6f3f5; }
+.kraken-home .home-language-flag { font-size: 30px; line-height: 1.1; font-family: 'Apple Color Emoji', 'Segoe UI Emoji', sans-serif; }
+.kraken-home .home-language-check { position: absolute; right: 7px; top: 7px; fill: none; stroke: currentColor; stroke-width: 2; }
+.kraken-home .home-language :focus-visible { outline: 3px solid #327994; outline-offset: 3px; }
+.kraken-home .service-option span { min-width: 0; max-width: 100%; overflow-wrap: anywhere; hyphens: auto; }
+@media (max-width: 540px) {
+  .kraken-home .site-header .header-inner { gap: 8px; }
+  .kraken-home .site-header .header-actions { position: relative; gap: 8px; }
+  .kraken-home .home-language { position: static; }
+  .kraken-home .home-language-trigger { width: 44px; min-width: 44px; padding: 0; }
+  .kraken-home .home-language-code, .kraken-home .home-language-trigger svg { display: none; }
+  .kraken-home .menu-toggle { flex: 0 0 44px; }
+  .kraken-home .home-language-panel { right: 0; width: min(310px, calc(100vw - 40px)); }
+}

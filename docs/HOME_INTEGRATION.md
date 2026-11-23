@@ -1,4 +1,4 @@
-# Homepage aprobada — 22 de noviembre de 2026
+# Homepage aprobada — actualizada el 23 de noviembre de 2026
 
 Integración del paquete `kraken-home-codex.zip` en el repositorio React/Vite/Express
 existente. La portada es una ruta React, sin iframe, sin segunda calculadora y sin
@@ -6,7 +6,7 @@ copiar la identidad de alojamiento ni las páginas privadas de entrega del paque
 
 ## Implementación
 
-- `components/home/ApprovedHome.tsx`: estructura aprobada, alemán de Suiza,
+- `components/home/ApprovedHome.tsx`: estructura aprobada en seis idiomas,
   cinco servicios particulares, navegación, footer y selección con Kai.
 - `components/home/{app,scene,van,lifecycle}.js`: controles y escenas con recursos
   propios de cada montaje. Se cancelan listeners, observadores, peticiones y
@@ -22,6 +22,26 @@ copiar la identidad de alojamiento ni las páginas privadas de entrega del paque
 - `index.html`, `seoConfig.ts`, `i18n.ts` y `components/App.tsx`: ruta de inicio,
   metadatos de Zürich/Schaffhausen/Winterthur y separación de la navegación
   anterior. Las otras páginas conservan sus componentes y sus idiomas.
+
+## Tamaño de la casa e idiomas
+
+La casa ocupa aproximadamente un tercio más de ancho visible en móvil y tablet,
+compensando el margen transparente del recurso original, sin cortar sus paredes
+ni desalinear las capas o los controles. En escritorio se amplía un 10% y se
+reserva espacio vertical para el suelo.
+
+`homeTranslations.ts` contiene el texto completo de la portada, Kai, la escena,
+la Transit y los metadatos en alemán, inglés, español, portugués, italiano y
+francés. `HomeLanguageSelector.tsx` recupera el globo y las banderas; incluye
+foco visible, cierre con Escape y panel desplazable para pantallas bajas.
+Los estados dinámicos se actualizan sin reiniciar las escenas ni perder el
+servicio elegido, la pausa o las preferencias de la ilustración.
+
+El proveedor existente comparte la preferencia con el resto de páginas. La URL
+`lang` o `hl` prevalece sobre la preferencia guardada, y los enlaces a `/quote`
+transportan el idioma también al abrir otra pestaña. Se conservan los parámetros
+de navegación, el historial y el idioma elegido al recargar. Las frecuencias y los
+controles de navegación del calculador completan sus textos en los seis idiomas.
 
 ## Calculadora y datos
 
@@ -68,7 +88,7 @@ inventada ni inferencia de frío.
 
 ## SEO y contactos
 
-Canonical `https://krakenpfm.ch/`, metadatos locales en alemán de Suiza y datos
+Canonical `https://krakenpfm.ch/`, metadatos en el idioma seleccionado y datos
 estructurados sin precios, rangos ni reseñas. Los hosts de preview reciben
 `X-Robots-Tag: noindex, nofollow`; la portada pública conserva indexación.
 Instagram sigue desactivado, configurable en `components/home/site-config.js`
@@ -76,8 +96,8 @@ hasta disponer de la URL oficial. Se incluye el enlace `Website made by seociety
 
 ## Validación
 
-`npm run build` y `npm run test:home` pasan: 38 pruebas de puente/borradores, hosting,
-clima, estado de Kai, limpieza del montaje y metadatos. `npm run lint` reproduce
+`npm run build` y `npm run test:home` pasan: pruebas de puente/borradores, hosting,
+clima, estado de Kai, limpieza del montaje, selección de idioma y metadatos. `npm run lint` reproduce
 únicamente los tres errores que ya tenía la versión recibida: `webhookPromise`
 en `CareersPage.tsx` y `setConfetti`/`confetti` en `PaymentCelebrationPage.tsx`.
 
@@ -87,6 +107,11 @@ móvil, teclado, movimiento reducido, pausa y estabilidad de altura de la Transi
 Los accesos a la calculadora se prueban con las conexiones de Firebase, EmailJS
 y Payrexx bloqueadas temporalmente: no se crean usuarios, pagos ni solicitudes
 para validar esta portada. Esto no certifica el envío ni un pago de producción.
+
+La revisión del 23 de noviembre valida los seis idiomas desde el selector, la
+conservación del servicio y de los ajustes de escena, recarga y navegación a la
+calculadora. La compilación de producción se comprueba con el acceso a ventanas
+en francés, sin importe ni pago. No se envían formularios, cuentas ni pagos.
 
 ## Alojamiento en krakenpfm.ch
 

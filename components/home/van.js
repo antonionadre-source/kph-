@@ -1,5 +1,5 @@
 import { createHomeScope } from './lifecycle.js';
-export function initTransit(homeRoot) {
+export function initTransit(homeRoot, t = source => source) {
     const scope = createHomeScope();
     const byId = id => homeRoot.querySelector('#' + id);
     'use strict';
@@ -50,21 +50,21 @@ export function initTransit(homeRoot) {
         const enabled = autoEnabled();
         autoplay.classList.toggle('is-playing', enabled);
         autoplay.disabled = reducedMotion.matches;
-        autoplayLabel.textContent = reducedMotion.matches
-            ? 'Bewegung reduziert' : enabled ? 'Automatik pausieren' : 'Automatisch abspielen';
-        autoplay.setAttribute('aria-label', reducedMotion.matches
+        autoplayLabel.textContent = t(reducedMotion.matches
+            ? 'Bewegung reduziert' : enabled ? 'Automatik pausieren' : 'Automatisch abspielen');
+        autoplay.setAttribute('aria-label', t(reducedMotion.matches
             ? 'Automatik ist wegen reduzierter Bewegung deaktiviert'
-            : enabled ? 'Automatische Transit-Ansichten pausieren' : 'Automatische Transit-Ansichten starten');
-        autoplay.title = reducedMotion.matches ? 'Bewegung reduziert' : enabled ? 'Pause' : 'Play';
+            : enabled ? 'Automatische Transit-Ansichten pausieren' : 'Automatische Transit-Ansichten starten'));
+        autoplay.title = t(reducedMotion.matches ? 'Bewegung reduziert' : enabled ? 'Pause' : 'Play');
         status.setAttribute('aria-live', enabled ? 'off' : 'polite');
         section.dataset.autoplay = enabled ? 'running' : 'paused';
     }
     function updatePlay() {
         play.classList.toggle('is-playing', playing);
-        playLabel.textContent = reducedMotion.matches
+        playLabel.textContent = t(reducedMotion.matches
             ? stage === 3 ? 'Leeren Laderaum ansehen' : 'Beladung komplett ansehen'
-            : playing ? 'Pause' : stage === 3 ? 'Noch einmal' : started && stage > 0 ? 'Weiterladen' : 'Laden ansehen';
-        play.setAttribute('aria-label', playing ? 'Ladeanimation pausieren' : playLabel.textContent);
+            : playing ? 'Pause' : stage === 3 ? 'Noch einmal' : started && stage > 0 ? 'Weiterladen' : 'Laden ansehen');
+        play.setAttribute('aria-label', playing ? t('Ladeanimation pausieren') : playLabel.textContent);
     }
     function stop() {
         scope.clearTimeout(timer);
@@ -131,18 +131,18 @@ export function initTransit(homeRoot) {
         else
             frame.dataset.frame = String(stage);
         steps.forEach((button, index) => button.setAttribute('aria-pressed', String(index === stage)));
-        status.textContent = descriptions[stage];
+        status.textContent = t(descriptions[stage]);
         progress.style.width = `${(stage + 1) * 25}%`;
-        visual.setAttribute('aria-label', `Illustrative Ansicht eines offenen Kraken Ford Transit mit ${imageDescriptions[stage]}. Keine massstabsgetreue Kapazitätsangabe.`);
+        visual.setAttribute('aria-label', t('Illustrative Ansicht eines offenen Kraken Ford Transit mit {cargo}. Keine massstabsgetreue Kapazitätsangabe.', { cargo: t(imageDescriptions[stage]) }));
         updatePlay();
     }
     function setMeasures(show) {
         visual.classList.toggle('show-measures', show);
         measures.setAttribute('aria-pressed', String(show));
-        measures.textContent = show ? 'Messpunkte ausblenden' : 'Messpunkte anzeigen';
+        measures.textContent = t(show ? 'Messpunkte ausblenden' : 'Messpunkte anzeigen');
         status.textContent = show
-            ? 'Innenlänge, Innenbreite und Innenhöhe: Die Fahrzeugmasse bestätigen wir persönlich.'
-            : descriptions[stage];
+            ? t('Innenlänge, Innenbreite und Innenhöhe: Die Fahrzeugmasse bestätigen wir persönlich.')
+            : t(descriptions[stage]);
     }
     function nextStage() {
         if (!playing || activeTab !== 1 || document.hidden || !inView) {
@@ -253,6 +253,11 @@ export function initTransit(homeRoot) {
         renderStage(stage, false);
         updateAutoplay();
         queueAutoplay();
+    });
+    scope.on(homeRoot, 'kraken:languagechange', () => {
+        renderStage(stage, false);
+        setMeasures(visual.classList.contains('show-measures'));
+        updateAutoplay();
     });
     const observer = scope.observer(entries => {
         const visible = entries[0].isIntersecting && entries[0].intersectionRatio >= .1;

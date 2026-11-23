@@ -1,6 +1,6 @@
 import { createHomeScope } from './lifecycle.js';
 import { resolveKaiState } from './scene-state.js';
-export function initApartmentScene(homeRoot) {
+export function initApartmentScene(homeRoot, { t = source => source, getLocale = () => 'de-CH' } = {}) {
     const scope = createHomeScope();
     const byId = id => homeRoot.querySelector('#' + id);
     'use strict';
@@ -20,13 +20,17 @@ export function initApartmentScene(homeRoot) {
     const weatherNames = { sun: 'Sonne', cloudy: 'Wolken', rain: 'Regen', snow: 'Schnee', sleet: 'Schneeregen', fog: 'Nebel', unknown: 'Wetter nicht verfügbar' };
     const phaseNames = { dawn: 'Morgen', day: 'Tag', evening: 'Abend', night: 'Nacht' };
     const holidayNames = { none: 'ohne Fest', christmas: 'Weihnachten', newyear: 'Neujahr' };
-    const dateFormatter = new Intl.DateTimeFormat('de-CH', {
-        timeZone: 'Europe/Zurich', month: '2-digit', day: '2-digit',
-        hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
-    });
-    const timeFormatter = new Intl.DateTimeFormat('de-CH', {
-        timeZone: 'Europe/Zurich', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
-    });
+    let dateFormatter, timeFormatter;
+    function refreshFormatters() {
+        dateFormatter = new Intl.DateTimeFormat(getLocale(), {
+            timeZone: 'Europe/Zurich', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+        });
+        timeFormatter = new Intl.DateTimeFormat(getLocale(), {
+            timeZone: 'Europe/Zurich', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+        });
+    }
+    refreshFormatters();
     let weatherData = null;
     let weatherLoading = true;
     let weatherRequest = null;
@@ -126,32 +130,40 @@ export function initApartmentScene(homeRoot) {
         const clock = timeFormatter.format(now);
         const temperature = observation && Number.isFinite(observation.temperatureC)
             ? `${Math.round(observation.temperatureC)} °C` : null;
-        $('#sceneCityTime').textContent = `Zürich · ${clock}${temperature && overrides.weather === 'auto' ? ` · ${temperature}` : ''}`;
-        $('#sceneShortStatus').textContent = preview ? 'Vorschau · Szene entdecken' : 'Szene entdecken';
+        $('#sceneCityTime').textContent = t('Zürich · {time}{temperature}', { time: clock, temperature: temperature && overrides.weather === 'auto' ? ` · ${temperature}` : '' });
+        $('#sceneShortStatus').textContent = t(preview ? 'Vorschau · Szene entdecken' : 'Szene entdecken');
         openButton.classList.toggle('is-preview', preview);
-        openButton.setAttribute('aria-label', `${preview ? 'Vorschau. ' : ''}Zürich, ${clock}${temperature ? `, ${temperature}` : ''}. Jahreszeit, Stimmung und Wetterbild entdecken.`);
-        $('#sceneMode').textContent = preview ? 'Vorschau – Ihre Szene' : 'Automatisch · passend zu Zürich';
+        openButton.setAttribute('aria-label', (preview ? t('Vorschau.') + ' ' : '') + t('Zürich, {time}{temperature}. Jahreszeit, Stimmung und Wetterbild entdecken.', { time: clock, temperature: temperature ? `, ${temperature}` : '' }));
+        $('#sceneMode').textContent = t(preview ? 'Vorschau – Ihre Szene' : 'Automatisch · passend zu Zürich');
         $('#scenePreviewExplanation').textContent = preview
-            ? `${seasonNames[season]} · ${holidayNames[celebration]} · ${phaseNames[phase]} · ${weatherNames[weather]}. Ihre Auswahl verändert nur die Illustration.`
-            : 'Dieses Zuhause folgt den Jahreszeiten, Festtagen und der Ortszeit. Kai zieht sich passend zur Temperatur an. Entdecken Sie die verschiedenen Stimmungen.';
+            ? t('{season} · {holiday} · {phase} · {weather}. Ihre Auswahl verändert nur die Illustration.', { season: t(seasonNames[season]), holiday: t(holidayNames[celebration]), phase: t(phaseNames[phase]), weather: t(weatherNames[weather]) })
+            : t('Dieses Zuhause folgt den Jahreszeiten, Festtagen und der Ortszeit. Kai zieht sich passend zur Temperatur an. Entdecken Sie die verschiedenen Stimmungen.');
         $('#sceneKaiNote').textContent = phase === 'night'
-            ? 'Lichter aus, Kai ruht mit seiner Decke. Ihre Anfrage können Sie jederzeit vorbereiten. Bei Tag nimmt Kai die ausgewählte Aufgabe wieder auf.'
+            ? t('Lichter aus, Kai ruht mit seiner Decke. Ihre Anfrage können Sie jederzeit vorbereiten. Bei Tag nimmt Kai die ausgewählte Aufgabe wieder auf.')
             : kaiState.clothing === 'warm'
-                ? `Kai trägt Jacke, Mütze und Handschuhe.${overrides.clothing === 'auto' ? ' Die warme Kleidung erscheint bei gemeldeten Temperaturen unter 8 °C.' : ' Sie sehen die ausgewählte Kleidungsvariante.'} Wählen Sie im Zuhause eine Aufgabe aus.`
-                : 'Kai trägt sein leichtes Kraken-Polo. Wählen Sie Fenster, Böden oder Umzug aus und sehen Sie ihm bei der Arbeit zu.';
+                ? [t('Kai trägt Jacke, Mütze und Handschuhe.'), t(overrides.clothing === 'auto' ? 'Die warme Kleidung erscheint bei gemeldeten Temperaturen unter 8 °C.' : 'Sie sehen die ausgewählte Kleidungsvariante.'), t('Wählen Sie im Zuhause eine Aufgabe aus.')].join(' ')
+                : t('Kai trägt sein leichtes Kraken-Polo. Wählen Sie Fenster, Böden oder Umzug aus und sehen Sie ihm bei der Arbeit zu.');
         const weatherStatus = $('#sceneWeatherStatus');
         const delayed = observation && (weatherData.stale === true || now.getTime() - Date.parse(observation.time) > 45 * 60000);
         if (observation) {
-            weatherStatus.textContent = `Wetter: Zürich-Flughafen · ${weatherNames[observedWeather]}${temperature ? `, ${temperature}` : ''} · Stand ${timeFormatter.format(new Date(observation.time))}`;
+            weatherStatus.textContent = t('Wetter: Zürich-Flughafen · {weather}{temperature} · Stand {time}', { weather: t(weatherNames[observedWeather]), temperature: temperature ? `, ${temperature}` : '', time: timeFormatter.format(new Date(observation.time)) });
         }
         else {
-            weatherStatus.textContent = weatherLoading ? 'Wetter: Zürich-Flughafen · wird geladen …' : 'Wetter: Zürich-Flughafen · zurzeit nicht verfügbar';
+            weatherStatus.textContent = t(weatherLoading ? 'Wetter: Zürich-Flughafen · wird geladen …' : 'Wetter: Zürich-Flughafen · zurzeit nicht verfügbar');
         }
         $('#sceneWeatherDelayed').hidden = !delayed;
         $('#sceneWeatherExplanation').textContent = observation
-            ? 'Die Szene illustriert die gemeldeten Wetterbedingungen. Die Station am Flughafen dient als regionale Orientierung.'
-            : 'Bis aktuelle Wetterdaten verfügbar sind, bleibt das Wetterbild neutral. Jahreszeit und Ortszeit passen sich weiterhin automatisch an.';
-        canvas.setAttribute('aria-label', `Eine gemütliche Wohnung im ${seasonNames[season]}, ${phaseNames[phase]}.${phase === 'night' ? ' Die Lampen sind ausgeschaltet. Kai ruht unter einer Decke.' : ` Kai ${kaiState.task === 'windows' ? 'reinigt das Fenster' : kaiState.task === 'mop' ? 'wischt den Boden' : 'trägt einen Umzugskarton'}${kaiState.clothing === 'warm' ? ' in warmer Arbeitskleidung' : ' im Kraken-Polo'}.`}${celebration !== 'none' ? ` Dekoration zu ${holidayNames[celebration]}.` : ''}${weather !== 'unknown' ? ` Vor dem Fenster: ${weatherNames[weather]}.` : ''}${preview ? ' Illustrative Vorschau.' : ''}`);
+            ? t('Die Szene illustriert die gemeldeten Wetterbedingungen. Die Station am Flughafen dient als regionale Orientierung.')
+            : t('Bis aktuelle Wetterdaten verfügbar sind, bleibt das Wetterbild neutral. Jahreszeit und Ortszeit passen sich weiterhin automatisch an.');
+        const sceneDescription = [
+            t('Eine gemütliche Wohnung im {season}, {phase}.', { season: t(seasonNames[season]), phase: t(phaseNames[phase]) }),
+            phase === 'night' ? t('Die Lampen sind ausgeschaltet. Kai ruht unter einer Decke.')
+                : t('Kai {task}{clothing}.', { task: t(kaiState.task === 'windows' ? 'reinigt das Fenster' : kaiState.task === 'mop' ? 'wischt den Boden' : 'trägt einen Umzugskarton'), clothing: ' ' + t(kaiState.clothing === 'warm' ? 'in warmer Arbeitskleidung' : 'im Kraken-Polo') }),
+            celebration !== 'none' ? t('Dekoration zu {holiday}.', { holiday: t(holidayNames[celebration]) }) : '',
+            weather !== 'unknown' ? t('Vor dem Fenster: {weather}.', { weather: t(weatherNames[weather]) }) : '',
+            preview ? t('Illustrative Vorschau.') : '',
+        ];
+        canvas.setAttribute('aria-label', sceneDescription.filter(Boolean).join(' '));
         updateWeatherIcon(weather, phase);
     }
     function updateWeatherIcon(weather, phase) {
@@ -298,6 +310,7 @@ export function initApartmentScene(homeRoot) {
         updateScene();
     });
     scope.on(homeRoot, 'kraken:servicechange', event => showTask(event.detail?.service));
+    scope.on(homeRoot, 'kraken:languagechange', () => { refreshFormatters(); updateScene(); });
     scope.on(document, 'visibilitychange', () => {
         canvas.classList.toggle('is-paused', document.hidden || overrides.motion === 'still');
         if (document.hidden) {
