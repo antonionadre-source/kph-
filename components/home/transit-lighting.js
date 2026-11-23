@@ -42,9 +42,13 @@ export function initTransitLighting(section) {
   function schedule() {
     if (!frame && !scope.disposed) frame = requestAnimationFrame(positionLights);
   }
+  const home = section.closest('.kraken-home');
+  if (home) scope.on(home, 'kraken:languagechange', schedule);
   if (typeof ResizeObserver !== 'undefined') {
     const resize = new ResizeObserver(schedule);
     [stage, art, ...icons].forEach(element => resize.observe(element));
+    const copy = section.querySelector('.moving-copy');
+    if (copy) resize.observe(copy);
     scope.cleanup(() => resize.disconnect());
   } else scope.on(window, 'resize', schedule, { passive: true });
   scope.cleanup(() => cancelAnimationFrame(frame));

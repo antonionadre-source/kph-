@@ -418,8 +418,8 @@
     "files": [
       {
         "file": "components/home/transit-lighting.js",
-        "bytes": 2732,
-        "sha256": "bf714a04173bef434f8661041238383e5e611fe7b439d6fd10da609898251227"
+        "bytes": 2935,
+        "sha256": "ba05747452efb461243bba8d8891b91dc7802da9c8d15958c1d1b5e8c7b9412d"
       },
       {
         "file": "components/home/TransitSection.tsx",
