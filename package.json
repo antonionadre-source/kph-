@@ -5,11 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "vite build && mkdir -p dist && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "build": "vite build && node scripts/render-services.mjs && node scripts/render-about.mjs && mkdir -p dist && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "build:vercel": "node scripts/build-vercel.mjs",
     "start": "node dist/server.cjs",
     "lint": "tsc --noEmit",
     "preview": "vite preview",
-    "audit:images": "tsx scripts/audit-images.ts"
+    "audit:images": "tsx scripts/audit-images.ts",
+    "test:home": "node --import tsx --test tests/home-*.test.*",
+    "test:kai": "node --import tsx --test tests/kai-*.test.*",
+    "test": "node --import tsx --test tests/*.test.*"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

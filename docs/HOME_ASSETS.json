@@ -1,0 +1,560 @@
+{
+  "sourcePackage": "kraken-home-codex.zip",
+  "sourceZipSha256": "d9a54cca66efae78d8332024a5dbac7d93b9cc511063c24eee90f832851cd8f0",
+  "assetsIdenticalToSuppliedPackage": true,
+  "assets": [
+    {
+      "file": "public/home-approved/assets/hero-room-day-v4.webp",
+      "bytes": 239284,
+      "sha256": "fda36c26fd2b1242d7a682ed313c5eb0e3e226bcf992dae2a9fe33f2eddd5372",
+      "format": "WEBP",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/hero-room-night-v4.webp",
+      "bytes": 194984,
+      "sha256": "11ca3631fda6344ae86f949f8917ed267730ad20f3bf0b39679a9b7eefef5599",
+      "format": "WEBP",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/holiday-decor.webp",
+      "bytes": 296292,
+      "sha256": "e7c1db34e4eae09d3d3e23b713e75b92276529b662dc0b3bc89d4a2d27d4c320",
+      "format": "WEBP",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/kai-rest-v3.webp",
+      "bytes": 277214,
+      "sha256": "a9398a2fed2837ad3b63e27a3600e7d93922f5a289282da2b9785abdadc02b2f",
+      "format": "WEBP",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/kai-tasks-cold-v3.webp",
+      "bytes": 306008,
+      "sha256": "241ae8be2b6105231425056549bc03111954bc3904ac655a8cb7192c178295fe",
+      "format": "WEBP",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/kai-tasks.webp",
+      "bytes": 309518,
+      "sha256": "a36a5c0c55d5f2315c4d4474e3f6e0871d7ff45213d9566bbf71e67d617a8017",
+      "format": "WEBP",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/kai-windows-cold-v3.webp",
+      "bytes": 242002,
+      "sha256": "878fcd4a038cc39bc1ae60406e62955480b88a33d3232d732d62ac5de74f3b8f",
+      "format": "WEBP",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/kai-windows.webp",
+      "bytes": 242398,
+      "sha256": "f93785d728d08e1696ec982a698b1a770ba704c89a500e6f8687622c77c14598",
+      "format": "WEBP",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/kai.webp",
+      "bytes": 151698,
+      "sha256": "865a8003c20f966534aaf2a195a674d39bfce8d5dc88e10dec643b6c6ccbb128",
+      "format": "WEBP",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/kraken-icons.svg",
+      "bytes": 2396,
+      "sha256": "95f9176afb2fefb9ff330315e0f98a256cc16bda0c42948b6e8b6f79cc486b35",
+      "format": "SVG",
+      "symbols": [
+        "window",
+        "end",
+        "regular",
+        "deep",
+        "moving",
+        "team",
+        "time",
+        "distance"
+      ]
+    },
+    {
+      "file": "public/home-approved/assets/logo.webp",
+      "bytes": 59822,
+      "sha256": "8821afc66d10704dfa5adc9c1ed28aa1fb15d92e6dfe293a0d85cddf0fe21a68",
+      "format": "WEBP",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha": true
+    },
+    {
+      "file": "public/home-approved/assets/seasons-window.webp",
+      "bytes": 506340,
+      "sha256": "ee295ad3b8e0371dd4b0ae157c78ab6309d62f1cd6cfcfc4488c9c9a6105baaa",
+      "format": "WEBP",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGB",
+      "alpha": false
+    },
+    {
+      "file": "public/home-approved/assets/service-scenes-branded-v4.webp",
+      "bytes": 320266,
+      "sha256": "45ed2fa136dc56b0b02a4fd6ff7c9e8cdf0d1c66e2492902b4b901de4e099ca6",
+      "format": "WEBP",
+      "width": 2172,
+      "height": 724,
+      "mode": "RGB",
+      "alpha": false
+    },
+    {
+      "file": "public/home-approved/assets/transit-loading-v4.webp",
+      "bytes": 243618,
+      "sha256": "681bc822697b2b54879adbe3e9f464e21c895f21290efd99453cbb13f6c5cd0e",
+      "format": "WEBP",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGB",
+      "alpha": false
+    }
+  ],
+  "css": {
+    "file": "components/home/approved-home.css",
+    "sha256": "954dbecb0c777ba496ad1ca1b012062469a048d5a41610bc49e7b14c20645fc9",
+    "sourceOrder": [
+      "styles.css",
+      "scene.css",
+      "brand.css",
+      "van.css",
+      "glass.css"
+    ],
+    "scope": ".kraken-home",
+    "documentStateClasses": [
+      "kraken-home-modal-open",
+      "kraken-home-scene-dialog-open"
+    ],
+    "keyframePrefix": "kh-",
+    "sourceHashes": {
+      "styles.css": "535df4f012c3a16e5c475ab24a10c8924c65830885224301062c1d8a241d6f21",
+      "scene.css": "1ac7ffd68eb5caf552e0ba5f171329435a9c10ce8222fd847638920c50d76c0b",
+      "brand.css": "02d94799c7c0b5733d87d4e27c4e3fc9c2e89f3f41ce0801e7edfb4d53d05dd2",
+      "van.css": "5323709c1896c5794a804061f788d67a0257128017e5b71a149b76f7a7474f75",
+      "glass.css": "b9bae34d30c4b93fa7fcd4d404f4408724a11cff85230b336ab196f35ed6bf75"
+    },
+    "additionalStyles": [
+      {
+        "file": "components/home/responsive-fixes.css",
+        "bytes": 754,
+        "sha256": "982e1361046deea44a09105b50a74a67e0ea169bf632ade58a2de00d05cefb2a"
+      },
+      {
+        "file": "components/home/home-language.css",
+        "bytes": 2953,
+        "sha256": "4b2015b19273e393c0ed3c8ba56d9f343118032eb984cea3544bd413770f6cc4"
+      },
+      {
+        "file": "components/home/device-fixes.css",
+        "bytes": 3790,
+        "sha256": "b56f065a57c0c63f19d042bc43215030d51945dc26456f917179c6c1654d96b7"
+      },
+      {
+        "file": "components/home/transit-section.css",
+        "bytes": 18884,
+        "sha256": "ac77c0079c58992721ca3765cd56388c1bfa6c620d9cb524672cf887cc445c36"
+      }
+    ],
+    "updatedFor": "Shared approved header, standalone services and supplied Transit measurements, 2026-11-23",
+    "bytes": 110341
+  },
+  "components": [
+    {
+      "file": "components/home/ApprovedHome.tsx",
+      "bytes": 25856,
+      "sha256": "79c84efadbe6bdb923fa50fa55a9bb6e1cf11e8076c2e238d3673d1f57b4fdf4"
+    },
+    {
+      "file": "components/home/HomeLanguageSelector.tsx",
+      "bytes": 3284,
+      "sha256": "2d95f7ca4356bb3a941c599da67b9d9633442adff2c2f331bcb654a66812ec2e"
+    },
+    {
+      "file": "components/home/ApprovedHeader.tsx",
+      "bytes": 3200,
+      "sha256": "cac03b162f3db16fbb608090838b9f6f308a583f785b2b886bacd05406118d8f"
+    },
+    {
+      "file": "components/home/TransitSection.tsx",
+      "bytes": 12174,
+      "sha256": "9fee2702bb2a84eea17331e53c196a4e35ac4448c3ef804d01d9d200aa1a62d4"
+    }
+  ],
+  "globalAssistant": {
+    "implementation": "One native dialog shared across home and calculator; independent of .kraken-home CSS scope",
+    "files": [
+      {
+        "file": "components/KaiAssistant.tsx",
+        "bytes": 18274,
+        "sha256": "a9fb10753a758dd479f99b4065a992cc16e33f504ab39485ac538fc9f5ff3ef5"
+      },
+      {
+        "file": "components/KaiAssistant.css",
+        "bytes": 9082,
+        "sha256": "647a40364378727305ac5c39f5459614b6418a6acb589d72ffbf3e990d8e108c"
+      },
+      {
+        "file": "components/FloatingMascot.tsx",
+        "bytes": 469,
+        "sha256": "5aab29b381d9a9db0a50e50cb4db4bd06ca133844b9a741c67b8b831df4acf10"
+      },
+      {
+        "file": "src/kai/open.ts",
+        "bytes": 762,
+        "sha256": "bb9140577b498d9a7509cae328a4c7bef208c129f185febbcb9844146097a8a9"
+      },
+      {
+        "file": "src/kai/types.ts",
+        "bytes": 1999,
+        "sha256": "47699d864d2f44cf70dd9863eea9eee4d8b519905f473bbe50761c5eef5fe10f"
+      },
+      {
+        "file": "src/kai/copy.ts",
+        "bytes": 21317,
+        "sha256": "e4495a11bce8ff7f4beb3db619487870abbb7e3fe429b4947cbf73a95034676a"
+      },
+      {
+        "file": "src/kai/draft.ts",
+        "bytes": 15687,
+        "sha256": "7f64e96a9e5da756d327e748b4726e3b963d5131e08832987460d49b65686531"
+      }
+    ]
+  },
+  "automaticSceneAndSharedFooter": {
+    "updated": "2026-11-23",
+    "originalImageAssetsUnchanged": true,
+    "files": [
+      {
+        "file": "components/home/scene.js",
+        "bytes": 19468,
+        "sha256": "7b88b2a220e8cc62b13d4e11488bdf7e4f232f38739437688aaf632058177878"
+      },
+      {
+        "file": "components/home/scene-autoplay.js",
+        "bytes": 1224,
+        "sha256": "170640a08a225ce65801e113227d55c9e682d146867867b6694bbd6cd8405b50"
+      },
+      {
+        "file": "components/Footer.tsx",
+        "bytes": 7099,
+        "sha256": "888320482f2c9928195b00e2e7a5279b3094484812afb040c162510f739ca300"
+      }
+    ]
+  },
+  "servicesAndTransitIntegration": {
+    "updated": "2026-11-23",
+    "sourceFormat": "kraken-codex-bundle-v1",
+    "sourceProject": "kraken-services-transit",
+    "validatedImportFiles": 58,
+    "validatedImportBytes": 5174608,
+    "route": "/leistungen",
+    "servicesAssetsManifest": "docs/SERVICES_ASSETS.json",
+    "additionalServiceImageAssets": 6,
+    "originalHomeAssetCount": 14,
+    "originalHomeAssetsUnchanged": true,
+    "onlyInteriorMeasurementsCm": {
+      "floorLengthToBulkhead": 255.5,
+      "maximumWidth": 177.5,
+      "betweenWheelArches": 139,
+      "floorToRoofHeight": 140.6
+    },
+    "sourceHashes": {
+      "web/leistungen.html": "c52c2f0945f87e0b67f97b201efad615a7428c8609fbe7735a52eec130c131bc",
+      "web/services.css": "26ace007493fce002266d948577b4c091033c7ac1ab1998092f4772d4123b50a",
+      "web/services.js": "9062a2f29cead2410df066a9af6099283977f003b70840e68f725a1a68321cc8",
+      "web/index.html": "7d3d8aaf11b959097ed96fd6d9fa51c37ca3f143ba96213e850785fdae6c6c3b",
+      "web/van.css": "eb702c452783c20a12c293b4a3dbd3de10828f362e167f63c889ab1e2df7dc67",
+      "web/van.js": "d0b3de6c4171627ca921e3c147afb672a65f46fc6b73aee223295ae1e291a891"
+    },
+    "files": [
+      {
+        "file": "components/services/ApprovedServices.tsx",
+        "bytes": 32498,
+        "sha256": "114b56d18838ca47c14e2a0a919d7e718a170cf8a22f6f19faec8fa5ef97bf8a"
+      },
+      {
+        "file": "components/services/services.css",
+        "bytes": 20328,
+        "sha256": "260272f677b911430e0291f902d84c4e57905f4f96983d5ad13f1f9452c9eba4"
+      },
+      {
+        "file": "components/services/servicesTranslations.ts",
+        "bytes": 45958,
+        "sha256": "89758d940087490d4ba1e93131b6e42cf4c61df1aa01647149272e7ae92c0017"
+      },
+      {
+        "file": "components/home/ApprovedHeader.tsx",
+        "bytes": 3200,
+        "sha256": "cac03b162f3db16fbb608090838b9f6f308a583f785b2b886bacd05406118d8f"
+      },
+      {
+        "file": "components/home/TransitSection.tsx",
+        "bytes": 12174,
+        "sha256": "9fee2702bb2a84eea17331e53c196a4e35ac4448c3ef804d01d9d200aa1a62d4"
+      },
+      {
+        "file": "components/home/transit-section.css",
+        "bytes": 18884,
+        "sha256": "ac77c0079c58992721ca3765cd56388c1bfa6c620d9cb524672cf887cc445c36"
+      },
+      {
+        "file": "components/home/van.js",
+        "bytes": 10806,
+        "sha256": "d68bbdd60e12762fdff7dbcc3dc4a19a17b20186da62f03b00591229f00e67eb"
+      },
+      {
+        "file": "components/home/app.js",
+        "bytes": 3036,
+        "sha256": "27ec6672eff1b282ab91ce52b1f2af25d828733726e8ec857e8891e458be4df4"
+      },
+      {
+        "file": "components/home/homeTranslations.ts",
+        "bytes": 75733,
+        "sha256": "c1dc0c0e3236d82bb6b414a2f195bcab2eb2050c39e72bf4d702d173c3cfbdc8"
+      },
+      {
+        "file": "components/App.tsx",
+        "bytes": 26736,
+        "sha256": "8e37e7a3501b30698683d4f30db1add47ce36cc77cedb299564c830d40dfa44b"
+      },
+      {
+        "file": "components/Header.tsx",
+        "bytes": 16309,
+        "sha256": "21b342b858c226f29e8dd87c56fb0529cab7ee579f4fd3a8b018c9f376a51461"
+      },
+      {
+        "file": "seoConfig.ts",
+        "bytes": 51048,
+        "sha256": "5d3da605d3c7aefb84bee78cd9d2590c39964307f7cbddda92f3dc91206f78e8"
+      },
+      {
+        "file": "server.ts",
+        "bytes": 43971,
+        "sha256": "8a3d2412ae4938eef21552e10f110ba5faf89375534bdd849cc4b1fbeef1c7d5"
+      },
+      {
+        "file": "scripts/render-services.mjs",
+        "bytes": 2244,
+        "sha256": "ce5ba950c4ec1bb9e06ed136a710eb88827061c22016b234a1b2f2aa2df6a679"
+      },
+      {
+        "file": "scripts/build-vercel.mjs",
+        "bytes": 2028,
+        "sha256": "97294593d9c8cfdce4dff1460f40dcc9cea031b5d535f641dfe9e3f4e4eb86c5"
+      },
+      {
+        "file": "scripts/prepare-vercel-output.mjs",
+        "bytes": 8176,
+        "sha256": "5d37dd487aae8f1ad60c0a53a60c26b71b8da11c5a977ae27084ae3b59db3f54"
+      },
+      {
+        "file": "vite.config.ts",
+        "bytes": 2882,
+        "sha256": "29c3345d0afc43cfbc3fdb224820d7615ff1c4aa91a2cd76f5cb977133c04a6a"
+      },
+      {
+        "file": "package.json",
+        "bytes": 1609,
+        "sha256": "0fa2d2c6f101abdb27f08b231bda1c05ef34d1d3799bff5985f65328e728ada2"
+      },
+      {
+        "file": "public/sitemap.xml",
+        "bytes": 46746,
+        "sha256": "f49346b68d6c5a06e723ba43f588e139330d943be4c1d5855c75b0dd52245a91"
+      },
+      {
+        "file": "docs/SERVICES_ASSETS.json",
+        "bytes": 2297,
+        "sha256": "48b075ef29f5d0b4179e063465f63773f2e724d9e8d7b95c85fb277f4d89adf8"
+      },
+      {
+        "file": "docs/SERVICES_INTEGRATION.md",
+        "bytes": 11332,
+        "sha256": "478320f9f2eaba5f7608b9a30126b5054a4c14c409e671c776e50bf89c7df19b"
+      }
+    ]
+  },
+  "transitLighting": {
+    "files": [
+      {
+        "file": "components/home/transit-lighting.js",
+        "bytes": 2928,
+        "sha256": "244e16748cd113407f943168ada7340a884c5396910804bf7fc3206aacc0c144"
+      },
+      {
+        "file": "components/home/TransitSection.tsx",
+        "bytes": 12174,
+        "sha256": "9fee2702bb2a84eea17331e53c196a4e35ac4448c3ef804d01d9d200aa1a62d4"
+      },
+      {
+        "file": "components/home/transit-section.css",
+        "bytes": 18884,
+        "sha256": "ac77c0079c58992721ca3765cd56388c1bfa6c620d9cb524672cf887cc445c36"
+      },
+      {
+        "file": "components/home/van.js",
+        "bytes": 10806,
+        "sha256": "d68bbdd60e12762fdff7dbcc3dc4a19a17b20186da62f03b00591229f00e67eb"
+      }
+    ],
+    "originalAtlasImagesUnchanged": true
+  },
+  "transitQuality": {
+    "date": "2026-11-23",
+    "generation": "built-in image_gen, edits of original Transit scenes; generated illustrative assets",
+    "originalAtlasImagesUnchanged": true,
+    "nativePixelsPerStage": 1254,
+    "compositing": "Native alpha without lighten blend or gradient masks. Original Kraken logo composited as SVG.",
+    "conversion": {
+      "format": "WebP",
+      "quality": 95,
+      "method": 6,
+      "resized": false,
+      "alphaPreservedExactly": true
+    },
+    "images": [
+      {
+        "file": "public/transit-quality/transit-boxes-v1.webp",
+        "bytes": 246456,
+        "sha256": "e9e85bc1a0a9a78d7605f506504424c56fc4ff34438a85734ec163e55e96d4a7",
+        "width": 1254,
+        "height": 1254,
+        "alpha": true
+      },
+      {
+        "file": "public/transit-quality/transit-chairs-v1.webp",
+        "bytes": 247890,
+        "sha256": "99dc42fda764a2e241c28c11bb30bc7bb33ea4d9f10e85d726e579282c7d5adc",
+        "width": 1254,
+        "height": 1254,
+        "alpha": true
+      },
+      {
+        "file": "public/transit-quality/transit-empty-v1.webp",
+        "bytes": 240968,
+        "sha256": "5cd020fa682de53912574c0b44e0d752b1a4bd4e60b78b9c548ec617d414ef60",
+        "width": 1254,
+        "height": 1254,
+        "alpha": true
+      },
+      {
+        "file": "public/transit-quality/transit-furniture-v1.webp",
+        "bytes": 271318,
+        "sha256": "2b1ec4c6fa0aca1c5da3ffa73632cbd9d3b9125a5cabe3061520f73967e9cbf3",
+        "width": 1254,
+        "height": 1254,
+        "alpha": true
+      },
+      {
+        "file": "public/transit-quality/transit-overview-v1.webp",
+        "bytes": 269204,
+        "sha256": "93e7bc77f6235e6d69ce0415e338f8890c5fc75fd14df039b15ca03192d31d57",
+        "width": 1254,
+        "height": 1254,
+        "alpha": true
+      }
+    ],
+    "files": [
+      {
+        "file": "components/home/TransitOverviewBranding.tsx",
+        "bytes": 1185,
+        "sha256": "860ea4a5d0423c77f445bb48b8cbeaa603688b6867401380838ec568234baba2"
+      },
+      {
+        "file": "components/home/TransitLoadingVisual.tsx",
+        "bytes": 4025,
+        "sha256": "4467f800f1e9ef097dd7697f0cff1626044ac2d054884d3e52f03814f5c5e932"
+      }
+    ],
+    "delivery": "One fixed empty vehicle and side logo outside the two crossfade layers. Native lazy/async cargo photos and carton logos are affine-registered and clipped inside a fixed bay; exterior body never changes. Controls reserve two rows on tablets.",
+    "vehicleStability": {
+      "nativeCoordinates": 1254,
+      "fixedBase": "public/transit-quality/transit-empty-v1.webp",
+      "crossfadeScope": "cargo bay only",
+      "originalImagesUnchanged": true,
+      "clip": "M582 267 C685 262 863 270 973 283 Q1013 288 1023 321 L1037 842 Q1037 879 1018 891 L575 904 L564 614 L560 391 L564 305 Q565 277 582 267Z"
+    }
+  },
+  "homeWhyIntegration": {
+    "date": "2026-11-23",
+    "source": "Owner-supplied Warum Kraken HTML/CSS",
+    "languages": [
+      "de",
+      "en",
+      "es",
+      "pt",
+      "it",
+      "fr"
+    ],
+    "secondaryAnchor": "ueber-uns",
+    "nativeDisclosures": 3,
+    "approvedComparison": "Same net price and service scope; general-rate comparison8.1%, tax share7.49%, rounded7.5%; owner-provided no-VAT status, no registry certification.",
+    "files": [
+      {
+        "file": "components/home/WhyKrakenSection.tsx",
+        "bytes": 8203,
+        "sha256": "13533b84e0efeffbb9e87590210b012637e671f3714a7fe863cf219b84dcfd54"
+      },
+      {
+        "file": "components/home/why-kraken.css",
+        "bytes": 22524,
+        "sha256": "2153acd18e56afece95237e7dac3905a31b14595f398a7e794f77a5fef769b27"
+      },
+      {
+        "file": "components/home/whyTranslations.ts",
+        "bytes": 17479,
+        "sha256": "c654c55672f3d62005031a5091885295c95a14b49582c0c0ca7b8b968dbcd78c"
+      },
+      {
+        "file": "components/home/ApprovedHome.tsx",
+        "bytes": 25856,
+        "sha256": "79c84efadbe6bdb923fa50fa55a9bb6e1cf11e8076c2e238d3673d1f57b4fdf4"
+      },
+      {
+        "file": "components/home/ApprovedHeader.tsx",
+        "bytes": 3200,
+        "sha256": "cac03b162f3db16fbb608090838b9f6f308a583f785b2b886bacd05406118d8f"
+      }
+    ]
+  }
+}

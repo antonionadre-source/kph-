@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext, type ReactNode } from 'react';
+import { LANGUAGE_STORAGE_KEY, LOCALE_LOCATION_EVENT, languageSelectionUrl, normalizeSiteLanguage, resolveSiteLanguage } from './src/locale.ts';
 
 // Consultation specific keys
 const consultationKeys = {
@@ -7512,53 +7513,35 @@ interface I18nContextType {
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
 export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>('de-CH');
+  const readLanguage = (): Language => {
+    let saved: string | null = null;
+    try { saved = typeof window === 'undefined' ? null : window.localStorage.getItem(LANGUAGE_STORAGE_KEY); }
+    catch { /* URL selection remains available when storage is blocked. */ }
+    return resolveSiteLanguage({
+      search: typeof window === 'undefined' ? '' : window.location.search,
+      saved,
+      browserLanguage: typeof navigator === 'undefined' ? '' : navigator.language
+    });
+  };
+  const [language, setLanguageState] = useState<Language>(readLanguage);
 
   const [activeToast, setActiveToast] = useState<{ show: boolean; msg: string; langCode: string } | null>(null);
 
   useEffect(() => {
-    try {
-      let detectedLang: Language | null = null;
-      // 1. Check URL parameters for explicit language overrides (e.g. ?lang=fr or ?hl=es)
-      if (typeof window !== 'undefined' && window.location) {
-        const params = new URLSearchParams(window.location.search);
-        const urlLang = params.get('lang') || params.get('hl');
-        if (urlLang) {
-          const matched = ['en', 'de-CH', 'de', 'fr', 'it', 'es', 'pt'].find(
-            (l) => l.toLowerCase() === urlLang.toLowerCase() || l.split('-')[0].toLowerCase() === urlLang.toLowerCase()
-          );
-          if (matched) detectedLang = matched as Language;
-        }
-      }
-
-      // 2. Check localStorage for user persistent language selection
-      if (!detectedLang) {
-        const saved = localStorage.getItem('kraken_preferred_lang');
-        if (saved && ['en', 'de-CH', 'de', 'fr', 'it', 'es', 'pt'].includes(saved)) {
-          detectedLang = saved as Language;
-        }
-      }
-
-      // 3. Fallback to browser standard language setting (ONLY if it matches a German locale)
-      if (!detectedLang && typeof navigator !== 'undefined' && navigator.language) {
-        const browserFullLang = navigator.language.toLowerCase();
-        if (browserFullLang === 'de-ch') {
-          detectedLang = 'de-CH';
-        } else {
-          const browserLang = navigator.language.substring(0, 2).toLowerCase();
-          if (browserLang === 'de') {
-            detectedLang = 'de';
-          }
-        }
-      }
-
-      if (detectedLang && detectedLang !== 'de-CH') {
-        setLanguageState(detectedLang);
-      }
-    } catch (e) {
-      console.error('Failed to load language from localStorage / environments', e);
-    }
+    if (typeof window === 'undefined') return;
+    const syncLanguage = () => setLanguageState(readLanguage());
+    window.addEventListener('popstate', syncLanguage);
+    window.addEventListener(LOCALE_LOCATION_EVENT, syncLanguage);
+    return () => {
+      window.removeEventListener('popstate', syncLanguage);
+      window.removeEventListener(LOCALE_LOCATION_EVENT, syncLanguage);
+    };
   }, []);
+
+  useEffect(() => {
+    try { if (typeof window !== 'undefined') window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language); }
+    catch { /* Language also travels in navigation URLs. */ }
+  }, [language]);
 
   useEffect(() => {
     if (activeToast && activeToast.show) {
@@ -7580,11 +7563,15 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
+    const selected = normalizeSiteLanguage(lang);
+    if (!selected) return;
+    lang = selected;
+    setLanguageState(selected);
     try {
-      localStorage.setItem('kraken_preferred_lang', lang);
-    } catch (e) {
-      console.error('Failed to save language to localStorage', e);
+      if (typeof window !== 'undefined') window.localStorage.setItem(LANGUAGE_STORAGE_KEY, selected);
+    } catch { /* Blocked storage must not prevent an explicit language choice. */ }
+    if (typeof window !== 'undefined') {
+      window.history.replaceState(window.history.state, '', languageSelectionUrl(window.location.href, selected));
     }
 
     const langNames: Record<Language, string> = {
@@ -7618,7 +7605,7 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     if (typeof document !== 'undefined') {
       const htmlLangMap: Record<Language, string> = {
-        'de-CH': 'de',
+        'de-CH': 'de-CH',
         'de': 'de',
         'en': 'en',
         'fr': 'fr',
@@ -7626,7 +7613,7 @@ export const I18nProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         'es': 'es',
         'pt': 'pt',
       };
-      document.documentElement.lang = htmlLangMap[language] || 'de';
+      document.documentElement.lang = htmlLangMap[language] || 'de-CH';
     }
   }, [language]);
 

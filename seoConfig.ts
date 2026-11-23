@@ -1,5 +1,7 @@
 import { translations } from "./i18n.ts";
 import { MUNICIPALITIES } from "./src/data/locations.ts";
+import { homeText, normalizeHomeLanguage } from "./components/home/homeTranslations.ts";
+import { languageFromSearch } from "./src/locale.ts";
 
 export type Language = "de" | "en" | "fr" | "it" | "es" | "pt";
 
@@ -14,7 +16,9 @@ export const PATH_TO_PAGE_MAP: Record<string, string> = {
   "/": "home",
   "/quote": "consultation",
   "/about": "about",
+  "/ueber-kraken": "about",
   "/services": "services-page",
+  "/leistungen": "approved-services",
   "/commercial": "commercial-services",
   "/careers": "careers",
   "/sustainability": "sustainability-page",
@@ -46,6 +50,7 @@ export const PAGE_TO_PATH_MAP: Record<string, string> = {
   "consultation": "/quote",
   "about": "/about",
   "services-page": "/services",
+  "approved-services": "/leistungen",
   "commercial-services": "/commercial",
   "careers": "/careers",
   "sustainability-page": "/sustainability",
@@ -287,6 +292,11 @@ export const parsePath = (path: string) => {
   }
 
   return { page: "404", cityId: "", serviceId: "" };
+};
+
+export const HOME_METADATA = {
+  title: "Kraken PFM – Reinigung & kleine Umzüge in Zürich, Schaffhausen und Winterthur",
+  description: "Persönliche Reinigung und kleine Umzüge für Privathaushalte in Zürich, Schaffhausen und Winterthur. Fensterreinigung, Umzugsreinigung, regelmässige Reinigung und Grundreinigung."
 };
 
 // Fallbacks or default values (German)
@@ -780,6 +790,50 @@ export function getMetadataForPath(
   ogImageType: string;
 } {
   const cleanPath = pathname.split("?")[0];
+  if (cleanPath === "/about" || cleanPath === "/ueber-kraken") {
+    const locale = normalizeHomeLanguage(langParam || languageFromSearch(pathname.includes('?') ? pathname.slice(pathname.indexOf('?')) : '') || 'de');
+    const copy = {
+      de: ['Über Kraken & Kai · Persönliche Hilfe für Ihr Zuhause', 'Lernen Sie Kraken PFM, Gründer Antonio Nadre Gomes Mendes und Maskottchen Kai kennen. Persönliche Reinigung und kleine Umzüge ab Schaffhausen für Zürich und Winterthur.', 'Persönlich da. Mit Erfahrung. Für Ihr Zuhause.'],
+      en: ['About Kraken & Kai · Personal help for your home', 'Meet Kraken PFM, founder Antonio Nadre Gomes Mendes and mascot Kai. Personal cleaning and small moves from Schaffhausen for Zurich and Winterthur.', 'Personally here. With experience. For your home.'],
+      es: ['Sobre Kraken y Kai · Ayuda personal para su hogar', 'Conozca Kraken PFM, a su fundador Antonio Nadre Gomes Mendes y a Kai. Limpieza y pequeñas mudanzas desde Schaffhausen para Zúrich y Winterthur.', 'Atención personal. Con experiencia. Para su hogar.'],
+      pt: ['Sobre a Kraken e o Kai · Apoio pessoal para a sua casa', 'Conheça a Kraken PFM, o fundador Antonio Nadre Gomes Mendes e a mascote Kai. Limpeza e pequenas mudanças a partir de Schaffhausen para Zurique e Winterthur.', 'Apoio pessoal. Com experiência. Para a sua casa.'],
+      it: ['Kraken e Kai · Un aiuto personale per la sua casa', 'Conosca Kraken PFM, il fondatore Antonio Nadre Gomes Mendes e la mascotte Kai. Pulizie e piccoli traslochi da Sciaffusa per Zurigo e Winterthur.', 'Un aiuto personale. Con esperienza. Per la sua casa.'],
+      fr: ['Kraken et Kai · Une aide personnelle pour votre maison', 'Découvrez Kraken PFM, son fondateur Antonio Nadre Gomes Mendes et sa mascotte Kai. Nettoyage et petits déménagements depuis Schaffhouse pour Zurich et Winterthour.', 'À vos côtés. Avec expérience. Pour votre maison.'],
+    }[locale];
+    return { title: copy[0], description: copy[1], canonical: `${BASE_URL}/about`, hreflangs: [], pageType: 'about', h1: copy[2], h2: BRAND, bodyText: copy[1], ogImage: DEFAULT_OG_IMAGE, ogImageWidth: OG_IMAGE_WIDTH, ogImageHeight: OG_IMAGE_HEIGHT, ogImageType: OG_IMAGE_TYPE };
+  }
+  if (cleanPath === "/leistungen") {
+    const locale = normalizeHomeLanguage(langParam || languageFromSearch(pathname.includes('?') ? pathname.slice(pathname.indexOf('?')) : '') || 'de');
+    const copy = {
+      de: ['Reinigung & kleine Umzüge in Zürich, Schaffhausen & Winterthur | Kraken', 'Fensterreinigung, Umzugsreinigung, regelmässige Reinigung, Grundreinigung und kleine Umzüge für Privathaushalte in Zürich, Schaffhausen und Winterthur.', 'Reinigung und kleine Umzüge. Passend zu Ihnen.'],
+      en: ['Cleaning & small moves in Zurich, Schaffhausen & Winterthur | Kraken', 'Window cleaning, end-of-tenancy cleaning, regular cleaning, deep cleaning and small moves for private households in Zurich, Schaffhausen and Winterthur.', 'Cleaning and small moves. Suited to you.'],
+      es: ['Limpieza y pequeñas mudanzas en Zúrich, Schaffhausen y Winterthur | Kraken', 'Limpieza de ventanas, de fin de alquiler, periódica, a fondo y pequeñas mudanzas para hogares particulares en Zúrich, Schaffhausen y Winterthur.', 'Limpieza y pequeñas mudanzas. A su medida.'],
+      pt: ['Limpeza e pequenas mudanças em Zurique, Schaffhausen e Winterthur | Kraken', 'Limpeza de janelas, de fim de arrendamento, regular, profunda e pequenas mudanças para casas particulares em Zurique, Schaffhausen e Winterthur.', 'Limpeza e pequenas mudanças. À sua medida.'],
+      it: ['Pulizie e piccoli traslochi a Zurigo, Sciaffusa e Winterthur | Kraken', 'Pulizia di finestre, di fine locazione, regolare, a fondo e piccoli traslochi per abitazioni private a Zurigo, Sciaffusa e Winterthur.', 'Pulizie e piccoli traslochi. Su misura per lei.'],
+      fr: ['Nettoyage et petits déménagements à Zurich, Schaffhouse et Winterthour | Kraken', 'Nettoyage de vitres, de fin de bail, régulier, en profondeur et petits déménagements pour les particuliers à Zurich, Schaffhouse et Winterthour.', 'Nettoyage et petits déménagements. Selon vos besoins.'],
+    }[locale];
+    return { title: copy[0], description: copy[1], canonical: `${BASE_URL}/leistungen`, hreflangs: [], pageType: 'approved-services', h1: copy[2], h2: BRAND, bodyText: copy[1], ogImage: DEFAULT_OG_IMAGE, ogImageWidth: OG_IMAGE_WIDTH, ogImageHeight: OG_IMAGE_HEIGHT, ogImageType: OG_IMAGE_TYPE };
+  }
+  // Home copy shares the same six-language source dictionary as its UI.
+  if (cleanPath === "/") {
+    const homeLanguage = normalizeHomeLanguage(langParam || languageFromSearch(pathname.includes('?') ? pathname.slice(pathname.indexOf('?')) : '') || 'de');
+    const description = homeText(homeLanguage, HOME_METADATA.description);
+    return {
+      ...HOME_METADATA,
+      title: homeText(homeLanguage, HOME_METADATA.title),
+      description,
+      canonical: `${BASE_URL}/`,
+      hreflangs: [],
+      pageType: "home",
+      h1: homeText(homeLanguage, "Ihr Zuhause in guten Armen."),
+      h2: homeText(homeLanguage, "Reinigung und kleine Umzüge in Zürich, Schaffhausen und Winterthur."),
+      bodyText: description,
+      ogImage: DEFAULT_OG_IMAGE,
+      ogImageWidth: OG_IMAGE_WIDTH,
+      ogImageHeight: OG_IMAGE_HEIGHT,
+      ogImageType: OG_IMAGE_TYPE,
+    };
+  }
   if (cleanPath === "/blog/wohnungsabgabe-zurich-perfekte-uebergabe") {
     return {
       title: `Wohnungsabgabe in Zürich: So gelingt die perfekte Übergabe | ${BRAND}`,

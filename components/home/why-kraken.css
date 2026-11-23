@@ -1,0 +1,1104 @@
+/* =========================================================
+   KRAKEN — WARUM KRAKEN?
+   Presentación personal sin retrato y comparación del IVA.
+   ========================================================= */
+
+/* BASE Y CONTENEDOR */
+
+.kraken-home .why-section,
+.kraken-home .why-section *,
+.kraken-home .why-section *::before,
+.kraken-home .why-section *::after {
+  box-sizing: border-box;
+}
+
+.kraken-home .why-section {
+  --why-navy: #002d5b;
+  --why-blue: #0a5689;
+  --why-text: #092d52;
+
+  position: relative;
+  padding-block: 76px 55px;
+  color: var(--why-text);
+  font-family: "Manrope", Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+
+  background:
+    radial-gradient(ellipse at 0 0, #e6f4fa 0, transparent 50%),
+    linear-gradient(135deg, #f7fbfd, #eff7f6);
+
+  scroll-margin-top: 24px;
+  border-bottom: 1px solid #dae8ec;
+}
+
+.kraken-home .why-section .why-container {
+  width: min(1280px, calc(100% - 96px));
+  margin-inline: auto;
+}
+
+.kraken-home .why-section .why-legacy-anchor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.kraken-home .why-section .why-icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.kraken-home .why-section .why-eyebrow {
+  margin: 0 0 23px;
+  font-size: 0.875rem;
+  font-weight: 800;
+  line-height: 1.5;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.kraken-home .why-section .why-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 15px 24px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: var(--why-navy);
+  color: #fff;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: none;
+  white-space: normal;
+  cursor: pointer;
+  transition: background 0.18s ease, box-shadow 0.18s ease;
+}
+
+/* COMPOSICIÓN PRINCIPAL */
+
+.kraken-home .why-section .why-editorial {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 44px;
+  align-items: center;
+}
+
+.kraken-home .why-section .why-introduction {
+  min-width: 0;
+  padding-block: 10px;
+}
+
+.kraken-home .why-section .why-introduction h2 {
+  max-width: 580px;
+  margin: 0 0 25px;
+  font-size: clamp(2.5rem, 4.35vw, 3.85rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+
+.kraken-home .why-section .why-introduction h2 span {
+  color: var(--why-blue);
+}
+
+.kraken-home .why-section .why-intro {
+  max-width: 490px;
+  margin: 0;
+  color: #456176;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+}
+
+.kraken-home .why-section .why-signature {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  margin: 25px 0 28px;
+  padding: 4px 0;
+}
+
+.kraken-home .why-section .why-signature strong {
+  font-size: 1.3125rem;
+  font-weight: 750;
+  line-height: 1.4;
+  letter-spacing: -0.035em;
+}
+
+.kraken-home .why-section .why-signature > span {
+  padding-left: 16px;
+  border-left: 1px solid #bdd2da;
+  color: #557083;
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.kraken-home .why-section .why-primary-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.kraken-home .why-section .why-primary-action > p {
+  max-width: 370px;
+  margin: 0;
+  color: #557083;
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.kraken-home .why-section .why-private-benefit {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 12px;
+  max-width: 490px;
+  margin-top: 25px;
+  padding-top: 22px;
+  border-top: 1px solid #c4dce2;
+}
+
+.kraken-home .why-section .why-private-benefit > .why-icon {
+  width: 23px;
+  height: 25px;
+  margin-top: 2px;
+  color: #2c6c58;
+}
+
+.kraken-home .why-section .why-private-benefit p {
+  margin: 0;
+  color: #496779;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.kraken-home .why-section .why-private-benefit strong {
+  color: #214c5a;
+  font-weight: 700;
+}
+
+.kraken-home .why-section .why-local {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-top: 21px;
+}
+
+.kraken-home .why-section .why-local > .why-icon {
+  width: 21px;
+  height: 23px;
+  color: #2c6c58;
+}
+
+.kraken-home .why-section .why-local span {
+  display: block;
+  margin: 0 0 2px;
+  color: #587383;
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.kraken-home .why-section .why-local p {
+  margin: 0;
+  color: #284d64;
+  font-size: 0.9375rem;
+  font-weight: 650;
+  line-height: 1.6;
+}
+
+/* PANEL DESTACADO DEL IVA */
+
+.kraken-home .why-section .why-promise-panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-width: 0;
+  padding: 28px 30px 20px;
+  border: 1px solid #316275;
+  border-radius: 30px;
+  color: #fff;
+
+  background:
+    radial-gradient(
+      ellipse at 100% 0,
+      #17556c72 0,
+      transparent 55%
+    ),
+    linear-gradient(155deg, #092f49, #05243c 72%);
+
+  box-shadow:
+    inset 0 1px 0 #ffffff24,
+    0 18px 45px #0c344c0a;
+}
+
+.kraken-home .why-section .why-promise-panel::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 35px;
+  right: -340px;
+  width: 480px;
+  height: 480px;
+  border: 1px solid #b5fff51b;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 45px #c4fff507,
+    0 0 0 90px #c4fff505,
+    0 0 0 135px #c4fff503;
+  pointer-events: none;
+}
+
+.kraken-home .why-section .why-promise-panel::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -100px;
+  bottom: -100px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #63bba51d, transparent 68%);
+  pointer-events: none;
+}
+
+.kraken-home .why-section .why-panel-label {
+  margin: 0 0 11px;
+  color: #b6d9df;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  letter-spacing: 0.015em;
+}
+
+.kraken-home .why-section .why-tax-title {
+  margin: 0 0 15px;
+  color: #f3fbfc;
+  font-size: clamp(1.875rem, 2.8vw, 2.4rem);
+  font-weight: 800;
+  line-height: 1.14;
+  letter-spacing: -0.045em;
+}
+
+.kraken-home .why-section .why-tax-title > span {
+  display: block;
+  margin-bottom: 2px;
+  color: #baf6d8;
+  font-size: 1.16em;
+}
+
+.kraken-home .why-section .why-tax-intro {
+  margin: 0 0 20px;
+  color: #c9e0e8;
+  font-size: 1rem;
+  line-height: 1.65;
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+
+.kraken-home .why-section .why-tax-condition {
+  margin: 0 0 10px;
+  color: #dbebef;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.kraken-home .why-section .why-tax-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.kraken-home .why-section .why-tax-company {
+  min-width: 0;
+  padding: 15px 16px;
+  border: 1px solid #d7f2f027;
+  border-radius: 16px;
+  background: linear-gradient(140deg, #e6f6ff0b, #ddf3ff04);
+  box-shadow: inset 0 1px 0 #ffffff09;
+}
+
+.kraken-home .why-section .why-tax-company dt {
+  min-height: 42px;
+  margin: 0 0 9px;
+  color: #c4dbe6;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+
+.kraken-home .why-section .why-tax-company dd {
+  margin: 0;
+}
+
+.kraken-home .why-section .why-tax-company strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #fff;
+  font-size: 1.125rem;
+  font-weight: 750;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+.kraken-home .why-section .why-tax-company dd > span {
+  display: block;
+  color: #c4dbe6;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.kraken-home .why-section .why-tax-kraken {
+  border-color: #b6f4d95c;
+  background: linear-gradient(145deg, #b4f1d71a, #b4f1d706);
+}
+
+.kraken-home .why-section .why-tax-kraken dt,
+.kraken-home .why-section .why-tax-kraken strong {
+  color: #c2f9de;
+}
+
+.kraken-home .why-section .why-tax-saving {
+  margin: 16px 0 10px;
+  padding: 14px 16px;
+  border: 1px solid #d8ffea;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #dcffed, #bfead6);
+  box-shadow: inset 0 1px 0 #fff7;
+  color: #174d43;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.kraken-home .why-section .why-tax-saving strong {
+  color: #0b4133;
+  font-weight: 800;
+}
+
+.kraken-home .why-section .why-tax-note {
+  margin: 0;
+  color: #b9d2df;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* EXPLICACIÓN DESPLEGABLE DEL CÁLCULO */
+
+.kraken-home .why-section .why-tax-detail {
+  margin-top: 13px;
+  border-top: 1px solid #bddde731;
+}
+
+.kraken-home .why-section .why-tax-detail summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-height: 48px;
+  padding: 9px 0;
+  border-radius: 8px;
+  color: #e1f2ef;
+  font-size: 0.9375rem;
+  font-weight: 650;
+  line-height: 1.5;
+  list-style: none;
+  cursor: pointer;
+}
+
+.kraken-home .why-section .why-tax-detail summary::-webkit-details-marker,
+.kraken-home .why-section .why-assurance summary::-webkit-details-marker {
+  display: none;
+}
+
+.kraken-home .why-section .why-tax-detail summary::marker,
+.kraken-home .why-section .why-assurance summary::marker {
+  content: "";
+}
+
+.kraken-home .why-section .why-tax-detail > div {
+  padding: 5px 0 7px;
+}
+
+.kraken-home .why-section .why-tax-detail p {
+  margin: 0 0 12px;
+  color: #c9e0e8;
+  font-size: 1rem;
+  line-height: 1.7;
+  overflow-wrap: break-word;
+}
+
+.kraken-home .why-section .why-tax-detail p:last-child {
+  margin-bottom: 0;
+}
+
+.kraken-home .why-section .why-tax-detail .why-tax-formula {
+  color: #c4f8de;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.kraken-home .why-section .why-tax-detail .why-disclosure {
+  border-color: #b9ecd640;
+  background: #b9ecd611;
+  color: #c4f8de;
+}
+
+/* TRES VENTAJAS */
+
+.kraken-home .why-section .why-promises {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 25px;
+}
+
+.kraken-home .why-section .why-promise {
+  display: grid;
+  grid-template-columns: 41px minmax(0, 1fr);
+  gap: 13px;
+  min-width: 0;
+  padding: 22px 20px;
+  border: 1px solid #d5e6eb;
+  border-radius: 20px;
+  background: #ffffff9e;
+  box-shadow: inset 0 1px 0 #fff;
+}
+
+.kraken-home .why-section .why-glass-icon {
+  display: grid;
+  place-items: center;
+  width: 41px;
+  height: 44px;
+  border: 1px solid #fff;
+  border-radius: 13px;
+  background: linear-gradient(145deg, #fcffff, #dcefeaad);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 5px 14px #0c344c08;
+  color: #286151;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.kraken-home .why-section .why-glass-icon .why-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.kraken-home .why-section .why-promise h3 {
+  margin: 0 0 8px;
+  color: #173d53;
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+
+.kraken-home .why-section .why-promise p {
+  margin: 0;
+  color: #4c687b;
+  font-size: 1rem;
+  line-height: 1.65;
+  overflow-wrap: break-word;
+}
+
+/* GARANTÍA Y SEGURO */
+
+.kraken-home .why-section .why-assurances {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+  margin-top: 18px;
+}
+
+.kraken-home .why-section .why-assurance {
+  overflow: hidden;
+  min-width: 0;
+  border: 1px solid #d0e1e7;
+  border-radius: 19px;
+  background: #ffffffb5;
+  box-shadow: inset 0 1px 0 #fff;
+}
+
+.kraken-home .why-section .why-assurance summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 96px;
+  padding: 20px 23px;
+  border-radius: 18px;
+  list-style: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.kraken-home .why-section .why-assurance .why-assurance-symbol {
+  width: 25px;
+  height: 28px;
+  color: #27634e;
+}
+
+.kraken-home .why-section .why-assurance-title {
+  min-width: 0;
+  font-size: 1rem;
+  font-weight: 750;
+  line-height: 1.5;
+  letter-spacing: -0.015em;
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+
+.kraken-home .why-section .why-assurance-title > span {
+  display: block;
+  margin-top: 3px;
+  color: #597282;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: 0;
+}
+
+.kraken-home .why-section .why-disclosure {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  margin-left: auto;
+  border: 1px solid #d1e5dc;
+  border-radius: 50%;
+  background: #eef7f4;
+  color: #2b6553;
+}
+
+.kraken-home .why-section .why-disclosure .why-icon {
+  width: 17px;
+  height: 17px;
+  transition: transform 0.2s ease;
+}
+
+.kraken-home .why-section .why-assurance[open] .why-disclosure .why-icon,
+.kraken-home .why-section .why-tax-detail[open] .why-disclosure .why-icon {
+  transform: rotate(45deg);
+}
+
+.kraken-home .why-section .why-assurance > p {
+  margin: 0;
+  padding: 0 23px 23px 62px;
+  color: #466377;
+  font-size: 1rem;
+  line-height: 1.75;
+  overflow-wrap: break-word;
+}
+
+/* PROCESO FINAL */
+
+.kraken-home .why-section .why-process {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px 32px;
+  margin-top: 25px;
+  padding-top: 23px;
+  border-top: 1px solid #cbdee4;
+}
+
+.kraken-home .why-section .why-process h3 {
+  flex: none;
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.6;
+  letter-spacing: -0.02em;
+}
+
+.kraken-home .why-section .why-process-steps {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kraken-home .why-section .why-process-steps li {
+  padding-inline: 22px;
+  border-left: 1px solid #c6dbe0;
+  color: #4b687a;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.kraken-home .why-section .why-process-steps li:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.kraken-home .why-section .why-process-steps li:last-child {
+  padding-right: 0;
+}
+
+/* FOCO, CRISTAL E INTERACCIÓN */
+
+.kraken-home .why-section :is(a, summary):focus-visible {
+  outline: 3px solid #267a64;
+  outline-offset: 5px;
+}
+
+.kraken-home .why-section .why-assurance summary:focus-visible {
+  outline-offset: -5px;
+}
+
+.kraken-home .why-section .why-tax-detail summary:focus-visible {
+  outline-color: #baf6d8;
+  outline-offset: 4px;
+}
+
+@supports (backdrop-filter: blur(8px)) {
+  .kraken-home .why-section .why-glass-icon {
+    backdrop-filter: blur(10px);
+  }
+}
+
+@media (hover: hover) {
+  .kraken-home .why-section .why-button:hover {
+    background: #07416f;
+    box-shadow: 0 8px 22px #002d5b1a;
+  }
+
+  .kraken-home .why-section .why-promise:hover .why-glass-icon {
+    border-color: #ebfff4;
+    background: linear-gradient(145deg, #fff, #cfebde);
+  }
+
+  .kraken-home .why-section .why-assurance summary:hover {
+    background: #eaf7f283;
+  }
+
+  .kraken-home .why-section .why-tax-detail summary:hover {
+    color: #c4f8de;
+  }
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1200px) {
+  .kraken-home .why-section .why-container {
+    width: calc(100% - 64px);
+  }
+}
+
+@media (max-width: 1100px) {
+  .kraken-home .why-section {
+    padding-block: 65px 50px;
+  }
+
+  .kraken-home .why-section .why-editorial {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 30px;
+  }
+
+  .kraken-home .why-section .why-introduction h2 {
+    font-size: clamp(2.5rem, 4.1vw, 3.5rem);
+  }
+
+  .kraken-home .why-section .why-promise-panel {
+    padding: 26px 25px 18px;
+  }
+
+  .kraken-home .why-section .why-tax-title {
+    font-size: 2rem;
+  }
+
+  .kraken-home .why-section .why-tax-company {
+    padding: 14px;
+  }
+
+  .kraken-home .why-section .why-promises {
+    gap: 13px;
+  }
+
+  .kraken-home .why-section .why-promise {
+    grid-template-columns: 1fr;
+    gap: 13px;
+    padding: 20px;
+  }
+
+  .kraken-home .why-section .why-assurance summary {
+    gap: 11px;
+    padding: 18px;
+  }
+
+  .kraken-home .why-section .why-assurance > p {
+    padding: 0 20px 20px 54px;
+  }
+
+  .kraken-home .why-section .why-process {
+    gap: 20px;
+  }
+
+  .kraken-home .why-section .why-process-steps li {
+    padding-inline: 16px;
+  }
+}
+
+@media (max-width: 850px) {
+  .kraken-home .why-section .why-editorial {
+    grid-template-columns: 1fr;
+    gap: 29px;
+  }
+
+  .kraken-home .why-section .why-introduction {
+    max-width: 650px;
+    padding: 0;
+  }
+
+  .kraken-home .why-section .why-introduction h2 {
+    max-width: 650px;
+    font-size: clamp(2.75rem, 6.5vw, 3.6rem);
+  }
+
+  .kraken-home .why-section .why-intro,
+  .kraken-home .why-section .why-private-benefit,
+  .kraken-home .why-section .why-tax-intro {
+    max-width: 600px;
+  }
+
+  .kraken-home .why-section .why-signature {
+    margin-block: 22px 25px;
+  }
+
+  .kraken-home .why-section .why-promise-panel {
+    padding: 29px 30px 20px;
+  }
+
+  .kraken-home .why-section .why-tax-title {
+    font-size: 2.25rem;
+  }
+
+  .kraken-home .why-section .why-tax-company dt {
+    min-height: 0;
+    margin-bottom: 10px;
+  }
+
+  .kraken-home .why-section .why-promises {
+    margin-top: 20px;
+  }
+
+  .kraken-home .why-section .why-promise {
+    padding: 20px 17px;
+  }
+
+  .kraken-home .why-section .why-assurances {
+    margin-top: 17px;
+  }
+
+  .kraken-home .why-section .why-assurance summary {
+    align-items: flex-start;
+    min-height: 115px;
+  }
+
+  .kraken-home .why-section .why-assurance-symbol {
+    margin-top: 2px;
+  }
+
+  .kraken-home .why-section .why-disclosure {
+    width: 28px;
+    height: 28px;
+    margin-top: 1px;
+  }
+
+  .kraken-home .why-section .why-assurance > p {
+    padding: 0 18px 20px;
+  }
+
+  .kraken-home .why-section .why-process {
+    display: block;
+    margin-top: 26px;
+    padding-top: 23px;
+  }
+
+  .kraken-home .why-section .why-process h3 {
+    margin-bottom: 12px;
+  }
+
+  .kraken-home .why-section .why-process-steps li {
+    padding-inline: 20px;
+  }
+}
+
+@media (max-width: 760px) {
+  .kraken-home .why-section .why-container {
+    width: calc(100% - 40px);
+  }
+}
+
+@media (max-width: 600px) {
+  .kraken-home .why-section {
+    padding-block: 52px 40px;
+  }
+
+  .kraken-home .why-section .why-eyebrow {
+    margin-bottom: 18px;
+  }
+
+  .kraken-home .why-section .why-introduction h2 {
+    margin-bottom: 21px;
+    font-size: clamp(2.35rem, 8.6vw, 3.1rem);
+    line-height: 1.09;
+    letter-spacing: -0.05em;
+  }
+
+  .kraken-home .why-section .why-intro {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .kraken-home .why-section .why-signature {
+    gap: 13px;
+    margin-block: 22px 25px;
+  }
+
+  .kraken-home .why-section .why-signature strong {
+    font-size: 1.25rem;
+  }
+
+  .kraken-home .why-section .why-signature > span {
+    max-width: 205px;
+    padding-left: 13px;
+    font-size: 0.875rem;
+  }
+
+  .kraken-home .why-section .why-primary-action {
+    align-items: stretch;
+    gap: 11px;
+  }
+
+  .kraken-home .why-section .why-primary-action .why-button {
+    width: 100%;
+    min-height: 54px;
+    padding-inline: 16px;
+  }
+
+  .kraken-home .why-section .why-primary-action > p {
+    max-width: none;
+    font-size: 0.875rem;
+    text-align: center;
+  }
+
+  .kraken-home .why-section .why-private-benefit {
+    grid-template-columns: 22px minmax(0, 1fr);
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 20px;
+  }
+
+  .kraken-home .why-section .why-local {
+    gap: 10px;
+    margin-top: 19px;
+  }
+
+  .kraken-home .why-section .why-editorial {
+    gap: 27px;
+  }
+
+  .kraken-home .why-section .why-promise-panel {
+    padding: 25px 23px 17px;
+    border-radius: 24px;
+  }
+
+  .kraken-home .why-section .why-tax-title {
+    font-size: clamp(1.9rem, 6vw, 2.25rem);
+  }
+
+  .kraken-home .why-section .why-tax-saving {
+    padding: 14px;
+  }
+
+  .kraken-home .why-section .why-tax-detail summary {
+    gap: 12px;
+  }
+
+  .kraken-home .why-section .why-promises {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 17px;
+  }
+
+  .kraken-home .why-section .why-promise {
+    grid-template-columns: 41px minmax(0, 1fr);
+    gap: 14px;
+    padding: 20px;
+    border-radius: 19px;
+  }
+
+  .kraken-home .why-section .why-assurances {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 13px;
+  }
+
+  .kraken-home .why-section .why-assurance summary {
+    align-items: center;
+    gap: 12px;
+    min-height: 96px;
+    padding: 18px;
+  }
+
+  .kraken-home .why-section .why-assurance > p {
+    padding: 0 20px 21px;
+  }
+
+  .kraken-home .why-section .why-disclosure {
+    width: 29px;
+    height: 29px;
+  }
+
+  .kraken-home .why-section .why-process {
+    margin-top: 25px;
+    padding-top: 23px;
+  }
+
+  .kraken-home .why-section .why-process-steps {
+    display: grid;
+    gap: 9px;
+  }
+
+  .kraken-home .why-section .why-process-steps li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    border: 0;
+  }
+
+  .kraken-home .why-section .why-process-steps li::before {
+    content: "";
+    flex: none;
+    width: 13px;
+    height: 1px;
+    background: #6c9f8c;
+  }
+}
+
+@media (max-width: 480px) {
+  .kraken-home .why-section .why-tax-comparison {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .kraken-home .why-section .why-tax-company {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+    gap: 13px;
+    padding: 14px;
+  }
+
+  .kraken-home .why-section .why-tax-company dt {
+    align-self: start;
+    margin: 0;
+  }
+
+  .kraken-home .why-section .why-tax-company strong {
+    font-size: 1.0625rem;
+  }
+
+  .kraken-home .why-section .why-tax-title {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .kraken-home .why-section .why-introduction h2 {
+    font-size: 2.25rem;
+  }
+
+  .kraken-home .why-section .why-promise-panel {
+    padding: 24px 20px 16px;
+  }
+
+  .kraken-home .why-section .why-tax-title {
+    font-size: 1.8rem;
+  }
+
+  .kraken-home .why-section .why-tax-company {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+    gap: 11px;
+    padding: 13px;
+  }
+
+  .kraken-home .why-section .why-tax-saving {
+    padding: 13px;
+  }
+
+  .kraken-home .why-section .why-promise {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .kraken-home .why-section .why-local {
+    align-items: flex-start;
+  }
+
+  .kraken-home .why-section .why-local > .why-icon {
+    margin-top: 4px;
+  }
+
+  .kraken-home .why-section .why-assurance summary {
+    gap: 10px;
+    padding: 17px 15px;
+  }
+
+  .kraken-home .why-section .why-assurance .why-assurance-symbol {
+    width: 22px;
+    height: 25px;
+  }
+
+  .kraken-home .why-section .why-disclosure {
+    width: 27px;
+    height: 27px;
+  }
+
+  .kraken-home .why-section .why-assurance > p {
+    padding-inline: 16px;
+  }
+
+  .kraken-home .why-section .why-signature {
+    gap: 11px;
+  }
+
+  .kraken-home .why-section .why-signature > span {
+    padding-left: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kraken-home .why-section :is(
+    a,
+    summary,
+    .why-glass-icon,
+    .why-disclosure .why-icon
+  ) {
+    transition: none;
+  }
+}

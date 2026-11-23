@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef, lazy, Suspense, Component, ReactNod
 import { useTranslation } from '../i18n';
 import { getMetadataForPath, parsePath } from '../seoConfig';
 import Header from './Header';
-import Hero from './Hero';
+import ApprovedHome from './home/ApprovedHome';
+import { LOCALE_LOCATION_EVENT, languageFromSearch, localizedNavigationUrl, type SiteLanguage } from '../src/locale';
 import Footer from './Footer';
 import { useAuth } from './Auth';
 
@@ -27,17 +28,7 @@ const lazyWithRetry = <T extends { default: React.ComponentType<any> }>(
     }
   });
 
-// Lazy imports for below-the-fold Home sections
-const Section1Intro = lazyWithRetry(() => import('./Section1Intro'));
-const SegmentationSection = lazyWithRetry(() => import('./SegmentationSection'));
-const Section3Leistungen = lazyWithRetry(() => import('./Section3Leistungen'));
-const Section4Umzugsreinigung = lazyWithRetry(() => import('./Section4Umzugsreinigung'));
-const Section5Preise = lazyWithRetry(() => import('./Section5Preise'));
-const Section2Einsatzgebiete = lazyWithRetry(() => import('./Section2Einsatzgebiete'));
-const Section7Gruender = lazyWithRetry(() => import('./Section7Gruender'));
-const ValuesSection = lazyWithRetry(() => import('./ValuesSection'));
-const Section6FAQ = lazyWithRetry(() => import('./Section6FAQ'));
-const Section8Blog = lazyWithRetry(() => import('./Section8Blog'));
+
 const Clients = lazyWithRetry(() => import('./Clients'));
 const FloatingMascot = lazyWithRetry(() => import('./FloatingMascot'));
 const FloatingCTA = lazyWithRetry(() => import('./FloatingCTA'));
@@ -46,9 +37,10 @@ const CookieConsent = lazyWithRetry(() => import('./CookieConsent'));
 // Lazy imports for subpages to reduce initial bundle size and enable route-based code splitting
 const ConsultationPage = lazyWithRetry(() => import('./ConsultationPage'));
 const SeoServiceCityPage = lazyWithRetry(() => import('./SeoServiceCityPage'));
-const AboutPage = lazyWithRetry(() => import('./AboutPage'));
+const AboutPage = lazyWithRetry(() => import('./about/ApprovedAbout'));
 const ComicPage = lazyWithRetry(() => import('./ComicPage'));
 const ServicesPage = lazyWithRetry(() => import('./ServicesPage'));
+const ApprovedServices = lazyWithRetry(() => import('./services/ApprovedServices'));
 const CommercialServicesPage = lazyWithRetry(() => import('./CommercialServicesPage'));
 const LoginPage = lazyWithRetry(() => import('./LoginPage'));
 const RegisterPage = lazyWithRetry(() => import('./RegisterPage'));
@@ -136,11 +128,24 @@ export const auth = firebaseAuth;
 
 const CART_STORAGE_KEY = 'kraken_cart_persistent';
 
+function changeLocation(target: string, language: SiteLanguage, replace = false) {
+  const destination = localizedNavigationUrl(target, window.location.href, language);
+  const current = window.location.pathname + window.location.search + window.location.hash;
+  if (destination !== current) {
+    if (replace) window.history.replaceState(window.history.state, '', destination);
+    else window.history.pushState(null, '', destination);
+  }
+  window.dispatchEvent(new Event(LOCALE_LOCATION_EVENT));
+  return new URL(destination, window.location.origin);
+}
+
 const PATH_TO_PAGE_MAP: Record<string, string> = {
   '/': 'home',
   '/quote': 'consultation',
   '/about': 'about',
+  '/ueber-kraken': 'about',
   '/services': 'services-page',
+  '/leistungen': 'approved-services',
   '/commercial': 'commercial-services',
   '/careers': 'careers',
   '/sustainability': 'sustainability-page',
@@ -171,6 +176,7 @@ const PAGE_TO_PATH_MAP: Record<string, string> = {
   'consultation': '/quote',
   'about': '/about',
   'services-page': '/services',
+  'approved-services': '/leistungen',
   'commercial-services': '/commercial',
   'careers': '/careers',
   'sustainability-page': '/sustainability',
@@ -220,7 +226,7 @@ const App: React.FC = () => {
       if ('scrollRestoration' in window.history) {
         window.history.scrollRestoration = 'manual';
       }
-      window.scrollTo(0, 0);
+      if (!window.location.hash) window.scrollTo(0, 0);
     }
     try {
       const saved = localStorage.getItem(CART_STORAGE_KEY);
@@ -263,13 +269,13 @@ const App: React.FC = () => {
         } else if (!user) {
           setPage('login');
           if (window.location.pathname !== '/login') {
-            window.history.replaceState(null, '', '/login' + window.location.search);
+            changeLocation('/login', languageFromSearch(window.location.search) || language, true);
           }
         } else if (isReviewUser && !isStaff) {
           // Strictly block dashboard access for reviewers and redirect to home
           setPage('home');
           if (window.location.pathname !== '/') {
-            window.history.replaceState(null, '', '/' + window.location.search);
+            changeLocation('/', languageFromSearch(window.location.search) || language, true);
           }
         } else {
           setPage('dashboard');
@@ -277,7 +283,7 @@ const App: React.FC = () => {
       } else {
         setPage(targetPage);
       }
-      window.scrollTo(0, 0);
+      if (!window.location.hash) window.scrollTo(0, 0);
     };
 
     window.addEventListener('popstate', handleLocationChange);
@@ -311,51 +317,50 @@ const App: React.FC = () => {
                     user?.email?.toLowerCase().trim() === 'antonio.nadre@anotherstar.com';
 
     if (targetPage.startsWith('/')) {
-      if (window.location.pathname !== targetPage) {
-        window.history.pushState(null, '', targetPage + window.location.search);
-      }
-      const parsed = parsePath(targetPage);
+      const destination = changeLocation(targetPage, language);
+      const parsed = parsePath(destination.pathname);
       setSeoCityId(parsed.cityId);
       setSeoServiceId(parsed.serviceId);
       setPage(parsed.page);
-      window.scrollTo(0, 0);
+      if (!window.location.hash) window.scrollTo(0, 0);
       return;
     }
 
     if (targetPage === 'dashboard') {
       if (!user) {
         const loginPath = PAGE_TO_PATH_MAP['login'] || '/login';
-        if (window.location.pathname !== loginPath) {
-          window.history.pushState(null, '', loginPath + window.location.search);
-        }
+        changeLocation(loginPath, language);
         setPage('login');
-        window.scrollTo(0, 0);
+        if (!window.location.hash) window.scrollTo(0, 0);
         return;
       }
       if (isReviewUser && !isStaff) {
         // Prevent review-logged users from opening dashboard
         const homePath = '/';
-        if (window.location.pathname !== homePath) {
-          window.history.pushState(null, '', homePath + window.location.search);
-        }
+        changeLocation(homePath, language);
         setPage('home');
-        window.scrollTo(0, 0);
+        if (!window.location.hash) window.scrollTo(0, 0);
         return;
       }
     }
     
     const targetPath = PAGE_TO_PATH_MAP[targetPage] || '/';
-    if (window.location.pathname !== targetPath) {
-      window.history.pushState(null, '', targetPath + window.location.search);
-    }
+    changeLocation(targetPath, language);
     setPage(targetPage);
-    window.scrollTo(0, 0);
+    if (!window.location.hash) window.scrollTo(0, 0);
   };
 
   // --- Dynamic SEO: per-page <title> and meta description (DE primary, fully localized) ---
   React.useEffect(() => {
     const currentPath = window.location.pathname;
     const meta = getMetadataForPath(currentPath, language);
+
+    document.documentElement.lang = language;
+    const robots = document.querySelector('meta[name="robots"]');
+    if (robots) {
+      const publicHost = ['krakenpfm.ch', 'www.krakenpfm.ch'].includes(window.location.hostname);
+      robots.setAttribute('content', publicHost ? 'index, follow' : 'noindex, nofollow');
+    }
 
     document.title = meta.title;
     let desc = document.querySelector('meta[name="description"]');
@@ -404,6 +409,8 @@ const App: React.FC = () => {
               return <AboutPage onNavigate={handleNavigate} />;
             case 'comic-page':
               return <ComicPage onNavigate={handleNavigate} />;
+            case 'approved-services':
+              return <ApprovedServices onNavigate={handleNavigate} />;
             case 'services-page':
               return <ServicesPage onNavigate={handleNavigate} />;
             case 'commercial-services':
@@ -559,23 +566,7 @@ const App: React.FC = () => {
               );
             case 'home':
             default:
-              return (
-                <main className="pb-16 sm:pb-24">
-                  <Hero onNavigate={handleNavigate} />
-                  <Suspense fallback={null}>
-                    <Section1Intro onNavigate={handleNavigate} />
-                    <SegmentationSection onNavigate={handleNavigate} />
-                    <Section3Leistungen onNavigate={handleNavigate} />
-                    <Section4Umzugsreinigung onNavigate={handleNavigate} />
-                    <Section5Preise onNavigate={handleNavigate} />
-                    <Section2Einsatzgebiete onNavigate={handleNavigate} />
-                    <Section7Gruender onNavigate={handleNavigate} />
-                    <ValuesSection />
-                    <Section6FAQ onNavigate={handleNavigate} />
-                    <Section8Blog onNavigate={handleNavigate} />
-                  </Suspense>
-                </main>
-              );
+              return <ApprovedHome onNavigate={handleNavigate} />;
           }
         })()}
       </Suspense>
@@ -584,23 +575,22 @@ const App: React.FC = () => {
 };
 
   const isReviewPage = page === 'review-invite';
+  const isApprovedHome = page === 'home' || page === 'approved-services' || page === 'about';
 
   return (
     <div className="bg-slate-50 text-gray-800 relative">
       {mounted && !isReviewPage && (
         <Suspense fallback={null}>
           <FloatingMascot currentPage={page} cart={cart} onNavigate={handleNavigate} seoCityId={seoCityId} />
-          <FloatingCTA onNavigate={handleNavigate} currentPage={page} />
         </Suspense>
+      )}
+      {mounted && !isReviewPage && !isApprovedHome && (
+        <Suspense fallback={null}><FloatingCTA onNavigate={handleNavigate} currentPage={page} /></Suspense>
       )}
       
-      {!isReviewPage && <Header onNavigate={handleNavigate} currentPage={page as any} />}
+      {!isReviewPage && !isApprovedHome && <Header onNavigate={handleNavigate} currentPage={page as any} />}
       {renderPage()}
-      {!isReviewPage && (
-        <Suspense fallback={null}>
-          <Footer onNavigate={handleNavigate} />
-        </Suspense>
-      )}
+      <Footer onNavigate={handleNavigate} />
       {mounted && !isReviewPage && (
         <Suspense fallback={null}>
           <CookieConsent onNavigate={handleNavigate} />

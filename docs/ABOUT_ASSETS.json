@@ -1,0 +1,317 @@
+{
+  "sourceFormat": "kraken-codex-bundle-v1",
+  "sourceProject": "kraken-services-transit",
+  "sourceScope": "about-us",
+  "sourceBundleSha256": "2a51e6938ea64dc9793fa51385ba7945b53e88eef492a6099ada420f34076449",
+  "sourceBundleBytes": 3153448,
+  "sourceCommitReportedByOwner": "41098dad39987366cd13ead383310946905e05b0",
+  "importedFilesValidated": 27,
+  "importedBytesValidated": 2407703,
+  "validation": "User-supplied import-about.mjs validated all relative paths, duplicate/case/Unicode conflicts, canonical encodings, bytes and SHA-256 before any extraction write. No recovered JavaScript executed.",
+  "integration": "Only actual assets referenced by web/ueber-kraken.html, web/about.css or web/about.js are included. Original shared logo is reused byte-for-byte. No image conversion or generation.",
+  "assetsIdenticalToSuppliedPackage": true,
+  "referenceFiles": [
+    {
+      "source": "web/ueber-kraken.html",
+      "bytes": 35803,
+      "sha256": "954e20c7d8bb50bfc4b253016024eaac6b6c35546c9bd71d263eb099b5b9f7c3"
+    },
+    {
+      "source": "web/about.css",
+      "bytes": 32659,
+      "sha256": "bbed81f014049eaa63ffc4d73b1afb4afad03b02c15be5616f4724008583d10e"
+    },
+    {
+      "source": "web/about.js",
+      "bytes": 10940,
+      "sha256": "b00e4f80d2c72a194eb5dde1a94ba6322f0e314ea131bc94943f8fdbf84ebfbf"
+    },
+    {
+      "source": "web/styles.css",
+      "bytes": 55270,
+      "sha256": "535df4f012c3a16e5c475ab24a10c8924c65830885224301062c1d8a241d6f21"
+    },
+    {
+      "source": "web/brand.css",
+      "bytes": 2528,
+      "sha256": "02d94799c7c0b5733d87d4e27c4e3fc9c2e89f3f41ce0801e7edfb4d53d05dd2"
+    },
+    {
+      "source": "web/glass.css",
+      "bytes": 9861,
+      "sha256": "b9bae34d30c4b93fa7fcd4d404f4408724a11cff85230b336ab196f35ed6bf75"
+    },
+    {
+      "source": "docs/ABOUT_CONTENT_ES.md",
+      "bytes": 13317,
+      "sha256": "99c2ace2f618d3cdca673abccace2944b3da6747194f615b0d7b51a6510340cb"
+    }
+  ],
+  "assets": [
+    {
+      "path": "public/about-approved/assets/kai-comic-cover.webp",
+      "source": "web/assets/kai-comic-cover.webp",
+      "bytes": 316790,
+      "sha256": "cb52eabfc8cd63683fab19f3260b4f40860534eb358e8a23265e6690ee23291e",
+      "copied": true,
+      "format": "WEBP",
+      "width": 1055,
+      "height": 1491,
+      "mode": "RGB",
+      "alpha": false,
+      "visuallyInspected": true
+    },
+    {
+      "path": "public/about-approved/assets/kai-evolution.webp",
+      "source": "web/assets/kai-evolution.webp",
+      "bytes": 117332,
+      "sha256": "90347a1f658b3e2767e47ff90c5d92307bb0fdff45222e2a29b9c2e1d37e3bb0",
+      "copied": true,
+      "format": "WEBP",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alpha": false,
+      "visuallyInspected": true
+    },
+    {
+      "path": "public/about-approved/assets/kai-help-deep.webp",
+      "source": "web/assets/kai-help-deep.webp",
+      "bytes": 145040,
+      "sha256": "377d3acc5ec7f17db33a5a529d7f0325272c7c34636f1af5d8341a2db118f678",
+      "copied": true,
+      "format": "WEBP",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alpha": false,
+      "visuallyInspected": true
+    },
+    {
+      "path": "public/about-approved/assets/kai-help-end.webp",
+      "source": "web/assets/kai-help-end.webp",
+      "bytes": 137994,
+      "sha256": "abb4548b8458c0e0d427df127c0dcb3df0d93d420159ec1be9426e8c49563cfc",
+      "copied": true,
+      "format": "WEBP",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alpha": false,
+      "visuallyInspected": true
+    },
+    {
+      "path": "public/about-approved/assets/kai-help-moving.webp",
+      "source": "web/assets/kai-help-moving.webp",
+      "bytes": 137466,
+      "sha256": "96e83ea4c5481fe1b4823be21af7aa40a082f0184af758669843da4c2ae32e2d",
+      "copied": true,
+      "format": "WEBP",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alpha": false,
+      "visuallyInspected": true
+    },
+    {
+      "path": "public/about-approved/assets/kai-help-regular.webp",
+      "source": "web/assets/kai-help-regular.webp",
+      "bytes": 141592,
+      "sha256": "5a94e2a000640a4ee012d739c9271d38ca5359b71f1928357b8ab41fdc8076c6",
+      "copied": true,
+      "format": "WEBP",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alpha": false,
+      "visuallyInspected": true
+    },
+    {
+      "path": "public/about-approved/assets/kai-help-windows.webp",
+      "source": "web/assets/kai-help-windows.webp",
+      "bytes": 150300,
+      "sha256": "11a95479d94fe7726ce6e1c94a743f03a112e1835dce14cd5ca53be4f9606274",
+      "copied": true,
+      "format": "WEBP",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alpha": false,
+      "visuallyInspected": true
+    },
+    {
+      "path": "public/about-approved/assets/kai-rheinfall-awakening.webp",
+      "source": "web/assets/kai-rheinfall-awakening.webp",
+      "bytes": 299260,
+      "sha256": "6d036a345d402ea7033aab43a5ef681f76429c8592e5ca2a2381603e6a35d179",
+      "copied": true,
+      "format": "WEBP",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB",
+      "alpha": false,
+      "visuallyInspected": true
+    },
+    {
+      "path": "public/about-approved/assets/kai-story.webp",
+      "source": "web/assets/kai-story.webp",
+      "bytes": 231798,
+      "sha256": "9c0acbf2e93af7ebd4b5bcc021a0e019944ea216a399315d72c0e4c50d3ddd2b",
+      "copied": true,
+      "format": "WEBP",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": true,
+      "visuallyInspected": true
+    },
+    {
+      "path": "public/about-approved/assets/kai.webp",
+      "source": "web/assets/kai.webp",
+      "bytes": 151698,
+      "sha256": "865a8003c20f966534aaf2a195a674d39bfce8d5dc88e10dec643b6c6ccbb128",
+      "copied": true,
+      "format": "WEBP",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "alpha": true,
+      "visuallyInspected": true
+    },
+    {
+      "path": "public/about-approved/assets/kraken-icons.svg",
+      "source": "web/assets/kraken-icons.svg",
+      "bytes": 2396,
+      "sha256": "95f9176afb2fefb9ff330315e0f98a256cc16bda0c42948b6e8b6f79cc486b35",
+      "copied": true,
+      "format": "SVG",
+      "width": null,
+      "height": null,
+      "symbols": [
+        {
+          "id": "window",
+          "viewBox": "0 0 32 32"
+        },
+        {
+          "id": "end",
+          "viewBox": "0 0 32 32"
+        },
+        {
+          "id": "regular",
+          "viewBox": "0 0 32 32"
+        },
+        {
+          "id": "deep",
+          "viewBox": "0 0 32 32"
+        },
+        {
+          "id": "moving",
+          "viewBox": "0 0 32 32"
+        },
+        {
+          "id": "team",
+          "viewBox": "0 0 32 32"
+        },
+        {
+          "id": "time",
+          "viewBox": "0 0 32 32"
+        },
+        {
+          "id": "distance",
+          "viewBox": "0 0 32 32"
+        }
+      ]
+    },
+    {
+      "path": "public/home-approved/assets/logo.webp",
+      "source": "web/assets/logo.webp",
+      "bytes": 59822,
+      "sha256": "8821afc66d10704dfa5adc9c1ed28aa1fb15d92e6dfe293a0d85cddf0fe21a68",
+      "copied": false,
+      "format": "WEBP",
+      "width": 1024,
+      "height": 1024,
+      "mode": "RGBA",
+      "alpha": true,
+      "visuallyInspected": true,
+      "reuseReason": "Byte-identical to existing approved original Kraken logo."
+    }
+  ],
+  "excludedUnreferencedAssets": [
+    "web/assets/service-scenes-branded-v4.webp"
+  ],
+  "overlays": {
+    "sceneViewBox": "0 0 1672 941",
+    "logoCrop": "0 280 1024 450",
+    "cap": {
+      "x": 552,
+      "y": 55,
+      "deepY": 57,
+      "width": 130,
+      "height": 58
+    },
+    "polo": {
+      "x": 699,
+      "y": 469,
+      "width": 80,
+      "height": 37
+    },
+    "movingBox": {
+      "x": 913,
+      "y": 718,
+      "width": 186,
+      "height": 84
+    }
+  },
+  "aboutIntegration": {
+    "date": "2026-11-23",
+    "canonicalRoute": "/about",
+    "aliasRedirect": "/ueber-kraken → /about (301, query preserved)",
+    "languages": [
+      "de",
+      "en",
+      "es",
+      "pt",
+      "it",
+      "fr"
+    ],
+    "initialHtml": "Same AboutContent component; all seven chapters readable before enhancement; six localized About and six Why fragments, alongside six existing Services fragments.",
+    "files": [
+      {
+        "file": "components/about/ApprovedAbout.tsx",
+        "bytes": 30499,
+        "sha256": "61f87675e5bd490967f24e93083f95d1bec3212ad146e2ccd04cf970cd27b2c6"
+      },
+      {
+        "file": "components/about/about-interactions.ts",
+        "bytes": 17580,
+        "sha256": "de31eacf1f9137ad28e62059c66da151aa1b696539847c747cf9317ed947c97d"
+      },
+      {
+        "file": "components/about/about.css",
+        "bytes": 39316,
+        "sha256": "637c8f0e0952871bb55fb70826cda487f3de955c8d293b4c183cf6d16f6ac6fa"
+      },
+      {
+        "file": "components/about/aboutTranslations.ts",
+        "bytes": 47420,
+        "sha256": "c6a32d814eaeb4bbd6ce2fa885c7d14ed1e7d3f281ac738e56002240381c1ae5"
+      },
+      {
+        "file": "scripts/render-about.mjs",
+        "bytes": 3043,
+        "sha256": "f01b818dcf299b7c2f8ebc57a6e28fb409f40b6e9a2e1350dcb10c242e750ab8"
+      },
+      {
+        "file": "docs/ABOUT_INTEGRATION.md",
+        "bytes": 5492,
+        "sha256": "5ebefb48bf62697049c65539054b1baa6f63ffa102e19901ff961052b953c6ed"
+      },
+      {
+        "file": "docs/ABOUT_CONTENT_ES.md",
+        "bytes": 13317,
+        "sha256": "99c2ace2f618d3cdca673abccace2944b3da6747194f615b0d7b51a6510340cb"
+      }
+    ]
+  }
+}

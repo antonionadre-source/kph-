@@ -34,7 +34,15 @@ const PUBLIC_KEY = 'sH5K84ChHyssJrarm';
 
 const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
   const { register } = useAuth();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+  const counterLabels = ({
+    de: ['Zimmeranzahl reduzieren', 'Zimmeranzahl erhöhen', 'Anzahl Badezimmer reduzieren', 'Anzahl Badezimmer erhöhen'],
+    en: ['Decrease number of rooms', 'Increase number of rooms', 'Decrease number of bathrooms', 'Increase number of bathrooms'],
+    fr: ['Réduire le nombre de pièces', 'Augmenter le nombre de pièces', 'Réduire le nombre de salles de bains', 'Augmenter le nombre de salles de bains'],
+    it: ['Riduci il numero di stanze', 'Aumenta il numero di stanze', 'Riduci il numero di bagni', 'Aumenta il numero di bagni'],
+    es: ['Reducir habitaciones', 'Aumentar habitaciones', 'Reducir baños', 'Aumentar baños'],
+    pt: ['Reduzir número de divisões', 'Aumentar número de divisões', 'Reduzir número de casas de banho', 'Aumentar número de casas de banho'],
+  } as Record<string, string[]>)[language.split('-')[0]];
   
   // Applet Multi-Step States
   const [step, setStep] = useState(1);
@@ -179,7 +187,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white relative overflow-hidden py-16">
+    <div className="min-h-[100dvh] flex items-start sm:items-center justify-center bg-white relative overflow-x-clip pt-28 pb-10 [&_input]:text-base [&_input]:min-h-11 [&_textarea]:text-base [&_select]:text-base [&_label]:text-sm [&_label]:tracking-normal [&_button]:min-h-11">
       {/* Background Ambience */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-blue-100/40 rounded-full blur-[100px]" />
@@ -190,15 +198,15 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-xl w-full relative z-10 px-6"
+        className="max-w-xl min-w-0 w-full relative z-10 px-4 sm:px-6"
       >
-        <div className="bg-white p-8 sm:p-10 rounded-[2.5rem] border border-slate-150/85 shadow-[0_30px_70px_rgba(15,23,42,0.06)]">
+        <div className="bg-white p-4 sm:p-8 rounded-3xl sm:rounded-[2.5rem] border border-slate-150/85 shadow-[0_30px_70px_rgba(15,23,42,0.06)]">
           {/* Custom Header */}
           <div className="text-center mb-8">
             <span className="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 text-blue-600 font-bold text-[10px] tracking-[0.2em] px-4 py-2 rounded-2xl uppercase mb-4">
               <FolderPlus className="w-3.5 h-3.5" /> Interactive Onboarding
             </span>
-            <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">Create Client Account</h2>
+            <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">Create Client Account</h1>
             <p className="text-slate-400 font-bold text-xs uppercase tracking-[0.15em] mt-1.5">Submit registration request to kai@krakenpfm.ch</p>
           </div>
 
@@ -342,7 +350,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                     exit={{ x: -20, opacity: 0 }}
                     className="space-y-6"
                   >
-                    <div className="border border-slate-100 bg-slate-50/50 p-6 rounded-2xl space-y-5">
+                    <div className="border border-slate-100 bg-slate-50/50 p-4 sm:p-6 rounded-2xl space-y-5">
                       <h4 className="font-black text-slate-700 text-xs uppercase tracking-wider border-b border-slate-200/60 pb-2">Step 2: Location &amp; Physical Access</h4>
 
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -426,7 +434,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                     exit={{ x: -20, opacity: 0 }}
                     className="space-y-6"
                   >
-                    <div className="border border-slate-100 bg-slate-50/50 p-6 rounded-2xl space-y-5">
+                    <div className="border border-slate-100 bg-slate-50/50 p-4 sm:p-6 rounded-2xl space-y-5">
                       <h4 className="font-black text-slate-700 text-xs uppercase tracking-wider border-b border-slate-200/60 pb-2">Step 3: Property Specifications</h4>
 
                       {/* Room Quantity Selector */}
@@ -440,16 +448,18 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                         <div className="flex items-center gap-4 self-center">
                           <button
                             type="button"
+                            aria-label={counterLabels[0]}
                             onClick={() => setRooms(Math.max(1, rooms - 1))}
-                            className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-colors flex items-center justify-center font-black text-slate-700 text-base cursor-pointer"
+                            className="w-11 h-11 rounded-xl bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-colors flex items-center justify-center font-black text-slate-700 text-base cursor-pointer"
                           >
                             -
                           </button>
                           <span className="text-base font-black text-slate-900 min-w-[20px] text-center">{rooms}</span>
                           <button
                             type="button"
+                            aria-label={counterLabels[1]}
                             onClick={() => setRooms(rooms + 1)}
-                            className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-colors flex items-center justify-center font-black text-slate-700 text-base cursor-pointer"
+                            className="w-11 h-11 rounded-xl bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-colors flex items-center justify-center font-black text-slate-700 text-base cursor-pointer"
                           >
                             +
                           </button>
@@ -467,16 +477,18 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                         <div className="flex items-center gap-4 self-center">
                           <button
                             type="button"
+                            aria-label={counterLabels[2]}
                             onClick={() => setToilets(Math.max(1, toilets - 1))}
-                            className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-colors flex items-center justify-center font-black text-slate-700 text-base cursor-pointer"
+                            className="w-11 h-11 rounded-xl bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-colors flex items-center justify-center font-black text-slate-700 text-base cursor-pointer"
                           >
                             -
                           </button>
                           <span className="text-base font-black text-slate-900 min-w-[20px] text-center">{toilets}</span>
                           <button
                             type="button"
+                            aria-label={counterLabels[3]}
                             onClick={() => setToilets(toilets + 1)}
-                            className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-colors flex items-center justify-center font-black text-slate-700 text-base cursor-pointer"
+                            className="w-11 h-11 rounded-xl bg-slate-100 border border-slate-200 hover:bg-slate-200 transition-colors flex items-center justify-center font-black text-slate-700 text-base cursor-pointer"
                           >
                             +
                           </button>
@@ -569,22 +581,22 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                     exit={{ x: -20, opacity: 0 }}
                     className="space-y-6"
                   >
-                    <div className="border border-slate-100 bg-slate-50/50 p-6 rounded-2xl space-y-4">
+                    <div className="border border-slate-100 bg-slate-50/50 p-4 sm:p-6 rounded-2xl space-y-4">
                       <h4 className="font-black text-slate-700 text-xs uppercase tracking-wider border-b border-slate-200/60 pb-2">Step 4: Confirm Registration</h4>
                       
                       <p className="text-xs text-slate-500 leading-relaxed font-semibold">
                         Please review your answers below. Clicking &quot;Complete Registration&quot; will provision your client portal, save your settings, and automatically forward your property details to **kai@krakenpfm.ch**.
                       </p>
 
-                      <div className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4 shadow-sm">
-                        <div className="grid grid-cols-2 gap-y-3 text-xs border-b border-slate-100 pb-3">
+                      <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-4 shadow-sm">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm border-b [&>div]:min-w-0 [&_span]:break-words border-slate-100 pb-3">
                           <div>
                             <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">CLIENT NAME</span>
                             <span className="text-slate-800 font-bold">{name}</span>
                           </div>
                           <div>
                             <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">EMAIL ADDRESS</span>
-                            <span className="text-slate-850 font-semibold truncate block">{email}</span>
+                            <span className="text-slate-850 font-semibold break-all block">{email}</span>
                           </div>
                           <div>
                             <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">PHONE NUMBER</span>
@@ -596,7 +608,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-4 gap-2 text-xs pt-1">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm pt-1">
                           <div>
                             <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">ROOMS</span>
                             <span className="text-slate-800 font-black text-base">{rooms}</span>
@@ -617,7 +629,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
 
                         <div className="text-xs border-t border-slate-100 pt-3">
                           <span className="block text-[9px] text-slate-400 font-bold uppercase tracking-wide">PROPERTY ADDRESS</span>
-                          <span className="text-slate-600 font-semibold leading-relaxed">{street}, {postcode} {city}</span>
+                          <span className="text-slate-600 font-semibold leading-relaxed break-words">{street}, {postcode} {city}</span>
                         </div>
                       </div>
                     </div>
@@ -626,7 +638,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
               </AnimatePresence>
 
               {/* Dynamic Nav buttons */}
-              <div className="mt-8 flex items-center justify-between gap-4">
+              <div className="mt-8 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 [&_button]:justify-center">
                 {step > 1 ? (
                   <button
                     type="button"

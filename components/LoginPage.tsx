@@ -47,7 +47,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white relative overflow-hidden pt-20">
+    <div className="min-h-[100dvh] flex items-start sm:items-center justify-center bg-white relative overflow-x-clip pt-28 pb-10 [&_input]:text-base [&_input]:min-h-11 [&_label]:text-sm [&_label]:tracking-normal">
       {/* Structural Minimal Background Decors */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-blue-100/40 rounded-full blur-[100px]" />
@@ -58,9 +58,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
       <motion.div 
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full relative z-10 px-6"
+        className="max-w-md min-w-0 w-full relative z-10 px-4 sm:px-6"
       >
-        <div className="bg-white p-8 sm:p-10 rounded-[2.5rem] border border-slate-150/85 shadow-[0_30px_70px_rgba(15,23,42,0.06)]">
+        <div className="bg-white p-5 sm:p-8 rounded-3xl sm:rounded-[2.5rem] border border-slate-150/85 shadow-[0_30px_70px_rgba(15,23,42,0.06)]">
           <div className="text-center mb-8">
             <button
               onClick={handleAutofillStaff}
@@ -70,9 +70,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
             >
               <ShieldCheckIcon className="w-8 h-8 text-blue-600" />
             </button>
-            <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase mb-1">
+            <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase mb-1">
               Staff Access
-            </h2>
+            </h1>
             <p className="text-slate-400 font-bold text-xs uppercase tracking-[0.2em]">Secure Access Portal</p>
           </div>
 

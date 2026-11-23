@@ -50,6 +50,9 @@ import {
 } from '../src/data/municipalRegimes';
 
 import { sendLead } from './leadWebhook';
+import { consumeHomeCalculatorRequest, homeCalculatorRequest, mergeConsultationDraft, subscribeHomeCalculatorRequests, type CalculatorRequest, type CalculatorServiceId } from '../src/home/calculator';
+import { applyKaiToCalculation, consumeKaiTransfer, kaiDraftFieldLabel, subscribeKaiTransfers, registerKaiCalculationPreview } from '../src/kai/draft';
+import { KAI_FIELDS, type KaiDraft } from '../src/kai/types';
 
 const SERVICE_ID = 'service_aiv15bc'; 
 const TEMPLATE_ID = 'template_aktj7t9'; 
@@ -68,7 +71,7 @@ interface ConsultationPageProps {
 
 // --- Constants & Types ---
 
-type ServiceType = 'end-of-tenancy' | 'deep-cleaning' | 'daily-cleaning' | 'moving' | 'pest-control' | 'waste-management' | 'gutter-cleaning' | 'car-detailing' | 'gardening' | 'exterior-cleaning';
+type ServiceType = CalculatorServiceId;
 
 interface VehicleConfig {
     id: string;
@@ -759,19 +762,19 @@ const CounterCard: React.FC<{
     }
 
     return (
-        <div className={`p-4 rounded-2xl flex items-center gap-4 transition-all group ${
+        <div className={`p-4 rounded-2xl grid grid-cols-[3rem_minmax(0,1fr)] sm:flex sm:flex-wrap items-center gap-3 transition-all group ${
             isGreenHighlight 
                 ? 'border border-gray-200 border-l-[5px] border-l-emerald-500 bg-white/70 shadow-sm shadow-emerald-500/5' 
                 : 'border-2 border-gray-100 bg-white hover:border-gray-200'
         }`}>
-            <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-transform group-hover:scale-110 ${
+            <div className={`w-12 h-12 shrink-0 rounded-xl flex items-center justify-center text-2xl transition-transform group-hover:scale-110 ${
                 isGreenHighlight 
                     ? 'bg-emerald-50 border border-emerald-100/60' 
                     : 'bg-gray-50'
             }`}>
                 {icon}
             </div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0 break-words">
                 <div className="font-bold text-sm text-gray-800">{label}</div>
                 {finalSubLabel && (
                     <div className={`text-[10px] mt-0.5 font-bold ${
@@ -783,17 +786,17 @@ const CounterCard: React.FC<{
                     </div>
                 )}
             </div>
-            <div className="flex items-center gap-3">
+            <div className="col-span-2 flex items-center gap-3 justify-self-end sm:ml-auto">
                 <button 
                     onClick={(e) => { e.preventDefault(); onChange(Math.max(min, value - step)); }}
-                    className="w-8 h-8 rounded-full bg-white border border-gray-200 text-gray-600 flex items-center justify-center hover:border-[#007bff] hover:text-[#007bff] transition-colors shadow-sm active:scale-90"
+                    className="w-11 h-11 shrink-0 rounded-full bg-white border border-gray-200 text-gray-600 flex items-center justify-center hover:border-[#007bff] hover:text-[#007bff] transition-colors shadow-sm active:scale-90"
                 >
                     <MinusIcon className="w-3.5 h-3.5" />
                 </button>
                 <span className="font-bold w-12 text-center text-gray-900 text-base">{value}{suffix}</span>
                 <button 
                     onClick={(e) => { e.preventDefault(); onChange(max !== undefined ? Math.min(max, value + step) : value + step); }}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-all shadow-sm active:scale-90 ${
+                    className={`w-11 h-11 shrink-0 rounded-full flex items-center justify-center transition-all shadow-sm active:scale-90 ${
                         isGreenHighlight 
                             ? 'bg-emerald-500 hover:bg-emerald-600 text-white border border-emerald-500' 
                             : 'bg-white border border-gray-200 text-gray-600 hover:border-[#007bff] hover:text-[#007bff]'
@@ -831,7 +834,7 @@ const ExtraBentoCard: React.FC<{
     }
 
     return (
-        <div className={`w-[170px] shrink-0 p-4 rounded-2xl border transition-all duration-300 bg-white/95 flex flex-col justify-between h-[180px] snap-center select-none ${
+        <div className={`w-[170px] shrink-0 p-4 rounded-2xl border transition-all duration-300 bg-white/95 flex flex-col justify-between min-h-[180px] h-auto snap-center select-none ${
             isSelected 
                 ? 'border-gray-200 border-l-[5px] border-l-emerald-500 shadow-md shadow-emerald-500/5' 
                 : 'border border-gray-150 hover:border-gray-300'
@@ -860,7 +863,7 @@ const ExtraBentoCard: React.FC<{
             }`}>
                 <button 
                     onClick={(e) => { e.preventDefault(); onChange(Math.max(0, value - 1)); }}
-                    className="w-8 h-8 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-600 flex items-center justify-center border border-slate-100 transition-colors shadow-2xs active:scale-95"
+                    className="w-11 h-11 shrink-0 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-600 flex items-center justify-center border border-slate-100 transition-colors shadow-2xs active:scale-95"
                 >
                     <MinusIcon className="w-3 h-3" />
                 </button>
@@ -869,7 +872,7 @@ const ExtraBentoCard: React.FC<{
                 </span>
                 <button 
                     onClick={(e) => { e.preventDefault(); onChange(value + 1); }}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors shadow-2xs active:scale-95 ${
+                    className={`w-11 h-11 shrink-0 rounded-full flex items-center justify-center transition-colors shadow-2xs active:scale-95 ${
                         isSelected 
                             ? 'bg-emerald-500 hover:bg-emerald-600 text-white' 
                             : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-100'
@@ -888,13 +891,13 @@ const CounterInput: React.FC<{
     onChange: (v: number) => void;
     min?: number;
 }> = ({ label, value, onChange, min = 0 }) => (
-    <div className="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-gray-100">
-        <span className="text-xs font-bold text-gray-600">{label}</span>
+    <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center justify-between gap-3 bg-slate-50 p-3 rounded-xl border border-gray-100">
+        <span className="min-w-0 break-words text-sm font-bold text-gray-600">{label}</span>
         <div className="flex items-center gap-3">
             <button 
                 type="button"
                 onClick={() => onChange(Math.max(min, value - 1))}
-                className="w-7 h-7 rounded-full bg-white border border-gray-200 text-gray-600 flex items-center justify-center hover:border-emerald-500 hover:text-emerald-500 transition-colors shadow-sm active:scale-90"
+                className="w-11 h-11 shrink-0 rounded-full bg-white border border-gray-200 text-gray-600 flex items-center justify-center hover:border-emerald-500 hover:text-emerald-500 transition-colors shadow-sm active:scale-90"
             >
                 <MinusIcon className="w-3 h-3" />
             </button>
@@ -902,7 +905,7 @@ const CounterInput: React.FC<{
             <button 
                 type="button"
                 onClick={() => onChange(value + 1)}
-                className="w-7 h-7 rounded-full bg-white border border-gray-200 text-gray-600 flex items-center justify-center hover:border-emerald-500 hover:text-emerald-500 transition-colors shadow-sm active:scale-90"
+                className="w-11 h-11 shrink-0 rounded-full bg-white border border-gray-200 text-gray-600 flex items-center justify-center hover:border-emerald-500 hover:text-emerald-500 transition-colors shadow-sm active:scale-90"
             >
                 <PlusIcon className="w-3.5 h-3.5" />
             </button>
@@ -1008,14 +1011,17 @@ const ModalOverlay: React.FC<{
     children: React.ReactNode; 
     size?: 'sm' | 'md' | 'lg' | 'xl'; 
     noScroll?: boolean;
-}> = ({ title, onClose, children, size = 'md', noScroll = false }) => (
+}> = ({ title, onClose, children, size = 'md', noScroll = false }) => {
+    const { language } = useTranslation();
+    const closeLabel = ({ de: 'Schliessen', en: 'Close', fr: 'Fermer', it: 'Chiudi', es: 'Cerrar', pt: 'Fechar' } as Record<string, string>)[language.split('-')[0]] || 'Close';
+    return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-        <div className={`bg-white rounded-[2rem] shadow-2xl w-full flex flex-col max-h-[95vh] overflow-hidden transition-all duration-300 ${
+        <div role="dialog" aria-modal="true" aria-label={title} className={`bg-white rounded-3xl shadow-2xl w-full min-w-0 flex flex-col max-h-[calc(100dvh-2rem)] overflow-hidden transition-all duration-300 ${
             size === 'xl' ? 'max-w-5xl' : size === 'lg' ? 'max-w-3xl' : size === 'sm' ? 'max-w-md' : 'max-w-lg'
         }`}>
-            <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-20">
-                <h3 className="text-lg font-bold text-[#002D5B]">{title}</h3>
-                <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <div className="px-4 sm:px-6 py-4 border-b border-gray-100 flex shrink-0 justify-between gap-3 items-center bg-white sticky top-0 z-20">
+                <h3 className="min-w-0 break-words text-lg font-bold text-[#002D5B]">{title}</h3>
+                <button onClick={onClose} aria-label={closeLabel} className="flex h-11 w-11 shrink-0 items-center justify-center hover:bg-gray-100 rounded-full transition-colors">
                     <XMarkIcon className="w-5 h-5 text-gray-400" />
                 </button>
             </div>
@@ -1024,14 +1030,14 @@ const ModalOverlay: React.FC<{
                     {children}
                 </div>
             ) : (
-                <div className="p-6 overflow-y-auto custom-scrollbar flex-1">
+                <div className="p-4 sm:p-6 min-h-0 overflow-y-auto overscroll-contain custom-scrollbar flex-1">
                     {children}
                 </div>
             )}
         </div>
     </div>
-);
-
+    );
+};
 
 
 const BookingCalendar: React.FC<{ selectedDate: string; onChange: (date: string) => void; hasError?: boolean }> = ({ selectedDate, onChange, hasError }) => {
@@ -2187,6 +2193,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   
   const { user } = useAuth();
   const [activeModal, setActiveModal] = useState<ServiceType | null>(null);
+  const [windowQuoteRequested, setWindowQuoteRequested] = useState(false);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [showInclusionsModal, setShowInclusionsModal] = useState<string | null>(null);
   const [comingSoonModalService, setComingSoonModalService] = useState<ServiceType | null>(null);
@@ -2263,6 +2270,13 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
   // New Booking Mode state
   const [bookingMode, setBookingMode] = useState<'direct' | 'validate' | null>(null);
+  const [contactDataHydrated, setContactDataHydrated] = useState(false);
+  const contactHydrationStarted = useRef(false);
+  const retainedKaiEdits = useRef(new Map<ServiceType, { config: Record<string, any>; editingItemId: string | null }>());
+  const [kaiTransferredDraft, setKaiTransferredDraft] = useState<KaiDraft | null>(null);
+  const [kaiTransferConflicts, setKaiTransferConflicts] = useState<string[]>([]);
+  const [kaiTransferBlocked, setKaiTransferBlocked] = useState(false);
+  const lastContactFields = useRef<string | null>(null);
 
   // Active page-level wizard step (1-Location, 2-Core services, 3-Additional services, 4-Photos)
   const [activeWizardStep, setActiveWizardStep] = useState(1);
@@ -2479,50 +2493,224 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   // To preserve name for reviews after clearing form
   const lastSubmittedName = useRef('');
 
-  // Load Persisted Contact Data on Mount
-  useEffect(() => {
-    const savedData = localStorage.getItem(PERSISTENCE_KEY);
-    if (savedData) {
-        try {
-            const data = JSON.parse(savedData);
-            if (data.name) setClientName(data.name);
-            if (data.email) setEmail(data.email);
-            if (data.phonePrefix) setPhonePrefix(data.phonePrefix);
-            if (data.phone) setPhone(data.phone);
-            if (data.address) setAddress(data.address);
-            if (data.postcode) setPostcode(data.postcode);
-            if (data.city) setCity(data.city);
-            if (data.notes) setNotes(data.notes);
-            if (data.accessMethod) setAccessMethod(data.accessMethod);
-            if (data.date) setSelectedDate(data.date);
-            if (data.time) setSelectedTime(data.time);
-            if (data.terms) setIsTermsAgreed(data.terms);
-            if (data.marketing !== undefined) setIsMarketingSubscribed(data.marketing);
-            if (data.bookingMode) setBookingMode(data.bookingMode);
-
-            // Auto-focus selected service from SEO pages
-            const preselectedService = localStorage.getItem('kraken_preselected_service');
-            if (preselectedService) {
-                setActiveModal(preselectedService as ServiceType);
-                if (data.postcode && data.postcode.length === 4) {
-                    setActiveWizardStep(2);
-                }
-                localStorage.removeItem('kraken_preselected_service');
-            }
-        } catch (e) {
-            console.error("Failed to parse persisted data", e);
-        }
-    } else {
-        const preselectedService = localStorage.getItem('kraken_preselected_service');
-        if (preselectedService) {
-            setActiveModal(preselectedService as ServiceType);
-            localStorage.removeItem('kraken_preselected_service');
-        }
+  const withKaiDuration = (service: ServiceType | null, base: Record<string, any>, existing: Record<string, any>, mapped: Record<string, unknown>) => {
+    const next = { ...base, ...mapped };
+    const countsChanged = ['roomsCount', 'bathroomsCount', 'bedrooms', 'bathrooms'].some(key => mapped[key] !== existing[key]);
+    if (countsChanged && service && ['end-of-tenancy', 'deep-cleaning', 'daily-cleaning'].includes(service)) {
+      const opts = {
+        ...next,
+        rooms: service === 'end-of-tenancy' ? next.roomsCount || 0 : next.bedrooms || 0,
+        bathrooms: service === 'end-of-tenancy' ? next.bathroomsCount || 0 : next.bathrooms || 0,
+        balconies: next.balconyCount || 0, storageUnits: next.storageCount || 0,
+        carpets: next.carpetCount || 0, furniture: next.furnitureCount || 0,
+      };
+      next.duration = service === 'end-of-tenancy'
+        ? (opts.rooms === 0 && opts.bathrooms === 0 ? 0 : calculateEOTDuration_v2(opts))
+        : calculateCleaningDuration_v2(service === 'daily-cleaning' ? 'regular' : 'deep', opts);
     }
+    return next;
+  };
+
+  // Restore first, then apply only the draft explicitly confirmed in Kai.
+  useEffect(() => {
+    // StrictMode replays mount effects; a second consume must not undo the restored transfer.
+    if (contactHydrationStarted.current) return;
+    contactHydrationStarted.current = true;
+    let restored: Record<string, any> = {};
+    let savedRaw: string | null = null;
+    let malformed = false;
+    try {
+      savedRaw = localStorage.getItem(PERSISTENCE_KEY);
+      if (savedRaw !== null) {
+        try {
+          const data = JSON.parse(savedRaw);
+          if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Invalid saved consultation data');
+          restored = data;
+        } catch {
+          malformed = true;
+          console.warn('Saved consultation data was not changed because it could not be loaded.');
+        }
+      }
+    } catch { /* A blocked store still permits the explicit in-memory Kai hand-off. */ }
+
+    const homeRequest = consumeHomeCalculatorRequest();
+    const transfer = consumeKaiTransfer();
+    const request = transfer?.draft.service ? homeCalculatorRequest(transfer.draft.service) : homeRequest;
+    const item = request?.kind === 'service' ? cart.find(item => item.type === request.service) : undefined;
+    const existingConfig = JSON.parse(JSON.stringify(item?.details || {}));
+    let selectedConfig = request?.kind === 'service'
+      ? JSON.parse(JSON.stringify(item?.details || SERVICE_DEFAULT_CONFIGS[request.service] || {})) : {};
+
+    if (transfer) {
+      setKaiTransferredDraft(transfer.draft);
+      setKaiTransferBlocked(malformed);
+      if (!malformed) {
+        // Defaults are not user choices. Only an existing cart item's fields may conflict.
+        const applied = applyKaiToCalculation(restored, existingConfig, transfer.draft, transfer.policy);
+        restored = applied.contact;
+        setKaiTransferConflicts(applied.conflicts);
+        selectedConfig = withKaiDuration(request?.kind === 'service' ? request.service : null, selectedConfig, existingConfig, applied.config);
+        try {
+          // This follows an explicit Continue action. Do not overwrite a concurrent tab's saved edit.
+          if (localStorage.getItem(PERSISTENCE_KEY) === savedRaw) {
+            const merged = mergeConsultationDraft(savedRaw, restored);
+            if (merged !== null) localStorage.setItem(PERSISTENCE_KEY, merged);
+          }
+        } catch { /* The imported fields remain usable in memory when storage is blocked. */ }
+      }
+    }
+
+    if (restored.name) setClientName(restored.name);
+    if (restored.email) setEmail(restored.email);
+    if (restored.phonePrefix) setPhonePrefix(restored.phonePrefix);
+    if (restored.phone) setPhone(restored.phone);
+    if (restored.address) setAddress(restored.address);
+    if (restored.postcode) setPostcode(restored.postcode);
+    if (restored.city) setCity(restored.city);
+    if (restored.notes) setNotes(restored.notes);
+    if (restored.accessMethod) setAccessMethod(restored.accessMethod);
+    if (restored.date) setSelectedDate(restored.date);
+    if (restored.time) setSelectedTime(restored.time);
+    if (restored.terms) setIsTermsAgreed(restored.terms);
+    if (restored.marketing !== undefined) setIsMarketingSubscribed(restored.marketing);
+    if (restored.bookingMode) setBookingMode(restored.bookingMode);
+
+    if (request?.kind === 'windows') {
+      setWindowQuoteRequested(true);
+      setActiveModal(null);
+    } else if (request?.kind === 'service') {
+      if (!item && request.service === 'moving') {
+        selectedConfig.fromZip ||= restored.postcode || '';
+        selectedConfig.fromAddress ||= restored.address || '';
+      }
+      setConfig(selectedConfig);
+      setEditingItemId(item?.id || null);
+      setActiveModal(request.service);
+      if (restored.postcode && restored.postcode.length === 4) setActiveWizardStep(2);
+    }
+    setContactDataHydrated(true);
+  }, []);
+
+  // A global Kai can be used while /quote is already mounted. Always read the current render,
+  // including unsaved fields, rather than restoring an older localStorage snapshot again.
+  const currentKaiContact = () => ({
+    name: clientName, email, phonePrefix, phone, address, postcode, city, notes, accessMethod,
+    date: selectedDate, time: selectedTime, terms: isTermsAgreed, marketing: isMarketingSubscribed, bookingMode,
+  });
+  const currentCalculatorService = (request: CalculatorRequest | null) => {
+    if (request?.kind !== 'service') return { request, base: {}, existing: {}, editingId: null };
+    if (activeModal === request.service) return { request, base: config, existing: config, editingId: editingItemId };
+    const retained = retainedKaiEdits.current.get(request.service);
+    const validRetained = retained && (!retained.editingItemId || cart.some(item => item.id === retained.editingItemId)) ? retained : undefined;
+    const item = cart.find(item => item.type === request.service);
+    const existing = validRetained?.config || item?.details || {};
+    return { request, base: validRetained?.config || item?.details || SERVICE_DEFAULT_CONFIGS[request.service] || {}, existing, editingId: validRetained ? validRetained.editingItemId : item?.id || null };
+  };
+  const currentKaiService = (draft: KaiDraft) => currentCalculatorService(homeCalculatorRequest(draft.service));
+  const liveKaiHandlers = useRef({
+    transfer: () => {},
+    calculatorRequest: () => {},
+    preview: (_draft: KaiDraft) => ({ contact: {} as Record<string, unknown>, config: {} as Record<string, unknown> }),
+  });
+  liveKaiHandlers.current = {
+    preview: draft => ({ contact: currentKaiContact(), config: currentKaiService(draft).existing }),
+    calculatorRequest: () => {
+      const request = consumeHomeCalculatorRequest();
+      // Kai's earlier notification may already have consumed this intention.
+      if (!request) return;
+      const target = currentCalculatorService(request);
+      if (activeModal && (request.kind === 'windows' || request.service !== activeModal)) {
+        retainedKaiEdits.current.set(activeModal, { config: JSON.parse(JSON.stringify(config)), editingItemId });
+      }
+      // The new service selection is explicit; existing contact, notes and cart stay in place.
+      setKaiTransferredDraft(null);
+      setKaiTransferConflicts([]);
+      setKaiTransferBlocked(false);
+      setShowWindowInfo(false);
+      if (request.kind === 'windows') {
+        setWindowQuoteRequested(true);
+        setActiveModal(null);
+        setEditingItemId(null);
+        return;
+      }
+      const next = JSON.parse(JSON.stringify(target.base));
+      if (request.service === 'moving') {
+        next.fromZip ||= postcode || '';
+        next.fromAddress ||= address || '';
+      }
+      retainedKaiEdits.current.delete(request.service);
+      setWindowQuoteRequested(false);
+      setConfig(next);
+      setEditingItemId(target.editingId);
+      setActiveModal(request.service);
+      setActiveWizardStep(postcode.trim().length === 4 ? 2 : 1);
+    },
+    transfer: () => {
+      const transfer = consumeKaiTransfer();
+      if (!transfer) return;
+      // prepare emits after the caller has selected the service, so no stale intention is left behind.
+      consumeHomeCalculatorRequest();
+      setKaiTransferredDraft(transfer.draft);
+      let saved: Record<string, unknown> = {};
+      let raw: string | null = null;
+      let malformed = false;
+      try {
+        raw = localStorage.getItem(PERSISTENCE_KEY);
+        if (raw !== null) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('Invalid draft');
+            saved = parsed;
+          } catch { malformed = true; }
+        }
+      } catch { /* In-memory edits remain available if browser storage is blocked. */ }
+      setKaiTransferBlocked(malformed);
+      if (malformed) return;
+      const target = currentKaiService(transfer.draft);
+      const applied = applyKaiToCalculation({ ...saved, ...currentKaiContact() }, target.existing, transfer.draft, transfer.policy);
+      setKaiTransferConflicts(applied.conflicts);
+      if (typeof applied.contact.city === 'string') setCity(applied.contact.city);
+      if (typeof applied.contact.postcode === 'string') setPostcode(applied.contact.postcode);
+      if (typeof applied.contact.date === 'string') setSelectedDate(applied.contact.date);
+      if (typeof applied.contact.notes === 'string') setNotes(applied.contact.notes);
+      // Retain the interrupted configuration in memory. No cart item is added, saved or removed.
+      if (activeModal && target.request && (target.request.kind === 'windows' || target.request.service !== activeModal)) {
+        retainedKaiEdits.current.set(activeModal, { config: JSON.parse(JSON.stringify(config)), editingItemId });
+      }
+      if (target.request?.kind === 'windows') {
+        setWindowQuoteRequested(true);
+        setActiveModal(null);
+      } else if (target.request?.kind === 'service') {
+        const next = withKaiDuration(target.request.service, target.base, target.existing, applied.config);
+        if (target.request.service === 'moving') {
+          next.fromZip ||= String(applied.contact.postcode || '');
+          next.fromAddress ||= String(applied.contact.address || '');
+        }
+        retainedKaiEdits.current.delete(target.request.service);
+        setWindowQuoteRequested(false);
+        setConfig(next);
+        setEditingItemId(target.editingId);
+        setActiveModal(target.request.service);
+        if (String(applied.contact.postcode || '').length === 4) setActiveWizardStep(2);
+      }
+      try {
+        if (localStorage.getItem(PERSISTENCE_KEY) === raw) {
+          const merged = mergeConsultationDraft(raw, applied.contact);
+          if (merged !== null) localStorage.setItem(PERSISTENCE_KEY, merged);
+        }
+      } catch { /* Continue works in memory; never change cart, requests or payments here. */ }
+    },
+  };
+  useEffect(() => {
+    const unsubscribe = subscribeKaiTransfers(() => liveKaiHandlers.current.transfer());
+    const unsubscribeCalculator = subscribeHomeCalculatorRequests(() => liveKaiHandlers.current.calculatorRequest());
+    const unregister = registerKaiCalculationPreview(draft => liveKaiHandlers.current.preview(draft));
+    return () => { unsubscribe(); unsubscribeCalculator(); unregister(); };
   }, []);
 
   // Save to LocalStorage whenever fields change
   useEffect(() => {
+    if (!contactDataHydrated) return;
     const dataToSave = {
         name: clientName,
         email,
@@ -2539,8 +2727,21 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         marketing: isMarketingSubscribed,
         bookingMode
     };
-    localStorage.setItem(PERSISTENCE_KEY, JSON.stringify(dataToSave));
-  }, [clientName, email, phonePrefix, phone, address, postcode, city, notes, selectedDate, selectedTime, isTermsAgreed, isMarketingSubscribed, bookingMode]);
+    const fields = JSON.stringify(dataToSave);
+    // Hydration and service selection must not rewrite the saved customer JSON.
+    if (lastContactFields.current === null) {
+        lastContactFields.current = fields;
+        return;
+    }
+    if (lastContactFields.current === fields) return;
+    try {
+        const saved = mergeConsultationDraft(localStorage.getItem(PERSISTENCE_KEY), dataToSave);
+        if (saved !== null) {
+            localStorage.setItem(PERSISTENCE_KEY, saved);
+            lastContactFields.current = fields;
+        }
+    } catch { /* Keep the existing draft if browser storage is unavailable. */ }
+  }, [contactDataHydrated, clientName, email, phonePrefix, phone, address, postcode, city, notes, accessMethod, selectedDate, selectedTime, isTermsAgreed, isMarketingSubscribed, bookingMode]);
 
   const lastScrollYRef = useRef(0);
 
@@ -2569,6 +2770,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
           if (target) {
               target.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
+          return;
+      }
+      const retained = retainedKaiEdits.current.get(type);
+      if (retained && (!retained.editingItemId || cart.some(item => item.id === retained.editingItemId))) {
+          retainedKaiEdits.current.delete(type);
+          setConfig(JSON.parse(JSON.stringify(retained.config)));
+          setEditingItemId(retained.editingItemId);
+          setActiveModal(type);
           return;
       }
       setShowWindowInfo(false);
@@ -2741,8 +2950,11 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
   };
 
   const handleEditItem = (item: CartItem) => {
+      const retained = retainedKaiEdits.current.get(item.type);
+      const matching = retained?.editingItemId === item.id ? retained : null;
+      if (matching) retainedKaiEdits.current.delete(item.type);
       setEditingItemId(item.id);
-      setConfig(item.details);
+      setConfig(matching ? JSON.parse(JSON.stringify(matching.config)) : item.details);
       setActiveModal(item.type);
   };
 
@@ -2829,32 +3041,32 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
       return calculateEOTDuration_v2(opts);
   };
 
-  const getFrequencyTranslations = (freq: string, lang: string) => {
+  const getFrequencyTranslations = (freq: string) => {
       switch (freq) {
           case 'One-Time':
               return {
-                  title: lang === 'es' ? 'Una sola vez' : lang === 'de' || lang === 'de-CH' ? 'Einmalig' : 'One-Time',
-                  desc: lang === 'es' ? 'Limpieza profunda puntual' : lang === 'de' || lang === 'de-CH' ? 'Einmalige Tiefenreinigung' : 'One-time custom deep cleaning'
+                  title: mt('One-Time', 'Una sola vez', 'Einmalig', 'Ponctuel', 'Una sola volta', 'Uma só vez'),
+                  desc: mt('One-time custom deep cleaning', 'Limpieza profunda puntual', 'Einmalige Tiefenreinigung', 'Nettoyage approfondi ponctuel sur mesure', 'Pulizia approfondita su misura, una tantum', 'Limpeza profunda pontual à medida')
               };
           case 'Every 3 Months':
               return {
-                  title: lang === 'es' ? 'Cada 3 meses' : lang === 'de' || lang === 'de-CH' ? 'Alle 3 Monate' : 'Every 3 Months',
-                  desc: lang === 'es' ? 'Plan óptimo por cambio de estación' : lang === 'de' || lang === 'de-CH' ? 'Saisonale Auffrischung' : 'Seasonal refreshment recommendation'
+                  title: mt('Every 3 Months', 'Cada 3 meses', 'Alle 3 Monate', 'Tous les 3 mois', 'Ogni 3 mesi', 'A cada 3 meses'),
+                  desc: mt('Seasonal refreshment recommendation', 'Plan óptimo por cambio de estación', 'Saisonale Auffrischung', 'Rafraîchissement saisonnier recommandé', 'Pulizia di rinnovo stagionale consigliata', 'Limpeza de renovação sazonal recomendada')
               };
           case 'Every 4 Months':
               return {
-                  title: lang === 'es' ? 'Cada 4 meses' : lang === 'de' || lang === 'de-CH' ? 'Alle 4 Monate' : 'Every 4 Months',
-                  desc: lang === 'es' ? 'Tres visitas recomendadas al año' : lang === 'de' || lang === 'de-CH' ? 'Dreimal jährlich' : 'Three comprehensive visits per year'
+                  title: mt('Every 4 Months', 'Cada 4 meses', 'Alle 4 Monate', 'Tous les 4 mois', 'Ogni 4 mesi', 'A cada 4 meses'),
+                  desc: mt('Three comprehensive visits per year', 'Tres visitas recomendadas al año', 'Dreimal jährlich', 'Trois nettoyages complets par an', 'Tre interventi completi all’anno', 'Três limpezas completas por ano')
               };
           case 'Every 6 Months':
               return {
-                  title: lang === 'es' ? 'Cada 6 meses' : lang === 'de' || lang === 'de-CH' ? 'Alle 6 Monate' : 'Every 6 Months',
-                  desc: lang === 'es' ? 'Excelente mantenimiento semestral' : lang === 'de' || lang === 'de-CH' ? 'Halbjährliche Pflege' : 'Semiannual restoration visits'
+                  title: mt('Every 6 Months', 'Cada 6 meses', 'Alle 6 Monate', 'Tous les 6 mois', 'Ogni 6 mesi', 'A cada 6 meses'),
+                  desc: mt('Semiannual restoration visits', 'Excelente mantenimiento semestral', 'Halbjährliche Pflege', 'Entretien approfondi semestriel', 'Pulizia di rinnovo semestrale', 'Limpeza de renovação semestral')
               };
           case 'Every Year':
               return {
-                  title: lang === 'es' ? 'Cada año' : lang === 'de' || lang === 'de-CH' ? 'Jährlich' : 'Every Year',
-                  desc: lang === 'es' ? 'Limpieza general anual profunda' : lang === 'de' || lang === 'de-CH' ? 'Jährlicher Frühjahrsputz' : 'Annual spring-cleaning overhaul'
+                  title: mt('Every Year', 'Cada año', 'Jährlich', 'Chaque année', 'Ogni anno', 'Todos os anos'),
+                  desc: mt('Annual spring-cleaning overhaul', 'Limpieza general anual profunda', 'Jährlicher Frühjahrsputz', 'Grand nettoyage annuel de printemps', 'Pulizia approfondita annuale di primavera', 'Limpeza profunda anual de primavera')
               };
           default:
               return {
@@ -4293,6 +4505,26 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
     return 'bg-gradient-to-br from-[#001D3D] via-[#002D5B] to-[#003F7A] shadow-lg shadow-[#002d5b]/10 border border-white/10';
   };
 
+  const kaiTransferSummary = kaiTransferredDraft ? (
+    <section className="my-6 rounded-2xl border border-blue-100 bg-blue-50/50 p-4 sm:p-6" aria-labelledby="kai-transfer-heading">
+      <h2 id="kai-transfer-heading" className="text-xl font-bold text-[#002D5B]">{mt('Your details from Kai', 'Sus datos de Kai', 'Ihre Angaben von Kai', 'Vos informations transmises par Kai', 'I tuoi dati da Kai', 'Os seus dados do Kai')}</h2>
+      <p className="mt-2 text-base leading-relaxed text-slate-600">{mt('Review these details before adding a service or sending a request.', 'Revise estos datos antes de añadir un servicio o enviar una solicitud.', 'Prüfen Sie diese Angaben, bevor Sie eine Leistung hinzufügen oder eine Anfrage senden.', 'Vérifiez ces informations avant d’ajouter une prestation ou d’envoyer une demande.', 'Controlla questi dati prima di aggiungere un servizio o inviare una richiesta.', 'Reveja estes dados antes de adicionar um serviço ou enviar um pedido.')}</p>
+      {kaiTransferBlocked && <p role="alert" className="mt-3 text-base text-amber-900">{mt('Your saved draft could not be read and has not been changed. The details from Kai are shown below for review.', 'No se pudo leer su borrador guardado y no se ha modificado. Puede revisar los datos de Kai a continuación.', 'Ihr gespeicherter Entwurf konnte nicht gelesen werden und wurde nicht geändert. Die Angaben von Kai stehen unten zur Prüfung.', 'Votre brouillon enregistré n’a pas pu être lu et n’a pas été modifié. Les informations de Kai figurent ci-dessous.', 'La bozza salvata non è leggibile e non è stata modificata. I dati di Kai sono riportati qui sotto.', 'Não foi possível ler o rascunho guardado, que não foi alterado. Os dados do Kai são apresentados abaixo.')}</p>}
+      {!kaiTransferBlocked && kaiTransferConflicts.length > 0 && <p role="status" className="mt-3 text-base text-slate-700">{mt('Differences with your saved details were found. Your selected transfer preference has been applied; review the fields and notes.', 'Se encontraron diferencias con sus datos guardados. Se ha aplicado la opción de transferencia elegida; revise los campos y las notas.', 'Es gab Unterschiede zu Ihren gespeicherten Angaben. Ihre gewählte Übernahmeoption wurde angewendet; prüfen Sie die Felder und Hinweise.', 'Des différences ont été trouvées avec vos données enregistrées. L’option de transfert choisie a été appliquée ; vérifiez les champs et les notes.', 'Sono state rilevate differenze con i dati salvati. È stata applicata l’opzione di trasferimento scelta; controlla i campi e le note.', 'Foram encontradas diferenças com os dados guardados. Foi aplicada a opção de transferência escolhida; reveja os campos e as notas.')}</p>}
+      <dl className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {KAI_FIELDS.filter(field => field !== 'notes' && kaiTransferredDraft.fields[field]).map(field => <div key={field} className="min-w-0">
+          <dt className="text-sm font-semibold text-slate-600">{kaiDraftFieldLabel(field, (language === 'de-CH' ? 'de' : language) as KaiDraft['language'])}</dt>
+          <dd className="mt-1 whitespace-pre-wrap break-words text-base text-[#002D5B]">{kaiTransferredDraft.fields[field]}</dd>
+        </div>)}
+      </dl>
+      {kaiTransferBlocked && kaiTransferredDraft.fields.notes && <p className="mt-3 whitespace-pre-wrap break-words text-base text-slate-700">{kaiTransferredDraft.fields.notes}</p>}
+      {!kaiTransferBlocked && <div className="mt-4">
+        <label htmlFor="kai-calculator-notes" className="block text-sm font-semibold text-slate-700">{mt('Notes to review or edit', 'Notas para revisar o editar', 'Hinweise prüfen oder bearbeiten', 'Notes à vérifier ou modifier', 'Note da controllare o modificare', 'Notas para rever ou editar')}</label>
+        <textarea id="kai-calculator-notes" rows={4} value={notes} onChange={event => setNotes(event.target.value)} className="mt-2 min-h-28 w-full rounded-xl border border-slate-300 bg-white p-3 text-base text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200" />
+      </div>}
+    </section>
+  ) : null;
+
   if (paymentCompletedBooking) {
     return (
       <PaymentCelebrationPage 
@@ -4305,8 +4537,36 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
     );
   }
 
+  if (!contactDataHydrated) {
+    return <main className="min-h-screen bg-white px-5 pb-20 pt-28" role="status" aria-live="polite">
+      <p className="mx-auto max-w-2xl text-base text-[#032B59]">{mt('Loading calculator…', 'Cargando calculadora…', 'Rechner wird geladen…', 'Chargement du calculateur…', 'Caricamento del calcolatore…', 'A carregar o calculador…')}</p>
+    </main>;
+  }
+
+  if (windowQuoteRequested) {
+    return <main className="min-h-screen bg-slate-50 px-5 pb-20 pt-28 sm:px-8" aria-labelledby="window-quote-heading">
+      <div className="mx-auto max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
+        <h1 id="window-quote-heading" className="text-3xl font-bold text-[#032B59]">{mt('Window cleaning', 'Limpieza de ventanas', 'Fensterreinigung', 'Nettoyage des fenêtres', 'Pulizia delle finestre', 'Limpeza de janelas')}</h1>
+        <p role="status" className="mt-5 text-base leading-7 text-slate-700">{mt(
+          'Window cleaning is selected. No price estimate or online payment is offered for this service. We will clarify the scope with you. Your saved details and existing calculation remain unchanged.',
+          'Has seleccionado limpieza de ventanas. No se ofrece una estimación de precio ni pago en línea para este servicio. Acordaremos contigo el alcance. Tus datos guardados y el cálculo existente se conservan.',
+          'Fensterreinigung ist ausgewählt. Für diesen Service werden keine Preisschätzung und keine Online-Zahlung angeboten. Den Umfang klären wir mit Ihnen. Ihre gespeicherten Angaben und die bestehende Berechnung bleiben erhalten.',
+          'Le nettoyage des fenêtres est sélectionné. Ce service ne propose ni estimation de prix ni paiement en ligne. Nous préciserons le périmètre avec vous. Vos informations et votre calcul existants sont conservés.',
+          'Hai selezionato la pulizia delle finestre. Per questo servizio non sono previsti stima del prezzo o pagamento online. Definiremo i dettagli con te. I dati salvati e il calcolo esistente vengono conservati.',
+          'Selecionou a limpeza de janelas. Este serviço não apresenta uma estimativa de preço nem pagamento online. Confirmaremos consigo o âmbito. Os dados guardados e o cálculo existente são preservados.'
+        )}</p>
+        {kaiTransferSummary}
+        <p className="mt-5 text-base leading-7 text-slate-700">{mt('Contact:', 'Contacto:', 'Kontakt:', 'Contact :', 'Contatto:', 'Contacto:')}{' '}<a href="mailto:kai@krakenpfm.ch" className="font-semibold text-[#032B59] underline underline-offset-4">kai@krakenpfm.ch</a></p>
+        <div className="mt-8 flex flex-wrap gap-3">
+          <button type="button" onClick={() => setWindowQuoteRequested(false)} className="min-h-11 rounded-xl bg-[#032B59] px-5 py-3 text-base font-semibold text-white">{mt('View existing calculation', 'Ver el cálculo existente', 'Bestehende Berechnung ansehen', 'Voir le calcul existant', 'Vedi il calcolo esistente', 'Ver o cálculo existente')}</button>
+          <button type="button" onClick={() => onNavigate('home')} className="min-h-11 rounded-xl border border-slate-300 px-5 py-3 text-base font-semibold text-[#032B59]">{mt('Back to home', 'Volver al inicio', 'Zur Startseite', 'Retour à l’accueil', 'Torna alla home', 'Voltar ao início')}</button>
+        </div>
+      </div>
+    </main>;
+  }
+
   return (
-    <div className="min-h-screen bg-white pt-24 md:pt-40 pb-20 font-sans text-gray-800">
+    <div className="min-h-screen bg-white pt-24 md:pt-32 pb-40 lg:pb-20 font-sans text-gray-800 [&_input]:text-base [&_input]:min-h-11 [&_input]:min-w-0 [&_textarea]:text-base [&_select]:text-base [&_select]:min-h-11 [&_select]:min-w-0 [&_label]:text-sm [&_label]:tracking-normal">
       <div className="container mx-auto px-4 md:px-6 max-w-7xl">
         
         {/* --- Header & Mascot Dialogue & Reviews --- */}
@@ -4379,6 +4639,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
             </div>
         </div>
 
+        {kaiTransferSummary}
         <div className="flex flex-col lg:flex-row gap-10 lg:items-start">
             
             {/* --- Left Column: Services Grid --- */}
@@ -4966,10 +5227,10 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
 
                                         <div className="space-y-3">
                                             <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest pl-1">{t('consultation.label.frequency')}</label>
-                                            <p className="text-[11px] text-gray-400 pl-1 font-bold mb-1">{language === 'es' ? 'Selecciona la frecuencia y el alcance del servicio.' : 'Select the frequency and scope of the service.'}</p>
+                                            <p className="text-[11px] text-gray-400 pl-1 font-bold mb-1">{mt('Select the frequency and scope of the service.', 'Selecciona la frecuencia y el alcance del servicio.', 'Wählen Sie die Häufigkeit und den Leistungsumfang.', 'Choisissez la fréquence et l’étendue du service.', 'Seleziona la frequenza e l’ambito del servizio.', 'Selecione a frequência e o âmbito do serviço.')}</p>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                 {['One-Time', 'Every 3 Months', 'Every 4 Months', 'Every 6 Months', 'Every Year'].map(f => {
-                                                    const textHelper = getFrequencyTranslations(f, language);
+                                                    const textHelper = getFrequencyTranslations(f);
                                                     
                                                     // Renders mini calendar icon for monthly frequencies
                                                     const renderCustomIcon = () => {
@@ -5446,7 +5707,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         </label>
                                                         <div className="flex gap-2">
                                                             <input type="text" maxLength={4} placeholder={mt('Zip (e.g. 8001)', 'CP (ej. 8001)', 'PLZ (z.B. 8001)', 'NPA (ex. 8001)', 'CAP (es. 8001)', 'Cód. Postal (ex. 8001)')} className={`w-24 p-3 bg-slate-50 border rounded-xl font-bold text-xs focus:ring-1 outline-none ${isFromZipValid ? 'border-emerald-250 focus:ring-emerald-200' : 'border-slate-150 focus:ring-blue-100'}`} value={config.fromZip || ''} onChange={(e) => setConfig({...config, fromZip: e.target.value})} />
-                                                            <input type="text" placeholder={mt('Street Name & No.', 'Nombre de calle y N.º', 'Strasse & Nr.', 'Rue & N°', 'Via e N.', 'Nome da rua e N.º')} className="flex-1 p-3 bg-slate-50 border border-slate-150 rounded-xl font-bold text-xs focus:ring-1 focus:ring-blue-100 outline-none" value={config.fromAddress || ''} onChange={(e) => setConfig({...config, fromAddress: e.target.value})} />
+                                                            <input type="text" placeholder={mt('Street Name & No.', 'Nombre de calle y N.º', 'Strasse & Nr.', 'Rue & N°', 'Via e N.', 'Nome da rua e N.º')} className="flex-1 min-w-0 p-3 bg-slate-50 border border-slate-150 rounded-xl font-bold text-xs focus:ring-1 focus:ring-blue-100 outline-none" value={config.fromAddress || ''} onChange={(e) => setConfig({...config, fromAddress: e.target.value})} />
                                                         </div>
                                                         {!isFromZipValid && config.fromZip && (
                                                             <p className="text-[9px] text-amber-600 font-bold pl-1 mt-1 flex items-center gap-1">
@@ -5461,7 +5722,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         </label>
                                                         <div className="flex gap-2">
                                                             <input type="text" maxLength={4} placeholder={mt('Zip (e.g. 8002)', 'CP (ej. 8002)', 'PLZ (z.B. 8002)', 'NPA (ex. 8002)', 'CAP (es. 8002)', 'Cód. Postal (ex. 8002)')} className={`w-24 p-3 bg-slate-50 border rounded-xl font-bold text-xs focus:ring-1 outline-none ${isToZipValid ? 'border-emerald-250 focus:ring-emerald-200' : 'border-slate-150 focus:ring-blue-100'}`} value={config.toZip || ''} onChange={(e) => setConfig({...config, toZip: e.target.value})} />
-                                                            <input type="text" placeholder={mt('Street Name & No.', 'Nombre de calle y N.º', 'Strasse & Nr.', 'Rue & N°', 'Via e N.', 'Nome da rua e N.º')} className="flex-1 p-3 bg-slate-50 border border-slate-150 rounded-xl font-bold text-xs focus:ring-1 focus:ring-blue-100 outline-none" value={config.toAddress || ''} onChange={(e) => setConfig({...config, toAddress: e.target.value})} />
+                                                            <input type="text" placeholder={mt('Street Name & No.', 'Nombre de calle y N.º', 'Strasse & Nr.', 'Rue & N°', 'Via e N.', 'Nome da rua e N.º')} className="flex-1 min-w-0 p-3 bg-slate-50 border border-slate-150 rounded-xl font-bold text-xs focus:ring-1 focus:ring-blue-100 outline-none" value={config.toAddress || ''} onChange={(e) => setConfig({...config, toAddress: e.target.value})} />
                                                         </div>
                                                         {!isToZipValid && config.toZip && (
                                                             <p className="text-[9px] text-amber-600 font-bold pl-1 mt-1 flex items-center gap-1">
@@ -5478,11 +5739,11 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         {mt('Access at Origin', 'Acceso en Origen', 'Zugang am Startort', 'Accès au départ', 'Accesso alla partenza', 'Acesso na origem')}
                                                     </label>
                                                     <div className="flex gap-2">
-                                                        <select className="w-1/2 p-3 bg-slate-50 border border-slate-150 rounded-xl font-bold text-xs" value={config.accessFrom} onChange={(e) => setConfig({...config, accessFrom: e.target.value})}>
+                                                        <select className="w-0 flex-1 min-w-0 p-3 bg-slate-50 border border-slate-150 rounded-xl font-bold text-xs" value={config.accessFrom} onChange={(e) => setConfig({...config, accessFrom: e.target.value})}>
                                                             <option value="Lift">{mt('Elevator / Lift', 'Ascensor', 'Aufzug / Lift', 'Ascenseur', 'Ascensore', 'Elevador')}</option>
                                                             <option value="Stairs">{mt('Stairs', 'Escaleras', 'Treppe', 'Escaliers', 'Scale', 'Escadas')}</option>
                                                         </select>
-                                                        <select className="w-1/2 p-3 bg-slate-50 border border-slate-150 rounded-xl font-bold text-xs" value={config.floorFrom} onChange={(e) => setConfig({...config, floorFrom: e.target.value})}>
+                                                        <select className="w-0 flex-1 min-w-0 p-3 bg-slate-50 border border-slate-150 rounded-xl font-bold text-xs" value={config.floorFrom} onChange={(e) => setConfig({...config, floorFrom: e.target.value})}>
                                                             <option value="0">{mt('Ground Floor', 'Planta Baja', 'Erdgeschoss', 'Rez-de-chaussée', 'Piano Terra', 'Rés-do-chão')}</option>
                                                             <option value="1">{mt('1st Floor', '1.º Piso', '1. Stock', '1er étage', '1° Piano', '1.º Andar')}</option>
                                                             <option value="2">{mt('2nd Floor', '2.º Piso', '2. Stock', '2ème étage', '2° Piano', '2.º Andar')}</option>
@@ -5497,11 +5758,11 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                         {mt('Access at Destination', 'Acceso en Destino', 'Zugang am Zielort', 'Accès à l\'arrivée', 'Accesso all\'arrivo', 'Acesso no destino')}
                                                     </label>
                                                     <div className="flex gap-2">
-                                                        <select className="w-1/2 p-3 bg-slate-50 border border-slate-150 rounded-xl font-bold text-xs" value={config.accessTo} onChange={(e) => setConfig({...config, accessTo: e.target.value})}>
+                                                        <select className="w-0 flex-1 min-w-0 p-3 bg-slate-50 border border-slate-150 rounded-xl font-bold text-xs" value={config.accessTo} onChange={(e) => setConfig({...config, accessTo: e.target.value})}>
                                                             <option value="Lift">{mt('Elevator / Lift', 'Ascensor', 'Aufzug / Lift', 'Ascenseur', 'Ascensore', 'Elevador')}</option>
                                                             <option value="Stairs">{mt('Stairs', 'Escaleras', 'Treppe', 'Escaliers', 'Scale', 'Escadas')}</option>
                                                         </select>
-                                                        <select className="w-1/2 p-3 bg-slate-50 border border-slate-150 rounded-xl font-bold text-xs" value={config.floorTo} onChange={(e) => setConfig({...config, floorTo: e.target.value})}>
+                                                        <select className="w-0 flex-1 min-w-0 p-3 bg-slate-50 border border-slate-150 rounded-xl font-bold text-xs" value={config.floorTo} onChange={(e) => setConfig({...config, floorTo: e.target.value})}>
                                                             <option value="0">{mt('Ground Floor', 'Planta Baja', 'Erdgeschoss', 'Rez-de-chaussée', 'Piano Terra', 'Rés-do-chão')}</option>
                                                             <option value="1">{mt('1st Floor', '1.º Piso', '1. Stock', '1er étage', '1° Piano', '1.º Andar')}</option>
                                                             <option value="2">{mt('2nd Floor', '2.º Piso', '2. Stock', '2ème étage', '2° Piano', '2.º Andar')}</option>
@@ -5623,7 +5884,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             {mt('Dynamic pricing calculations are exclusive of VAT.', 'El precio total se calcula dinámicamente, excluyendo el IVA.', 'Preiskalkulationen verstehen sich exklusive MwSt.', 'Les calculs de prix dynamiques sont hors TVA.', 'I calcoli dinamici dei prezzi sono esclusi IVA.', 'Os cálculos de preços dinâmicos não incluem IVA.')}
                                         </p>
                                     </div>
-                                    <div className="flex gap-3 justify-end shrink-0">
+                                    <div className="flex flex-col sm:flex-row gap-3 justify-end min-w-0 [&_button]:min-h-11 [&_button]:justify-center">
                                         <button 
                                             type="button"
                                             onClick={closeActiveService}
@@ -5654,7 +5915,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                 <h3 className="text-xl font-black text-[#002D5B] uppercase tracking-tight">{t('consultation.services.additional')}</h3>
                             </div>
                             <p className="text-xs font-bold text-gray-400 mt-1 pl-13">
-                                {language === 'es' ? 'Añade extras opcionales para complementar tu presupuesto.' : language === 'de' || language === 'de-CH' ? 'Fügen Sie optionale Extras hinzu, um Ihr Angebot zu ergänzen.' : 'Add optional extras to complement your quotation.'}
+                                {mt('Add optional extras to complement your quotation.', 'Añade extras opcionales para complementar tu presupuesto.', 'Fügen Sie optionale Extras hinzu, um Ihr Angebot zu ergänzen.', 'Ajoutez des options pour compléter votre devis.', 'Aggiungi servizi opzionali per completare il preventivo.', 'Adicione extras opcionais para complementar o seu orçamento.')}
                             </p>
                         </div>
 
@@ -5704,7 +5965,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                 <h3 className="text-xl font-black text-[#002D5B] uppercase tracking-tight">{t('consultation.visualDocumentation')}</h3>
                             </div>
                             <p className="text-xs font-bold text-gray-400 mt-1 pl-13">
-                                {language === 'es' ? 'Sube fotos de tu propiedad para darnos más detalles de las tareas.' : language === 'de' || language === 'de-CH' ? 'Laden Sie Fotos Ihrer Immobilie hoch, um uns mehr Details zu geben.' : 'Upload photos of your property to provide us with extra visual detail.'}
+                                {mt('Upload photos of your property to provide us with extra visual detail.', 'Sube fotos de tu propiedad para darnos más detalles de las tareas.', 'Laden Sie Fotos Ihrer Immobilie hoch, um uns mehr Details zu geben.', 'Ajoutez des photos de votre bien pour nous donner plus de détails sur les tâches.', 'Carica foto dell’immobile per fornirci maggiori dettagli sulle attività.', 'Carregue fotografias do imóvel para nos dar mais detalhes sobre as tarefas.')}
                             </p>
                         </div>
 
@@ -5864,7 +6125,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                             }}
                             className="px-7 py-3 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-350 rounded-2xl text-[#002D5B] font-bold text-xs uppercase tracking-wider transition-all shadow-sm active:scale-95 cursor-pointer"
                         >
-                            {language === 'es' ? '← Atrás' : language === 'de' || language === 'de-CH' ? '← Zurück' : '← Back'}
+                            {mt('← Back', '← Atrás', '← Zurück', '← Retour', '← Indietro', '← Voltar')}
                         </button>
                     ) : (
                         <div />
@@ -5890,7 +6151,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     : 'bg-[#002D5B] hover:bg-[#001f3f] text-white hover:shadow-lg hover:shadow-blue-900/10'
                             }`}
                         >
-                            <span>{language === 'es' ? 'Continuar →' : language === 'de' || language === 'de-CH' ? 'Weiter →' : 'Continue →'}</span>
+                            <span>{mt('Continue →', 'Continuar →', 'Weiter →', 'Continuer →', 'Continua →', 'Continuar →')}</span>
                         </button>
                     ) : (
                         <button
@@ -5903,7 +6164,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                     : 'bg-emerald-500 hover:bg-emerald-600 text-white hover:shadow-lg hover:shadow-emerald-500/10'
                             }`}
                         >
-                            <span>{language === 'es' ? 'Obtener presupuesto final' : language === 'de' || language === 'de-CH' ? 'Offerte anfordern' : 'Get quotation'}</span>
+                            <span>{mt('Get quotation', 'Obtener presupuesto final', 'Offerte anfordern', 'Demander un devis', 'Richiedi un preventivo', 'Pedir orçamento')}</span>
                         </button>
                     )}
                 </div>
@@ -5913,18 +6174,18 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
             <div className={`fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl shadow-[0_-15px_50px_rgba(0,0,0,0.15)] border-t border-gray-100 transition-transform duration-700 lg:sticky lg:top-28 lg:bottom-auto lg:left-auto lg:right-auto lg:w-1/3 lg:block lg:bg-transparent lg:shadow-none lg:border-none lg:backdrop-filter-none lg:z-30 lg:transform-none translate-y-0`}>
                 <div className="lg:relative">
                     <div className="bg-white lg:rounded-[2.5rem] lg:shadow-2xl lg:border border-gray-100 overflow-hidden">
-                        <div className="lg:hidden p-6 flex items-center justify-between cursor-pointer border-b border-gray-100 hover:bg-gray-50 transition-colors" onClick={(e) => { if((e.target as HTMLElement).tagName !== 'BUTTON') setMobileSummaryOpen(!isMobileSummaryOpen); }}>
-                            <div className="flex flex-col">
-                                <span className="text-[9px] text-gray-400 font-black uppercase tracking-widest mb-0.5">{t('consultation.estimatedTotal')}</span>
-                                <span className="text-3xl font-black text-[#002D5B]">CHF {grandTotal.toFixed(2)}</span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <button onClick={() => setContactModalOpen(true)} disabled={cart.length === 0} className="bg-[#007bff] text-white px-8 py-3 rounded-2xl font-black text-sm shadow-xl shadow-blue-200/50 hover:bg-blue-600 disabled:opacity-50 transition-all">{t('consultation.book')}</button>
-                                <div className={`p-1.5 rounded-full text-gray-400 bg-gray-100 transition-transform duration-500 ${isMobileSummaryOpen ? 'rotate-180' : ''}`}><ChevronUpIcon className="w-5 h-5"/></div>
-                            </div>
+                        <div className="lg:hidden p-4 pb-[max(1rem,env(safe-area-inset-bottom))] flex flex-wrap items-center justify-between gap-3 border-b border-gray-100">
+                            <button type="button" onClick={() => setMobileSummaryOpen(!isMobileSummaryOpen)} aria-expanded={isMobileSummaryOpen} aria-controls="quote-mobile-summary" className="flex min-h-11 min-w-0 flex-1 items-center justify-between gap-3 text-left">
+                                <span className="flex min-w-0 flex-col">
+                                    <span className="text-sm text-gray-500 font-bold mb-0.5">{t('consultation.estimatedTotal')}</span>
+                                    <span className="text-xl sm:text-2xl font-black text-[#002D5B] break-words">CHF {grandTotal.toFixed(2)}</span>
+                                </span>
+                                <span aria-hidden="true" className={`shrink-0 p-1.5 rounded-full text-gray-400 bg-gray-100 transition-transform duration-300 motion-reduce:transition-none ${isMobileSummaryOpen ? 'rotate-180' : ''}`}><ChevronUpIcon className="w-5 h-5"/></span>
+                            </button>
+                            <button type="button" onClick={() => setContactModalOpen(true)} disabled={cart.length === 0} className="min-h-11 bg-[#007bff] text-white px-4 py-3 rounded-2xl font-black text-sm shadow-xl shadow-blue-200/50 hover:bg-blue-600 disabled:opacity-50 transition-all">{t('consultation.book')}</button>
                         </div>
 
-                        <div className={`transition-[max-height] duration-700 ease-in-out overflow-hidden ${isMobileSummaryOpen ? 'max-h-[70vh]' : 'max-h-0'} lg:max-h-none lg:block`}>
+                        <div id="quote-mobile-summary" className={`transition-[max-height] duration-300 motion-reduce:transition-none ease-in-out overscroll-contain ${isMobileSummaryOpen ? 'max-h-[calc(100dvh-10rem)] overflow-y-auto' : 'max-h-0 overflow-hidden invisible lg:visible'} lg:max-h-none lg:overflow-visible lg:block`}>
                             <div className="hidden lg:block p-8 border-b border-gray-100 bg-slate-50/50">
                                 <h3 className="text-2xl font-black text-[#002D5B] uppercase tracking-tight">{t('consultation.yourBundle')}</h3>
                             </div>
@@ -6401,7 +6662,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         {/* --- MODALS --- */}
         {showAddressModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-fade-in select-none">
-            <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg p-8 relative flex flex-col overflow-hidden border border-slate-100">
+            <div role="dialog" aria-modal="true" aria-label={t('consultation.modal.address.title')} className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg max-h-[calc(100dvh-2rem)] p-4 sm:p-8 relative flex flex-col overflow-y-auto overscroll-contain border border-slate-100">
               {/* Top design background */}
               <div className="absolute top-0 left-0 w-full h-32 bg-blue-50 rounded-b-[50%] -z-0 transform -translate-y-16 scale-x-150"></div>
               
@@ -6409,7 +6670,8 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
               {address.trim() && postcode.trim() && city.trim() && (
                 <button 
                   onClick={() => setShowAddressModal(false)}
-                  className="absolute top-6 right-6 p-2 bg-white hover:bg-slate-100 rounded-full border border-gray-100 transition-colors z-20 cursor-pointer"
+                  aria-label={mt('Close', 'Cerrar', 'Schliessen', 'Fermer', 'Chiudi', 'Fechar')}
+                  className="absolute top-4 right-4 sm:top-6 sm:right-6 flex h-11 w-11 items-center justify-center bg-white hover:bg-slate-100 rounded-full border border-gray-100 transition-colors z-20 cursor-pointer"
                 >
                   <XMarkIcon className="w-5 h-5 text-gray-500" />
                 </button>
@@ -6436,7 +6698,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="group">
                     <label className="block text-[10px] font-black text-[#002D5B] uppercase tracking-wider mb-1.5 ml-1">{t('consultation.step1.postcode')}</label>
                     <input 
@@ -6504,14 +6766,15 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
         {/* --- MODAL: PAYREXX CONFIG ERROR & FALLBACK SELECTION --- */}
         {payrexxError && (
           <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/85 backdrop-blur-md animate-fade-in select-none">
-            <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-xl p-8 relative flex flex-col overflow-hidden border border-slate-100">
+            <div role="dialog" aria-modal="true" aria-label={t('payment.alert.title')} className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-xl max-h-[calc(100dvh-2rem)] p-4 sm:p-8 relative flex flex-col overflow-y-auto overscroll-contain border border-slate-100">
               {/* Highlight ribbon */}
               <div className="absolute top-0 left-0 w-full h-32 bg-amber-50 rounded-b-[50%] -z-0 transform -translate-y-16 scale-x-150"></div>
               
               {/* Close Button */}
               <button 
                 onClick={() => setPayrexxError(null)}
-                className="absolute top-6 right-6 p-2 bg-white hover:bg-slate-100 rounded-full border border-gray-100 transition-colors z-20 cursor-pointer"
+                aria-label={mt('Close', 'Cerrar', 'Schliessen', 'Fermer', 'Chiudi', 'Fechar')}
+                className="absolute top-4 right-4 sm:top-6 sm:right-6 flex h-11 w-11 items-center justify-center bg-white hover:bg-slate-100 rounded-full border border-gray-100 transition-colors z-20 cursor-pointer"
               >
                 <XMarkIcon className="w-5 h-5 text-gray-500" />
               </button>
@@ -7196,14 +7459,14 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             type="button"
                                             disabled={movers <= 1}
                                             onClick={() => setConfig({...config, moversCount: Math.max(1, movers - 1)})}
-                                            className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center font-black disabled:opacity-40"
+                                            className="w-11 h-11 shrink-0 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center font-black disabled:opacity-40"
                                         >-</button>
                                         <span className="w-8 font-black text-center text-sm">{movers}</span>
                                         <button 
                                             type="button"
                                             disabled={movers >= 10}
                                             onClick={() => setConfig({...config, moversCount: Math.min(10, movers + 1)})}
-                                            className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center font-black disabled:opacity-40"
+                                            className="w-11 h-11 shrink-0 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 flex items-center justify-center font-black disabled:opacity-40"
                                         >+</button>
                                     </div>
                                 </div>
@@ -7438,7 +7701,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             <button 
                                                 type="button"
                                                 onClick={() => setConfig({...config, hydraulicLiftHours: Math.max(0.5, (config.hydraulicLiftHours || 1) - 0.5)})}
-                                                className="w-6 h-6 rounded bg-slate-200 hover:bg-slate-300 font-extrabold text-[#007bff] flex items-center justify-center text-xs"
+                                                className="w-11 h-11 shrink-0 rounded bg-slate-200 hover:bg-slate-300 font-extrabold text-[#007bff] flex items-center justify-center text-xs"
                                             >-</button>
                                             <input 
                                                 type="number"
@@ -7454,7 +7717,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                             <button 
                                                 type="button"
                                                 onClick={() => setConfig({...config, hydraulicLiftHours: (config.hydraulicLiftHours || 1) + 0.5})}
-                                                className="w-6 h-6 rounded bg-slate-200 hover:bg-slate-300 font-extrabold text-[#007bff] flex items-center justify-center text-xs"
+                                                className="w-11 h-11 shrink-0 rounded bg-slate-200 hover:bg-slate-300 font-extrabold text-[#007bff] flex items-center justify-center text-xs"
                                             >+</button>
                                         </div>
                                     </div>
@@ -8866,7 +9129,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     const val = Math.max(0, currentCount - 1);
                                                     setConfig({...config, items: { ...current, [item.id]: val }});
                                                 }}
-                                                className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center font-black hover:bg-gray-55 text-gray-600 transition-colors"
+                                                className="w-11 h-11 shrink-0 rounded-full border border-gray-200 flex items-center justify-center font-black hover:bg-gray-55 text-gray-600 transition-colors"
                                             >
                                                 -
                                             </button>
@@ -8878,7 +9141,7 @@ const ConsultationPage: React.FC<ConsultationPageProps> = ({ onNavigate, cart, s
                                                     const val = currentCount + 1;
                                                     setConfig({...config, items: { ...current, [item.id]: val }});
                                                 }}
-                                                className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center font-black hover:bg-gray-55 text-gray-600 transition-colors"
+                                                className="w-11 h-11 shrink-0 rounded-full border border-gray-200 flex items-center justify-center font-black hover:bg-gray-55 text-gray-600 transition-colors"
                                             >
                                                 +
                                             </button>

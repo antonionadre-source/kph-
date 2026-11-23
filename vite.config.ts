@@ -27,6 +27,7 @@ export default defineConfig(({ mode }) => {
       ],
       build: {
         outDir: 'dist',
+        manifest: true,
         emptyOutDir: true,
         target: 'esnext',
         cssCodeSplit: true,
@@ -80,10 +81,6 @@ export default defineConfig(({ mode }) => {
             },
           },
         },
-      },
-      define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY || ""),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY || "")
       },
       resolve: {
         alias: {
