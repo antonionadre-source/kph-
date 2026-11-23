@@ -12,9 +12,15 @@
   transform:translateY(-50%);pointer-events:none;
 }
 .kraken-home #umzug .transit-cargo-photo,
+.kraken-home #umzug .transit-cargo-vehicle,
+.kraken-home #umzug .transit-cargo-vehicle-branding,
+.kraken-home #umzug .transit-cargo-aligned,
+.kraken-home #umzug .transit-cargo-aligned>img,
 .kraken-home #umzug .transit-cargo-branding {
   position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;
 }
+.kraken-home #umzug .transit-cargo-aligned {transform-origin:0 0}
+.kraken-home #umzug .transit-cargo-clip-definitions {position:absolute;pointer-events:none}
 .kraken-home #umzug .transit-cargo-photo {opacity:0}
 .kraken-home #umzug .transit-cargo-branding [data-brand-stage] {display:none}
 .kraken-home #umzug [data-frame="0"] [data-cargo-photo="0"] {opacity:1}
@@ -130,6 +136,10 @@
 .kraken-home #umzug .van-fit-card{grid-template-columns:auto minmax(0,1fr)}
 .kraken-home #umzug .van-fit-card .button{grid-column:2;justify-self:start}
 .kraken-home #umzug #vanOverview .moving-art{top:100px}
+}
+/* Reserve both control rows on tablets so a shorter play label cannot lift the van. */
+@media(min-width:761px) and (max-width:1100px){
+.kraken-home #umzug .van-view-actions{min-height:102px;align-content:flex-start}
 }
 @media(max-width:760px){
 .kraken-home #umzug .van-navigation{padding-top:27px;display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:13px 10px;align-items:center}

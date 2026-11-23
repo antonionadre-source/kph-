@@ -174,3 +174,10 @@ Las imágenes fueron generadas con la herramienta integrada `image_gen`, usando 
 La vista exterior añade dos faros SVG alineados con la nueva fotografía de 1254 × 1254 px y cuatro haces que siguen la posición real de los iconos al cambiar el tamaño o el idioma. Las cuatro fotos interiores y sus logos respetan los mismos `data-frame` y las dos capas del fundido existente. La navegación, las medidas y el controlador de reproducción se conservan.
 
 El encendido y la iluminación de iconos usan animaciones CSS de seis segundos. El controlador existente deja el efecto apagado en la vista interior, fuera de pantalla y con la pestaña oculta. La pausa manual y el movimiento reducido conservan una iluminación tenue estática. No se añaden temporizadores de animación: el observador de tamaño y el RAF de posicionamiento se limpian al desmontar.
+
+
+## Furgoneta estable durante la carga
+
+La carrocería interior abierta se dibuja una sola vez con la imagen vacía y su logo lateral, fuera de las dos capas del fundido. Las cuatro etapas superponen únicamente el hueco de carga, limitado por un clip SVG normalizado a 1254 × 1254. Cada foto interior y sus logos de cajas comparten la misma transformación afín de registro; puertas, ruedas, luces, parachoques y laterales pertenecen siempre a la base fija. La etapa vacía conserva su recorte interior para poder volver a vacío mediante fundido.
+
+Las imágenes originales no se modifican ni se regeneran. Se conserva la carga diferida con `img`, los identificadores y el controlador de reproducción, las medidas y el movimiento reducido. En tableta se reserva el espacio de las dos filas de controles para que la longitud de la etiqueta de reproducción no desplace verticalmente la imagen.

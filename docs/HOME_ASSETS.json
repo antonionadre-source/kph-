@@ -191,8 +191,8 @@
       },
       {
         "file": "components/home/transit-section.css",
-        "bytes": 18318,
-        "sha256": "9286e6d7fa95cda1406549120b7c208455b53c952578ef7ab91603d4960787e5"
+        "bytes": 18884,
+        "sha256": "ac77c0079c58992721ca3765cd56388c1bfa6c620d9cb524672cf887cc445c36"
       }
     ],
     "updatedFor": "Shared approved header, standalone services and supplied Transit measurements, 2026-11-23",
@@ -216,8 +216,8 @@
     },
     {
       "file": "components/home/TransitSection.tsx",
-      "bytes": 12109,
-      "sha256": "18e0897efe3de619cd482d1842bbcf3f48b89e6449338fe5abb5b262cf3a210f"
+      "bytes": 12174,
+      "sha256": "9fee2702bb2a84eea17331e53c196a4e35ac4448c3ef804d01d9d200aa1a62d4"
     }
   ],
   "globalAssistant": {
@@ -329,13 +329,13 @@
       },
       {
         "file": "components/home/TransitSection.tsx",
-        "bytes": 12109,
-        "sha256": "18e0897efe3de619cd482d1842bbcf3f48b89e6449338fe5abb5b262cf3a210f"
+        "bytes": 12174,
+        "sha256": "9fee2702bb2a84eea17331e53c196a4e35ac4448c3ef804d01d9d200aa1a62d4"
       },
       {
         "file": "components/home/transit-section.css",
-        "bytes": 18318,
-        "sha256": "9286e6d7fa95cda1406549120b7c208455b53c952578ef7ab91603d4960787e5"
+        "bytes": 18884,
+        "sha256": "ac77c0079c58992721ca3765cd56388c1bfa6c620d9cb524672cf887cc445c36"
       },
       {
         "file": "components/home/van.js",
@@ -409,8 +409,8 @@
       },
       {
         "file": "docs/SERVICES_INTEGRATION.md",
-        "bytes": 10434,
-        "sha256": "37e51a40f795548ff66ddb382164f1b1c05cf54a7c88720b5e99c8045ce1bc4f"
+        "bytes": 11332,
+        "sha256": "478320f9f2eaba5f7608b9a30126b5054a4c14c409e671c776e50bf89c7df19b"
       }
     ]
   },
@@ -423,13 +423,13 @@
       },
       {
         "file": "components/home/TransitSection.tsx",
-        "bytes": 12109,
-        "sha256": "18e0897efe3de619cd482d1842bbcf3f48b89e6449338fe5abb5b262cf3a210f"
+        "bytes": 12174,
+        "sha256": "9fee2702bb2a84eea17331e53c196a4e35ac4448c3ef804d01d9d200aa1a62d4"
       },
       {
         "file": "components/home/transit-section.css",
-        "bytes": 18318,
-        "sha256": "9286e6d7fa95cda1406549120b7c208455b53c952578ef7ab91603d4960787e5"
+        "bytes": 18884,
+        "sha256": "ac77c0079c58992721ca3765cd56388c1bfa6c620d9cb524672cf887cc445c36"
       },
       {
         "file": "components/home/van.js",
@@ -502,11 +502,18 @@
       },
       {
         "file": "components/home/TransitLoadingVisual.tsx",
-        "bytes": 2333,
-        "sha256": "a2252ecca19bd2950d7daec0a3919566b0c799f916bf104fd783ae4a7c2ef1ba"
+        "bytes": 4025,
+        "sha256": "4467f800f1e9ef097dd7697f0cff1626044ac2d054884d3e52f03814f5c5e932"
       }
     ],
-    "delivery": "Lazy/async image decoding with explicit dimensions; four native loading frames reuse the existing two-layer crossfade and automatic/manual controls."
+    "delivery": "One fixed empty vehicle and side logo outside the two crossfade layers. Native lazy/async cargo photos and carton logos are affine-registered and clipped inside a fixed bay; exterior body never changes. Controls reserve two rows on tablets.",
+    "vehicleStability": {
+      "nativeCoordinates": 1254,
+      "fixedBase": "public/transit-quality/transit-empty-v1.webp",
+      "crossfadeScope": "cargo bay only",
+      "originalImagesUnchanged": true,
+      "clip": "M582 267 C685 262 863 270 973 283 Q1013 288 1023 321 L1037 842 Q1037 879 1018 891 L575 904 L564 614 L560 391 L564 305 Q565 277 582 267Z"
+    }
   },
   "homeWhyIntegration": {
     "date": "2026-11-23",

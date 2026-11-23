@@ -1,7 +1,7 @@
 import React, { useEffect, useId, useRef } from 'react';
 import { initTransitLighting } from './transit-lighting';
 import TransitOverviewBranding from './TransitOverviewBranding';
-import TransitLoadingVisual from './TransitLoadingVisual';
+import TransitLoadingVisual, { TransitLoadingVehicle } from './TransitLoadingVisual';
 import './transit-section.css';
 
 /** The approved two-view Transit story; the owner’s four interior dimensions stay accessible HTML. */
@@ -60,6 +60,7 @@ export default function TransitSection({ t }: { t: (source: string, params?: Rec
           </div>
           <div className="van-visual-slot">
           <div className="van-load-visual" id="cargoVisual" role="img" aria-label={t("Ansicht eines offenen Kraken Ford Transit mit leerem Laderaum.")}>
+            <TransitLoadingVehicle />
             <div className="van-load-atlas" id="cargoFrame" data-frame="0" aria-hidden="true"><TransitLoadingVisual /></div>
             <div className="van-load-atlas van-load-incoming" id="cargoIncoming" data-frame="0" aria-hidden="true"><TransitLoadingVisual /></div>
             <span className="van-example-label">{t("Beispiel für einen kleinen Umzug")}</span>
