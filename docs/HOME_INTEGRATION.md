@@ -197,12 +197,3 @@ Una notificación sin datos personales permite consumir la selección cuando
 contacto y el carrito. La notificación previa de Kai tiene prioridad y evita
 aplicar dos veces una transferencia. La limpieza de ventanas mantiene su
 recorrido independiente sin precio ni pago en línea.
-
-## Espacio de la Transit Custom — 23 de noviembre de 2026
-
-La sección de mudanzas usa ahora el modelo L1H1 comunicado por el propietario,
-con medidas nominales documentadas por Ford, ejemplos geométricos y un
-comprobador local para una pieza. Los datos se comparten con Kai. Las vistas se
-cambian manualmente por defecto y los datos y el comprobador se mantienen
-visibles debajo de ambas; no se reserva la altura del panel oculto. Detalles,
-fuentes y limitaciones en [TRANSIT_CUSTOM.md](TRANSIT_CUSTOM.md).

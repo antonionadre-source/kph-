@@ -15,7 +15,7 @@ test('compiled server graph runs under plain Node without source .ts files and s
     const configuration = ts.readConfigFile(path.join(root, 'tsconfig.json'), ts.sys.readFile);
     const { options } = ts.parseJsonConfigFileContent(configuration.config, ts.sys, root);
     assert.equal(options.rewriteRelativeImportExtensions, true);
-    for (const name of ['server.ts', 'seoConfig.ts', 'i18n.ts', 'src/data/locations.ts', 'server/homeWeather.ts', 'src/locale.ts', 'components/home/homeTranslations.ts', 'server/kaiAssistant.ts', 'server/kaiKnowledge.ts', 'src/kai/types.ts', 'src/vehicle.ts']) {
+    for (const name of ['server.ts', 'seoConfig.ts', 'i18n.ts', 'src/data/locations.ts', 'server/homeWeather.ts', 'src/locale.ts', 'components/home/homeTranslations.ts', 'server/kaiAssistant.ts', 'server/kaiKnowledge.ts', 'src/kai/types.ts']) {
       const output = ts.transpileModule(readFileSync(path.join(root, name), 'utf8'), { fileName: name, compilerOptions: options }).outputText;
       assert.doesNotMatch(output, /from\s*["']\.\.?\/[^"']+\.ts["']/);
       const destination = path.join(directory, name.replace(/\.ts$/, '.js'));

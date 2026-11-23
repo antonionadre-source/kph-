@@ -196,8 +196,8 @@
   "components": [
     {
       "file": "components/home/ApprovedHome.tsx",
-      "bytes": 34881,
-      "sha256": "bcc790906187c958611fa5ae7d5967ab25aee696115102c30105c9277fde37c7"
+      "bytes": 35245,
+      "sha256": "f551b55517f279efb7834b7a7491a036fa33011a49e88f737273bd032c4df99c"
     },
     {
       "file": "components/home/HomeLanguageSelector.tsx",
@@ -263,38 +263,6 @@
         "file": "components/Footer.tsx",
         "bytes": 7099,
         "sha256": "888320482f2c9928195b00e2e7a5279b3094484812afb040c162510f739ca300"
-      }
-    ]
-  },
-  "transitCustom": {
-    "updated": "2026-11-23",
-    "model": "Ford Transit Custom 250 L1H1",
-    "originalImagesUnchanged": true,
-    "files": [
-      {
-        "file": "src/vehicle.ts",
-        "bytes": 3731,
-        "sha256": "3c9c72303c3b36616aa93493c2aa838387d4772b3780eff1a2f7ff9221604914"
-      },
-      {
-        "file": "components/home/TransitCargoVisual.tsx",
-        "bytes": 8172,
-        "sha256": "7e76717486aeb41bcad93d2be2674271e7797c67d5b0b8038a58074e68f56735"
-      },
-      {
-        "file": "components/home/VehicleFitChecker.tsx",
-        "bytes": 4050,
-        "sha256": "f413b43aee77db27633c3b2110dbd5fdcf24e9d218e51b03a1ab1e6e103024d9"
-      },
-      {
-        "file": "components/home/transit-custom.css",
-        "bytes": 6619,
-        "sha256": "e6843557c444990a6361aeee590130fab045d1bc4abda3ec44a78c5afa7f4598"
-      },
-      {
-        "file": "components/home/van.js",
-        "bytes": 10912,
-        "sha256": "57d9952f029a3732e0533a61d6167f80b1215f588d22b655d81a6bd135fddce8"
       }
     ]
   }
